@@ -32,7 +32,7 @@ class Tasks_Model_Status extends Tinebase_Record_Abstract
     protected $_application = 'Tasks';
     
     protected $_validators = array(
-        'id'                   => array('allowEmpty' => true,  'Int' ),
+        'id'                   => array('allowEmpty' => true,  'Alnum' ),
         'created_by'           => array('allowEmpty' => true,  'Int' ),
         'creation_time'        => array('allowEmpty' => true         ),
         'last_modified_by'     => array('allowEmpty' => true         ),
@@ -41,7 +41,7 @@ class Tasks_Model_Status extends Tinebase_Record_Abstract
         'deleted_time'         => array('allowEmpty' => true         ),
         'deleted_by'           => array('allowEmpty' => true         ),
         'status_name'          => array('allowEmpty' => false        ),
-        'status_is_open'       => array('allowEmpty' => false, 'Int' ),
+        'status_is_open'       => array('allowEmpty' => false, 'Alnum' ),
         'status_icon'          => array('allowEmpty' => true         ),
     );
     

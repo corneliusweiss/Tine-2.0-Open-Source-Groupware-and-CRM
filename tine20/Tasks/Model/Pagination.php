@@ -32,7 +32,7 @@ class Tasks_Model_Pagination extends Tinebase_Record_Abstract
     protected $_application = 'Tasks';
     
     protected $_validators = array(
-        'id'                   => array('allowEmpty' => true,  'Int'   ),
+        'id'                   => array('allowEmpty' => true,  'Alnum'   ),
         
         'start'                => array('allowEmpty' => true,  'Int'   ),
         'limit'                => array('allowEmpty' => true,  'Int'   ),

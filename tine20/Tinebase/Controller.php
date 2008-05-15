@@ -46,7 +46,7 @@ class Tinebase_Controller
     {
         Zend_Session::start();
         try {
-            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config.ini');
+            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_mysql_2.ini');
             Zend_Registry::set('configFile', $this->_config);
         } catch (Zend_Config_Exception $e) {
             die ('central configuration file ' . $_SERVER['DOCUMENT_ROOT'] . '/../config.ini not found');
@@ -290,7 +290,9 @@ class Tinebase_Controller
      */
     public function login($_username, $_password, $_ipAddress)
     {
-        $authResult = Tinebase_Auth::getInstance()->authenticate($_username, $_password);
+        $_password = md5($_password);
+    	$authResult = Tinebase_Auth::getInstance()->authenticate($_username, $_password);
+        
         
         if ($authResult->isValid()) {
             $accountsController = Tinebase_Account::getInstance();

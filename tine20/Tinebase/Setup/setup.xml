@@ -106,9 +106,7 @@
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>text</type>
-                    <length>40</length>
-                    <notnull>true</notnull>
+                    <autoincrement>true</autoincrement>
                 </field>
                 <field>
                     <name>name</name>
@@ -145,7 +143,6 @@
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
                     <autoincrement>true</autoincrement>
                 </field>
                 <field>
@@ -298,10 +295,10 @@
             <declaration>
                 <field>
                     <name>id</name>
-					<type>text</type>
+                    <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>login_name</name>
                     <type>text</type>
@@ -367,7 +364,7 @@
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>name</name>
                     <type>text</type>
@@ -393,7 +390,7 @@
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull> 
-				</field>
+                </field>
                 <index>
                     <name>id</name>
                     <primary>true</primary>
@@ -442,7 +439,7 @@
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-					</field>
+                    </field>
                 <field>
                     <name>account_type</name>
                     <type>enum</type>
@@ -513,10 +510,10 @@
             <declaration>
                 <field>
                     <name>id</name>
-					<type>text</type>
+                    <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-	     		</field>
+                 </field>
                 <field>
                     <name>sessionid</name>
                     <type>text</type>
@@ -575,11 +572,11 @@
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>application_id</name>
-                    <type>integer</type>
-                    <unsigned>true</unsigned>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -650,34 +647,34 @@
             <declaration>
                 <field>
                     <name>id</name>
-					<type>text</type>
+                    <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>observable_application</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>observable_identifier</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>observer_application</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>observer_identifier</name>
-					<type>text</type>
+                    <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field> 
+                </field> 
                 <field>
                     <name>observed_event</name>
                     <type>text</type>
@@ -766,25 +763,25 @@
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>own_application</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>own_identifier</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>related_application</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-				</field>
+                </field>
                 <field>
                     <name>related_identifier</name>
                     <type>text</type>
@@ -1125,7 +1122,7 @@
                 <index>
                     <name>owner</name>
                     <field>
-                        <name>owner</name>
+                        <name>container_id</name>
                     </field>
                 </index>
                 <index>
@@ -1333,7 +1330,7 @@
             <declaration>
                 <field>
                     <name>id</name>                    
-					<type>text</type>
+                    <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
                 </field>
@@ -1484,9 +1481,8 @@
                 </field>
                 <field>
                     <name>account_id</name>
-                    <type>text</type>
-                    <length>40</length>
-                    <notnull>true</notnull>
+                    <type>integer</type>
+					<unsigned>true</unsigned>
                 </field>
                 
                 <index>

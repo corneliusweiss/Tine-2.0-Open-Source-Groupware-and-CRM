@@ -99,14 +99,10 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
         }
 
         if($_filter !== NULL) {
+            $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('n_family') . ' LIKE ?', '%' . $_filter . '%'))
+                ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('n_given') . ' LIKE ?', '%' . $_filter . '%'))
+                ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('login_name') . ' LIKE ?', '%' . $_filter . '%'));
         
-            $whereStatement = array();
-            $defaultValues = array('n_family', 'n_given', 'login_name');
-            foreach ($defaultValues as $defaultValue) {
-                $whereStatement[] = $this->_db->quoteIdentifier($defaultValue) . 'LIKE ?';
-            }
-        
-            $select->where('(' . implode(' OR ', $whereStatement) . ')', '%' . $_filter . '%');
         }
         // return only active accounts, when searching for simple accounts
         if($_accountClass == 'Tinebase_Account_Model_Account') {
@@ -444,6 +440,7 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
         }
         
         $contactData = array(
+            'id'            => $_account->generateUID(),
             'n_family'      => $_account->accountLastName,
             'n_given'       => $_account->accountFirstName,
             'n_fn'          => $_account->accountFullName,
@@ -474,7 +471,7 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
             
             $contactData['account_id'] = $accountId;
             $contactData['tid'] = 'n';
-            $contactData['owner'] = Tinebase_Container::getInstance()->getContainerByName('Addressbook', 'Internal Contacts', Tinebase_Container::TYPE_INTERNAL)->getId();
+            $contactData['container_id'] = Tinebase_Container::getInstance()->getContainerByName('Addressbook', 'Internal Contacts', Tinebase_Container::TYPE_INTERNAL)->getId();
             //var_dump($contactData);
             $contactsTable->insert($contactData);
             

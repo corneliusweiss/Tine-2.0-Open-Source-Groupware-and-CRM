@@ -164,6 +164,7 @@ class Tinebase_Container
         }
         
         $data = array(
+            'id'                => $_container->generateUID(),
             'name'              => $_container->name,
             'type'              => $_container->type,
             'backend'           => $_container->backend,
@@ -174,19 +175,12 @@ class Tinebase_Container
         
         if($containerId === NULL) {
             $containerId = $this->containerTable->insert($data);
-            if ($containerId === NULL) {
-                $containerId = $this->containerTable->getAdapter()->lastSequenceId(substr(SQL_TABLE_PREFIX . 'container', 0, 26) . '_seq');
-            }
         } else {
             $data['id'] = $containerId;
             $this->containerTable->insert($data);
         }
         
-        if($containerId < 1) {
-            throw new UnexpectedValueException('$containerId can not be 0');
-        }
-        
-        $container = $this->getContainerById($containerId);
+        $container = $this->getContainerById($data['id']);
         
         if($_grants === NULL) {
             if($container->type === Tinebase_Container::TYPE_SHARED) {

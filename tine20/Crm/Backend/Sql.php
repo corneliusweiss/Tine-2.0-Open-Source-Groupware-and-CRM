@@ -52,6 +52,11 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
 	*/
     protected $leadStateTable;    
         
+    /**
+    * Instance of Zend::db->adapter
+    *
+    */
+    protected $_db;
     
 	/**
 	* the constructor
@@ -66,6 +71,8 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         $this->leadStateTable    	= new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'metacrm_leadstate'));
         $this->productsTable   		= new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'metacrm_product'));
         $this->linksTable 			= new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'links'));
+        
+        $this->_db = Zend_Registry::get('dbAdapter');
         
     }
     
@@ -122,13 +129,11 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function deleteLeadsourceById($_Id)
     {
-        $Id = (int)$_Id;
-        if($Id != $_Id) {
-            throw new InvalidArgumentException('$_Id must be integer');
+        if(empty($_Id)) {
+            throw new InvalidArgumentException('$_Id ID has to be set');
         }
-        
         $where  = array(
-            $this->leadSourceTable->getAdapter()->quoteInto('leadsource_id = ?', $Id),
+            $this->_db->quoteInto($this->_db->quoteIdentifier('leadsource_id') . ' = ?', $Id),
         );
              
         $result = $this->leadSourceTable->delete($where);
@@ -200,7 +205,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
             throw new InvalidArgumentException('$_Id must be integer');
         }
             $where  = array(
-                $this->leadTypeTable->getAdapter()->quoteInto('leadtype_id = ?', $Id),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('leadtype_id') . ' = ?', $Id),
             );
              
             $result = $this->leadTypeTable->delete($where);
@@ -249,13 +254,12 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      * @param int $_leadStateId
      * @return Crm_Model_Leadstate
      */
-    public function getLeadState($_leadStateId)
+    public function getLeadState($_leadStateId = NULL)
     {   
-        $stateId = (int)$_leadStateId;
-        if($stateId != $_leadStateId) {
-            throw new InvalidArgumentException('$_leadStateId must be integer');
+        if(NULL === $_leadStateId) {
+            throw new InvalidArgumentException('leadStateId must be set');
         }
-        $rowSet = $this->leadStateTable->find($stateId);
+        $rowSet = $this->leadStateTable->find($_leadStateId);
         
         if(count($rowSet) === 0) {
             throw new Exception('lead state not found');
@@ -272,13 +276,12 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     * @param int $_typeId
     * @return Crm_Model_Leadtype
     */
-    public function getLeadType($_typeId)
+    public function getLeadType($_typeId = NULL)
     {   
-        $typeId = (int)$_typeId;
-        if($typeId != $_typeId) {
-            throw new InvalidArgumentException('$_typeId must be integer');
+        if(NULL === $_typeId) {
+            throw new InvalidArgumentException('typeId must be set');
         }
-        $rowSet = $this->leadTypeTable->find($typeId);
+        $rowSet = $this->leadTypeTable->find($_typeId);
         
         if(count($rowSet) == 0) {
             throw new Exception('lead type not found');
@@ -294,13 +297,12 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     *
     * @return Crm_Model_Leadsource
     */
-    public function getLeadSource($_sourceId)
+    public function getLeadSource($_sourceId = NULL)
     {   
-        $sourceId = (int)$_sourceId;
-        if($sourceId != $_sourceId) {
+        if(NULL === $_sourceId) {
             throw new InvalidArgumentException('$_sourceId must be integer');
         }
-        $rowSet = $this->leadSourceTable->find($sourceId);
+        $rowSet = $this->leadSourceTable->find($_sourceId);
         
         if(count($rowSet) == 0) {
             // something bad happend
@@ -321,23 +323,20 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     {
 
         $_daten = $_optionData->toArray();
-    
-
-        $db = Zend_Registry::get('dbAdapter');
   
-        $db->beginTransaction();
+        $this->_db->beginTransaction();
         
         try {
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_leadstate');
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_leadstate');
 
             foreach($_daten as $_data) {
-                $db->insert(SQL_TABLE_PREFIX . 'metacrm_leadstate', $_data);                
+                $this->_db->insert(SQL_TABLE_PREFIX . 'metacrm_leadstate', $_data);                
             }
 
-            $db->commit();
+            $this->_db->commit();
 
         } catch (Exception $e) {
-            $db->rollBack();
+            $this->_db->rollBack();
             error_log($e->getMessage());
         }
 
@@ -351,14 +350,13 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      * @param $_table which option section
      * @return int the number of rows deleted
      */
-    public function deleteLeadstateById($_Id)
+    public function deleteLeadstateById($_Id = NULL)
     {
-        $Id = (int)$_Id;
-        if($Id != $_Id) {
-            throw new InvalidArgumentException('$_Id must be integer');
+        if(NULL === $_Id) {
+            throw new InvalidArgumentException('Id must be set');
         }      
             $where  = array(
-                $this->leadStateTable->getAdapter()->quoteInto('leadstate_id = ?', $Id),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('leadstate_id') . ' = ?', $_Id),
             );
              
             $result = $this->leadStateTable->delete($where);
@@ -383,16 +381,15 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
             $search_values = explode(" ", $_filter);
             
             foreach($search_values AS $search_value) {
-                $where[] = Zend_Registry::get('dbAdapter')->quoteInto('(lead_name LIKE ? OR description LIKE ?)', '%' . $search_value . '%');                            
+                $where[] = $this->_db->quoteInto($this->_db->quoteIdentifier('lead_name') . ' LIKE ?', '%' . $search_value . '%') . ' OR ' . $this->_db->quoteInto($this->_db->quoteIdentifier('description') . 'LIKE ?', '%' . $search_value . '%');                            
             }
         }
-        
-        if( is_numeric($_leadstate) && $_leadstate > 0 ) {
-            $where[] = Zend_Registry::get('dbAdapter')->quoteInto('lead.leadstate_id = ?', (int)$_leadstate);
+        if( !empty($_leadstate) ) {
+            $where[] = $this->_db->quoteInto($this->_db->quoteIdentifier('lead.leadstate_id') . '= ?', $_leadstate);
         }
         
         if( is_numeric($_probability) && $_probability > 0 ) {
-            $where[] = Zend_Registry::get('dbAdapter')->quoteInto('lead.probability >= ?', (int)$_probability);
+            $where[] = $this->_db->quoteInto($this->_db->quoteIdentifier('lead.probability') . '>= ?', $_probability);
         }       
 
         if($_getClosedLeads === FALSE  || $_getClosedLeads == 'false') {
@@ -407,10 +404,8 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
 		
         $where = array_merge($_where, $this->_getSearchFilter($_filter, $_leadstate, $_probability, $_getClosedLeads));
 
-        $db = Zend_Registry::get('dbAdapter');
-
         $select = $this->_getLeadSelectObject()
-            ->order($_sort.' '.$_dir)
+            ->order($_sort . ' ' . $_dir)
             ->limit($_limit, $_start);
 
          foreach($where as $whereStatement) {
@@ -418,7 +413,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
          }               
        //echo  $select->__toString();
        
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         
@@ -444,7 +439,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
                 'leadstate_id',
                 'leadtype_id',
                 'leadsource_id',
-                'container',
+                'container_id',
                 'start',
                 'description',
                 'end',
@@ -453,7 +448,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
                 'end_scheduled')
             )
             ->join(array('leadstate' => SQL_TABLE_PREFIX . 'metacrm_leadstate'),
-				'lead.leadstate_id = leadstate.id', array( 'leadstate') );        
+				$this->_db->quoteIdentifier('lead.leadstate_id') .'=' . $this->_db->quoteIdentifier('leadstate.id'), array( 'leadstate') );        
 				// 'lead.id = leadstate.id');
 				
 			//echo $selectObject->__toString();		
@@ -467,7 +462,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
             $search_values = explode(" ", $_filter);
             
             foreach($search_values AS $search_value) {
-                $_where[] = $this->leadTable->getAdapter()->quoteInto('(lead_name LIKE ? OR description LIKE ?)', '%' . $search_value . '%');                            
+                $where[] = $this->_db->quoteInto($this->_db->quoteIdentifier('lead_name') . ' LIKE ?', '%' . $search_value . '%') . ' OR ' . $this->_db->quoteInto($this->_db->quoteIdentifier('description') . 'LIKE ?', '%' . $search_value . '%');                            
             }
         }
         
@@ -521,18 +516,16 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         if(!$_lead->isValid()) {
             throw new Exception('lead object is not valid');
         }
-
+        $id = Tinebase_Account_Model_Account::generateUID();
         $leadData = $_lead->toArray();
         if(empty($_lead->id)) {
-            unset($leadData['id']);
+           $leadData['id'] = $id;
         }
         unset($leadData['responsible']);
         unset($leadData['customer']);
         unset($leadData['partner']);
         unset($leadData['tasks']);
         
-        $id = $this->leadTable->insert($leadData);
-
         // if we insert a contact without an id, we need to get back one
         if(empty($_lead->id) && $id == 0) {
             throw new Exception("returned lead id is 0");
@@ -558,7 +551,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         $id = Crm_Model_Lead::convertLeadIdToInt($_id);
 
         $select = $this->_getLeadSelectObject()
-            ->where(Zend_Registry::get('dbAdapter')->quoteInto('lead.id = ?', $id));
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('lead.id') . ' = ?', $id));
 
       // echo $select->__toString();
        
@@ -596,7 +589,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         }        
 
         $where = array(
-            Zend_Registry::get('dbAdapter')->quoteInto('container IN (?)', $_container)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . 'IN (?)', $_container)
         );
         $result = $this->_getLeadsFromTable($where, $_filter, $_sort, $_dir, $_limit, $_start, $_leadState, $_probability, $_getClosedLeads);
          
@@ -620,7 +613,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         }        
         
         $where = array(
-            Zend_Registry::get('dbAdapter')->quoteInto('container IN (?)', $_container)
+            $this->db->quoteInto($this->db->quoteIdentifier('container_id') . 'IN (?)', $_container)
         );
                 
         $where = array_merge($where, $this->_getSearchFilter($_filter, $_leadState, $_probability, $_getClosedLeads));
@@ -638,34 +631,32 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function deleteLead($_leadId)
     {
-        $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
-
-        $db = Zend_Registry::get('dbAdapter');
+        //$leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         
-        $db->beginTransaction();
+        $this->_db->beginTransaction();
         
         try {
             $where = array(
-                $db->quoteInto('lead_id = ?', $leadId)
+                $this->_db->quoteInto($this->_db->quoteIdentifier('lead_id') . ' = ?', $_leadId)
             );          
             $db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $where);            
 
             $where = array(
-                $db->quoteInto('link_app1 = ?', 'crm'),
-                $db->quoteInto('link_id1 = ?', $leadId),
-                $db->quoteInto('link_app2 = ?', 'addressbook')
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app1') . '= ?', 'crm'),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_id1') . '= ?', $_leadId),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app2') . '= ?', 'addressbook')
             );                                  
-            $db->delete(SQL_TABLE_PREFIX . 'links', $where);               
+            $this->_db->delete(SQL_TABLE_PREFIX . 'links', $where);               
             
             $where = array(
-                $db->quoteInto('id = ?', $leadId)
+                $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $_leadId)
             );
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_lead', $where);
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_lead', $where);
 
-            $db->commit();
+            $this->_db->commit();
 
         } catch (Exception $e) {
-            $db->rollBack();
+            $this->_db->rollBack();
             throw $e;
         }
     }
@@ -692,7 +683,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         unset($leadData['tasks']);
         
         $where  = array(
-            $this->leadTable->getAdapter()->quoteInto('id = ?', $leadId),
+            $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $leadId),
         );
         
         $updatedRows = $this->leadTable->update($leadData, $where);
@@ -724,21 +715,20 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function saveProductsource(Tinebase_Record_Recordset $_optionData)
     {
-        $db = Zend_Registry::get('dbAdapter');
   
-        $db->beginTransaction();
+        $this->_db->beginTransaction();
         
         try {
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_productsource');
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_productsource');
 
             foreach($_optionData as $_product) {
-                $db->insert(SQL_TABLE_PREFIX . 'metacrm_productsource', $_product->toArray());                
+                $this->_db->insert(SQL_TABLE_PREFIX . 'metacrm_productsource', $_product->toArray());                
             }
 
-            $db->commit();
+            $this->_db->commit();
 
         } catch (Exception $e) {
-            $db->rollBack();
+            $this->_db->rollBack();
             error_log($e->getMessage());
         }
 
@@ -751,15 +741,14 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      * @param $_table which option section
      * @return int the number of rows deleted
      */
-    public function deleteProductsourceById($_Id)
+    public function deleteProductsourceById($_Id = NULL)
     {
-        $Id = (int)$_Id;
-        if($Id != $_Id) {
+        if(NULL === $_Id) {
             throw new InvalidArgumentException('$_Id must be integer');
         }      
-            $where  = array(
-                $this->linksTable->getAdapter()->quoteInto('leadsource_id = ?', $Id),
-            );
+        $where  = array(
+            $this->_db->quoteInto($this->_db->quoteIdentifier('leadsource_id') . ' = ?', $_Id),
+        );
              
             $result = $this->productSourceTable->delete($where);
 
@@ -777,7 +766,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
 
         $where  = array(
-            $this->productsTable->getAdapter()->quoteInto('lead_id = ?', $leadId)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('lead_id') . ' = ?', $leadId)
         );
 
         $rows = $this->productsTable->fetchAll($where);
@@ -794,17 +783,14 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     *
     * @return unknown
     */
-    public function deleteProducts($_id)
+    public function deleteProducts($_id = NULL)
     {
-        $id = (int) $_id;
-        if($id != $_id) {
-            throw new InvalidArgumentException('$_id must be integer');
+        if(NULL === $_id) {
+            throw new InvalidArgumentException('ID must be integer');
         }
-
-        $db = Zend_Registry::get('dbAdapter');      
         
         try {          
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_product', 'lead_id = ' . $id);      
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $this->_db->quoteIdentifier('lead_id') . ' = ' . $_id);      
         } catch (Exception $e) {
             error_log($e->getMessage());
         }      
@@ -833,21 +819,19 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         }
         
 
-        $db = Zend_Registry::get('dbAdapter');
-  
-        $db->beginTransaction();
+        $this->_db->beginTransaction();
         
         try {
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_product', 'lead_id = '.$lead_id);
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $this->_db->quoteIdentifier('lead_id') . '= ' . $lead_id);
 
             foreach($_daten as $_data) {
-                $db->insert(SQL_TABLE_PREFIX . 'metacrm_product', $_data);                
+                $this->_db->insert(SQL_TABLE_PREFIX . 'metacrm_product', $_data);                
             }
 
-            $db->commit();
+            $this->_db->commit();
 
         } catch (Exception $e) {
-            $db->rollBack();
+            $this->_db->rollBack();
             error_log($e->getMessage());
         }
 

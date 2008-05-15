@@ -40,12 +40,12 @@ class Tinebase_Timemachine_Model_ModificationLog extends Tinebase_Record_Abstrac
      */
     protected $_validators = array(
         'id'                   => array('allowEmpty' => true,  'Alnum'                           ),
-        'application_id'       => array('presence' => 'required', 'allowEmpty' => false, 'Int'   ),
+        'application_id'       => array('presence' => 'required', 'allowEmpty' => false, 'Alnum' ),
         'record_id'            => array('presence' => 'required', 'allowEmpty' => false, 'Alnum' ),
         'record_type'          => array('allowEmpty' => true                                     ),
         'record_backend'       => array('presence' => 'required', 'allowEmpty' => false          ),
         'modification_time'    => array('presence' => 'required', 'allowEmpty' => false          ),
-        'modification_account' => array('presence' => 'required', 'allowEmpty' => false, 'Int'   ),
+        'modification_account' => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'   ),
         'modified_attribute'   => array('presence' => 'required', 'allowEmpty' => false          ),
         'old_value'            => array('allowEmpty' => true                                     ),
         'new_value'            => array('allowEmpty' => true                                     ),

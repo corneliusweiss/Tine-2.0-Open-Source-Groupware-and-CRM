@@ -274,7 +274,7 @@ class Setup_Import_Egw14
                 
                 'id'                    => ( $_useOldId ) ? $contact->contact_id : 0,
                 'account_id'            => $contact->account_id,                        
-                'owner'                 => $containerId,
+                'container_id'          => $containerId,
 
                 'n_family'              => ( empty($contact->n_family) ) ? 'imported' : $contact->n_family,
                 'n_fileas'              => $fileas,

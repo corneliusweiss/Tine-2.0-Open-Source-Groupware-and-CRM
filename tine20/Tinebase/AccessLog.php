@@ -65,6 +65,7 @@ class Tinebase_AccessLog
     public function addLoginEntry($_sessionId, $_loginId, $_ipAddress, $_result, $_accountId = NULL)
     {
         $data = array(
+            'id'            => Tinebase_Account_Model_Account::generateUID(),
             'sessionid'     => $_sessionId,
             'login_name'    => $_loginId,
             'ip'            => $_ipAddress,

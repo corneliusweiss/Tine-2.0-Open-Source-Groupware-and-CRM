@@ -52,8 +52,7 @@ class Tinebase_Auth_Factory
                     Zend_Registry::get('dbAdapter'),
                     SQL_TABLE_PREFIX . 'accounts',
                     'login_name',
-                    'password',
-                    'MD5(?)'
+                    'password'
                 );
                 break;
                 

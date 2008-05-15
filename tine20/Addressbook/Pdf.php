@@ -110,12 +110,6 @@ class Addressbook_Pdf extends Tinebase_Export_Pdf
             array(  'label' => $translate->_('Title'), 
                     'value' => array( 'title' ), 
             ),
-
-            //'id' => 'Contact ID',    
-            //'owner' => 'Owner',
-            //'n_prefix' => 'Name Prefix',
-            //'n_suffix' => 'Name Suffix',
-             
         );
 
          

@@ -398,6 +398,10 @@
             <table>
                 <name>class</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -411,6 +415,10 @@
             <table>
                 <name>class</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>			
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -424,6 +432,10 @@
             <table>
                 <name>class</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>			
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -437,6 +449,10 @@
             <table>
                 <name>tasks_status</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -458,6 +474,10 @@
             <table>
                 <name>tasks_status</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>			
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -479,6 +499,10 @@
             <table>
                 <name>tasks_status</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>			
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>
@@ -500,6 +524,10 @@
             <table>
                 <name>tasks_status</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>			
             <field>
                 <name>creation_time</name>
                 <value special="now">NOW</value>

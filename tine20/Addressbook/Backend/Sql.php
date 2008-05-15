@@ -63,116 +63,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
      * @deprecated
      * @return Addressbook_Model_Contact
      */
-    /*    private function saveContact(Addressbook_Model_Contact $_contactData)
-    {
-        if((int)$_contactData->owner < 0) {
-            throw new UnderflowException('owner can not be empty');
-        }
-        
-        if(!Zend_Registry::get('currentAccount')->hasGrant($_contactData->owner, Tinebase_Container::GRANT_EDIT)) {
-            throw new Exception('write access to new addressbook denied');
-        }
-        
-        $accountId   = Zend_Registry::get('currentAccount')->getId();
-        $currentAccount = Zend_Registry::get('currentAccount');
-
-        $contactData = $_contactData->toArray();
-        $contactData['tid'] = 'n';
-        unset($contactData['id']);
-        
-        $db = $this->contactsTable->getAdapter();
-        
-        try {
-            $db->beginTransaction();
-            
-            if($_contactData->id === NULL) {
-                // create new contact
-                $_contactData->id = $this->contactsTable->insert($contactData);
-            } else {
-                // update existing contact
-                $oldContactData = $this->getContactById($_contactData->id);
-                if(!Zend_Registry::get('currentAccount')->hasGrant($oldContactData->owner, Tinebase_Container::GRANT_EDIT)) {
-                    throw new Exception('write access to old addressbook denied');
-                }
-                
-                // concurrency management
-                $dbMods = array_diff_assoc($_contactData->toArray(), $oldContactData->toArray());
-                error_log('$dbMods = ' . print_r($dbMods,true));
-                
-                $modLog = Tinebase_Timemachine_ModificationLog::getInstance();
-                
-                if (empty($dbMods)) {
-                    // nothing canged!
-                    $db->rollBack();
-                    return $_contactData;
-                }
-                
-                if(!empty($dbMods['contact_modified'])) {
-                    // concurrency problem. The following situations could occour:
-                    // - current user did not change value, but other(s)
-                    //   [$dbMod & $logedMods but equal values] -> resolvable 
-                    // - current user changed value, but other(s) not
-                    //   [$dbMod only] ->resolvable 
-                    // - current user changed value and other(s) also
-                    //   [$dbMod & $logedMods, values not equal] -> not resolvable -> real conflict
-                    $from  = new Zend_Date($_contactData->contact_modified, Zend_Date::TIMESTAMP);
-                    $until = new Zend_Date($oldContactData->contact_modified, Zend_Date::TIMESTAMP);
-                    $logedMods = $modLog->getModifications('Addressbook', $_contactData->id,
-                            'Addressbook_Model_Contact', Addressbook_Backend_Factory::SQL, $from, $until);
-                    $diffs = $modLog->computeDiff($logedMods);
-                            
-                    foreach ($diffs as $diff) {
-                        $modified_attribute = $diff->modified_attribute;
-                        if (!array_key_exists($modified_attribute, $dbMods)) {
-                            // useres updated to same value, nothing to do.
-                        } elseif ($diff->modified_from == $contactData[$modified_attribute]) {
-                            unset($dbMods[$modified_attribute]);
-                            // merge diff into current contact, as it was not changed in current update request.
-                            $contactData[$modified_attribute] = $diff->modified_to;
-                        } else {
-                            // non resolvable conflict!
-                            throw new Exception('concurrency confilict!');
-                        }
-                    }
-                    unset($dbMods['contact_modified']);
-                }
-                
-                // update database
-                $now = new Zend_Date();
-                $contactData['contact_modified'] = $now->getTimestamp();
-                $contactData['contact_modifier'] = $this->_currentAccount->getId();
-                
-                $where  = array(
-                    $this->contactsTable->getAdapter()->quoteInto('id = ?', $_contactData->id),
-                );
-                $result = $this->contactsTable->update($contactData, $where);
-                
-                // modification logging
-                $modLogEntry = new Tinebase_Timemachine_Model_ModificationLog(array(
-                    'application'          => 'Addressbook',
-                    'record_identifier'    => $_contactData->id,
-                    'record_type'          => 'Addressbook_Model_Contact',
-                    'record_backend'       => Addressbook_Backend_Factory::SQL,
-                    'modification_time'    => $now,
-                    'modification_account' => $this->_currentAccount->getId()
-                ),true);
-                foreach ($dbMods as $modified_attribute => $modified_to) {
-                    $modLogEntry->modified_attribute = $modified_attribute;
-                    $modLogEntry->modified_from      = $oldContactData->$modified_attribute;
-                    $modLogEntry->modified_to        = $modified_to;
-                    $modLog->setModification($modLogEntry);
-                }
-            
-            }
-
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            throw($e);
-        }
-
-        return $this->getContactById($_contactData->id);
-    }*/
+ 
     /**
      * get list of contacts from given addressbooks
      *
@@ -187,7 +78,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
             throw new Exception('$_container can not be empty');
         }
         $select = $this->_db->select();
-        $select->where($this->_db->quoteInto('owner IN (?)', $_container->getArrayOfIds()));
+        $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . ' IN (?)', $_container->getArrayOfIds()));
         $result = $this->_getContactsFromTable($select, $_filter, $_pagination);
         return $result;
     }
@@ -205,7 +96,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         }
         $select = $this->_db->select();
         $select->from(SQL_TABLE_PREFIX . 'addressbook', array('count' => 'COUNT(*)'));
-        $select->where($this->_db->quoteInto('owner IN (?)', $_container->getArrayOfIds()));
+        $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . ' IN (?)', $_container->getArrayOfIds()));
         $this->_addFilter($select, $_filter);
         $result = $this->_db->fetchOne($select);
         return $result;
@@ -219,7 +110,11 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
      */
     protected function _addFilter (Zend_Db_Select $_select, Addressbook_Model_Filter $_filter)
     {
-        $_select->where($this->_db->quoteInto('(n_family LIKE ? OR n_given LIKE ? OR org_name LIKE ? or email LIKE ?)', '%' . trim($_filter->query) . '%'));
+        $_select->where($this->_db->quoteInto($this->_db->quoteIdentifier('n_family') . ' LIKE ?', '%' . trim($_filter->query) . '%'))
+                ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('n_given') . ' LIKE ?', '%' . trim($_filter->query) . '%'))
+                ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('org_name') . ' LIKE ?', '%' . trim($_filter->query) . '%'))
+                ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('email') . ' LIKE ?', '%' . trim($_filter->query) . '%'));
+        
         if (! empty($_filter->tag)) {
             Tinebase_Tags::appendSqlFilter($_select, $_filter->tag);
         }
@@ -286,7 +181,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         unset($contactData['id']);
         // tags are not property of this backend
         unset($contactData['tags']);
-        $where = array($this->_db->quoteInto('id = ?', $contactId));
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId);
         $this->_db->update(SQL_TABLE_PREFIX . 'addressbook', $contactData, $where);
         return $this->getContact($contactId);
     }
@@ -299,7 +194,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
     public function deleteContact ($_contactId)
     {
         $contactId = Addressbook_Model_Contact::convertContactIdToInt($_contactId);
-        $where = array($this->_db->quoteInto('id = ?', $contactId) , $this->_db->quoteInto('id = ?', $contactId));
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId);
         $result = $this->_db->delete(SQL_TABLE_PREFIX . 'addressbook', $where);
         return $result;
     }
@@ -312,7 +207,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
     public function getContact ($_contactId)
     {
         $contactId = Addressbook_Model_Contact::convertContactIdToInt($_contactId);
-        $select = $this->_db->select()->from(SQL_TABLE_PREFIX . 'addressbook')->where($this->_db->quoteInto('id = ?', $contactId));
+        $select = $this->_db->select()->from(SQL_TABLE_PREFIX . 'addressbook')->where($this->_db->quoteIdentifier('id') .' = ?', $contactId);
         $row = $this->_db->fetchRow($select);
         if (! $row) {
             throw new UnderflowException('contact not found');

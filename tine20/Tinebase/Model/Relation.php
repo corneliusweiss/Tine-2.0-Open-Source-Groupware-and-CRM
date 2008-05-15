@@ -29,7 +29,7 @@ class Tinebase_Model_Relation extends Tinebase_Record_Abstract
     protected $_application = 'Tinebase';
 	
     protected $_validators = array(
-        'identifier'             => array('allowEmpty' => true,  'Int' ),
+        'identifier'             => array('allowEmpty' => true,  'Alnum' ),
         'created_by'             => array('allowEmpty' => true,  'Int' ),
         'creation_time'          => array('allowEmpty' => true         ),
         'last_modified_by'       => array('allowEmpty' => true         ),
@@ -38,9 +38,9 @@ class Tinebase_Model_Relation extends Tinebase_Record_Abstract
         'deleted_time'           => array('allowEmpty' => true         ),
         'deleted_by'             => array('allowEmpty' => true         ),
 	    'own_application'        => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
-	    'own_identifier'         => array('presence' => 'required', 'allowEmpty' => false, 'Int'),
+	    'own_identifier'         => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
 	    'related_application'    => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
-	    'related_identifier'     => array('presence' => 'required', 'allowEmpty' => false, 'Int'),
+	    'related_identifier'     => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
         'related_role'           => array('presence' => 'required', 'allowEmpty' => false, 'Alpha')
 	);
     

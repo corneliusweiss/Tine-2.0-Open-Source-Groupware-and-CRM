@@ -22,7 +22,7 @@ class Setup_Backend_Oracle extends Setup_Backend_Abstract
     protected $_table ='';
    
     protected $_autoincrementID = '';
-   
+    
     public function __construct()
     {
         $this->_config = Zend_Registry::get('configFile');
@@ -343,6 +343,9 @@ class Setup_Backend_Oracle extends Setup_Backend_Abstract
         foreach ($_record->field as $field) {
             if (isset($field->value['special'])) {
                 switch(strtolower($field->value['special'])) {
+                	case 'uid':
+                	   $value = Tinebase_Account_Model_Account::generateUID();
+                	    break;
                     case 'now':
                         $value = Zend_Date::now()->getIso();
                         break;

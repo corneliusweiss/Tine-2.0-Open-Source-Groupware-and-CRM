@@ -110,7 +110,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
         // build query
         // TODO: abstract filter2sql
         $select = $this->_getSelect()
-            ->where($this->_db->quoteInto('tasks.container_id IN (?)', $_filter->container));
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('tasks.container_id') . ' IN (?)', $_filter->container));
             
         if (!empty($_pagination->limit)) {
             $select->limit($_pagination->limit, $_pagination->start);
@@ -122,18 +122,20 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
             $select->order($_pagination->sort . ' ' . $_pagination->dir);
         }
         if(!empty($_filter->query)){
-            $select->where($this->_db->quoteInto('(summary LIKE ? OR description LIKE ?)', '%' . $_filter->query . '%'));
+//            $select->where($this->_db->quoteInto('(summary LIKE ? OR description LIKE ?)', '%' . $_filter->query . '%')
+            $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('description'). ' LIKE ?', '%' . $_filter->query . '%'))
+        	       ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('summary') . 'LIKE ?', '%' . $_filter->query . '%'));
         }
         if(!empty($_filter->status)){
-            $select->where($this->_db->quoteInto('status_id = ?',$_filter->status));
+            $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('status_id') . ' = ?', $_filter->status));
         }
         if(!empty($_filter->organizer)){
-            $select->where($this->_db->quoteInto('organizer = ?', (int)$_filter->organizer));
+            $select->where($this->_db->quoteInto($this->_db->quoteIdentifier('organizer') . ' = ?', (int)$_filter->organizer));
         }
         if(isset($_filter->showClosed) && $_filter->showClosed){
             // nothing to filter
         } else {
-            $select->where('status.status_is_open = TRUE');
+            $select->where($this->_db->quoteIdentifier('status.status_is_open') . ' = TRUE');
         }
 
         $stmt = $this->_db->query($select);
@@ -174,7 +176,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
     public function getTask($_id)
     {
         $stmt = $this->_db->query($this->_getSelect()
-            ->where($this->_db->quoteInto('tasks.id = ?', $_id))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('tasks.id') . ' = ?', $_id))
         );
         
         $TaskArray = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
@@ -204,7 +206,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
             ->joinLeft(array('contact' => $this->_tableNames['contact']), 'tasks.id = contact.task_id', array())
             ->joinLeft(array('tag'     => $this->_tableNames['tag']), 'tasks.id = tag.task_id', array())
             ->joinLeft(array('status'  => $this->_tableNames['status']), 'tasks.status_id = status.id', array())
-            ->where('tasks.is_deleted = FALSE')
+            ->where($this->_db->quoteIdentifier('tasks.is_deleted') . ' = FALSE')
             ->group('tasks.id');
     }
     
@@ -410,7 +412,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
         foreach (array('contact', 'tag') as $table) {
             $TableObject = $this->getTableInstance($table);
             $deletedRows += $TableObject->delete(
-                $this->_db->quoteInto('task_id = ?', $_parentTaskId)
+                $this->_db->quoteInto($this->_db->quoteIdentifier('task_id') . ' = ?', $_parentTaskId)
             );
         }
         return $deletedRows;

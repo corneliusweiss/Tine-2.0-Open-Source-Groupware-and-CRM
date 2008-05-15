@@ -386,10 +386,6 @@ class Admin_Controller
         $this->checkRight('VIEW_ACCOUNTS');
         
         $group = Tinebase_Group::getInstance()->getGroupById($_groupId);
-
-        /*if (!$this->_currentAccount->hasGrant($contact->owner, Tinebase_Container::GRANT_READ)) {
-            throw new Exception('read access to contact denied');
-        }*/
         
         return $group;            
     }  

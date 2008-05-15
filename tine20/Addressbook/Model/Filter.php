@@ -32,7 +32,7 @@ class Addressbook_Model_Filter extends Tinebase_Record_Abstract
     protected $_application = 'Addressbook';
     
     protected $_validators = array(
-        'id'                   => array('allowEmpty' => true,  'Int'   ),
+        'id'                   => array('allowEmpty' => true,  'Alnum'   ),
 
         'query'                => array('allowEmpty' => true           ),
         'tag'                  => array('allowEmpty' => true           ),

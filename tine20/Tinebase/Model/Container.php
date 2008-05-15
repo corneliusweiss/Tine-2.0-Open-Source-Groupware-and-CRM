@@ -52,11 +52,11 @@ class Tinebase_Model_Container extends Tinebase_Record_Abstract
      * @var array
      */
     protected $_validators = array(
-        'id'                => array('Digits', 'allowEmpty' => true),
+        'id'                => array('Alnum', 'allowEmpty' => true),
         'name'              => array('presence' => 'required'),
         'type'              => array('InArray' => array(Tinebase_Container::TYPE_INTERNAL, Tinebase_Container::TYPE_PERSONAL, Tinebase_Container::TYPE_SHARED)),
         'backend'           => array('presence' => 'required'),
-        'application_id'    => array('Digits', 'presence' => 'required'),
+        'application_id'    => array('Alnum', 'presence' => 'required'),
         'account_grants'    => array('allowEmpty' => true, /*'presence' => 'required'*/)
     );
     
@@ -72,13 +72,13 @@ class Tinebase_Model_Container extends Tinebase_Record_Abstract
             if($_containerId->getId() === NULL) {
                 throw new Exception('no container id set');
             }
-            $id = (int) $_containerId->getId();
+            $id = $_containerId->getId();
         } else {
-            $id = (int) $_containerId;
+            $id = $_containerId;
         }
         
-        if($id === 0) {
-            throw new Exception('container id can not be 0');
+        if($id === NULL) {
+            throw new Exception('container id can not be NULL');
         }
         
         return $id;

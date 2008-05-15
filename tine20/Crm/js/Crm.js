@@ -2495,7 +2495,7 @@ Tine.Crm.LeadEditDialog.Stores = function() {
                 // replaced by task record model from tasks
                 /*fields: [
                     {name: 'id'},
-                    {name: 'container'},
+                    {name: 'container_id'},
                     {name: 'created_by'},
                     {name: 'creation_time', type: 'date', dateFormat: 'c'},
                     {name: 'last_modified_by'},
@@ -2564,7 +2564,7 @@ Tine.Crm.Model.Lead = Ext.data.Record.create([
     {name: 'leadtype_id',   type: 'int'},
     {name: 'leadstate',     type: 'int'},
     {name: 'leadsource_id', type: 'int'},
-    {name: 'container',     type: 'int'},
+    {name: 'container_id',  type: 'int'},
     {name: 'modifier',      type: 'int'},
     {name: 'start',         type: 'date', dateFormat: 'c'},
     {name: 'modified'},

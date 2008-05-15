@@ -29,7 +29,7 @@ class Tinebase_Model_PersistentObserver extends Tinebase_Record_Abstract
     protected $_application = 'Tinebase';
 	
     protected $_validators = array(
-        'identifier'             => array('allowEmpty' => true, 'Int' ),
+        'identifier'             => array('allowEmpty' => true, 'Alnum'),
         'created_by'             => array('allowEmpty' => true,  'Int' ),
         'creation_time'          => array('allowEmpty' => true         ),
         'last_modified_by'       => array('allowEmpty' => true         ),
@@ -38,9 +38,9 @@ class Tinebase_Model_PersistentObserver extends Tinebase_Record_Abstract
         'deleted_time'           => array('allowEmpty' => true         ),
         'deleted_by'             => array('allowEmpty' => true         ),
 	    'observable_application' => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
-	    'observable_identifier'  => array('presence' => 'required', 'allowEmpty' => false, 'Int'),
+	    'observable_identifier'  => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
 	    'observer_application'   => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
-	    'observer_identifier'    => array('presence' => 'required', 'allowEmpty' => false, 'Int'),
+	    'observer_identifier'    => array('presence' => 'required', 'allowEmpty' => false, 'Alnum'),
 	    'observed_event'         => array('presence' => 'required', 'allowEmpty' => false, )
 	);
     

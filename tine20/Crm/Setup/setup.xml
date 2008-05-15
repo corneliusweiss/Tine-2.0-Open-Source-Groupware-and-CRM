@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application>
     <name>Crm</name>
-    <version>0.2 	</version>
+    <version>0.2     </version>
     <order>20</order>
     <tables>
         <table>
@@ -331,10 +331,10 @@
             <table>
                 <name>metacrm_leadsource</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>1</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadsource</name>
                 <value>telephone</value>
@@ -344,10 +344,10 @@
             <table>
                 <name>metacrm_leadsource</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>2</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadsource</name>
                 <value>email</value>
@@ -357,10 +357,10 @@
             <table>
                 <name>metacrm_leadsource</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>3</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadsource</name>
                 <value>website</value>
@@ -370,10 +370,10 @@
             <table>
                 <name>metacrm_leadsource</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>4</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadsource</name>
                 <value>fair</value>
@@ -383,10 +383,10 @@
             <table>
                 <name>metacrm_leadtype</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>1</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadtype</name>
                 <value>customer</value>
@@ -396,10 +396,10 @@
             <table>
                 <name>metacrm_leadtype</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>2</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadtype</name>
                 <value>partner</value>
@@ -409,10 +409,10 @@
             <table>
                 <name>metacrm_leadtype</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>3</value>
-            </field>
+ 			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadtype</name>
                 <value>reseller</value>
@@ -422,10 +422,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>1</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>open</value>
@@ -439,10 +439,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>2</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>contacted</value>
@@ -456,10 +456,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>3</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>waiting for feedback</value>
@@ -473,10 +473,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>4</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>quote sent</value>
@@ -490,10 +490,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>5</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>accepted</value>
@@ -511,10 +511,10 @@
             <table>
                 <name>metacrm_leadstate</name>
             </table>
-            <field>
-                <name>id</name>
-                <value>6</value>
-            </field>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>leadstate</name>
                 <value>lost</value>

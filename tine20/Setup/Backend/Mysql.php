@@ -17,7 +17,7 @@
  */
 class Setup_Backend_Mysql extends Setup_Backend_Abstract
 {
-    private $_config = '';
+    protected $_config = '';
     
     public function __construct()
     {
@@ -293,9 +293,14 @@ class Setup_Backend_Mysql extends Setup_Backend_Abstract
            'name' => SQL_TABLE_PREFIX . $_record->table->name
         ));
 
+        
+        
         foreach ($_record->field as $field) {
             if (isset($field->value['special'])) {
                 switch(strtolower($field->value['special'])) {
+                    case 'uid':
+                       $value = Tinebase_Account_Model_Account::generateUID();
+                	   break;
                     case 'now':
                         $value = Zend_Date::now()->getIso();
                         break;

@@ -117,7 +117,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
     public function __construct($_data = NULL, $_bypassFilters = false, $_convertDates = true)
     {
         if ($this->_identifier === NULL) {
-            throw new Tinebase_Record_Exception_DefinitionFailure('$_identifier is not declared');
+            throw new Tinebase_Record_Exception_DefinitionFailure('$this->_identifier is not declared');
         }
         
         $this->bypassFilters = (bool)$_bypassFilters;
@@ -187,14 +187,20 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
         // set internal state to "not validated"
         $this->_isValidated = false;
         
-        // make shure we run through the setters
+        // make sure we run through the setters
         $bypassFilter = $this->bypassFilters;
         $this->bypassFilters = true;
         foreach ($_data as $key => $value) {
             if (array_key_exists ($key, $this->_validators)) {
-                $this->$key = $value;
+            	
+            	if ($key == $this->_identifier && $value == NULL) {
+            		$this->$key = $this->generateUID();
+            	} else {
+            	    $this->$key = $value;
+            	}
             }
         }
+        
         $this->bypassFilters = $bypassFilter;
         
         if ($this->bypassFilters !== true) {

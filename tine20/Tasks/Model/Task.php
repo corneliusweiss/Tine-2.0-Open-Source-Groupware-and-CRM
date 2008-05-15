@@ -33,7 +33,7 @@ class Tasks_Model_Task extends Tinebase_Record_Abstract
     
     protected $_validators = array(
         // tine record fields
-        'container_id'         => array('allowEmpty' => true,  'Int' ),
+        'container_id'         => array('allowEmpty' => true, 'Alnum'),
         'created_by'           => array('allowEmpty' => true,  'Int' ),
         'creation_time'        => array('allowEmpty' => true         ),
         'last_modified_by'     => array('allowEmpty' => true         ),

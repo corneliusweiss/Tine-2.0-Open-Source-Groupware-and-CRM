@@ -36,7 +36,7 @@ Tine.Tasks.status.ComboBox = Ext.extend(Ext.form.ComboBox, {
     initComponent: function(){
 		this.store = Tine.Tasks.status.getStore();
 		if (!this.value) {
-			this.value = Tine.Tasks.status.getIdentifier('IN-PROCESS');
+			this.value = Tine.Tasks.status.getIdentifier('IN PROCESS');
 		}
 		if (this.autoExpand) {
 			this.on('focus', function(){

@@ -155,7 +155,7 @@ class Addressbook_Json extends Tinebase_Application_Json_Abstract
         
         $contact->tags = $contact->tags->toArray();
         $result['contact'] = $contact->toArray();
-        $result['contact']['owner'] = Tinebase_Container::getInstance()->getContainerById($contact->owner)->toArray();
+        $result['contact']['container_id'] = Tinebase_Container::getInstance()->getContainerById($contact->container_id)->toArray();
         $result['contact']['jpegphoto'] = $this->getImageLink($contact);
         
         return $result;

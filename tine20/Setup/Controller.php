@@ -203,6 +203,7 @@ class Setup_Controller
             $application = Tinebase_Application::getInstance()->getApplicationByName($_xml->name);
         } catch (Exception $e) {
             $application = new Tinebase_Model_Application(array(
+                'id'        => NULL,
                 'name'      => $_xml->name,
                 'status'    => $_xml->status ? $_xml->status : Tinebase_Application::ENABLED,
                 'order'     => $_xml->order ? $_xml->order : 99,

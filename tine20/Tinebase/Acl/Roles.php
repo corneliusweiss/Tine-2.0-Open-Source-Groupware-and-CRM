@@ -219,15 +219,10 @@ class Tinebase_Acl_Roles
      * @return Tinebase_Acl_Model_Role  
      */
     public function getRoleById($_roleId)
-    {
-        $roleId = (int)$_roleId;
-        if ($roleId != $_roleId && $roleId <= 0) {
-            throw new InvalidArgumentException('$_roleId must be integer and greater than 0');
-        }
-        
-        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $roleId);
+    {   
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $_roleId);
         if (!$row = $this->_rolesTable->fetchRow($where)) {
-            throw new Exception("role with id $roleId not found");
+            throw new Exception("role with id $_roleId not found");
         }
         
         $result = new Tinebase_Acl_Model_Role($row->toArray());
@@ -268,16 +263,11 @@ class Tinebase_Acl_Roles
             $data['created_by'] = Zend_Registry::get('currentAccount')->getId();
         }
         $data['creation_time'] = Zend_Date::now()->getIso();
-                
+        $data['id'] = $_role->generateUID();        
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($data, true));
                         
         $newId = $this->_rolesTable->insert($data); 
-        
-        if ($newId === NULL) {
-           $newId = $this->_db->lastSequenceId(substr(SQL_TABLE_PREFIX . 'roles', 0,26) . '_seq');
-        }
-        
-        $role = $this->getRoleById($newId);
+        $role = $this->getRoleById($data['id']);
         return $role;
     }
     
@@ -372,16 +362,11 @@ class Tinebase_Acl_Roles
      * @param   array $_roleMembers with role members ("account_type" => account type, "account_id" => account id)
      */
     public function setRoleMembers($_roleId, array $_roleMembers)
-    {
-        $roleId = (int)$_roleId;
-        if ($roleId != $_roleId && $roleId > 0) {
-            throw new InvalidArgumentException('$_roleId must be integer and greater than 0');
-        }
-        
+    {   
         // remove old members
-        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('role_id') . ' = ?', $roleId);
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('role_id') . ' = ?', $_roleId);
         $this->_roleMembersTable->delete($where);
-              
+        
         $validTypes = array( 'user', 'group', 'anyone');
         foreach ( $_roleMembers as $member ) {
             if ( !in_array($member['account_type'], $validTypes) ) {
@@ -391,7 +376,8 @@ class Tinebase_Acl_Roles
             }
             
             $data = array(
-                'role_id'       => $roleId,
+                'id'            => Tinebase_Account_Model_Account::generateUID(),
+                'role_id'       => $_roleId,
                 'account_type'  => $member['account_type'],
                 'account_id'    => $member['account_id'],
             );
@@ -436,10 +422,11 @@ class Tinebase_Acl_Roles
      */
     public function setRoleRights($_roleId, array $_roleRights)
     {
-        $roleId = (int)$_roleId;
+        /*$roleId = (int)$_roleId;
         if ( $roleId != $_roleId && $roleId > 0 ) {
             throw new InvalidArgumentException('$_roleId must be integer and greater than 0');
-        }
+        }*/
+        $roleId = $_roleId;
         
         // remove old rights
         $where = $this->_db->quoteInto($this->_db->quoteIdentifier('role_id') . ' = ?', $roleId);
@@ -471,9 +458,9 @@ class Tinebase_Acl_Roles
                ->where($this->_db->quoteInto($this->_db->quoteIdentifier('application_id') . ' = ?', $_applicationId));
                
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());               
-            
         if (!$row = $this->_roleRightsTable->fetchRow($select)) {                        
             $data = array(
+                'id'                => Tinebase_Account_Model_Account::generateUID(),
                 'role_id'           => $_roleId,
                 'application_id'    => $_applicationId,
                 'right'             => $_right,
@@ -481,5 +468,4 @@ class Tinebase_Acl_Roles
             $this->_roleRightsTable->insert($data); 
         }
     }
-    
 }

@@ -380,7 +380,7 @@
                 <index>
                     <name>owner</name>
                     <field>
-                        <name>owner</name>
+                        <name>container_id</name>
                     </field>
                 </index>
                 <index>
@@ -422,7 +422,7 @@
                 <index>
                     <name>addressbook_container_id</name>
                     <field>
-                        <name>owner</name>
+                        <name>container_id</name>
                     </field>
                     <foreign>true</foreign>
                     <reference>
@@ -438,6 +438,10 @@
             <table>
                 <name>container</name>
             </table>
+			<field>
+				<name>id</name>
+				<value special="uid"/>
+			</field>
             <field>
                 <name>name</name>
                 <value>Internal Contacts</value>

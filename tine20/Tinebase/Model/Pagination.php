@@ -26,7 +26,7 @@ class Tinebase_Model_Pagination extends Tinebase_Record_Abstract
     
     protected $_validators = array(
         'id'                   => array('allowEmpty'    => true,  
-                                        'Int'                           ),
+                                        'Alnum'                           ),
         
         'start'                => array('allowEmpty'    => true,
                                         'Int',

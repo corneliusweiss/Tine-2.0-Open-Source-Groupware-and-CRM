@@ -69,12 +69,12 @@ class Tinebase_Application
      */
     public function getApplicationById($_applicationId)
     {
-        $applicationId = (int)$_applicationId;
-        if($applicationId != $_applicationId) {
-            throw new InvalidArgumentException('$_applicationId must be integer');
+       
+        if(empty($_applicationId)) {
+            throw new InvalidArgumentException('$_applicationId should not be empty');
         }
         
-        $row = $this->applicationTable->fetchRow($this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?' , $applicationId));
+        $row = $this->applicationTable->fetchRow($this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?' , $_applicationId));
         
         $result = new Tinebase_Model_Application($row->toArray());
         
