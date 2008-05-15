@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application>
     <name>Addressbook</name>
-    <version>0.3</version>
+    <version>0.4</version>
     <order>10</order>
     <tables>
         <table>
@@ -12,7 +12,9 @@
             <declaration>
                 <field>
                     <name>id</name>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>account_id</name>
@@ -150,9 +152,10 @@
                     <type>clob</type>
                 </field>
                 <field>
-                    <name>owner</name>
-                    <type>integer</type>
-                    <notnull>false</notnull>
+                    <name>container_id</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>private</name>
@@ -357,7 +360,6 @@
                 <index>
                     <name>id</name>
                     <primary>true</primary>
-                    <unique>true</unique>
                     <field>
                         <name>id</name>
                     </field>

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application>
     <name>Tinebase</name>
-    <version>0.4</version>
+    <version>0.5</version>
     <tables>
         <table>
             <name>applications</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>name</name>
@@ -55,11 +56,12 @@
         
         <table>
             <name>application_tables</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>application_id</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -100,12 +102,13 @@
         
         <table>
             <name>groups</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>name</name>
@@ -138,7 +141,7 @@
         
         <table>
             <name>accounts</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
@@ -235,7 +238,7 @@
         
         <table>
             <name>group_members</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>group_id</name>
@@ -286,21 +289,19 @@
                         <field>id</field>
                     </reference>
                 </index>
-
-
-
             </declaration>
         </table>
         
         <table>
             <name>registrations</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+					<type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>login_name</name>
                     <type>text</type>
@@ -359,13 +360,14 @@
 
         <table>
             <name>container</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>name</name>
                     <type>text</type>
@@ -388,9 +390,10 @@
                 </field>
                 <field>
                     <name>application_id</name>
-                    <type>integer</type>
-                    <notnull>true</notnull>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull> 
+				</field>
                 <index>
                     <name>id</name>
                     <primary>true</primary>
@@ -426,7 +429,7 @@
 
         <table>
             <name>container_acl</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
@@ -436,10 +439,10 @@
                 </field>
                 <field>
                     <name>container_id</name>
-                    <type>integer</type>
-                    <unsigned>true</unsigned>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
-                </field>
+					</field>
                 <field>
                     <name>account_type</name>
                     <type>enum</type>
@@ -451,7 +454,6 @@
                 <field>
                     <name>account_id</name>
                     <type>integer</type>
-                    <default>'0'</default>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -507,13 +509,14 @@
 
         <table>
             <name>access_log</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+					<type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+	     		</field>
                 <field>
                     <name>sessionid</name>
                     <type>text</type>
@@ -569,9 +572,10 @@
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>application_id</name>
                     <type>integer</type>
@@ -642,31 +646,38 @@
 
         <table>
             <name>record_persistentobserver</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+					<type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>observable_application</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
-                </field>
+				</field>
                 <field>
                     <name>observable_identifier</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
-                </field>
+				</field>
                 <field>
                     <name>observer_application</name>
-                    <type>integer</type>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>observer_identifier</name>
-                    <type>integer</type>
-                </field> 
+					<type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field> 
                 <field>
                     <name>observed_event</name>
                     <type>text</type>
@@ -748,30 +759,37 @@
         
         <table>
             <name>record_relations</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>own_application</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
-                </field>
+				</field>
                 <field>
                     <name>own_identifier</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
-                </field>
+				</field>
                 <field>
                     <name>related_application</name>
-                    <type>integer</type>
-                </field>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+				</field>
                 <field>
                     <name>related_identifier</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field> 
                 <field>
                     <name>related_role</name>
@@ -814,6 +832,7 @@
                     <name>deleted_time</name>
                     <type>datetime</type>
                 </field>
+
                 <index>
                     <name>id</name>
                     <primary>true</primary>
@@ -845,36 +864,37 @@
         
         <table>
             <name>links</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>link_id</name>
-                    <type>integer</type>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>link_app1</name>
                     <type>text</type>
-                    <length>25</length>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
                     <name>link_app2</name>
                     <type>text</type>
-                    <length>25</length>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
 
                 <field>
                     <name>link_id1</name>
                     <type>text</type>
-                    <length>50</length>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
                     <name>link_id2</name>
                     <type>text</type>
-                    <length>50</length>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -929,18 +949,18 @@
         
         <table>
             <name>timemachine_modlog</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-                    <default>''</default>
                 </field>
                 <field>
                     <name>application_id</name>
-                    <type>integer</type>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -1022,14 +1042,13 @@
         
         <table>
             <name>tags</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
                     <type>text</type>
                     <length>40</length>
                     <notnull>true</notnull>
-                    <default>''</default>
                 </field>
                 <field>
                     <name>type</name>
@@ -1039,8 +1058,10 @@
                     <notnull>true</notnull>
                 </field>
                 <field>
-                    <name>owner</name>
-                    <type>integer</type>
+                    <name>container_id</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>name</name>
@@ -1118,7 +1139,7 @@
         
         <table>
             <name>tags_acl</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>tag_id</name>
@@ -1137,8 +1158,7 @@
                 <field>
                     <name>account_id</name>
                     <type>integer</type>
-                    <notnull>true</notnull>
-                    <default>'0'</default>
+                    <notnull>false</notnull>
                 </field>
                 <field>
                     <name>account_right</name>
@@ -1190,7 +1210,7 @@
         
         <table>
             <name>tags_context</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>tag_id</name>
@@ -1237,7 +1257,7 @@
         
         <table>
             <name>tagging</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>tag_id</name>
@@ -1309,11 +1329,13 @@
         
         <table>
             <name>roles</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
-                    <name>id</name>
-                    <autoincrement>true</autoincrement>
+                    <name>id</name>                    
+					<type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>name</name>
@@ -1363,23 +1385,24 @@
 
         <table>
             <name>role_rights</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                <field>
                     <name>id</name>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>role_id</name>
-                    <type>integer</type>
-                    <unsigned>true</unsigned>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
                     <name>application_id</name>
-                    <type>integer</type>
-                    <length>11</length>
-                    <unsigned>true</unsigned>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                 <field>
@@ -1437,16 +1460,18 @@
         
         <table>
             <name>role_accounts</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
-                    <autoincrement>true</autoincrement>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 <field>
                     <name>role_id</name>
-                    <type>integer</type>
-                    <unsigned>true</unsigned>
+                    <type>text</type>
+                    <length>40</length>
                     <notnull>true</notnull>
                 </field>
                  <field>
@@ -1459,9 +1484,9 @@
                 </field>
                 <field>
                     <name>account_id</name>
-                    <type>integer</type>
-                    <unsigned>true</unsigned>
-                    <notnull>false</notnull>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
                 </field>
                 
                 <index>
@@ -1500,7 +1525,7 @@
         
         <table>
             <name>temp_files</name>
-            <version>1</version>
+            <version>2</version>
             <declaration>
                 <field>
                     <name>id</name>
