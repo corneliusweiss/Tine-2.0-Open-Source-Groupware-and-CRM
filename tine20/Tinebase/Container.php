@@ -35,6 +35,8 @@ class Tinebase_Container
      */
     protected $containerAclTable;
 
+    protected $_db; 
+    
     /**
      * constant for no grants
      *
@@ -103,6 +105,7 @@ class Tinebase_Container
     private function __construct() {
         $this->containerTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'container'));
         $this->containerAclTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'container_acl'));
+        $this->_db = Zend_Registry::get('dbAdapter');
     }
     /**
      * don't clone. Use the singleton.
@@ -300,56 +303,28 @@ class Tinebase_Container
         
         $applicationId = Tinebase_Application::getInstance()->getApplicationByName($_application)->getId();
                
-        $db = Zend_Registry::get('dbAdapter');
         
-        $tableContainer = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container');
-        $tableContainerAcl = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl');
-        $colId = $db->quoteIdentifier('id');
-        #$colName = $db->quoteIdentifier('name');
-        $colContainerId = $db->quoteIdentifier('container_id');
-        $colApplicationId = $db->quoteIdentifier('application_id');
-        $colAccountGrant = $db->quoteIdentifier('account_grant');
-        $colAccountId = $db->quoteIdentifier('account_id');
-        $colAccountType = $db->quoteIdentifier('account_type');
-        
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'container')
             ->join(
                 SQL_TABLE_PREFIX . 'container_acl',
-                $tableContainer . '.' . $colId . ' = ' . $tableContainerAcl . '.' . $colContainerId , 
+                $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.container_id'), 
                 array()
             )
-            ->where($tableContainer . '.' . $colApplicationId . ' = ?', $applicationId)
-            ->where($tableContainerAcl . '.' . $colAccountGrant . ' = ?', $_grant)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $applicationId))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_grant') . ' = ?', $_grant))
             
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . $tableContainerAcl . '.' . $colAccountId . ' = ? AND ' . $tableContainerAcl . "." . $colAccountType . " ='user'", $accountId)
-            ->orWhere($tableContainerAcl . '.' . $colAccountId . ' IN (?) AND ' . $tableContainerAcl . "." . $colAccountType . " ='group'", $groupMemberships)
-            ->orWhere($tableContainerAcl . '.' . $colAccountType . ' = ?)', 'anyone')
+            ->where('(' .$this->_db->quoteInto( $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto( $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' IN (?)',  $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') .  ' = ?', 'group'))
+            ->orWhere($this->_db->quoteInto( $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
             
             ->group(SQL_TABLE_PREFIX . 'container.id')
             ->order(SQL_TABLE_PREFIX . 'container.name');
-       /* $select = $db->select()
-            ->from(SQL_TABLE_PREFIX . 'container')
-            ->join(
-                SQL_TABLE_PREFIX . 'container_acl',
-                SQL_TABLE_PREFIX . 'container.id = ' . SQL_TABLE_PREFIX . 'container_acl.container_id', 
-                array()
-            )
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $applicationId)
-            ->where(SQL_TABLE_PREFIX . 'container_acl.account_grant = ?', $_grant)
-            
-            # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
-            
-            ->group(SQL_TABLE_PREFIX . 'container.id')
-            ->order(SQL_TABLE_PREFIX . 'container.name');
-*/
+
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
         
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         
@@ -408,14 +383,14 @@ class Tinebase_Container
         }
         $applicationId = Tinebase_Application::getInstance()->getApplicationByName($_application)->getId();
         
-        $colName = $this->containerTable->getAdapter()->quoteIdentifier('name');
-        $colType = $this->containerTable->getAdapter()->quoteIdentifier('type');
-        $colApplicationId = $this->containerTable->getAdapter()->quoteIdentifier('application_id');
+        $colName = $this->_db->quoteIdentifier('name');
+        $colType = $this->_db->quoteIdentifier('type');
+        $colApplicationId = $this->_db->quoteIdentifier('application_id');
         
         $select  = $this->containerTable->select()
-            ->where($colName . ' = ?', $_containerName)
-            ->where($colType . ' = ?', $_type)
-            ->where($colApplicationId . ' = ?', $applicationId);
+            ->where($this->_db->quoteInto($colName . ' = ?', $_containerName))
+            ->where($this->_db->quoteInto($colType . ' = ?', $_type))
+            ->where($this->_db->quoteInto($colApplicationId . ' = ?', $applicationId));
 
         $row = $this->containerTable->fetchRow($select);
         
@@ -441,8 +416,8 @@ class Tinebase_Container
         $applicationId = Tinebase_Application::getInstance()->getApplicationByName($_application)->getId();
         
         $select  = $this->containerTable->select()
-            ->where('type = ?', Tinebase_Container::TYPE_INTERNAL)
-            ->where('application_id = ?', $applicationId);
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('type') . ' = ?', Tinebase_Container::TYPE_INTERNAL))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('application_id') . ' = ?', $applicationId));
 
         $row = $this->containerTable->fetchRow($select);
         
@@ -477,35 +452,33 @@ class Tinebase_Container
         }
         $ownerId            = Tinebase_Account_Model_Account::convertAccountIdToInt($_owner);
         
-        $db = Zend_Registry::get('dbAdapter');
-        
         $application = Tinebase_Application::getInstance()->getApplicationByName($_application);
 
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(array('owner' => SQL_TABLE_PREFIX . 'container_acl'), array())
             ->join(
                 array('user' => SQL_TABLE_PREFIX . 'container_acl'),
-                'owner.container_id = user.container_id', 
+                $this->_db->quoteIdentifier('owner.container_id') . ' = '.  $this->_db->quoteIdentifier('user.container_id'), 
                 array()
             )
-            ->join(SQL_TABLE_PREFIX . 'container', 'owner.container_id = ' . SQL_TABLE_PREFIX . 'container.id')
-            ->where('owner.account_id = ?', $ownerId)
-            ->where('owner.account_grant = ?', self::GRANT_ADMIN)
-            ->where('user.account_grant = ?', $_grant)
+            ->join(SQL_TABLE_PREFIX . 'container', $this->_db->quoteIdentifier('owner.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_id') . ' = ?', $ownerId))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_grant') . ' = ?', self::GRANT_ADMIN))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_grant') . ' = ?', $_grant))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where("(user.account_id = ? AND user.account_type ='user'", $accountId)
-            ->orWhere("user.account_id IN (?) AND user.account_type ='group'", $groupMemberships)
-            ->orWhere('user.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') . ' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ? ', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') . ' IN (?)', $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ? ', 'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?)', 'anyone'))
             
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $application->getId())
-            ->where(SQL_TABLE_PREFIX . 'container.type = ?', self::TYPE_PERSONAL)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
             ->group(SQL_TABLE_PREFIX . 'container.id')
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
         
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         
@@ -541,28 +514,27 @@ class Tinebase_Container
             throw new Exception('account must be in at least one group');
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-        
         $application = Tinebase_Application::getInstance()->getApplicationByName($_application);
 
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'container_acl', array())
-            ->join(SQL_TABLE_PREFIX . 'container', SQL_TABLE_PREFIX . 'container_acl.container_id = ' . SQL_TABLE_PREFIX . 'container.id')
+            ->join(SQL_TABLE_PREFIX . 'container',
+            $this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'container_acl.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' = ?', $accountId ) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' IN (?)', $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
             
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $application->getId())
-            ->where(SQL_TABLE_PREFIX . 'container.type = ?', self::TYPE_SHARED)
-            ->where(SQL_TABLE_PREFIX . 'container_acl.account_grant = ?', $_grant)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_SHARED))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_grant') . ' = ?', $_grant))
             ->group(SQL_TABLE_PREFIX . 'container.id')
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $result = new Tinebase_Record_RecordSet('Tinebase_Model_Container', $stmt->fetchAll(Zend_Db::FETCH_ASSOC));
         
@@ -585,31 +557,31 @@ class Tinebase_Container
             throw new Exception('account must be in at least one group');
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-        
         $application = Tinebase_Application::getInstance()->getApplicationByName($_application);
 
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(array('owner' => SQL_TABLE_PREFIX . 'container_acl'), array('account_id'))
-            ->join(array('user' => SQL_TABLE_PREFIX . 'container_acl'),'owner.container_id = user.container_id', array())
-            ->join(SQL_TABLE_PREFIX . 'container', 'user.container_id = ' . SQL_TABLE_PREFIX . 'container.id', array())
-            ->where('owner.account_id != ?', $accountId)
-            ->where('owner.account_grant = ?', self::GRANT_ADMIN)
+            ->join(array('user' => SQL_TABLE_PREFIX . 'container_acl'),
+            $this->_db->quoteIdentifier('owner.container_id') . ' = ' . $this->_db->quoteIdentifier('user.container_id'), array())
+            ->join(SQL_TABLE_PREFIX . 'container', 
+            $this->_db->quoteIdentifier('user.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'), array())
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_id') . ' != ?', $accountId))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_grant') . ' = ?', self::GRANT_ADMIN))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where("(user.account_id = ? AND user.account_type ='user'", $accountId)
-            ->orWhere("user.account_id IN (?) AND user.account_type ='group'", $groupMemberships)
-            ->orWhere('user.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') .' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') . ' IN (?)', $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?', 'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?)', 'anyone'))
             
-            ->where('user.account_grant = ?', $_grant)
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $application->getId())
-            ->where(SQL_TABLE_PREFIX . 'container.type = ?', self::TYPE_PERSONAL)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_grant') . ' = ?', $_grant))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
             ->order(SQL_TABLE_PREFIX . 'container.name')
             ->group('owner.account_id');
             
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
 
         $result = new Tinebase_Record_RecordSet('Tinebase_Account_Model_Account');
@@ -638,34 +610,33 @@ class Tinebase_Container
             throw new Exception('account must be in at least one group');
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-        
         $application = Tinebase_Application::getInstance()->getApplicationByName($_application);
 
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(array('owner' => SQL_TABLE_PREFIX . 'container_acl'), array())
             ->join(
                 array('user' => SQL_TABLE_PREFIX . 'container_acl'),
-                'owner.container_id = user.container_id', 
+                $this->_db->quoteIdentifier('owner.container_id') . ' = ' . $this->_db->quoteIdentifier('user.container_id'), 
                 array())
-            ->join(SQL_TABLE_PREFIX . 'container', 'user.container_id = ' . SQL_TABLE_PREFIX . 'container.id')
-            ->where('owner.account_id != ?', $accountId)
-            ->where('owner.account_grant = ?', self::GRANT_ADMIN)
+            ->join(SQL_TABLE_PREFIX . 'container',
+             $this->_db->quoteIdentifier('user.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_id') . ' != ?', $accountId))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('owner.account_grant') . ' = ?', self::GRANT_ADMIN))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where("(user.account_id = ? AND user.account_type ='user'", $accountId)
-            ->orWhere("user.account_id IN (?) AND user.account_type ='group'", $groupMemberships)
-            ->orWhere('user.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') .' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_id') . ' IN (?)', $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?', 'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_type') . ' = ?)', 'anyone'))
             
-            ->where('user.account_grant = ?', $_grant)
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $application->getId())
-            ->where(SQL_TABLE_PREFIX . 'container.type = ?', self::TYPE_PERSONAL)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_grant') . ' = ?', $_grant))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
             ->group(SQL_TABLE_PREFIX . 'container.id')
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $result = new Tinebase_Record_RecordSet('Tinebase_Model_Container', $stmt->fetchAll(Zend_Db::FETCH_ASSOC));
         
@@ -694,12 +665,12 @@ class Tinebase_Container
         }        
         
         $where = array(
-            $this->containerTable->getAdapter()->quoteInto('container_id = ?', $containerId)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . ' = ?', $containerId)
         );
         $this->containerAclTable->delete($where);
         
         $where = array(
-            $this->containerTable->getAdapter()->quoteInto('id = ?', $containerId)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $containerId)
         );
         $this->containerTable->delete($where);
     }
@@ -720,7 +691,7 @@ class Tinebase_Container
         }
         
         $where = array(
-            $this->containerTable->getAdapter()->quoteInto('id = ?', $containerId)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $containerId)
         );
         
         $data = array(
@@ -746,7 +717,7 @@ class Tinebase_Container
 
         $containerId = Tinebase_Model_Container::convertContainerIdToInt($_containerId);
         
-        $grant = (int)$_grant;
+        $grant = $_grant;
         if($grant != $_grant) {
             throw new InvalidArgumentException('$_grant must be integer');
         }
@@ -756,23 +727,22 @@ class Tinebase_Container
             throw new Exception('account must be in at least one group');
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'container_acl', array())
-            ->join(SQL_TABLE_PREFIX . 'container', SQL_TABLE_PREFIX . 'container_acl.container_id = ' . SQL_TABLE_PREFIX . 'container.id', array('id'))
+            ->join(SQL_TABLE_PREFIX . 'container', 
+            $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'), array('id'))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' IN (?)' , $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?',  'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
             
-            ->where(SQL_TABLE_PREFIX . 'container_acl.account_grant = ?', $grant)
-            ->where(SQL_TABLE_PREFIX . 'container.id = ?', $containerId);
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_grant') . ' = ?', $grant))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ?', $containerId));
                     
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
         
         $grants = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         if(empty($grants)) {
@@ -798,17 +768,17 @@ class Tinebase_Container
             }            
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-        
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'container', array('id'))
-            ->join(SQL_TABLE_PREFIX . 'container_acl', SQL_TABLE_PREFIX . 'container_acl.container_id = ' . SQL_TABLE_PREFIX . 'container.id', array('id', 'account_type', 'account_id', 'account_grants' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'container_acl.account_grant)'))
-            ->where(SQL_TABLE_PREFIX . 'container.id = ?', $containerId)
+            ->join(SQL_TABLE_PREFIX . 'container_acl', 
+            $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'), 
+            array('id', 'account_type', 'account_id', 'account_grants' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'container_acl.account_grant)'))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ?', $containerId))
             ->group(array(SQL_TABLE_PREFIX . 'container.id', SQL_TABLE_PREFIX . 'container_acl.account_type', SQL_TABLE_PREFIX . 'container_acl.account_id'));
 
         //error_log("getAllGrants:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
 
@@ -872,23 +842,22 @@ class Tinebase_Container
             throw new Exception('account must be in at least one group');
         }
         
-        $db = Zend_Registry::get('dbAdapter');
-        
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'container_acl', array('account_grant'))
-            ->join(SQL_TABLE_PREFIX . 'container', SQL_TABLE_PREFIX . 'container_acl.container_id = ' . SQL_TABLE_PREFIX . 'container.id')
+            ->join(SQL_TABLE_PREFIX . 'container', 
+            $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.container_id') . ' = ' . $this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'container.id'))
 
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' = ?', $accountId) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'user'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' IN (?)', $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?', 'group'))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
 
-            ->where(SQL_TABLE_PREFIX . 'container.id = ?', $containerId)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ?', $containerId))
             ->group(SQL_TABLE_PREFIX . 'container_acl.account_grant');
 
         //error_log("getContainer:: " . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
 
@@ -972,9 +941,9 @@ class Tinebase_Container
         //error_log(print_r($_grants->toArray(), true));
         
         try {
-            Zend_Registry::get('dbAdapter')->beginTransaction();
+            $this->_db->beginTransaction();
             
-            $where = $this->containerAclTable->getAdapter()->quoteInto('container_id = ?', $containerId);
+            $where = $this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . ' = ?', $containerId);
             $this->containerAclTable->delete($where);
             
             foreach($_grants as $recordGrants) {
@@ -1004,9 +973,9 @@ class Tinebase_Container
                 }
             }
             
-            Zend_Registry::get('dbAdapter')->commit();
+            $this->_db->commit();
         } catch (Exception $e) {
-            Zend_Registry::get('dbAdapter')->rollBack();
+           $this->_db->rollBack();
             
             throw($e);
         }

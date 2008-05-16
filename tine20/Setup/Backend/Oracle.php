@@ -319,7 +319,7 @@ class Setup_Backend_Oracle extends Setup_Backend_Abstract
         );
 
         $applicationID = $applicationTable->insert($applicationData);
-		if ($applicationID->id != ((int) $applicationID->id )) {
+		if (NULL === $applicationID->id) {
             $applicationID->id = $this->applicationTable->getAdapter()->lastSequenceId(SQL_TABLE_PREFIX . '_applications_seq');
         }
 		

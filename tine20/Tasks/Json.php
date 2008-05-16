@@ -147,7 +147,7 @@ class Tasks_Json extends Tinebase_Application_Json_Abstract
      */
     public function deleteTask($identifier)
     {
-        $this->_controller->deleteTask((int)$identifier);
+        $this->_controller->deleteTask($identifier);
         return 'success';
     }
     

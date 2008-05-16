@@ -29,7 +29,7 @@ class Tinebase_Account_Model_Account extends Tinebase_Record_Abstract
      * @var array
      */
     protected $_filters = array(
-        'accountId'             => 'Digits',
+        'accountId'             => 'Int',
         //'accountLoginName'    => 'StringTrim',
         'accountDisplayName'    => 'StringTrim',
         'accountLastName'       => 'StringTrim',
@@ -45,7 +45,7 @@ class Tinebase_Account_Model_Account extends Tinebase_Record_Abstract
      * @var array
      */
     protected $_validators = array(
-        'accountId'             => array('Digits', 'presence' => 'required'),
+        'accountId'             => array('Alnum', 'presence' => 'required'),
         //'accountLoginName'    => array('presence' => 'required'),
         'accountDisplayName'    => array('presence' => 'required'),
         'accountLastName'       => array('presence' => 'required'),
@@ -265,8 +265,8 @@ class Tinebase_Account_Model_Account extends Tinebase_Record_Abstract
             $accountId = (int) $_accountId;
         }
         
-        if ($accountId === 0) {
-            throw new Exception('accountId can not be 0');
+        if ($accountId === NULL) {
+            throw new Exception('accountId can not be NULL');
         }
         
         return $accountId;

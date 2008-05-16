@@ -39,7 +39,7 @@ class Tinebase_Account_Registration
     {
         // get config
         try {
-            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config.ini', 'registration');
+            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_mysql_2.ini', 'registration');
         } catch (Zend_Config_Exception $e) {
             Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . 
                 ' no config for registration found! ' . $e->getMessage());
@@ -365,12 +365,13 @@ class Tinebase_Account_Registration
      * 
      * @access	protected
      */
-    protected function addRegistration ($_registration)
+    protected function addRegistration($_registration)
     {
         if (! $_registration->isValid()) {
             throw (new Exception('invalid registration object'));
         }
         $registrationData = array(
+            'id'         => Tinebase_Account_Model_Registration::generateUID(),
             "login_name" => $_registration->login_name ,
             "login_hash" => $_registration->login_hash ,
             "email"      => $_registration->email ,
@@ -402,7 +403,8 @@ class Tinebase_Account_Registration
             "status"     => $_registration->status ,
             "email_sent" => $_registration->email_sent);
         //--   
-        $where = array($this->_registrationsTable->getAdapter()->quoteInto('id = ?', $_registration->id));
+        
+        $where = array(Zend_Registry::get('dbAdapter')->quoteInto(Zend_Registry::get('dbAdapter')->quoteIdentifier('id') . ' = ?', $_registration->id));
         $result = $this->_registrationsTable->update($registrationData, $where);
         return $this->getRegistrationByHash($_registration->login_hash);
     }
@@ -414,7 +416,7 @@ class Tinebase_Account_Registration
      */
     public function deleteRegistrationByLoginName ($_username)
     {
-        $where = Zend_Registry::get('dbAdapter')->quoteInto('login_name = ?', $_username);
+        $where = Zend_Registry::get('dbAdapter')->quoteInto(Zend_Registry::get('dbAdapter')->quoteIdentifier('login_name') . ' = ?', $_username);
         $result = $this->_registrationsTable->delete($where);
         return $result;
     }
@@ -428,7 +430,8 @@ class Tinebase_Account_Registration
     public function getRegistrationByHash ($_hash)
     {
         $db = Zend_Registry::get('dbAdapter');
-        $select = $db->select()->from(SQL_TABLE_PREFIX . 'registrations')->where('login_hash = ?', $_hash);
+        $select = $db->select()->from(SQL_TABLE_PREFIX . 'registrations')
+                  ->where($db->quoteInto($db->quoteIdentifier('login_hash') . ' = ?', $_hash));
         $stmt = $select->query();
         $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         if ($row === false) {

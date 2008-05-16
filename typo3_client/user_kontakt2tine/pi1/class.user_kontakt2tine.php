@@ -251,7 +251,7 @@ class user_kontakt2tine extends tslib_pibase {
 				{
 					// write addressbook entry
 					$contactData = array(
-										'owner'					=> $client->getAccountId(),
+										'container_id'					=> $client->getAccountId(),
 										'company' 				=> $fFieldValues['FIRMA'], 
 										'n_family' 				=> $fFieldValues['NACHNAME'],
 										'n_given' 				=> $fFieldValues['VORNAME'],

@@ -29,7 +29,7 @@ class Tinebase_Account_Model_Registration extends Tinebase_Record_Abstract
      * @todo 	add more filters
      */
     protected $_filters = array(
-        'id'         => 'Digits',
+        'id'         => 'Alnum',
         'login_name' => 'StringTrim',
         'login_hash' => 'StringTrim',
         'email'      => 'StringTrim',

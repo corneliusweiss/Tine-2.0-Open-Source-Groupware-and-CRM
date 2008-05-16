@@ -81,7 +81,7 @@ class Addressbook_PdfTest extends PHPUnit_Framework_TestCase
             'email_home'            => 'unittests@tine20.org',
             'id'                    => 20,
             'note'                  => 'Bla Bla Bla',
-            'owner'                 => $container->id,
+            'container_id'          => $container->id,
             'role'                  => 'Role',
             'title'                 => 'Title',
             'url'                   => 'http://www.tine20.org',

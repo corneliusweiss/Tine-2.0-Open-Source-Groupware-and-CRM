@@ -199,11 +199,13 @@ class Tinebase_Application
     public function addApplication(Tinebase_Model_Application $_application)
     {
         $data = $_application->toArray();
+        //if (empty($data['id'])) {
+        //    $data['id'] = Tinebase_Model_Container::generateUID(); 
+        //}
+         
         unset($data['tables']);
-        $_application->id = $this->applicationTable->insert($data);
-        if ($_application->id === NULL) {
-            $_application->id = $this->_db->lastSequenceId(substr(SQL_TABLE_PREFIX . 'applications', 0,26) . '_seq');
-        }
+        $this->applicationTable->insert($data);
+        
         return $_application;
     }
     

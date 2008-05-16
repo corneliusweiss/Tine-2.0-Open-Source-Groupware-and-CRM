@@ -98,7 +98,7 @@ class Dialer_Backend_Asterisk
         $extensionsTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'dialer_extensions'));
         
         $select  = $extensionsTable->select()
-            ->where('account_id = ?', $accountId);
+            ->where($extensionsTable->getAdapter()->quoteInto($extensionsTable->getAdapter()->quoteIdentifier('account_id') . ' = ?', $accountId));
 
         $row = $extensionsTable->fetchRow($select);
         

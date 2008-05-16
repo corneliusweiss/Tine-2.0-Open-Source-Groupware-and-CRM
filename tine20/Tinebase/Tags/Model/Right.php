@@ -84,16 +84,17 @@ class Tinebase_Tags_Model_Right extends Tinebase_Record_Abstract
         $db = Zend_Registry::get('dbAdapter');
         $currentAccountId = Zend_Registry::get('currentAccount')->getId();
         $currentGroupIds = Tinebase_Group::getInstance()->getGroupMemberships($currentAccountId);
-        $groupCondition = ( !empty($currentGroupIds) ) ? ' OR (' . $db->quoteInto('acl.account_type = ?', 'group') . 
-            ' AND ' . $db->quoteInto('acl.account_id IN (?)', $currentGroupIds, Zend_Db::INT_TYPE) . ' )' : '';
+        $groupCondition = ( !empty($currentGroupIds) ) ? ' OR (' . $db->quoteInto($db->quoteIdentifier('acl.account_type') . ' = ?', 'group') . 
+            ' AND ' . $db->quoteInto($db->quoteIdentifier('acl.account_id') . ' IN (?)', $currentGroupIds, Zend_Db::INT_TYPE) . ' )' : '';
         
-        $where = $db->quoteInto('acl.account_type = ?', 'anyone') . ' OR (' .
-            $db->quoteInto('acl.account_type = ?', 'user') . ' AND ' . 
-            $db->quoteInto('acl.account_id = ?', $currentAccountId, Zend_Db::INT_TYPE) . ' ) ' .
+        $where = $db->quoteInto($db->quoteIdentifier('acl.account_type') . ' = ?', 'anyone') . ' OR (' .
+            $db->quoteInto($db->quoteIdentifier('acl.account_type') . ' = ?', 'user') . ' AND ' . 
+            $db->quoteInto($db->quoteIdentifier('acl.account_id') . ' = ?', $currentAccountId, Zend_Db::INT_TYPE) . ' ) ' .
             $groupCondition;
         
-        $_select->join(array('acl' => SQL_TABLE_PREFIX . 'tags_acl'), $_idProperty . ' = acl.tag_id', array() )
+        $_select->join(array('acl' => SQL_TABLE_PREFIX . 'tags_acl'),
+            $db->quoteIdentifier( $_idProperty)  . ' = ' . $db->quoteIdentifier('acl.tag_id'), array() )
             ->where($where)
-            ->where('acl.account_right = ?', $_right);
+            ->where($db->quoteInto($db->quoteIdentifier('acl.account_right') . ' = ?', $_right));
     }
 }

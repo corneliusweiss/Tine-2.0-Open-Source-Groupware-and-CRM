@@ -76,7 +76,7 @@ class Addressbook_ControllerTest extends PHPUnit_Framework_TestCase
             'email_home'            => 'unittests@tine20.org',
             'id'                    => 20,
             'note'                  => 'Bla Bla Bla',
-            'owner'                 => $container->id,
+            'container_id'          => $container->id,
             'role'                  => 'Role',
             'title'                 => 'Title',
             'url'                   => 'http://www.tine20.org',
@@ -119,7 +119,7 @@ class Addressbook_ControllerTest extends PHPUnit_Framework_TestCase
             'email_home'            => 'unittests@tine20.org',
             'id'                    => 20,
             'note'                  => 'Bla Bla Bla',
-            'owner'                 => $container->id,
+            'container_id'          => $container->id,
             'role'                  => 'Role',
             'title'                 => 'Title',
             'url'                   => 'http://www.tine20.org',
@@ -205,7 +205,7 @@ class Addressbook_ControllerTest extends PHPUnit_Framework_TestCase
         $filter = new Addressbook_Model_Filter(array(
             'query' => ''
         ));
-        $count = Addressbook_Controller::getInstance()->getCountByAddressbookId($this->objects['initialContact']->owner, $filter);
+        $count = Addressbook_Controller::getInstance()->getCountByAddressbookId($this->objects['initialContact']->container_id, $filter);
         
         $this->assertGreaterThan(0, $count);
     }

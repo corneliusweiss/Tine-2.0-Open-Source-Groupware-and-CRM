@@ -87,7 +87,7 @@ class Addressbook_JsonTest extends PHPUnit_Framework_TestCase
             'email_home'            => 'unittests@tine20.org',
             'id'                    => 20,
             'note'                  => 'Bla Bla Bla',
-            'owner'                 => $this->container->id,
+            'container_id'                 => $this->container->id,
             'role'                  => 'Role',
             'title'                 => 'Title',
             'url'                   => 'http://www.tine20.org',
@@ -130,7 +130,7 @@ class Addressbook_JsonTest extends PHPUnit_Framework_TestCase
             'email_home'            => 'unittests@tine20.org',
             'id'                    => 20,
             'note'                  => 'Bla Bla Bla',
-            'owner'                 => $this->container->id,
+            'container_id'                 => $this->container->id,
             'role'                  => 'Role',
             'title'                 => 'Title',
             'url'                   => 'http://www.tine20.org',
@@ -256,7 +256,7 @@ class Addressbook_JsonTest extends PHPUnit_Framework_TestCase
     {
         $newContact = array(
             'n_family'  => 'PHPUNIT',
-            'owner'     => $this->container->id
+            'container_id'     => $this->container->id
         );
 
         $json = new Addressbook_Json();

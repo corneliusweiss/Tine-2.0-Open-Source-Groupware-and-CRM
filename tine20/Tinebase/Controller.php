@@ -201,12 +201,12 @@ class Tinebase_Controller
             $loggerConfig = $this->_config->logger;
             
             $filename = $loggerConfig->filename;
-            $priority = (int)$loggerConfig->priority;
+            $priority = $loggerConfig->priority;
 
             $writer = new Zend_Log_Writer_Stream($filename);
             $logger->addWriter($writer);
 
-            $filter = new Zend_Log_Filter_Priority($priority);
+            $filter = new Zend_Log_Filter_Priority((int)$priority);
             $logger->addFilter($filter);
 
         } else {

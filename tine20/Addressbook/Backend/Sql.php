@@ -148,13 +148,15 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
             throw new Exception('invalid contact');
         }
         $contactData = $_contactData->toArray();
-        if (empty($_contactData->id)) {
-            unset($contactData['id']);
-        }
+        //if (empty($_contactData->id)) {
+            $contactData['id'] = Tinebase_Account_Model_Account::generateUID();
+        //}
         // tags are not property of this backend
         unset($contactData['tags']);
+        
+        
         $this->_db->insert(SQL_TABLE_PREFIX . 'addressbook', $contactData);
-        $id = $this->_db->lastInsertId(SQL_TABLE_PREFIX . 'addressbook', 'id');
+        $id = $contactData['id'];//$this->_db->lastInsertId(SQL_TABLE_PREFIX . 'addressbook', 'id');
         // if we insert a contact without an id, we need to get back one
         if (empty($_contactData->id) && $id == 0) {
             throw new Exception("returned contact id is 0");

@@ -666,7 +666,7 @@ abstract class Zend_Db_Table_Abstract
         }
 
         $primary    = (array) $this->_primary;
-        $pkIdentity = $primary[(int) $this->_identity];
+        $pkIdentity = $primary[$this->_identity];
 
         /**
          * Special case for PostgreSQL: a SERIAL key implicitly uses a sequence
@@ -789,7 +789,7 @@ abstract class Zend_Db_Table_Abstract
          * it's the _first_ column in the compound key.
          */
         $primary = (array) $this->_primary;
-        $pkIdentity = $primary[(int)$this->_identity];
+        $pkIdentity = $primary[$this->_identity];
 
         /**
          * If this table uses a database sequence object and the data does not

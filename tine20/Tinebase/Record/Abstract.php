@@ -150,7 +150,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
     /**
      * gets identifier of record
      * 
-     * @return int identifier
+     * @return identifier
      */
     public function getId()
     {

@@ -32,6 +32,8 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
     
     protected $backend;
 
+    protected $uid;
+    
     /**
      * Runs the test methods of this class.
      *
@@ -52,6 +54,7 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+    	 $this->uid = Tinebase_Model_Container::generateUID();
         $personalContainer = Tinebase_Container::getInstance()->getPersonalContainer(
             Zend_Registry::get('currentAccount'), 
             'Crm', 
@@ -66,7 +69,7 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
         }
         
         $this->objects['initialLead'] = new Crm_Model_Lead(array(
-            'id'            => 120,
+            'id'            => $this->uid,
             'lead_name'     => 'PHPUnit',
             'leadstate_id'  => 1,
             'leadtype_id'   => 1,
@@ -81,7 +84,7 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
         )); 
         
         $this->objects['updatedLead'] = new Crm_Model_Lead(array(
-            'id'            => 120,
+            'id'            => $this->uid,
             'lead_name'     => 'PHPUnit',
             'leadstate_id'  => 1,
             'leadtype_id'   => 1,

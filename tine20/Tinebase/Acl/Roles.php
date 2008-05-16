@@ -301,7 +301,7 @@ class Tinebase_Acl_Roles
     public function deleteRoles($_ids)
     {
         $ids = ( is_array($_ids) ) ? implode(",", $_ids) : $_ids;
-        $this->_rolesTable->delete( "id in ( $ids )");
+        $this->_rolesTable->delete( $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' IN (?)',  $ids ));
     }
     
     /**
@@ -312,9 +312,9 @@ class Tinebase_Acl_Roles
      */
     public function getRoleMembers($_roleId)
     {
-        $roleId = (int)$_roleId;
-        if ($roleId != $_roleId && $roleId <= 0) {
-            throw new InvalidArgumentException('$_roleId must be integer and greater than 0');
+        $roleId = $_roleId;
+        if (NULL === $roleId) {
+            throw new InvalidArgumentException('$_roleId have not be null');
         }
         
         $members = array();
@@ -391,10 +391,10 @@ class Tinebase_Acl_Roles
      * @param int $_roleId
      * @return array of array with application ids & rights
      */
-    public function getRoleRights($_roleId)
+    public function getRoleRights($_roleId = NULL)
     {
-        $roleId = (int)$_roleId;
-        if ($roleId != $_roleId && $roleId > 0) {
+        $roleId = $_roleId;
+        if (NULL === $roleId) {
             throw new InvalidArgumentException('$_roleId must be integer and greater than 0');
         }
         

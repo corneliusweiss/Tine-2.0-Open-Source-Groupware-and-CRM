@@ -67,22 +67,22 @@ class Tinebase_Links
      * @param string $_applicationName2 the applicationname to filter by
      * @return unknown
      */
-    public function getLinks($_applicationName1, $_recordId, $_applicationName2 = NULL)
+    public function getLinks($_applicationName1, $_recordId = NULL, $_applicationName2 = NULL)
     {
-        $recordId = (int)$_recordId;
-        if($recordId != $_recordId) {
-            throw new InvalidArgumentException('$_recordId must be integer');
+        $recordId = $_recordId;
+        if($recordId === NULL) {
+            throw new InvalidArgumentException('recordId has to be set');
         }
                 
         $db = Zend_Registry::get('dbAdapter');
         
-        $where1 = $db->quoteInto('link_app1 = ?', $_applicationName1) . ' AND ' . $db->quoteInto('link_id1 = ?', $recordId);
+        $where1 = $db->quoteInto($db->quoteIdentifier('link_app1') . ' = ?', $_applicationName1) . ' AND ' . $db->quoteInto($db->quoteIdentifier('link_id1') . ' = ?', $recordId);
         if($_applicationName2 !== NULL) {
-            $where1 .= ' AND ' . $db->quoteInto('link_app2 = ?', $_applicationName2);
+            $where1 .= ' AND ' . $db->quoteInto($db->quoteIdentifier('link_app2') . ' = ?', $_applicationName2);
         }
-        $where2 = $db->quoteInto('link_app2 = ?', $_applicationName1) . ' AND ' . $db->quoteInto('link_id2 = ?', $recordId);
+        $where2 = $db->quoteInto($db->quoteIdentifier('link_app2'). ' = ?', $_applicationName1) . ' AND ' . $db->quoteInto($db->quoteIdentifier('link_id2') . ' = ?', $recordId);
         if($_applicationName2 !== NULL) {
-            $where2 .= ' AND ' . $db->quoteInto('link_app1 = ?', $_applicationName2);
+            $where2 .= ' AND ' . $db->quoteInto($db->quoteIdentifier('link_app1') . ' = ?', $_applicationName2);
         }
         
         $select = $db->select()
@@ -124,31 +124,31 @@ class Tinebase_Links
      * @param string $_applicationName2 delete only links matching to this linked application
      * @param string $_remark delete only links with a given remark
      */
-    public function deleteLinks($_applicationName1, $_recordId, $_applicationName2 = NULL, $_remark = NULL)
+    public function deleteLinks($_applicationName1, $_recordId = NULL, $_applicationName2 = NULL, $_remark = NULL)
     {
-        $recordId = (int)$_recordId;
-        if($recordId != $_recordId) {
-            throw new InvalidArgumentException('$_recordId must be integer');
+        $recordId = $_recordId;
+        if(NULL === $_recordId) {
+            throw new InvalidArgumentException('_recordId must be set');
         }
                 
         $db = Zend_Registry::get('dbAdapter');
         
-        $where  = $db->quoteInto('((link_app1 = ?', $_applicationName1) . ' AND ' . $db->quoteInto('link_id1 = ?', $recordId);
+        $where  = $db->quoteInto('((' . $db->quoteIdentifier('link_app1')  . ' = ?', $_applicationName1) . ' AND ' . $db->quoteInto($db->quoteIdentifier('link_id1') . ' = ?', $recordId);
         if($_applicationName2 !== NULL) {
-            $where .= ' AND ' . $db->quoteInto('link_app2 = ?', $_applicationName2);
+            $where .= ' AND ' . $db->quoteInto($db->quoteIdentifier('link_app2') . ' = ?', $_applicationName2);
         }
         
         $where .= ') OR ';
         
-        $where .= $db->quoteInto('(link_app2 = ?', $_applicationName1) . ' AND ' . $db->quoteInto('link_id2 = ?', $recordId);
+        $where .= $db->quoteInto('(' . $db->quoteIdentifier('link_app2') . ' = ?', $_applicationName1) . ' AND ' . $db->quoteInto($db->quoteIdentifier('link_id2') . ' = ?', $recordId);
         if($_applicationName2 !== NULL) {
-            $where .= ' AND ' . $db->quoteInto('link_app1 = ?', $_applicationName2);
+            $where .= ' AND ' . $db->quoteInto($db->quoteIdentifier('link_app1') . ' = ?', $_applicationName2);
         }
         
         $where .= '))';
         
         if($_remark !== NULL) {
-            $where .= ' AND ' . $db->quoteInto('link_remark = ?', $_remark);
+            $where .= ' AND ' . $db->quoteInto($db->quoteIdentifier('link_remark') . ' = ?', $_remark);
         }
         
         $this->_linksTable->delete($where);
@@ -169,10 +169,8 @@ class Tinebase_Links
      */
     public function setLinks($_applicationName1, $_recordId1, $_applicationName2, $_recordId2, $_remark)
     {
-        $recordId1 = (int)$_recordId1;
-        if($recordId1 != $_recordId1) {
-            throw new InvalidArgumentException('$_recordId1 must be integer');
-        }
+        $recordId1 = $_recordId1;
+        
         if(is_array($_recordId2)) {
 	        $this->deleteLinks($_applicationName1, $_recordId1, $_applicationName2, $_remark);
         

@@ -157,7 +157,7 @@ class Tasks_Controller extends Tinebase_Container_Abstract implements Tasks_Back
     public function createTask(Tasks_Model_Task $_task)
     {
         Zend_Registry::get('logger')->debug('Tasks_Controller->createTask');
-    	if ((int)$_task->container_id < 0) {
+    	if (NULL !== $_task) {
     		$_task->container_id = $this->getDefaultContainer()->getId();
     	}
         if (! $this->_currentAccount->hasGrant($_task->container_id, Tinebase_Container::GRANT_ADD)) {
@@ -248,7 +248,7 @@ class Tasks_Controller extends Tinebase_Container_Abstract implements Tasks_Back
         $configString = 'defaultcontainer_' . ( empty($_referingApplication) ? 'tasks' : $_referingApplication );
         
         if (isset($taskConfig->$configString)) {
-            $defaultContainer = Tinebase_Container::getInstance()->getContainerById((int)$taskConfig->$configString);
+            $defaultContainer = Tinebase_Container::getInstance()->getContainerById($taskConfig->$configString);
         } else {
             $containers = Tinebase_Container::getInstance()->getPersonalContainer($this->_currentAccount, 'Tasks', $this->_currentAccount, Tinebase_Container::GRANT_ADD);
             //$containers = $this->getPersonalContainer($this->_currentAccount, $this->_currentAccount->accountId, Tinebase_Container::GRANT_READ);

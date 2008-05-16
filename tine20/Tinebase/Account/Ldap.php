@@ -254,7 +254,7 @@ class Tinebase_Account_Ldap extends Tinebase_Account_Abstract
         $accountData['last_login']      = Zend_Date::now()->getIso();
         
         $where = array(
-            $accountsTable->getAdapter()->quoteInto('id = ?', $accountId)
+            $accountsTable->getAdapter()->quoteInto($accountsTable->getAdapter()->quoteIdentifier('id') . ' = ?', $accountId)
         );
         
         $result = $accountsTable->update($accountData, $where);

@@ -198,14 +198,13 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      * @param $_table which option section
      * @return int the number of rows deleted
      */
-    public function deleteLeadtypeById($_Id)
+    public function deleteLeadtypeById($_Id = NULL)
     {
-        $Id = (int)$_Id;
-        if($Id != $_Id) {
-            throw new InvalidArgumentException('$_Id must be integer');
+        if(NULL === $_Id) {
+            throw new InvalidArgumentException('ID has to be set');
         }
             $where  = array(
-                $this->_db->quoteInto($this->_db->quoteIdentifier('leadtype_id') . ' = ?', $Id),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('leadtype_id') . ' = ?', $_Id),
             );
              
             $result = $this->leadTypeTable->delete($where);
@@ -813,11 +812,11 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     
         $lead_id = $_daten[0]['lead_id'];
 
-
-        if(!(int)$lead_id) {
+        /*
+        if(!<$lead_id) {
              return $_productData;  
         }
-        
+        */
 
         $this->_db->beginTransaction();
         

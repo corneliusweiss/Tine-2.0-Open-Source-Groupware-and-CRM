@@ -123,7 +123,7 @@ class Tinebase_Timemachine_ModificationLogTest extends PHPUnit_Framework_TestCas
             'modification_account' => 7,
             'modified_attribute'   => 'SecondTestAttribute',
             'old_value'            => '�stereich',
-            'new_value'            => 'Schweitz'
+            'new_value'            => 'Schweiz'
         ),
         array(
             'application_id'       => Tinebase_Application::getInstance()->getApplicationByName('Tinebase')->getId(),
@@ -133,7 +133,7 @@ class Tinebase_Timemachine_ModificationLogTest extends PHPUnit_Framework_TestCas
             'modification_time'    => $this->Cloner($now),
             'modification_account' => 7,
             'modified_attribute'   => 'SecondTestAttribute',
-            'old_value'            => 'Schweitz',
+            'old_value'            => 'Schweiz',
             'new_value'            => 'Italien'
         )), true, false);
         
