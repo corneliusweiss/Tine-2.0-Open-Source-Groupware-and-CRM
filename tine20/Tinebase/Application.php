@@ -89,10 +89,10 @@ class Tinebase_Application
      * @throws InvalidArgumentException, Exception
      * @return Tinebase_Model_Application the information about the application
      */
-    public function getApplicationByName($_applicationName)
+    public function getApplicationByName($_applicationName = NULL)
     {
         if(empty($_applicationName)) {
-            throw new InvalidArgumentException('$_applicationName can not be empty');
+            throw new InvalidArgumentException('applicationName can not be empty');
         }
         $where = $this->_db->quoteInto($this->_db->quoteIdentifier('name') . ' = ?', $_applicationName);
         if(!$row = $this->applicationTable->fetchRow($where)) {
@@ -199,13 +199,12 @@ class Tinebase_Application
     public function addApplication(Tinebase_Model_Application $_application)
     {
         $data = $_application->toArray();
-        //if (empty($data['id'])) {
-        //    $data['id'] = Tinebase_Model_Container::generateUID(); 
-        //}
-         
+        if (!isset($data['id'])) {
+            $data['id'] = Tinebase_Model_Container::generateUID(); 
+        } 
         unset($data['tables']);
         $this->applicationTable->insert($data);
-        
+        $_application->setId($data['id']);
         return $_application;
     }
     

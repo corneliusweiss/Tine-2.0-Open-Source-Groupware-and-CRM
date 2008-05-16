@@ -465,8 +465,8 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
             throw new Exception('lead object is not valid');
         }
         
-        if(!Zend_Registry::get('currentAccount')->hasGrant($_lead->container, Tinebase_Container::GRANT_ADD)) {
-            throw new Exception('add access to leads in container ' . $_lead->container . ' denied');
+        if(!Zend_Registry::get('currentAccount')->hasGrant($_lead->container_id, Tinebase_Container::GRANT_ADD)) {
+            throw new Exception('add access to leads in container ' . $_lead->container_id . ' denied');
         }
         
         $lead = $this->_backend->addLead($_lead);
@@ -495,7 +495,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
             }
         } else {
             $lead = $this->_backend->getLead($_leadId);
-            if(Zend_Registry::get('currentAccount')->hasGrant($lead->container, Tinebase_Container::GRANT_DELETE)) {
+            if(Zend_Registry::get('currentAccount')->hasGrant($lead->container_id, Tinebase_Container::GRANT_DELETE)) {
                 $this->_backend->deleteLead($_leadId);
             } else {
                 throw new Exception('delete access to lead denied');
@@ -760,7 +760,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $lead = $this->_backend->getLead($_leadId);
         
-        if(!Zend_Registry::get('currentAccount')->hasGrant($lead->container, Tinebase_Container::GRANT_READ)) {
+        if(!Zend_Registry::get('currentAccount')->hasGrant($lead->container_id, Tinebase_Container::GRANT_READ)) {
             throw new Exception('read permission to lead denied');
         }
 
@@ -781,8 +781,8 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
             throw new Exception('lead object is not valid');
         }
         
-        if(!Zend_Registry::get('currentAccount')->hasGrant($_lead->container, Tinebase_Container::GRANT_EDIT)) {
-            throw new Exception('add access to leads in container ' . $_lead->container . ' denied');
+        if(!Zend_Registry::get('currentAccount')->hasGrant($_lead->container_id, Tinebase_Container::GRANT_EDIT)) {
+            throw new Exception('add access to leads in container ' . $_lead->container_id . ' denied');
         }
 
         $lead = $this->_backend->updateLead($_lead);
@@ -840,7 +840,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
         $view->leadState = $this->getLeadState($_lead->leadstate_id);
         $view->leadType = $this->getLeadType($_lead->leadtype_id);
         $view->leadSource = $this->getLeadSource($_lead->leadsource_id);
-        $view->container = Tinebase_Container::getInstance()->getContainerById($_lead->container);
+        $view->container = Tinebase_Container::getInstance()->getContainerById($_lead->container_id);
         
         if($_lead->start instanceof Zend_Date) {
             $view->start = $_lead->start->toString(Zend_Locale_Format::getDateFormat(Zend_Registry::get('locale')), Zend_Registry::get('locale'));

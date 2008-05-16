@@ -203,10 +203,13 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
                 'is_due'  => 'LENGTH(tasks.due)',
                 //'is_open' => 'status.status_is_open',
             ))
-            ->joinLeft(array('contact' => $this->_tableNames['contact']), 'tasks.id = contact.task_id', array())
-            ->joinLeft(array('tag'     => $this->_tableNames['tag']), 'tasks.id = tag.task_id', array())
-            ->joinLeft(array('status'  => $this->_tableNames['status']), 'tasks.status_id = status.id', array())
-            ->where($this->_db->quoteIdentifier('tasks.is_deleted') . ' = FALSE')
+            ->joinLeft(array('contact' => $this->_tableNames['contact']),
+             $this->_db->quoteIdentifier('tasks.id') . ' = ' .  $this->_db->quoteIdentifier('contact.task_id'), array())
+            ->joinLeft(array('tag'     => $this->_tableNames['tag']), 
+            $this->_db->quoteIdentifier('tasks.id') . ' = ' .  $this->_db->quoteIdentifier('tag.task_id'), array())
+            ->joinLeft(array('status'  => $this->_tableNames['status']), 
+            $this->_db->quoteIdentifier('tasks.status_id')  . ' = ' .  $this->_db->quoteIdentifier('status.id'), array())
+            ->where($this->_db->quoteIdentifier('tasks.is_deleted') . ' = 0')
             ->group('tasks.id');
     }
     
@@ -218,10 +221,10 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
      */
     public function createTask(Tasks_Model_Task $_task)
     {
-        if ( empty($_task->id) ) {
+        //if ( empty($_task->id) ) {
         	$newId = $_task->generateUID();
         	$_task->setId($newId);
-        }
+        //}
         $_task->creation_time = Zend_Date::now();
         if ( isset($this->_currentAccount) ) {
             $_task->created_by = $this->_currentAccount->getId();
@@ -297,7 +300,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
         
             $tasksTable = $this->getTableInstance('tasks');
             $numAffectedRows = $tasksTable->update($taskParts['tasks'], array(
-                $this->_db->quoteInto('id = ?', $_task->id),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $_task->id),
             ));
             $this->deleteDependentRows($_task->id);
             $this->insertDependentRows($taskParts);
@@ -343,7 +346,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
             'deleted_by'   => $this->_currentAccount->getId()
         );
         $tasksTable->update($data, array(
-            $this->_db->quoteInto('id = ?', $_id)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $_id)
         ));
         
         // NOTE: cascading delete through the use of forign keys!

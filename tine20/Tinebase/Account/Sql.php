@@ -456,8 +456,8 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
             
             // add new account
             $accountId = $accountsTable->insert($accountData);
-            if ($accountId === NULL) {
-                $accountId = $this->_db->lastSequenceId(substr(SQL_TABLE_PREFIX . 'accounts', 0,26) . '_seq');
+            if ($accountId == '') {
+                $accountId = $this->_db->lastSequenceId(SQL_TABLE_PREFIX . 'accounts_seq');
             }
             // if we insert an account without an accountId, we need to get back one
             if(empty($_account->accountId) && $accountId == 0) {

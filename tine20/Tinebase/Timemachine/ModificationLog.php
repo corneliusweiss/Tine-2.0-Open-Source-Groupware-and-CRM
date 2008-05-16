@@ -184,8 +184,11 @@ class Tinebase_Timemachine_ModificationLog
      */
     public function setModification( Tinebase_Timemachine_Model_ModificationLog $_modification ) {
         if ($_modification->isValid()) {
-        	$id = $_modification->generateUID();
-            $_modification->setId($id);
+        	if (NULL == $_modification->getId()) {
+            	$id = $_modification->generateUID();
+                $_modification->setId($id);
+        	}   
+
             $_modification->convertDates = true;
             $modificationArray = $_modification->toArray();
             

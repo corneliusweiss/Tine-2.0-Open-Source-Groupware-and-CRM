@@ -258,16 +258,18 @@ class Tinebase_Acl_Roles
      */
     public function createRole(Tinebase_Acl_Model_Role $_role)
     {
-        $data = $_role->toArray();
+        
         if(Zend_Registry::isRegistered('currentAccount')) {
             $data['created_by'] = Zend_Registry::get('currentAccount')->getId();
         }
         $data['creation_time'] = Zend_Date::now()->getIso();
-        $data['id'] = $_role->generateUID();        
-        //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($data, true));
-                        
-        $newId = $this->_rolesTable->insert($data); 
-        $role = $this->getRoleById($data['id']);
+        if (NULL === $_role->getId()) {
+            $_role->setId($_role->generateUID());        
+        }
+            //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($data, true));
+        $data = $_role->toArray();                
+        $this->_rolesTable->insert($data); 
+        $role = $this->getRoleById($_role->getId());
         return $role;
     }
     

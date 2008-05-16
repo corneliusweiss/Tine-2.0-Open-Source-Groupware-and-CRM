@@ -157,7 +157,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
     	if (! isset($this->_properties[$this->_identifier])) {
     		$this->setId(NULL);
     	}
-		return $this->_properties[$this->_identifier];
+    	return $this->_properties[$this->_identifier];
     }
     
     /**
@@ -192,12 +192,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
         $this->bypassFilters = true;
         foreach ($_data as $key => $value) {
             if (array_key_exists ($key, $this->_validators)) {
-            	
-            	if ($key == $this->_identifier && $value == NULL) {
-            		$this->$key = $this->generateUID();
-            	} else {
-            	    $this->$key = $value;
-            	}
+            	$this->$key = $value;
             }
         }
         

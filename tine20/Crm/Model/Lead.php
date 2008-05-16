@@ -58,7 +58,7 @@ class Crm_Model_Lead extends Tinebase_Record_Abstract
         'leadstate_id'  => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
         'leadtype_id'   => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
         'leadsource_id' => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
-        //'container_id'  => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
+        'container_id'  => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
         'start'         => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence'=>'required'),
         'description'   => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'end'           => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => NULL),
@@ -111,7 +111,7 @@ class Crm_Model_Lead extends Tinebase_Record_Abstract
     {
         if($_leadId instanceof Crm_Model_Lead) {
             if(empty($_leadId->id)) {
-                throw new Exception('no lead id set');
+                throw new Exception('no lead id set' . print_r($_leadId));
             }
             $id = (string) $_leadId->id;
         } else {

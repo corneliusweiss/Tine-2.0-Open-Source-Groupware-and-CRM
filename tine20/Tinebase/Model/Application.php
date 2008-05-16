@@ -83,9 +83,9 @@ class Tinebase_Model_Application extends Tinebase_Record_Abstract
             if(empty($_applicationId->id)) {
                 throw new Exception('no application id set');
             }
-            $applicationId = $_applicationId->id;
+            $applicationId = (string) $_applicationId->id;
         } else {
-            $applicationId = $_applicationId;
+            $applicationId = (string) $_applicationId;
         }
         
         if($applicationId === NULL) {

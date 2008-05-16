@@ -264,7 +264,7 @@ class Addressbook_JsonTest extends PHPUnit_Framework_TestCase
         $contact = $json->saveContact(Zend_Json::encode($newContact));
 
         $this->assertArrayNotHasKey('errorMessage', $contact);
-        $this->assertGreaterThan(0, $contact['updatedData']['id'], 'returned contactId not > 0');
+        $this->assertNotNull($contact['updatedData']['id'], 'returned contactId is NULL');
 
         $contactId = $contact['updatedData']['id'];
 

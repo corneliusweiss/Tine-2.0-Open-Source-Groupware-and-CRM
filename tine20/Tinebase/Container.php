@@ -476,8 +476,8 @@ class Tinebase_Container
             ->group(SQL_TABLE_PREFIX . 'container.id')
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
-        //error_log("getContainer:: " . $select->__toString());
-
+            Zend_Registry::get('logger')->debug("getContainer:: " . $select->__toString());
+      
         $stmt = $this->_db->query($select);
         
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);

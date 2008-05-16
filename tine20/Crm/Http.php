@@ -113,8 +113,8 @@ class Crm_Http extends Tinebase_Application_Http_Abstract
                 }
             }
             
-            $folder = Tinebase_Container::getInstance()->getContainerById($lead->container);
-            $leadData['container'] = $folder->toArray();
+            $folder = Tinebase_Container::getInstance()->getContainerById($lead->container_id);
+            $leadData['container_id'] = $folder->toArray();
             
             $products = $controller->getProductsByLeadId($_leadId);
             $leadData['products'] = $products->toArray();
@@ -128,7 +128,7 @@ class Crm_Http extends Tinebase_Application_Http_Abstract
             
             $personalFolders = Zend_Registry::get('currentAccount')->getPersonalContainer('Crm', $currentAccount, Tinebase_Container::GRANT_READ);
             foreach($personalFolders as $folder) {
-                $leadData['container']     = $folder->toArray();
+                $leadData['container_id']     = $folder->toArray();
                 break;
             }
             

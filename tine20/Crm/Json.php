@@ -375,7 +375,7 @@ class Crm_Json extends Tinebase_Application_Json_Abstract
         
         $result = $savedLead->toArray();
         
-        $result['container'] = Tinebase_Container::getInstance()->getContainerById($savedLead->container)->toArray();        
+        $result['container_id'] = Tinebase_Container::getInstance()->getContainerById($savedLead->container)->toArray();        
 
         return $result;  
     }      

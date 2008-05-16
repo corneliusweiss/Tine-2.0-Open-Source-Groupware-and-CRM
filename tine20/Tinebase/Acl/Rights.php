@@ -252,7 +252,7 @@ class Tinebase_Acl_Rights
         if (!$_right->isValid()) {
             throw new Exception('invalid Tinebase_Acl_Model_Right object passed');
         }
-                
+        $_right->setId($_right->generateUID());        
         $data = $_right->toArray();
                 
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($data, true));

@@ -126,7 +126,7 @@ class Tinebase_Timemachine_ModificationLogTest extends PHPUnit_Framework_TestCas
             'new_value'            => 'Schweiz'
         ),
         array(
-            'application_id'       => Tinebase_Application::getInstance()->getApplicationByName('Tinebase')->getId(),
+            'application_id'       => Tinebase_Application::getInstance()->getApplicationByName('Tinebase'),
             'record_id'            => $this->_recordIds[0],
             'record_type'          => 'TestType',
             'record_backend'       => 'TestBackend',

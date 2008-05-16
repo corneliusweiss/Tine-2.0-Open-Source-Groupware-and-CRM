@@ -147,24 +147,19 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         if (! $_contactData->isValid()) {
             throw new Exception('invalid contact');
         }
+        if ($_contactData->getId() == '') {
+            $_contactData->setId($_contactData->generateUID());
+        }    
         $contactData = $_contactData->toArray();
         //if (empty($_contactData->id)) {
-            $contactData['id'] = Tinebase_Account_Model_Account::generateUID();
+        //    $contactData['id'] = Tinebase_Account_Model_Account::generateUID();
         //}
         // tags are not property of this backend
         unset($contactData['tags']);
         
         
         $this->_db->insert(SQL_TABLE_PREFIX . 'addressbook', $contactData);
-        $id = $contactData['id'];//$this->_db->lastInsertId(SQL_TABLE_PREFIX . 'addressbook', 'id');
-        // if we insert a contact without an id, we need to get back one
-        if (empty($_contactData->id) && $id == 0) {
-            throw new Exception("returned contact id is 0");
-        }
-        // if the account had no accountId set, set the id now
-        if (empty($_contactData->id)) {
-            $_contactData->id = $id;
-        }
+
         return $this->getContact($_contactData->id);
     }
     /**
@@ -183,7 +178,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         unset($contactData['id']);
         // tags are not property of this backend
         unset($contactData['tags']);
-        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId);
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $contactId);
         $this->_db->update(SQL_TABLE_PREFIX . 'addressbook', $contactData, $where);
         return $this->getContact($contactId);
     }
@@ -209,7 +204,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
     public function getContact ($_contactId)
     {
         $contactId = Addressbook_Model_Contact::convertContactIdToInt($_contactId);
-        $select = $this->_db->select()->from(SQL_TABLE_PREFIX . 'addressbook')->where($this->_db->quoteIdentifier('id') .' = ?', $contactId);
+        $select = $this->_db->select()->from(SQL_TABLE_PREFIX . 'addressbook')->where($this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId));
         $row = $this->_db->fetchRow($select);
         if (! $row) {
             throw new UnderflowException('contact not found');

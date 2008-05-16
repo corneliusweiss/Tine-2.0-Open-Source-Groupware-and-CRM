@@ -519,11 +519,14 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         $leadData = $_lead->toArray();
         if(empty($_lead->id)) {
            $leadData['id'] = $id;
+           $_lead->setId($id);
         }
         unset($leadData['responsible']);
         unset($leadData['customer']);
         unset($leadData['partner']);
         unset($leadData['tasks']);
+        
+        $this->leadTable->insert($leadData);
         
         // if we insert a contact without an id, we need to get back one
         if(empty($_lead->id) && $id == 0) {
@@ -612,7 +615,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         }        
         
         $where = array(
-            $this->db->quoteInto($this->db->quoteIdentifier('container_id') . 'IN (?)', $_container)
+            $this->_db->quoteInto($this->_db->quoteIdentifier('container_id') . 'IN (?)', $_container)
         );
                 
         $where = array_merge($where, $this->_getSearchFilter($_filter, $_leadState, $_probability, $_getClosedLeads));
@@ -630,25 +633,25 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function deleteLead($_leadId)
     {
-        //$leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
+        $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         
         $this->_db->beginTransaction();
         
         try {
             $where = array(
-                $this->_db->quoteInto($this->_db->quoteIdentifier('lead_id') . ' = ?', $_leadId)
+                $this->_db->quoteInto($this->_db->quoteIdentifier('lead_id') . ' = ?', $leadId)
             );          
-            $db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $where);            
+            $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $where);            
 
             $where = array(
                 $this->_db->quoteInto($this->_db->quoteIdentifier('link_app1') . '= ?', 'crm'),
-                $this->_db->quoteInto($this->_db->quoteIdentifier('link_id1') . '= ?', $_leadId),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_id1') . '= ?', $leadId),
                 $this->_db->quoteInto($this->_db->quoteIdentifier('link_app2') . '= ?', 'addressbook')
             );                                  
             $this->_db->delete(SQL_TABLE_PREFIX . 'links', $where);               
             
             $where = array(
-                $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $_leadId)
+                $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $leadId)
             );
             $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_lead', $where);
 
@@ -743,7 +746,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
     public function deleteProductsourceById($_Id = NULL)
     {
         if(NULL === $_Id) {
-            throw new InvalidArgumentException('$_Id must be integer');
+            throw new InvalidArgumentException('Id must be set');
         }      
         $where  = array(
             $this->_db->quoteInto($this->_db->quoteIdentifier('leadsource_id') . ' = ?', $_Id),

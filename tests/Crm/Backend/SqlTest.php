@@ -69,7 +69,7 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
         }
         
         $this->objects['initialLead'] = new Crm_Model_Lead(array(
-            'id'            => $this->uid,
+         //   'id'            => $this->uid,
             'lead_name'     => 'PHPUnit',
             'leadstate_id'  => 1,
             'leadtype_id'   => 1,
@@ -84,7 +84,7 @@ class Crm_Backend_SqlTest extends PHPUnit_Framework_TestCase
         )); 
         
         $this->objects['updatedLead'] = new Crm_Model_Lead(array(
-            'id'            => $this->uid,
+         //   'id'            => $this->uid,
             'lead_name'     => 'PHPUnit',
             'leadstate_id'  => 1,
             'leadtype_id'   => 1,

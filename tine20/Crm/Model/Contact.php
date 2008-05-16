@@ -55,7 +55,7 @@ class Crm_Model_Contact extends Tinebase_Record_Abstract
         'link_id'               => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => NULL),
         'link_remark'           => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence' => 'required'),         
         'contact_id'            => array(Zend_Filter_Input::ALLOW_EMPTY => false, 'presence' => 'required'),
-        //'container_id'          => array(Zend_Filter_Input::ALLOW_EMPTY => true),   
+        'container_id'          => array(Zend_Filter_Input::ALLOW_EMPTY => true),   
         'n_family'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),      
         'n_given'               => array(Zend_Filter_Input::ALLOW_EMPTY => true),     
         'n_middle'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),      

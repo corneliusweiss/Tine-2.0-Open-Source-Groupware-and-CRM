@@ -371,7 +371,6 @@ class Tinebase_Account_Registration
             throw (new Exception('invalid registration object'));
         }
         $registrationData = array(
-            'id'         => Tinebase_Account_Model_Registration::generateUID(),
             "login_name" => $_registration->login_name ,
             "login_hash" => $_registration->login_hash ,
             "email"      => $_registration->email ,
