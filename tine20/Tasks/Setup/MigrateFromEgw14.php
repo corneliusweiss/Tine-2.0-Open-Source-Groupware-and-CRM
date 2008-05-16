@@ -123,7 +123,6 @@ class Tasks_Setup_MigrateFromTine14
             $Task['container'] = self::getOwnersContainer($infolog->info_owner);
             $Task['organizer'] = $Task['organizer'] ? $Task['organizer'] : $Task['created_by'];
             
-            error_log(print_r($Task,true));
             try {
                 $Task20 = new Tasks_Model_Task(NULL, true, true);
                 $Task20->setFromArray($Task);

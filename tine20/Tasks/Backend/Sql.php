@@ -135,7 +135,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
         if(isset($_filter->showClosed) && $_filter->showClosed){
             // nothing to filter
         } else {
-            $select->where($this->_db->quoteIdentifier('status.status_is_open') . ' = TRUE');
+            $select->where($this->_db->quoteIdentifier('status.status_is_open') . ' = 1');
         }
 
         $stmt = $this->_db->query($select);
@@ -235,6 +235,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
         try {
             $this->_db->beginTransaction();
             $tasksTable = $this->getTableInstance('tasks');
+            Zend_Registry::get('logger')->debug('Tasks:' . print_r($_task));
             $tasksTable->insert($taskParts['tasks']);
             $this->insertDependentRows($taskParts);
             $this->_db->commit();

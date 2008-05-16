@@ -46,7 +46,7 @@ class Tinebase_Controller
     {
         Zend_Session::start();
         try {
-            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_mysql_2.ini');
+            $this->_config = new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_oracle.ini');
             Zend_Registry::set('configFile', $this->_config);
         } catch (Zend_Config_Exception $e) {
             die ('central configuration file ' . $_SERVER['DOCUMENT_ROOT'] . '/../config.ini not found');

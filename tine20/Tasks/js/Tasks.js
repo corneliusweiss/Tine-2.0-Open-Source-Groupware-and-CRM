@@ -59,7 +59,7 @@ Tine.Tasks.mainGrid = {
         containerType: 'personal',
         query: '',
         due: false,
-        container: false,
+        container_id: false,
         organizer: false,
         tag: false
     },
@@ -76,7 +76,7 @@ Tine.Tasks.mainGrid = {
             }
 			var popupWindow = new Tine.Tasks.EditPopup({
 				id: taskId,
-                containerId: (nodeAttributes && nodeAttributes.container) ? nodeAttributes.container.id : -1
+                containerId: (nodeAttributes && nodeAttributes.container_id) ? nodeAttributes.container.id : -1
                 //relatedApp: 'tasks',
                 //relatedId: 
             });
@@ -202,7 +202,7 @@ Tine.Tasks.mainGrid = {
             var nodeAttributes = Ext.getCmp('TasksTreePanel').getSelectionModel().getSelectedNode().attributes || {};
             this.filter.containerType = nodeAttributes.containerType ? nodeAttributes.containerType : 'all';
             this.filter.owner = nodeAttributes.owner ? nodeAttributes.owner.accountId : null;
-            this.filter.container = nodeAttributes.container ? nodeAttributes.container.id : null;
+            this.filter.container_id = nodeAttributes.container_id ? nodeAttributes.container.id : null;
             
             // toolbar
 			this.filter.showClosed = Ext.getCmp('TasksShowClosed') ? Ext.getCmp('TasksShowClosed').pressed : false;
@@ -271,7 +271,7 @@ Tine.Tasks.mainGrid = {
     },
 
 	getTree: function() {
-        this.tree =  new Tine.widgets.container.TreePanel({
+        this.tree =  new Tine.widgets.container_id.TreePanel({
             id: 'TasksTreePanel',
             iconCls: 'TasksIconCls',
             title: 'Tasks',
@@ -521,7 +521,7 @@ Tine.Tasks.mainGrid = {
         		
 	    this.grid.on('newentry', function(taskData){
 	    	var selectedNode = this.tree.getSelectionModel().getSelectedNode();
-            taskData.container_id = selectedNode && selectedNode.attributes.container ? selectedNode.attributes.container.id : -1;
+            taskData.container_id = selectedNode && selectedNode.attributes.container_id ? selectedNode.attributes.container.id : -1;
 	        var task = new Tine.Tasks.Task(taskData);
 
 	        Ext.Ajax.request({
@@ -699,7 +699,7 @@ Tine.Tasks.EditDialog = function(task) {
                     name: 'due',
                     format: "d.m.Y"
                 }), 
-                new Tine.widgets.container.selectionComboBox({
+                new Tine.widgets.container_id.selectionComboBox({
                     fieldLabel: 'Folder',
                     name: 'container_id',
                     itemName: 'Tasks',

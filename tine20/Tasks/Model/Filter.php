@@ -36,7 +36,7 @@ class Tasks_Model_Filter extends Tinebase_Record_Abstract
 
         'containerType'        => array('allowEmpty' => true           ),
         'owner'                => array('allowEmpty' => true           ),
-        'container'            => array('allowEmpty' => true           ),
+        'container_id'            => array('allowEmpty' => true           ),
         
         'query'                => array('allowEmpty' => true           ),
         'organizer'            => array('allowEmpty' => true           ),
@@ -60,7 +60,7 @@ class Tasks_Model_Filter extends Tinebase_Record_Abstract
     public function __get($_name)
     {
         switch ($_name) {
-            case 'container':
+            case 'container_id':
                 $this->_resolveContainer();
                 break;
             default:
@@ -76,7 +76,7 @@ class Tasks_Model_Filter extends Tinebase_Record_Abstract
      */
     protected function _resolveContainer()
     {
-        if (isset($this->_properties['container']) && is_array($this->_properties['container'])) {
+        if (isset($this->_properties['container_id']) && is_array($this->_properties['container_id'])) {
             return;
         }
         if (!$this->containerType) {
@@ -101,7 +101,7 @@ class Tasks_Model_Filter extends Tinebase_Record_Abstract
                 $containers = Zend_Registry::get('currentAccount')->getOtherUsersContainer($this->_application, Tinebase_Container::GRANT_READ);
                 break;
             case 'singleContainer':
-                $this->_properties['container'] = array($this->_properties['container']);
+                $this->_properties['container_id'] = array($this->_properties['container_id']);
                 return;
             default:
                 throw new Exception('containerType not supported.');
@@ -111,6 +111,6 @@ class Tasks_Model_Filter extends Tinebase_Record_Abstract
             $container[] = $singleContainer->getId();
         }
         
-        $this->_properties['container'] = $container;
+        $this->_properties['container_id'] = $container;
     }
 }

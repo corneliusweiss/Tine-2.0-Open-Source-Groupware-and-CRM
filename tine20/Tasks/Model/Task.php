@@ -47,7 +47,7 @@ class Tasks_Model_Task extends Tinebase_Record_Abstract
         'completed'            => array('allowEmpty' => true         ),
         'due'                  => array('allowEmpty' => true         ),
         // ical common fields
-        'class_id'             => array('allowEmpty' => true, 'Int'  ),
+        'class_id'             => array('allowEmpty' => true, 'Alnum'  ),
         'description'          => array('allowEmpty' => true         ),
         'geo'                  => array('allowEmpty' => true         ),
         'location'             => array('allowEmpty' => true         ),

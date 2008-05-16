@@ -517,10 +517,11 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         }
         $id = Tinebase_Account_Model_Account::generateUID();
         $leadData = $_lead->toArray();
-        if(empty($_lead->id)) {
+        if('' ==  ($_lead->id)) {
            $leadData['id'] = $id;
            $_lead->setId($id);
         }
+        Zend_Registry::get('logger')->debug("LEAD ARRAY" . print_r($leadData,true));
         unset($leadData['responsible']);
         unset($leadData['customer']);
         unset($leadData['partner']);
@@ -531,11 +532,6 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         // if we insert a contact without an id, we need to get back one
         if(empty($_lead->id) && $id == 0) {
             throw new Exception("returned lead id is 0");
-        }
-        
-        // if the account had no accountId set, set the id now
-        if(empty($_lead->id)) {
-            $_lead->id = $id;
         }
         
         return $this->getLead($_lead->id);
@@ -550,7 +546,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function getLead($_id)
     {
-        $id = Crm_Model_Lead::convertLeadIdToInt($_id);
+        $id = $_id;//Crm_Model_Lead::convertLeadIdToInt($_id);
 
         $select = $this->_getLeadSelectObject()
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('lead.id') . ' = ?', $id));
@@ -558,6 +554,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
       // echo $select->__toString();
        
         $stmt = $select->query();
+        Zend_Registry::get('logger')->debug("lead search" . $select->__toString());
 
         $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         

@@ -171,7 +171,7 @@ class Tinebase_Timemachine_ModificationLog
         if (empty($RawLogEntry)) {
             throw new Exception("Modification Log with id: $_id not found!");
         }
-        print_r($RawLogEntry);
+        //print_r($RawLogEntry);
         return new Tinebase_Timemachine_Model_ModificationLog($RawLogEntry[0], true); 
         
     } // end of member function getModification

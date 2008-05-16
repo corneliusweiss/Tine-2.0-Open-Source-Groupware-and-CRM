@@ -47,6 +47,8 @@ class Tinebase_Acl_Rights
      */
     protected $_rightsTable;
 
+    protected $_db;
+    
     /**
      * holdes the instance of the singleton
      *
@@ -71,6 +73,7 @@ class Tinebase_Acl_Rights
      */
     private function __construct() {
         $this->_rightsTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'application_rights'));
+        $this->_db = Zend_Registry::get('dbAdapter');
     }    
     
     /**
@@ -104,24 +107,22 @@ class Tinebase_Acl_Rights
         
         $groupMemberships   = Tinebase_Group::getInstance()->getGroupMemberships($accountId);
         
-        $db = Zend_Registry::get('dbAdapter');
-
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'application_rights', array())
             ->join(SQL_TABLE_PREFIX . 'applications', 
-                $db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.application_id') . ' = ' . $db->quoteIdentifier(SQL_TABLE_PREFIX . 'applications.id'))            
+                $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.application_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'applications.id'))            
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'application_rights.account_type = \'group\' and ' . 
-                SQL_TABLE_PREFIX . 'application_rights.account_id IN (?)', $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_id = ?', $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_type = \'anyone\' )')
-            ->where(SQL_TABLE_PREFIX . 'application_rights.right = ?', Tinebase_Acl_Rights::RUN)
-            ->where(SQL_TABLE_PREFIX . 'applications.status = ?', Tinebase_Application::ENABLED)
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . ' = ?', 'group') . ' AND ' . 
+                $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . ' IN (?)', $groupMemberships))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . ' = ?', $accountId))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . ' = ?)', 'anyone' ))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.right') . ' = ?', Tinebase_Acl_Rights::RUN))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'applications.status') . ' = ?', Tinebase_Application::ENABLED))
             ->group(SQL_TABLE_PREFIX . 'application_rights.application_id');
             
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
 
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
         
         $result = new Tinebase_Record_RecordSet('Tinebase_Model_Application', $stmt->fetchAll(Zend_Db::FETCH_ASSOC));
         
@@ -158,20 +159,18 @@ class Tinebase_Acl_Rights
         
         $groupMemberships   = Tinebase_Group::getInstance()->getGroupMemberships($accountId);                        
 
-        $db = Zend_Registry::get('dbAdapter');
-
-        $select = $db->select()
+        $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'application_rights', array('account_rights' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'application_rights.right)'))
             
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'application_rights.account_type = \'group\' and ' . SQL_TABLE_PREFIX . 'application_rights.account_id IN (?)', $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_id = ?', $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_type = \'anyone\' )')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . '  = ?' , 'group') . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . ' IN (?)', $groupMemberships))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . '  = ?', $accountId))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . ' = ?)', 'anyone' ))
 
-            ->where(SQL_TABLE_PREFIX . 'application_rights.application_id = ?', $application->id)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.application_id') . ' = ?'), $application->id)
             ->group(SQL_TABLE_PREFIX . 'application_rights.application_id');
             
-        $stmt = $db->query($select);
+        $stmt = $this->_db->query($select);
 
         $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         
@@ -220,13 +219,13 @@ class Tinebase_Acl_Rights
 
         $select = $this->_rightsTable->select()
             # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'application_rights.account_type = \'group\' and ' . 
-                SQL_TABLE_PREFIX . 'application_rights.account_id IN (?)', $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_id = ?', $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'application_rights.account_type = \'anyone\' )')
+            ->where('(' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . ' = ?', 'group') . ' and ' . 
+                $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . ' IN (?)', $groupMemberships))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_id') . ' = ?', $accountId))
+            ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.account_type') . ' = ?)', 'anyone'))
 
-            ->where(SQL_TABLE_PREFIX . 'application_rights.application_id = ?', $application->getId())
-            ->where(SQL_TABLE_PREFIX . 'application_rights.right = ?', $_right);
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.application_id') . ' = ?', $application->getId()))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.right') .' = ?', $_right));
         
         if (!$row = $this->_rightsTable->fetchRow($select)) {
             $result = false;
@@ -277,7 +276,7 @@ class Tinebase_Acl_Rights
                 '*', 
                 'right' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'application_rights.right)'
             ))
-            ->where(SQL_TABLE_PREFIX . 'application_rights.application_id = ?', $_applicationId)
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'application_rights.application_id') . ' = ?', $_applicationId))
             ->group(array(SQL_TABLE_PREFIX . 'application_rights.application_id', SQL_TABLE_PREFIX . 'application_rights.account_type', SQL_TABLE_PREFIX . 'application_rights.account_id'));
             
         $stmt = $select->query();
