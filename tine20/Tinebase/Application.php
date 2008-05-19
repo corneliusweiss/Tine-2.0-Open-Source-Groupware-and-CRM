@@ -96,7 +96,7 @@ class Tinebase_Application
         }
         $where = $this->_db->quoteInto($this->_db->quoteIdentifier('name') . ' = ?', $_applicationName);
         if(!$row = $this->applicationTable->fetchRow($where)) {
-            throw new Exception("application $_applicationName not found");
+            throw new Exception("getApplicationByName: application $_applicationName not found with statement $where");
         }
         
         $result = new Tinebase_Model_Application($row->toArray());
@@ -204,6 +204,7 @@ class Tinebase_Application
         } 
         unset($data['tables']);
         $this->applicationTable->insert($data);
+        Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' all rights: ' . print_r($data, true));
         $_application->setId($data['id']);
         return $_application;
     }

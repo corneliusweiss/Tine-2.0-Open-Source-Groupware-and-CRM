@@ -400,7 +400,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>1</value>
 			</field>
             <field>
                 <name>creation_time</name>
@@ -417,7 +417,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>2</value>
 			</field>			
             <field>
                 <name>creation_time</name>
@@ -434,7 +434,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>3</value>
 			</field>			
             <field>
                 <name>creation_time</name>
@@ -451,7 +451,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>1</value>
 			</field>
             <field>
                 <name>creation_time</name>
@@ -476,7 +476,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>2</value>
 			</field>			
             <field>
                 <name>creation_time</name>
@@ -501,7 +501,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>3</value>
 			</field>			
             <field>
                 <name>creation_time</name>
@@ -526,7 +526,7 @@
             </table>
 			<field>
 				<name>id</name>
-				<value special="uid"/>
+				<value>4</value>
 			</field>			
             <field>
                 <name>creation_time</name>

@@ -399,7 +399,7 @@ class Tinebase_Tags
             ->from(SQL_TABLE_PREFIX . 'tags_acl', array('tag_id', 'account_type', 'account_id',
                  'account_right' => 'GROUP_CONCAT(DISTINCT account_right)'))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('tag_id') . ' = ?', $_tagId))
-            ->group(array('tag_id', 'account_type', 'account_id'));
+            ->group(array('tag_id', 'account_type', 'account_id', 'account_right'));
         $stmt = $this->_db->query($select);
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         

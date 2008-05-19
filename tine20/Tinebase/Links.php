@@ -194,6 +194,7 @@ class Tinebase_Links
     public function addLink($_applicationName1, $_recordId1, $_applicationName2, $_recordId2, $_remark)
     {
         $data = array(
+            'link_id'       => Tinebase_Model_Application::generateUID(),
             'link_app1'     => $_applicationName1,
             'link_id1'      => $_recordId1,
             'link_app2'     => $_applicationName2,

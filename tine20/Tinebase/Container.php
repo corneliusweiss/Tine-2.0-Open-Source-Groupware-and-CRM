@@ -319,9 +319,21 @@ class Tinebase_Container
             ->orWhere($this->_db->quoteInto( $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_id') . ' IN (?)',  $groupMemberships) . ' AND ' . $this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') .  ' = ?', 'group'))
             ->orWhere($this->_db->quoteInto( $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
             
-            ->group(SQL_TABLE_PREFIX . 'container.id')
-            ->order(SQL_TABLE_PREFIX . 'container.name');
+            ->group(array(SQL_TABLE_PREFIX . 'container.id', 
+                    SQL_TABLE_PREFIX . 'container.name',
+                    SQL_TABLE_PREFIX . 'container.type', 
+                    SQL_TABLE_PREFIX . 'container.backend', 
+                    SQL_TABLE_PREFIX . 'container.application_id', 
+                    SQL_TABLE_PREFIX . 'container_acl.id',
+                    SQL_TABLE_PREFIX . 'container_acl.container_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_type',
+                    SQL_TABLE_PREFIX . 'container_acl.account_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_grant'
+                    
+                    ))
+            ->order(SQL_TABLE_PREFIX . 'container.name');       
 
+                
         //error_log("getContainer:: " . $select->__toString());
 
         $stmt = $this->_db->query($select);
@@ -473,10 +485,27 @@ class Tinebase_Container
             
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
-            ->group(SQL_TABLE_PREFIX . 'container.id')
+           // ->group(SQL_TABLE_PREFIX . 'container.id')
+            ->group(array(SQL_TABLE_PREFIX . 'container.id', 
+                    SQL_TABLE_PREFIX . 'container.name',
+                    SQL_TABLE_PREFIX . 'container.type', 
+                    SQL_TABLE_PREFIX . 'container.backend', 
+                    SQL_TABLE_PREFIX . 'container.application_id', 
+                    'owner.id',
+                    'owner.container_id',
+                    'owner.account_type',
+                    'owner.account_id',
+                    'owner.account_grant',
+                    'user.id',
+                    'user.container_id',
+                    'user.account_type',
+                    'user.account_id',
+                    'user.account_grant'
+                    )                
+				   )
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
-            Zend_Registry::get('logger')->debug("getContainer:: " . $select->__toString());
+            //Zend_Registry::get('logger')->debug("getContainer:: " . $select->__toString());
       
         $stmt = $this->_db->query($select);
         
@@ -529,7 +558,17 @@ class Tinebase_Container
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_SHARED))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_grant') . ' = ?', $_grant))
-            ->group(SQL_TABLE_PREFIX . 'container.id')
+            ->group(array(SQL_TABLE_PREFIX . 'container.id', 
+                    SQL_TABLE_PREFIX . 'container.name',
+                    SQL_TABLE_PREFIX . 'container.type', 
+                    SQL_TABLE_PREFIX . 'container.backend', 
+                    SQL_TABLE_PREFIX . 'container.application_id', 
+                    SQL_TABLE_PREFIX . 'container_acl.id',
+                    SQL_TABLE_PREFIX . 'container_acl.container_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_type',
+                    SQL_TABLE_PREFIX . 'container_acl.account_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_grant'
+                    ))
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
         //error_log("getContainer:: " . $select->__toString());
@@ -576,8 +615,25 @@ class Tinebase_Container
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_grant') . ' = ?', $_grant))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
-            ->order(SQL_TABLE_PREFIX . 'container.name')
-            ->group('owner.account_id');
+            ->group(array(
+                        'owner.account_id',
+                        SQL_TABLE_PREFIX . 'container.name',
+                        SQL_TABLE_PREFIX . 'container.id', 
+                        SQL_TABLE_PREFIX . 'container.type', 
+	                    SQL_TABLE_PREFIX . 'container.backend', 
+	                    SQL_TABLE_PREFIX . 'container.application_id', 
+	                    'owner.id',
+	                    'owner.container_id',
+	                    'owner.account_type',
+	                    
+	                    'owner.account_grant',
+	                    'user.id',
+	                    'user.container_id',
+	                    'user.account_type',
+	                    'user.account_id',
+	                    'user.account_grant'
+                    ));
+          //  ->group('owner.account_id');
             
         //error_log("getContainer:: " . $select->__toString());
 
@@ -631,7 +687,22 @@ class Tinebase_Container
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('user.account_grant') . ' = ?', $_grant))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.application_id') . ' = ?', $application->getId()))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.type') . ' = ?', self::TYPE_PERSONAL))
-            ->group(SQL_TABLE_PREFIX . 'container.id')
+            ->group(array(SQL_TABLE_PREFIX . 'container.id', 
+                    SQL_TABLE_PREFIX . 'container.name',
+                    SQL_TABLE_PREFIX . 'container.type', 
+                    SQL_TABLE_PREFIX . 'container.backend', 
+                    SQL_TABLE_PREFIX . 'container.application_id', 
+                    'owner.id',
+                    'owner.container_id',
+                    'owner.account_type',
+                    'owner.account_id',
+                    'owner.account_grant',
+                    'user.id',
+                    'user.container_id',
+                    'user.account_type',
+                    'user.account_id',
+                    'user.account_grant'
+                    ))
             ->order(SQL_TABLE_PREFIX . 'container.name');
             
         //error_log("getContainer:: " . $select->__toString());
@@ -774,8 +845,18 @@ class Tinebase_Container
             $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.container_id') . ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id'), 
             array('id', 'account_type', 'account_id', 'account_grants' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'container_acl.account_grant)'))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ?', $containerId))
-            ->group(array(SQL_TABLE_PREFIX . 'container.id', SQL_TABLE_PREFIX . 'container_acl.account_type', SQL_TABLE_PREFIX . 'container_acl.account_id'));
-
+            //->group(array(SQL_TABLE_PREFIX . 'container.id', SQL_TABLE_PREFIX . 'container_acl.account_type', SQL_TABLE_PREFIX . 'container_acl.account_id'));
+            ->group(array(SQL_TABLE_PREFIX . 'container.id',
+                    SQL_TABLE_PREFIX . 'container.name',
+                    SQL_TABLE_PREFIX . 'container.type', 
+                    SQL_TABLE_PREFIX . 'container.backend', 
+                    SQL_TABLE_PREFIX . 'container.application_id', 
+                    SQL_TABLE_PREFIX . 'container_acl.id',
+                    SQL_TABLE_PREFIX . 'container_acl.container_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_type',
+                    SQL_TABLE_PREFIX . 'container_acl.account_id',
+                    SQL_TABLE_PREFIX . 'container_acl.account_grant'
+                    ));
         //error_log("getAllGrants:: " . $select->__toString());
 
         $stmt = $this->_db->query($select);
@@ -853,7 +934,19 @@ class Tinebase_Container
             ->orWhere($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl.account_type') . ' = ?)', 'anyone'))
 
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.id') . ' = ?', $containerId))
-            ->group(SQL_TABLE_PREFIX . 'container_acl.account_grant');
+            ->group(array(
+                      SQL_TABLE_PREFIX . 'container_acl.account_grant',
+                      SQL_TABLE_PREFIX . 'container.id', 
+                      SQL_TABLE_PREFIX . 'container.name',
+                      SQL_TABLE_PREFIX . 'container.type', 
+                      SQL_TABLE_PREFIX . 'container.backend', 
+                      SQL_TABLE_PREFIX . 'container.application_id', 
+                      SQL_TABLE_PREFIX . 'container_acl.id',
+                      SQL_TABLE_PREFIX . 'container_acl.container_id',
+                      SQL_TABLE_PREFIX . 'container_acl.account_type',
+                      SQL_TABLE_PREFIX . 'container_acl.account_id'
+                    ));
+            //->group(SQL_TABLE_PREFIX . 'container_acl.account_grant');
 
         //error_log("getContainer:: " . $select->__toString());
 

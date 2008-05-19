@@ -43,16 +43,16 @@ class Tinebase_Record_PersistentObserverTest extends PHPUnit_Framework_TestCase
      */
     protected $persistentObserverDatas = array(
         array(
-            'observable_application' => 'tasks',
+            'observable_application' => 'Tasks',
             'observable_identifier'  => 3,
-            'observer_application'   => 'crm',
+            'observer_application'   => 'Crm',
             'observer_identifier'    => 2,
             'observed_event'         => 'Tinebase_Record_Event_Delete'
         ),
         array(
-            'observable_application' => 'crm',
+            'observable_application' => 'Crm',
             'observable_identifier'  => 2,
-            'observer_application'   => 'addressbook',
+            'observer_application'   => 'Addressbook',
             'observer_identifier'    => 1,
             'observed_event'         => 'Tinebase_Record_Event_Delete'
         )

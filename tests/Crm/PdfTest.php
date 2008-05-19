@@ -201,7 +201,7 @@ class Crm_PdfTest extends PHPUnit_Framework_TestCase
     public function testLeadPdfLinkedContact()
     {
     	// create lead + contact + link
-        Tinebase_Links::getInstance()->addLink('crm', $this->objects['leadWithLink']->id, 'addressbook', $this->objects['linkedContact']->id, "customer");
+        Tinebase_Links::getInstance()->addLink('Crm', $this->objects['leadWithLink']->id, 'Addressbook', $this->objects['linkedContact']->id, "customer");
         
         $lead =  Crm_Controller::getInstance()->getLead ($this->objects['leadWithLink']->getId());
         
@@ -225,7 +225,7 @@ class Crm_PdfTest extends PHPUnit_Framework_TestCase
        
         // create lead + task + link
         $task = Tasks_Controller::getInstance()->createTask($this->objects['linkedTask']);
-        Tinebase_Links::getInstance()->addLink('crm', $this->objects['leadWithLink']->getId(), 'tasks', $task->getId(), "task");
+        Tinebase_Links::getInstance()->addLink('Crm', $this->objects['leadWithLink']->getId(), 'tasks', $task->getId(), "task");
 
         $lead =  Crm_Controller::getInstance()->getLead ($this->objects['leadWithLink']->getId());
         

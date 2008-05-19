@@ -41,24 +41,24 @@ class Tinebase_Record_RelationTest extends PHPUnit_Framework_TestCase
      */
     private $relationData = array(
         array(
-	        'own_application'        => 'tasks',
+	        'own_application'        => 'Tasks',
 	        'own_identifier'         => 3,
 	        'related_role'           => 'CHILD',
-	        'related_application'    => 'crm',
+	        'related_application'    => 'Crm',
 	        'related_identifier'     => 2
         ),
         array(
-            'own_application'        => 'tasks',
+            'own_application'        => 'Tasks',
             'own_identifier'         => 3,
             'related_role'           => 'PARENT',
-            'related_application'    => 'addressbook',
+            'related_application'    => 'Addressbook',
             'related_identifier'     => 1
         ),
         array(
-            'own_application'        => 'crm',
+            'own_application'        => 'Crm',
             'own_identifier'         => 2,
             'related_role'           => 'PARTNER',
-            'related_application'    => 'addressbook',
+            'related_application'    => 'Addressbook',
             'related_identifier'     => 1
         )
     );

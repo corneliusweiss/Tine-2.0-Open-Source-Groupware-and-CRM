@@ -61,7 +61,7 @@ class Crm_Http extends Tinebase_Application_Http_Abstract
         if($_leadId !== NULL && $lead = $controller->getLead($_leadId)) {
             $leadData = $lead->toArray();
             
-            $contact_links = $controller->getLinks($_leadId, 'addressbook');
+            $contact_links = $controller->getLinks($_leadId, 'Addressbook');
             foreach($contact_links as $contact_link) {
                 try {
                     $contact = Addressbook_Controller::getInstance()->getContact($contact_link['recordId']);

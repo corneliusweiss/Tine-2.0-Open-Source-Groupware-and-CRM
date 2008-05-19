@@ -221,10 +221,10 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
      */
     public function createTask(Tasks_Model_Task $_task)
     {
-        //if ( empty($_task->id) ) {
+        if ( empty($_task->id) ) {
         	$newId = $_task->generateUID();
         	$_task->setId($newId);
-        //}
+        }
         $_task->creation_time = Zend_Date::now();
         if ( isset($this->_currentAccount) ) {
             $_task->created_by = $this->_currentAccount->getId();

@@ -546,7 +546,7 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
      */
     public function getLead($_id)
     {
-        $id = $_id;//Crm_Model_Lead::convertLeadIdToInt($_id);
+        $id = Crm_Model_Lead::convertLeadIdToInt($_id);
 
         $select = $this->_getLeadSelectObject()
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('lead.id') . ' = ?', $id));
@@ -559,7 +559,8 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
         $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         
         if(empty($row)) {
-            throw new UnderflowException('lead not found');
+            throw new UnderflowException("lead not found ". $select->__toString());
+             Zend_Registry::get('logger')->debug("lead not found " . $select->__toString());
         }
         
         $lead = new Crm_Model_Lead($row);
@@ -641,9 +642,9 @@ class Crm_Backend_Sql implements Crm_Backend_Interface
             $this->_db->delete(SQL_TABLE_PREFIX . 'metacrm_product', $where);            
 
             $where = array(
-                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app1') . '= ?', 'crm'),
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app1') . '= ?', 'Crm'),
                 $this->_db->quoteInto($this->_db->quoteIdentifier('link_id1') . '= ?', $leadId),
-                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app2') . '= ?', 'addressbook')
+                $this->_db->quoteInto($this->_db->quoteIdentifier('link_app2') . '= ?', 'Addressbook')
             );                                  
             $this->_db->delete(SQL_TABLE_PREFIX . 'links', $where);               
             

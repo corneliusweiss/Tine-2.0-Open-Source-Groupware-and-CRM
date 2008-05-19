@@ -147,7 +147,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         if (! $_contactData->isValid()) {
             throw new Exception('invalid contact');
         }
-        if ($_contactData->getId() == '') {
+        if ($_contactData->getId() == NULL) {
             $_contactData->setId($_contactData->generateUID());
         }    
         $contactData = $_contactData->toArray();
@@ -160,7 +160,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         
         $this->_db->insert(SQL_TABLE_PREFIX . 'addressbook', $contactData);
 
-        return $this->getContact($_contactData->id);
+        return $this->getContact($_contactData->getId());
     }
     /**
      * update an existing contact
@@ -191,7 +191,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
     public function deleteContact ($_contactId)
     {
         $contactId = Addressbook_Model_Contact::convertContactIdToInt($_contactId);
-        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId);
+        $where = $this->_db->quoteInto($this->_db->quoteIdentifier('id') . ' = ?', $contactId);
         $result = $this->_db->delete(SQL_TABLE_PREFIX . 'addressbook', $where);
         return $result;
     }
@@ -206,7 +206,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
         $contactId = Addressbook_Model_Contact::convertContactIdToInt($_contactId);
         $select = $this->_db->select()->from(SQL_TABLE_PREFIX . 'addressbook')->where($this->_db->quoteInto($this->_db->quoteIdentifier('id') .' = ?', $contactId));
         $row = $this->_db->fetchRow($select);
-        if (! $row) {
+        if (NULL == $row) {
             throw new UnderflowException('contact not found');
         }
         $result = new Addressbook_Model_Contact($row);

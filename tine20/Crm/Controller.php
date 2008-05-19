@@ -277,7 +277,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         
-        $links = Tinebase_Links::getInstance()->getLinks('crm', $leadId, $_application);
+        $links = Tinebase_Links::getInstance()->getLinks('Crm', $leadId, $_application);
         
         return $links;
     }
@@ -286,9 +286,9 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         if(is_array($_contactIds)) {
-            $result = Tinebase_Links::getInstance()->setLinks('crm', $leadId, 'addressbook', $_contactIds, 'customer');
+            $result = Tinebase_Links::getInstance()->setLinks('Crm', $leadId, 'Addressbook', $_contactIds, 'customer');
         } else {
-            $result = Tinebase_Links::getInstance()->deleteLinks('crm', $leadId, 'addressbook', 'customer');
+            $result = Tinebase_Links::getInstance()->deleteLinks('Crm', $leadId, 'Addressbook', 'customer');
         }
         
         return $result;
@@ -298,9 +298,9 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         if(is_array($_contactIds)) {
-            $result = Tinebase_Links::getInstance()->setLinks('crm', $leadId, 'addressbook', $_contactIds, 'partner');
+            $result = Tinebase_Links::getInstance()->setLinks('Crm', $leadId, 'Addressbook', $_contactIds, 'partner');
         } else {
-            $result = Tinebase_Links::getInstance()->deleteLinks('crm', $leadId, 'addressbook', 'partner');
+            $result = Tinebase_Links::getInstance()->deleteLinks('Crm', $leadId, 'Addressbook', 'partner');
         }
         
         return $result;
@@ -310,9 +310,9 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         if(is_array($_contactIds)) {
-            $result = Tinebase_Links::getInstance()->setLinks('crm', $leadId, 'addressbook', $_contactIds, 'account');
+            $result = Tinebase_Links::getInstance()->setLinks('Crm', $leadId, 'Addressbook', $_contactIds, 'account');
         } else {
-            $result = Tinebase_Links::getInstance()->deleteLinks('crm', $leadId, 'addressbook', 'account');
+            $result = Tinebase_Links::getInstance()->deleteLinks('Crm', $leadId, 'Addressbook', 'account');
         }
         
         return $result;
@@ -322,9 +322,9 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
     {
         $leadId = Crm_Model_Lead::convertLeadIdToInt($_leadId);
         if(is_array($_taskIds)) {
-            $result = Tinebase_Links::getInstance()->setLinks('crm', $leadId, 'tasks', $_taskIds, 'task');
+            $result = Tinebase_Links::getInstance()->setLinks('Crm', $leadId, 'tasks', $_taskIds, 'task');
         } else {
-            $result = Tinebase_Links::getInstance()->deleteLinks('crm', $leadId, 'tasks');
+            $result = Tinebase_Links::getInstance()->deleteLinks('Crm', $leadId, 'tasks');
         }
         
         return $result;
@@ -368,7 +368,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     public function getCountOfAllLeads($_filter = NULL, $_leadState = NULL, $_probability = NULL, $_getClosedLeads = FALSE)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getContainerByACL('crm', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getContainerByACL('Crm', Tinebase_Container::GRANT_READ);
         
         if(count($readableContainer) === 0) {
             return 0;
@@ -542,7 +542,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     public function getAllLeads($_filter = NULL, $_sort = 'id', $_dir = 'ASC', $_limit = NULL, $_start = NULL, $_leadState = NULL, $_probability = NULL, $_getClosedLeads = FALSE)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getContainerByACL('crm', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getContainerByACL('Crm', Tinebase_Container::GRANT_READ);
         
         $containerIds = array();
         foreach($readableContainer as $container) {
@@ -565,7 +565,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     protected function getLinkedProperties(Crm_Model_Lead &$_lead)
     {
-        $links = Tinebase_Links::getInstance()->getLinks('crm', $_lead->getId());
+        $links = Tinebase_Links::getInstance()->getLinks('Crm', $_lead->getId());
         $customer = array();
         $partner = array();
         $responsible = array();
@@ -610,7 +610,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     public function getSharedLeads($_filter = NULL, $_sort = 'id', $_dir = 'ASC', $_limit = NULL, $_start = NULL, $_leadState = NULL, $_probability = NULL, $_getClosedLeads = FALSE)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('crm', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('Crm', Tinebase_Container::GRANT_READ);
         
         if(count($readableContainer) === 0) {
             return new Tinebase_Record_RecordSet('Crm_Model_Lead');
@@ -643,7 +643,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     public function getLeadsByOwner($_owner, $_filter, $_sort, $_dir, $_limit, $_start, $_state, $_probability, $_getClosedLeads) 
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('crm', $_owner, Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('Crm', $_owner, Tinebase_Container::GRANT_READ);
         
         if(count($readableContainer) === 0) {
             return new Tinebase_Record_RecordSet('Crm_Model_Lead');
@@ -730,7 +730,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      */
     public function getOtherPeopleLeads($_filter, $_sort, $_dir, $_limit, $_start, $_state, $_probability, $_getClosedLeads)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getOtherUsersContainer('crm', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getOtherUsersContainer('Crm', Tinebase_Container::GRANT_READ);
                 
         if(count($readableContainer) === 0) {
             return new Tinebase_Record_RecordSet('Crm_Model_Lead');

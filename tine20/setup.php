@@ -41,7 +41,7 @@ try {
     if (isset($argv[1]) && is_file($argv[1])) {
         Zend_Registry::set('configFile', new Zend_Config_Ini($argv[1]));
     } else {
-        Zend_Registry::set('configFile', new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_mysql_2.ini'));
+        Zend_Registry::set('configFile', new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config_oracle.ini'));
     }
 } catch (Zend_Config_Exception $e) {
     die ('central configuration file ' . $_SERVER['DOCUMENT_ROOT'] . '/../config.ini not found');

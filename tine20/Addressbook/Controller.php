@@ -103,7 +103,7 @@ class Addressbook_Controller extends Tinebase_Container_Abstract implements Tine
      */
     public function getContactsByOwner($_owner, Addressbook_Model_Filter $_filter, Tinebase_Model_Pagination $_pagination) 
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('addressbook', $_owner, Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('Addressbook', $_owner, Tinebase_Container::GRANT_READ);
         
         if (count($readableContainer) === 0) {
             return new Tinebase_Record_RecordSet('Addressbook_Model_Contact');
@@ -123,7 +123,7 @@ class Addressbook_Controller extends Tinebase_Container_Abstract implements Tine
      */
     public function getCountByOwner($_owner, Addressbook_Model_Filter $_filter)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('addressbook', $_owner, Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getPersonalContainer('Addressbook', $_owner, Tinebase_Container::GRANT_READ);
                 
         if (count($readableContainer) === 0) {
             return 0;
@@ -143,7 +143,7 @@ class Addressbook_Controller extends Tinebase_Container_Abstract implements Tine
      */
     public function getSharedContacts(Addressbook_Model_Filter $_filter, Tinebase_Model_Pagination $_pagination) 
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('addressbook', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('Addressbook', Tinebase_Container::GRANT_READ);
         
         if (count($readableContainer) === 0) {
             return new Tinebase_Record_RecordSet('Addressbook_Model_Contact');
@@ -162,7 +162,7 @@ class Addressbook_Controller extends Tinebase_Container_Abstract implements Tine
      */
     public function getCountOfSharedContacts(Addressbook_Model_Filter $_filter)
     {
-        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('addressbook', Tinebase_Container::GRANT_READ);
+        $readableContainer = Zend_Registry::get('currentAccount')->getSharedContainer('Addressbook', Tinebase_Container::GRANT_READ);
         
         if (count($readableContainer) === 0) {
             return 0;

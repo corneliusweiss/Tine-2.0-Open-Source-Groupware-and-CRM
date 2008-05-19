@@ -141,14 +141,24 @@ class Tinebase_Acl_Roles
         $rightIdentifier = $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'role_rights.right');
         
         $select = $this->_db->select()
-            ->from(SQL_TABLE_PREFIX . 'role_rights', array())
-            ->join(SQL_TABLE_PREFIX . 'applications', 
-                $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'role_rights.application_id') . 
-                ' = ' . $this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'applications.id'))            
+            ->from(array('role_rights' => SQL_TABLE_PREFIX . 'role_rights'), array())
+            ->join(array('applications' => SQL_TABLE_PREFIX . 'applications'), 
+                $this->_db->quoteIdentifier('role_rights.application_id') . 
+                ' = ' . $this->_db->quoteIdentifier('applications.id'))            
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('role_id') . ' IN (?)', $roleMemberships))
-            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'role_rights.right') . ' = ?', Tinebase_Acl_Rights::RUN))
-            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'applications.status') . ' = ?', Tinebase_Application::ENABLED))
-            ->group(SQL_TABLE_PREFIX . 'role_rights.application_id');
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('role_rights.right') . ' = ?', Tinebase_Acl_Rights::RUN))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('applications.status') . ' = ?', Tinebase_Application::ENABLED))
+            ->group(array(
+                        'role_rights.application_id',
+                        'role_rights.role_id',
+                        'role_rights.id',
+                        'role_rights.right',
+                        'applications.id',
+                        'applications.name',
+                        'applications.status',
+                        'applications.version',
+                        'applications.order'
+            ));
             
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
 
@@ -175,10 +185,19 @@ class Tinebase_Acl_Roles
         $roleMemberships = Tinebase_Acl_Roles::getInstance()->getRoleMemberships($_accountId);
                         
         $select = $this->_db->select()
-            ->from(SQL_TABLE_PREFIX . 'role_rights', array('account_rights' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'role_rights.right)'))
-            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'role_rights.application_id') . ' = ?', $_applicationId))
+            ->from(array('role_rights' => SQL_TABLE_PREFIX . 'role_rights'), array('account_rights' => 'GROUP_CONCAT(role_rights.right)'))
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier('role_rights.application_id') . ' = ?', $_applicationId))
             ->where($this->_db->quoteInto($this->_db->quoteIdentifier('role_id') . ' IN (?)', $roleMemberships))
-            ->group(SQL_TABLE_PREFIX . 'role_rights.application_id');
+            ->group(
+                    array(
+                        'role_rights.application_id',
+                        'role_rights.id',
+                        'role_rights.role_id',
+                        'role_rights.right'
+                    )
+            );
+            
+                   // array(SQL_TABLE_PREFIX . 'role_rights.application_id');
             //->group(SQL_TABLE_PREFIX . 'role_rights.right');
             
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());            

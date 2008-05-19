@@ -102,7 +102,7 @@ class Tasks_Backend_SqlTest extends PHPUnit_Framework_TestCase
         $this->_backend->deleteTask($testId);
         $filter = new Tasks_Model_Filter();
         $filter->query = 'our fist test task';
-        $filter->container = array($this->_persistantTestTask1->container_id);
+        $filter->container_id = array($this->_persistantTestTask1->container_id);
         $pagination = new Tasks_Model_Pagination();
         $tasks = $this->_backend->searchTasks($filter, $pagination);
         foreach ($tasks as $task) {
@@ -187,7 +187,7 @@ class Tasks_Backend_SqlTest extends PHPUnit_Framework_TestCase
         
         $filter = new Tasks_Model_Filter();
         $filter->query = $this->_persistantTestTask1->getId();
-        $filter->container = array($this->_persistantTestTask1->container_id);
+        $filter->container_id = array($this->_persistantTestTask1->container_id);
         $tasks = $this->_backend->searchTasks($filter, $pagination);
         
         $this->assertEquals(1, count($tasks));

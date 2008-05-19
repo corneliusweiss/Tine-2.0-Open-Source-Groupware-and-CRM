@@ -141,7 +141,7 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
            // throw exception if data is empty (if the row is no array, the setFromArray function throws a fatal error 
            // because of the wrong type that is not catched by the block below)
         if ( $row === false ) {
-             throw new Exception('account not found');
+             throw new Exception('account not found' . $select->__toString());
         }        
 
         try {
@@ -455,10 +455,11 @@ class Tinebase_Account_Sql extends Tinebase_Account_Abstract
             $contactsTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'addressbook'));
             
             // add new account
+            //if ($accountId == NULL) {
+                $accountData['id'] = $this->_db->lastSequenceId(SQL_TABLE_PREFIX . 'accounts_seq') + 1;
+            //}
             $accountId = $accountsTable->insert($accountData);
-            if ($accountId == '') {
-                $accountId = $this->_db->lastSequenceId(SQL_TABLE_PREFIX . 'accounts_seq');
-            }
+            
             // if we insert an account without an accountId, we need to get back one
             if(empty($_account->accountId) && $accountId == 0) {
                 throw new Exception("returned accountId is 0");

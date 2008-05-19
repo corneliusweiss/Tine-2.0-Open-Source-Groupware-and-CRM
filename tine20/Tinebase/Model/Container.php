@@ -72,9 +72,9 @@ class Tinebase_Model_Container extends Tinebase_Record_Abstract
             if($_containerId->getId() === NULL) {
                 throw new Exception('no container id set');
             }
-            $id = $_containerId->getId();
+            $id = (string) $_containerId->getId();
         } else {
-            $id = $_containerId;
+            $id = (string) $_containerId;
         }
         
         if($id === NULL) {
