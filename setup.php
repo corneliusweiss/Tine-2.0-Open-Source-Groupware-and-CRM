@@ -22,6 +22,19 @@ require_once 'Zend/Loader.php';
 Zend_Loader::registerAutoload();
 
 /**
+ * load central configuration once and put it in the registry
+ */
+try {
+    if (isset($argv[1]) && is_file($argv[1])) {
+        Zend_Registry::set('configFile', new Zend_Config_Ini($argv[1]));
+    } else {
+        Zend_Registry::set('configFile', new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config.ini'));
+    }
+} catch (Zend_Config_Exception $e) {
+    die ('central configuration file ' . $_SERVER['DOCUMENT_ROOT'] . '/../config.ini not found');
+}
+
+/**
  * validate environemnt
  */
 $check = new Setup_ExtCheck('Setup/essentials.xml');
@@ -34,17 +47,20 @@ if (strpos($output, "FAILURE")) {
     die("Unsufficent server system.");
 }
 
-/**
- * load central configuration once and put it in the registry
- */
-try {
-    if (isset($argv[1]) && is_file($argv[1])) {
-        Zend_Registry::set('configFile', new Zend_Config_Ini($argv[1]));
-    } else {
-        Zend_Registry::set('configFile', new Zend_Config_Ini($_SERVER['DOCUMENT_ROOT'] . '/../config.ini'));
+// check php environment
+$requiredIniSettings = array(
+    'magic_quotes_sybase'  => 0,
+    'magic_quotes_gpc'     => 0,
+    'magic_quotes_runtime' => 0,
+);
+
+foreach ($requiredIniSettings as $variable => $newValue) {
+    $oldValue = ini_get($variable);
+    if ($oldValue != $newValue) {
+        if (ini_set($variable, $newValue) === false) {
+            die("Sorry, your environment is not supported. You need to set $variable from $oldValue to $newValue.");
+        }
     }
-} catch (Zend_Config_Exception $e) {
-    die ('central configuration file ' . $_SERVER['DOCUMENT_ROOT'] . '/../config.ini not found');
 }
 
 /**

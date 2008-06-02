@@ -11,35 +11,18 @@
 
 $time_start = microtime(true);
 
-// check php environment
-$requiredIniSettings = array(
-    'magic_quotes_sybase'  => 0,
-    'magic_quotes_gpc'     => 0,
-    'magic_quotes_runtime' => 0,
-);
-
-foreach ($requiredIniSettings as $variable => $newValue) {
-    $oldValue = ini_get($variable);
-    if ($oldValue != $newValue) {
-        if (ini_set($variable, $newValue) === false) {
-            die("Sorry, your environment is not supported. You need to set $variable from $oldValue to $newValue.");
-        }
-    }
-}
-
-if(!extension_loaded('pdo_mysql')) {
-    die("Sorry, your environment is not supported. You need to enable the module pdo_mysql.");
-}
-
 set_include_path(dirname(__FILE__) .'/Zend' . PATH_SEPARATOR . get_include_path());
 
 require_once 'Zend/Loader.php';
 
 Zend_Loader::registerAutoload();
 
+// @todo remove that as well? -> is checked in setup.php
+/*
 if(Zend_Version::compareVersion('1.5.000') === 1) {
     die('Sorry, your version of the Zend Framework is to old. You have version ' . Zend_Version::VERSION . ' and require at least version 1.5.0.');
 }
+*/
 
 $tineBase = Tinebase_Controller::getInstance();
 
