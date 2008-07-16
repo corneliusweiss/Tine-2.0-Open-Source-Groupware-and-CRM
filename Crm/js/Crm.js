@@ -397,7 +397,7 @@ Tine.Crm.Main = {
             _eventObject.stopEvent();
             if(!_grid.getSelectionModel().isSelected(_rowIndex)) {
                 _grid.getSelectionModel().selectRow(_rowIndex);
-                this.actions.actionDelete.setDisabled(false);
+                //this.actions.actionDelete.setDisabled(false);
             }
             ctxMenuGrid.showAt(_eventObject.getXY());
         });
