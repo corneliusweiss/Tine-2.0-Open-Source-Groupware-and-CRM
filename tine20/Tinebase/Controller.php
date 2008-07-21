@@ -82,15 +82,15 @@ class Tinebase_Controller
         }
         
         // create zend cache
+        // @todo add cache type to config (file, memcache, ...)
         if ($this->_config->caching && $this->_config->caching->active) {
             $frontendOptions = array(
                'lifetime' => 7200, // cache lifetime of 2 hours
                'automatic_serialization' => true // turn that off for more speed
             );
-            
-            // @todo put that in config
+                        
             $backendOptions = array(
-                'cache_dir' => '/tmp' // Directory where to put the cache files
+                'cache_dir' => $this->_config->caching->path // Directory where to put the cache files
             );
             
             // getting a Zend_Cache_Core object
