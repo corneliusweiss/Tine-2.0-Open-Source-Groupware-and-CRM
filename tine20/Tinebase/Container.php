@@ -289,7 +289,14 @@ class Tinebase_Container
             );
             $this->containerAclTable->insert($data);
         }
-                        
+
+        // remove container from cache
+        try {
+            $result = Zend_Registry::get('cache')->remove('getContainerById' . $containerId);
+        } catch (Exception $e) {
+            // caching not configured
+        }
+        
         return true;
     }
     
@@ -760,6 +767,13 @@ class Tinebase_Container
         
         $this->containerTable->update($data, $where);
         
+        // remove container from cache
+        try {
+            $result = Zend_Registry::get('cache')->remove('getContainerById' . $_containerId);
+        } catch (Exception $e) {
+            // caching not configured
+        }        
+        
         return $this->getContainerById($_containerId);
     }
     
@@ -1036,6 +1050,14 @@ class Tinebase_Container
             }
             
             Zend_Registry::get('dbAdapter')->commit();
+            
+            // remove container from cache
+            try {
+                $result = Zend_Registry::get('cache')->remove('getContainerById' . $containerId);
+            } catch (Exception $e) {
+                // caching not configured
+            }
+            
         } catch (Exception $e) {
             Zend_Registry::get('dbAdapter')->rollBack();
             
