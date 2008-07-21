@@ -292,7 +292,9 @@ class Tinebase_Container
 
         // remove container from cache
         try {
-            $result = Zend_Registry::get('cache')->remove('getContainerById' . $containerId);
+            $cache = Zend_Registry::get('cache');
+            $result = $cache->remove('getContainerById' . $containerId);
+            $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('container'));                
         } catch (Exception $e) {
             // caching not configured
         }
@@ -303,6 +305,7 @@ class Tinebase_Container
     
     /**
      * return all container, which the user has the requested right for
+     * - cache the results because this function is called very often
      *
      * used to get a list of all containers accesssible by the current user
      * 
@@ -314,81 +317,97 @@ class Tinebase_Container
     public function getContainerByACL($_accountId, $_application, $_grant)
     {
         $accountId = Tinebase_User_Model_User::convertUserIdToInt($_accountId);
-        
-        $groupMemberships   = Tinebase_Group::getInstance()->getGroupMemberships($accountId);
-        if(count($groupMemberships) === 0) {
-            throw new Exception('account must be in at least one group');
+
+        try {
+            $cache = Zend_Registry::get('cache');
+            $cacheId = 'getContainerByACL' . $accountId . $_application . $_grant;
+            $result = $cache->load($cacheId);
+        } catch (Exception $e) {
+            // caching not configured
+            $result = FALSE;
         }
         
-        $applicationId = Tinebase_Application::getInstance()->getApplicationByName($_application)->getId();
-               
-        $db = Zend_Registry::get('dbAdapter');
-        
-        $tableContainer = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container');
-        $tableContainerAcl = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl');
-        $colId = $db->quoteIdentifier('id');
-        #$colName = $db->quoteIdentifier('name');
-        $colContainerId = $db->quoteIdentifier('container_id');
-        $colApplicationId = $db->quoteIdentifier('application_id');
-        $colAccountGrant = $db->quoteIdentifier('account_grant');
-        $colAccountId = $db->quoteIdentifier('account_id');
-        $colAccountType = $db->quoteIdentifier('account_type');
-        
-        $select = $db->select()
-            ->from(SQL_TABLE_PREFIX . 'container')
-            ->join(
-                SQL_TABLE_PREFIX . 'container_acl',
-                $tableContainer . '.' . $colId . ' = ' . $tableContainerAcl . '.' . $colContainerId , 
-                array()
-            )
-            ->where($tableContainer . '.' . $colApplicationId . ' = ?', $applicationId)
-            ->where($tableContainerAcl . '.' . $colAccountGrant . ' = ?', $_grant)
-            
-            # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . $tableContainerAcl . '.' . $colAccountId . ' = ? AND ' . $tableContainerAcl . "." . $colAccountType . " ='user'", $accountId)
-            ->orWhere($tableContainerAcl . '.' . $colAccountId . ' IN (?) AND ' . $tableContainerAcl . "." . $colAccountType . " ='group'", $groupMemberships)
-            ->orWhere($tableContainerAcl . '.' . $colAccountType . ' = ?)', 'anyone')
-            
-            ->group(SQL_TABLE_PREFIX . 'container.id')
-            ->order(SQL_TABLE_PREFIX . 'container.name');
-       /* $select = $db->select()
-            ->from(SQL_TABLE_PREFIX . 'container')
-            ->join(
-                SQL_TABLE_PREFIX . 'container_acl',
-                SQL_TABLE_PREFIX . 'container.id = ' . SQL_TABLE_PREFIX . 'container_acl.container_id', 
-                array()
-            )
-            ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $applicationId)
-            ->where(SQL_TABLE_PREFIX . 'container_acl.account_grant = ?', $_grant)
-            
-            # beware of the extra parenthesis of the next 3 rows
-            ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
-            ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
-            
-            ->group(SQL_TABLE_PREFIX . 'container.id')
-            ->order(SQL_TABLE_PREFIX . 'container.name');
-*/
-        //error_log("getContainer:: " . $select->__toString());
-
-        $stmt = $db->query($select);
-        
-        $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
-        
-        if(empty($rows)) {
-            // no containers found. maybe something went wrong when creating the initial folder
-            // any account should have at least one personal folder
-            // let's check if the controller of the application has a function to create the needed folders
-            $application = Tinebase_Controller::getApplicationInstance($_application);
-            
-            if($application instanceof Tinebase_Container_Abstract) {
-                Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' create personal folders for application ' . $_application);
-                return $application->createPersonalFolder($_accountId);
+        if (!$result) {
+            $groupMemberships   = Tinebase_Group::getInstance()->getGroupMemberships($accountId);
+            if(count($groupMemberships) === 0) {
+                throw new Exception('account must be in at least one group');
             }
+            
+            $applicationId = Tinebase_Application::getInstance()->getApplicationByName($_application)->getId();
+                   
+            $db = Zend_Registry::get('dbAdapter');
+            
+            $tableContainer = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container');
+            $tableContainerAcl = $db->quoteIdentifier(SQL_TABLE_PREFIX . 'container_acl');
+            $colId = $db->quoteIdentifier('id');
+            #$colName = $db->quoteIdentifier('name');
+            $colContainerId = $db->quoteIdentifier('container_id');
+            $colApplicationId = $db->quoteIdentifier('application_id');
+            $colAccountGrant = $db->quoteIdentifier('account_grant');
+            $colAccountId = $db->quoteIdentifier('account_id');
+            $colAccountType = $db->quoteIdentifier('account_type');
+            
+            $select = $db->select()
+                ->from(SQL_TABLE_PREFIX . 'container')
+                ->join(
+                    SQL_TABLE_PREFIX . 'container_acl',
+                    $tableContainer . '.' . $colId . ' = ' . $tableContainerAcl . '.' . $colContainerId , 
+                    array()
+                )
+                ->where($tableContainer . '.' . $colApplicationId . ' = ?', $applicationId)
+                ->where($tableContainerAcl . '.' . $colAccountGrant . ' = ?', $_grant)
+                
+                # beware of the extra parenthesis of the next 3 rows
+                ->where('(' . $tableContainerAcl . '.' . $colAccountId . ' = ? AND ' . $tableContainerAcl . "." . $colAccountType . " ='user'", $accountId)
+                ->orWhere($tableContainerAcl . '.' . $colAccountId . ' IN (?) AND ' . $tableContainerAcl . "." . $colAccountType . " ='group'", $groupMemberships)
+                ->orWhere($tableContainerAcl . '.' . $colAccountType . ' = ?)', 'anyone')
+                
+                ->group(SQL_TABLE_PREFIX . 'container.id')
+                ->order(SQL_TABLE_PREFIX . 'container.name');
+           /* $select = $db->select()
+                ->from(SQL_TABLE_PREFIX . 'container')
+                ->join(
+                    SQL_TABLE_PREFIX . 'container_acl',
+                    SQL_TABLE_PREFIX . 'container.id = ' . SQL_TABLE_PREFIX . 'container_acl.container_id', 
+                    array()
+                )
+                ->where(SQL_TABLE_PREFIX . 'container.application_id = ?', $applicationId)
+                ->where(SQL_TABLE_PREFIX . 'container_acl.account_grant = ?', $_grant)
+                
+                # beware of the extra parenthesis of the next 3 rows
+                ->where('(' . SQL_TABLE_PREFIX . 'container_acl.account_id = ? AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='user'", $accountId)
+                ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_id IN (?) AND ' . SQL_TABLE_PREFIX . "container_acl.account_type ='group'", $groupMemberships)
+                ->orWhere(SQL_TABLE_PREFIX . 'container_acl.account_type = ?)', 'anyone')
+                
+                ->group(SQL_TABLE_PREFIX . 'container.id')
+                ->order(SQL_TABLE_PREFIX . 'container.name');
+    */
+            //error_log("getContainer:: " . $select->__toString());
+    
+            $stmt = $db->query($select);
+            
+            $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
+            
+            if(empty($rows)) {
+                // no containers found. maybe something went wrong when creating the initial folder
+                // any account should have at least one personal folder
+                // let's check if the controller of the application has a function to create the needed folders
+                $application = Tinebase_Controller::getApplicationInstance($_application);
+                
+                if($application instanceof Tinebase_Container_Abstract) {
+                    Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' create personal folders for application ' . $_application);
+                    return $application->createPersonalFolder($_accountId);
+                }
+            }
+    
+            $result = new Tinebase_Record_RecordSet('Tinebase_Model_Container', $rows);
+            
+            if (isset($cache)) {
+                // save result and tag it with 'container'
+                $cache->save($result, $cacheId, array('container'));
+            }                        
         }
-
-        $result = new Tinebase_Record_RecordSet('Tinebase_Model_Container', $rows);
-        
+            
         return $result;
         
     }
@@ -769,7 +788,9 @@ class Tinebase_Container
         
         // remove container from cache
         try {
-            $result = Zend_Registry::get('cache')->remove('getContainerById' . $_containerId);
+            $cache = Zend_Registry::get('cache');
+            $result = $cache->remove('getContainerById' . $_containerId);
+            $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('container'));
         } catch (Exception $e) {
             // caching not configured
         }        
@@ -1053,7 +1074,9 @@ class Tinebase_Container
             
             // remove container from cache
             try {
-                $result = Zend_Registry::get('cache')->remove('getContainerById' . $containerId);
+                $cache = Zend_Registry::get('cache');
+                $result = $cache->remove('getContainerById' . $containerId);
+                $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('container'));                
             } catch (Exception $e) {
                 // caching not configured
             }
