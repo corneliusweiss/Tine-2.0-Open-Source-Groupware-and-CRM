@@ -388,6 +388,7 @@ class Tinebase_Container
     
     /**
      * return a container by containerId
+     * - cache the results because this function is called very often
      *
      * @todo move acl check to another place
      * @param int|Tinebase_Model_Container $_containerId the id of the container
@@ -395,15 +396,30 @@ class Tinebase_Container
      */
     public function getContainerById($_containerId)
     {
-        $containerId = Tinebase_Model_Container::convertContainerIdToInt($_containerId);
-        
-        $row = $this->containerTable->find($containerId)->current();
-        
-        if($row === NULL) {
-            throw new UnderflowException('container not found');
+        try {
+            $cache = Zend_Registry::get('cache');
+            $result = $cache->load('getContainerById' . $_containerId);
+        } catch (Exception $e) {
+            // caching not configured
+            $result = FALSE;
         }
-        
-        $result = new Tinebase_Model_Container($row->toArray());
+    
+        if(!$result) {
+    
+            $containerId = Tinebase_Model_Container::convertContainerIdToInt($_containerId);
+            
+            $row = $this->containerTable->find($containerId)->current();
+            
+            if($row === NULL) {
+                throw new UnderflowException('container not found');
+            }
+            
+            $result = new Tinebase_Model_Container($row->toArray());
+            
+            if (isset($cache)) {
+                $cache->save($result, 'getContainerById' . $_containerId);
+            }            
+        }
         
         return $result;
         
