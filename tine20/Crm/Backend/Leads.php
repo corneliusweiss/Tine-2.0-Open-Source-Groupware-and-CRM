@@ -8,7 +8,6 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
- * @todo        rename function updateLead -> update
  * @todo        rename container to container_id in leads table
  */
 
@@ -65,9 +64,6 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
      * @param Crm_Model_LeadFilter $_filter
      * @param Crm_Model_LeadPagination $_pagination
      * @return Tinebase_Record_RecordSet of Crm_Model_Lead records
-     * 
-     * @todo    abstract filter2sql
-     * @todo    add more filters?
      */
     public function search(Crm_Model_LeadFilter $_filter, Crm_Model_LeadPagination $_pagination = NULL)
     {
@@ -83,33 +79,18 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
         }
         
         // build query
-        $select = $this->_getSelect()
-            ->where($this->_db->quoteInto('lead.container IN (?)', $_filter->container));
-                        
+        $select = $this->_getSelect();
+        
         if (!empty($_pagination->limit)) {
             $select->limit($_pagination->limit, $_pagination->start);
         }
         if (!empty($_pagination->sort)) {
             $select->order($_pagination->sort . ' ' . $_pagination->dir);
-        }
-        if (!empty($_filter->query)) {
-            $select->where($this->_db->quoteInto('(lead.lead_name LIKE ? OR lead.description LIKE ?)', '%' . $_filter->query . '%'));
-        }
-        if (!empty($_filter->leadstate)) {
-            $select->where($this->_db->quoteInto('lead.leadstate_id = ?', $_filter->leadstate));
-        }
-        if (!empty($_filter->probability)) {
-            $select->where($this->_db->quoteInto('lead.probability >= ?', (int)$_filter->probability));
-        }
-        if (isset($_filter->showClosed) && $_filter->showClosed){
-            // nothing to filter
-        } else {
-            $select->where('end IS NULL');
-        }
-        
-        $stmt = $this->_db->query($select);
-        
+        }        
+        $this->_addFilter($select, $_filter);
+                
         // get records
+        $stmt = $this->_db->query($select);
         $leads = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         foreach ($leads as $leadArray) {
             $lead = new Crm_Model_Lead($leadArray, true, true);
@@ -126,35 +107,15 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
      * @return int
      */
     public function searchCount(Crm_Model_LeadFilter $_filter)
-    {
-        return count($this->search($_filter));
-    }
-    
-    /**
-     * get the basic select object to fetch leads from the database 
-     *
-     * @return Zend_Db_Select
-     */
-    protected function _getSelect()
-    {
-        $select = $this->_db->select()
-            ->from(array('lead' => SQL_TABLE_PREFIX . 'metacrm_lead'), array(
-                'id',
-                'lead_name',
-                'leadstate_id',
-                'leadtype_id',
-                'leadsource_id',
-                'container',
-                'start',
-                'description',
-                'end',
-                'turnover',
-                'probability',
-                'end_scheduled')
-            );
-                
-        return $select;
-    }
+    {        
+        if (count($_filter->container) === 0) {
+            return 0;
+        }
+        $select = $this->_getSelect(TRUE);
+        $this->_addFilter($select, $_filter);
+        $result = $this->_db->fetchOne($select);
+        return $result;        
+    }    
 
     /****************** update / delete *************/
     
@@ -203,11 +164,8 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
      *
      * @param Crm_Lead $_leadData the leaddata
      * @return Crm_Model_Lead
-     * 
-     * @todo    rename
-     * @todo    remove responsible/customer/... -> they are covered with the relations field
      */
-    public function updateLead(Crm_Model_Lead $_lead)
+    public function update(Tinebase_Record_Interface $_lead)
     {
         if(!$_lead->isValid()) {
             throw new Exception('lead object is not valid');
@@ -231,4 +189,66 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
                 
         return $this->get($leadId);
     }
+    
+    /************************ helper functions ************************/
+
+    /**
+     * get the basic select object to fetch leads from the database 
+     * @param $_getCount only get the count
+     *
+     * @return Zend_Db_Select
+     */
+    protected function _getSelect($_getCount = FALSE)
+    {        
+        if ($_getCount) {
+            $fields = array('count' => 'COUNT(*)');    
+        } else {
+            $fields = array(
+                'id',
+                'lead_name',
+                'leadstate_id',
+                'leadtype_id',
+                'leadsource_id',
+                'container',
+                'start',
+                'description',
+                'end',
+                'turnover',
+                'probability',
+                'end_scheduled'
+            );
+        }
+
+        $select = $this->_db->select()
+            ->from(array('lead' => SQL_TABLE_PREFIX . 'metacrm_lead'), $fields);
+        
+        return $select;
+    }
+    
+    /**
+     * add the fields to search for to the query
+     *
+     * @param  Zend_Db_Select           $_select current where filter
+     * @param  Crm_Model_LeadFilter $_filter the string to search for
+     * @return void
+     */
+    protected function _addFilter(Zend_Db_Select $_select, Crm_Model_LeadFilter $_filter)
+    {
+        $_select->where($this->_db->quoteInto('lead.container IN (?)', $_filter->container));
+                        
+        if (!empty($_filter->query)) {
+            $_select->where($this->_db->quoteInto('(lead.lead_name LIKE ? OR lead.description LIKE ?)', '%' . $_filter->query . '%'));
+        }
+        if (!empty($_filter->leadstate)) {
+            $_select->where($this->_db->quoteInto('lead.leadstate_id = ?', $_filter->leadstate));
+        }
+        if (!empty($_filter->probability)) {
+            $_select->where($this->_db->quoteInto('lead.probability >= ?', (int)$_filter->probability));
+        }
+        if (isset($_filter->showClosed) && $_filter->showClosed){
+            // nothing to filter
+        } else {
+            $_select->where('end IS NULL');
+        }
+    }        
 }
