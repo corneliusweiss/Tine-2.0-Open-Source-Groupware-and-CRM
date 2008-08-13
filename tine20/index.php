@@ -12,7 +12,7 @@
 $time_start = microtime(true);
 
 set_include_path(dirname(__FILE__) .'/Zend' . PATH_SEPARATOR . get_include_path());
-
+###
 require_once 'Zend/Loader.php';
 
 Zend_Loader::registerAutoload();
