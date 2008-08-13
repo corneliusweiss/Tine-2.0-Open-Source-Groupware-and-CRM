@@ -21,7 +21,7 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
     /**
      * checes if a user is loged in. If not we redirect to login
      */
-    protected function checkLogin()
+    protected function checkAuth()
     {
         try {
             Zend_Registry::get('currentAccount');
@@ -115,6 +115,7 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
             'Tinebase/js/ux/GMapPanel.js',
             'Tinebase/js/ux/DatepickerRange.js',
             // Tine 2.0 specific widgets
+            'Tinebase/js/widgets/ActionUpdater.js',
             'Tinebase/js/widgets/EditRecord.js',
             'Tinebase/js/widgets/Priority.js',
             'Tinebase/js/widgets/AccountpickerPanel.js',
@@ -149,7 +150,10 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
     {
     	return array(
     	   'Tinebase/css/Tinebase.css',
+    	   'Tinebase/css/SmallForms.css',
     	   'Tinebase/css/ux/Wizard.css',
+    	   'Tinebase/css/ux/Percentage.css',
+    	   'Tinebase/css/ux/grid/QuickaddGridPanel.css',
     	   'Tinebase/css/ux/grid/IconTextField.css',
     	   'Tinebase/css/ux/form/ExpandFieldSet.css',                  
     	   'Tinebase/css/ux/LockCombo.css',           
@@ -166,7 +170,7 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
 	 */
     public function mainScreen()
     {
-        $this->checkLogin();
+        $this->checkAuth();
         $userApplications = Zend_Registry::get('currentAccount')->getApplications();
 
         $view = new Zend_View();
@@ -268,6 +272,8 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
 	 */
 	public function uploadTempFile()
 	{
+	    $this->checkAuth();
+	    
 	    $uploadedFile = $_FILES['file'];
 	    
 	    $path = tempnam(session_save_path(), 'tine_tempfile_');
@@ -307,6 +313,8 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
      */
 	public function getImage($application, $id, $location, $width, $height, $ratiomode)
 	{
+	    $this->checkAuth();
+	    
 	    if ($application == 'Tinebase' && $location=='tempFile') {
 	        $db = Zend_Registry::get('dbAdapter');
             $select = $db->select()
@@ -345,6 +353,8 @@ class Tinebase_Http extends Tinebase_Application_Http_Abstract
 	 */
 	public function cropImage($imageurl, $left, $top, $widht, $height)
 	{
+	    $this->checkAuth();
+	    
 	    $image = Tinebase_Model_Image::getImageFromImageURL($imageurl);
 	    Tinebase_ImageHelper::crop($image, $left, $top, $widht, $height);
 	    

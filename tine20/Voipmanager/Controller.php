@@ -110,25 +110,77 @@ class Voipmanager_Controller
      */
     protected $_cache;
     
+    const PDO_MYSQL = 'Pdo_Mysql';
+    
+    const PDO_OCI = 'Pdo_Oci';
+    
+    /**
+     * the database backend for the backend classes
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $_dbBackend;
+    
     /**
      * the constructor
      *
      * don't use the constructor. use the singleton 
      */
     private function __construct() {
-        $this->_snomPhoneBackend            = new Voipmanager_Backend_Snom_Phone();
-        $this->_snomPhoneSettingsBackend    = new Voipmanager_Backend_Snom_PhoneSettings();        
-        $this->_snomLineBackend             = new Voipmanager_Backend_Snom_Line();
-        $this->_snomSoftwareBackend         = new Voipmanager_Backend_Snom_Software();
-        $this->_snomLocationBackend         = new Voipmanager_Backend_Snom_Location();
-        $this->_snomTemplateBackend         = new Voipmanager_Backend_Snom_Template();      
-        $this->_snomSettingBackend          = new Voipmanager_Backend_Snom_Setting();              
-        $this->_asteriskSipPeerBackend      = new Voipmanager_Backend_Asterisk_SipPeer();          
-        $this->_asteriskContextBackend      = new Voipmanager_Backend_Asterisk_Context();          
-        $this->_asteriskVoicemailBackend    = new Voipmanager_Backend_Asterisk_Voicemail();  
-		$this->_asteriskMeetmeBackend		= new Voipmanager_Backend_Asterisk_Meetme();
+        if(isset(Zend_Registry::get('configFile')->voipmanager) && isset(Zend_Registry::get('configFile')->voipmanager->database)) {
+            $this->_dbBbackend = $this->_getDatabaseBackend(Zend_Registry::get('configFile')->voipmanager->database);
+        } else {
+            $this->_dbBbackend = Zend_Registry::get('dbAdapter');
+        }
+        
+        $this->_snomPhoneBackend            = new Voipmanager_Backend_Snom_Phone($this->_dbBbackend);
+        $this->_snomPhoneSettingsBackend    = new Voipmanager_Backend_Snom_PhoneSettings($this->_dbBbackend);        
+        $this->_snomLineBackend             = new Voipmanager_Backend_Snom_Line($this->_dbBbackend);
+        $this->_snomSoftwareBackend         = new Voipmanager_Backend_Snom_Software($this->_dbBbackend);
+        $this->_snomLocationBackend         = new Voipmanager_Backend_Snom_Location($this->_dbBbackend);
+        $this->_snomTemplateBackend         = new Voipmanager_Backend_Snom_Template($this->_dbBbackend);      
+        $this->_snomSettingBackend          = new Voipmanager_Backend_Snom_Setting($this->_dbBbackend);              
+        $this->_asteriskSipPeerBackend      = new Voipmanager_Backend_Asterisk_SipPeer($this->_dbBbackend);          
+        $this->_asteriskContextBackend      = new Voipmanager_Backend_Asterisk_Context($this->_dbBbackend);          
+        $this->_asteriskVoicemailBackend    = new Voipmanager_Backend_Asterisk_Voicemail($this->_dbBbackend);  
+		$this->_asteriskMeetmeBackend		= new Voipmanager_Backend_Asterisk_Meetme($this->_dbBbackend);
 
 		$this->_cache = Zend_Registry::get('cache');
+    }
+    
+    /**
+     * return instance of the current database backend
+     *
+     * @return Zend_Db_Adapter_Abstract
+     */
+    public function getDBInstance()
+    {
+        return $this->_dbBbackend;
+    }
+    
+    /**
+     * initialize the optional database backend
+     *
+     * @param unknown_type $_dbConfig
+     * @return Zend_Db_Adapter_Abstract
+     */
+    protected function _getDatabaseBackend($_dbConfig) 
+    {
+        $dbBackend = constant('self::' . strtoupper($_dbConfig->get('backend', self::PDO_MYSQL)));
+        
+        switch($dbBackend) {
+            case self::PDO_MYSQL:
+                $db = Zend_Db::factory('Pdo_Mysql', $_dbConfig->toArray());
+                break;
+            case self::PDO_OCI:
+                $db = Zend_Db::factory('Pdo_Oci', $_dbConfig->toArray());
+                break;
+            default:
+                throw new Exception('Invalid database backend type defined. Please set backend to ' . self::PDO_MYSQL . ' or ' . self::PDO_OCI . ' in config.ini.');
+                break;
+        }
+        
+        return $db;
     }
     
     /**
@@ -181,29 +233,53 @@ class Voipmanager_Controller
             'snomphone_id'  => $phone->id
         ));
         $phone->lines  = $this->_snomLineBackend->search($filter);
-        $phone->rights = $this->getPhoneOwner($phone->id);
-
+        $phone->rights = $this->_snomPhoneBackend->getPhoneRights($phone->id);
+        
+        // add accountDisplayName
+        foreach ($phone->rights as &$right) {
+            $user = Tinebase_User::getInstance()->getUserById($right->account_id);
+            $right->accountDisplayName = $user->accountDisplayName;
+        }
+        
         return $phone;    
     }
-
+    
+    /**
+     * get snom_phone by macAddress
+     *
+     * @param string $_macAddress
+     * @return Tinebase_Record_RecordSet of subtype Voipmanager_Model_SnomPhone
+     */
+    public function getSnomPhoneByMacAddress($_macAddress)
+    {
+        $phone = $this->_snomPhoneBackend->getByMacAddress($_macAddress);
+        
+        $filter = new Voipmanager_Model_SnomLineFilter(array(
+            'snomphone_id'  => $phone->id
+        ));
+        $phone->lines  = $this->_snomLineBackend->search($filter);
+        $phone->rights = $this->_snomPhoneBackend->getPhoneRights($phone->id);
+        
+        // add accountDisplayName
+        foreach ($phone->rights as &$right) {
+            $user = Tinebase_User::getInstance()->getUserById($right->account_id);
+            $right->accountDisplayName = $user->accountDisplayName;
+        }
+        
+        return $phone;    
+    }
+        
+    
     /**
      * get snom_phones
      *
-     * @param string $_sort
-     * @param string $_dir
+     * @param Voipmanager_Model_SnomPhoneFilter $_filter
+     * @param Tinebase_Model_Pagination|optional $_pagination
      * @return Tinebase_Record_RecordSet of subtype Voipmanager_Model_SnomPhone
      */
-    public function getSnomPhones($_sort = 'id', $_dir = 'ASC', $_query = NULL)
+    public function getSnomPhones(Voipmanager_Model_SnomPhoneFilter $_filter, $_pagination = NULL)
     {
-        $filter = new Voipmanager_Model_SnomPhoneFilter(array(
-            'query' => $_query
-        ));
-        $pagination = new Tinebase_Model_Pagination(array(
-            'sort'  => $_sort,
-            'dir'   => $_dir
-        ));
-
-        $result = $this->_snomPhoneBackend->search($filter, $pagination);
+        $result = $this->_snomPhoneBackend->search($_filter, $_pagination);
         
         return $result;    
     }
@@ -318,9 +394,20 @@ class Voipmanager_Controller
     }
     
     /**
+     * set redirect settings only
+     *
+     * @param Voipmanager_Model_SnomPhone $_phone
+     */
+    public function updateSnomPhoneRedirect(Voipmanager_Model_SnomPhone $_phone)
+    {
+        $this->_snomPhoneBackend->updateRedirect($_phone);
+    }
+    
+    /**
      * update one phone
      *
      * @param Voipmanager_Model_SnomPhone $_phone
+     * @param Voipmanager_Model_SnomPhoneSettings $_phoneSettings
      * @return  Voipmanager_Model_SnomPhone
      */
     public function updateSnomPhone(Voipmanager_Model_SnomPhone $_phone, Voipmanager_Model_SnomPhoneSettings $_phoneSettings)
@@ -448,17 +535,6 @@ class Voipmanager_Controller
             
             $phone = $this->_snomPhoneBackend->update($phone);
         }
-    }
-
-
-    /**
-     * get snomPhoneOwner
-     *
-     * @return Tinebase_Record_RecordSet of Voipmanager_Model_SnomPhoneRight with phone owners
-     */
-    public function getPhoneOwner($_phoneId)
-    {
-        return $this->_snomPhoneBackend->getPhoneRights($_phoneId);          
     }
 
     /**

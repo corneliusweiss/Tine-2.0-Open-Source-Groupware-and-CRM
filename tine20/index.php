@@ -25,8 +25,15 @@ if(Zend_Version::compareVersion('1.5.000') === 1) {
 */
 
 $tineBase = Tinebase_Controller::getInstance();
-
-$tineBase->handle();
+if (isset($_SERVER['HTTP_X_TINE20_REQUEST_TYPE']) && $_SERVER['HTTP_X_TINE20_REQUEST_TYPE'] == 'JSON' && isset($_REQUEST['method'])) {
+    $tineBase->handleJson();        
+} elseif(preg_match('/^Mozilla\/4\.0 \(compatible; (snom...)\-SIP (\d+\.\d+\.\d+)/i', $_SERVER['HTTP_USER_AGENT'])) {
+    // SNOM api
+    $tineBase->handleSnom();
+} else {
+    // HTTP api
+    $tineBase->handleHttp();   
+}
 
 // log profiling information
 $time_end = microtime(true);

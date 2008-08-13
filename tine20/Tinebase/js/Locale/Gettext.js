@@ -52,6 +52,11 @@ Locale.Gettext.prototype.textdomain = function (domain) {
 };
 
 Locale.Gettext.prototype.getmsg = function (domain, category, reload) {
+  var locale = Tine.Tinebase.Registry.get('locale');
+  if (! locale || locale == 'en') {
+    return Locale.Gettext.prototype._msgs.emptyDomain;
+  }
+  
   var key = this._getkey(category, domain);
   return reload || typeof Locale.Gettext.prototype._msgs[key] == 'undefined'
     ? Locale.Gettext.prototype._msgs[key] = new Locale.Gettext.PO(this._url(category, domain))
@@ -70,6 +75,7 @@ Locale.Gettext.prototype._url = function (category, domain) {
 
     req.open('POST', 'index.php', false);
     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    req.setRequestHeader('X-Tine20-Request-Type', 'JSON');
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.send('method=Tinebase.getTranslations&application=' + domain + '&jsonKey=' + Tine.Tinebase.Registry.get('jsonKey'));
     if (req.status == 200 || req.status == 304 || req.status == 0 || req.status == null) {
@@ -185,3 +191,6 @@ Locale.Gettext.PO.prototype.plural = function (n) {
       ? 0
       : plural;
 };
+
+// create dummy domain
+Locale.Gettext.prototype._msgs.emptyDomain = new Locale.Gettext.PO(({}));

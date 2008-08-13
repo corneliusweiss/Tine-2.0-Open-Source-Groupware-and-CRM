@@ -148,6 +148,7 @@ Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
         },
         items: [{
             layout: 'accordion',
+            border: true,
             animate: true,        	
             region: 'east',
             width: 210,
@@ -161,7 +162,9 @@ Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
                     iconCls: 'descriptionIcon',
                     layout: 'form',
                     labelAlign: 'top',
+                    border: false,
                     items: [{
+                        style: 'margin-top: -4px; border 0px;',
                         labelSeparator: '',
                         xtype:'textarea',
                         name: 'description',
@@ -174,29 +177,14 @@ Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
                 }),
                 new Tine.widgets.tags.TagPanel({
                     border: false,
-                    style: 'border:1px solid #B5B8C8;'
+                    bodyStyle: 'border:1px solid #B5B8C8;'
                 }),
                 new Tine.widgets.activities.ActivitiesPanel({
                     app: 'Crm',
                     showAddNoteForm: false,
                     border: false,
-                    style: 'border:1px solid #B5B8C8;'
+                    bodyStyle: 'border:1px solid #B5B8C8;'
                 })                                    
-                /*
-                new Tine.widgets.tags.TagPanel({
-                    height: 230,
-                    customHeight: 230,
-                    border: false,
-                    style: 'border:1px solid #B5B8C8;'
-                }),
-                new Tine.widgets.activities.ActivitiesPanel({
-                    app: 'Crm',
-                    height: 400,
-                    customHeight: 400,
-                    border: false,
-                    style: 'border:1px solid #B5B8C8;'
-                })
-                */
             ]
         },{
             region:'center',
@@ -213,17 +201,7 @@ Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
                     height: 200,
                     items: [ _linkTabpanels.contactsPanel ]
                 },
-            /*{
-                xtype:'textarea',
-                //fieldLabel:'Notizen',
-                id: 'lead_notes',
-                hideLabel: true,
-                name: 'description',
-                height: 120,
-                anchor: '100%',
-                emptyText: translation._('Enter description')
-            }, */
-            {
+                {
                 layout:'column',
                 height: 140,
                 id: 'lead_combos',
@@ -275,7 +253,7 @@ Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
                 height: 250,
                 items: [
                     _linkTabpanels.tasksPanel,
-                    _linkTabpanels.productsPanel,
+                    _linkTabpanels.productsPanel
                 ]
             }
             ]
@@ -322,7 +300,7 @@ Tine.Crm.LeadEditDialog.Popup = Ext.extend(Ext.ux.PopupWindow, {
     
    name: 'CrmLeadEditWindow',
    width: 800,
-   height: 650,
+   height: 750,
    initComponent: function(){
        this.url = 'index.php?method=Crm.editLead&_leadId=' + this.leadId;
        Tine.Crm.LeadEditDialog.Popup.superclass.initComponent.call(this);

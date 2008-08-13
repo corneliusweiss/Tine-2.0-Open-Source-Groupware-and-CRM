@@ -1,0 +1,72 @@
+#: Acl/Rights.php:164
+msgid "manage access log"
+msgstr ""
+
+#: Acl/Rights.php:165
+msgid "delete access log entries"
+msgstr ""
+
+#: Acl/Rights.php:168
+msgid "manage accounts"
+msgstr ""
+
+#: Acl/Rights.php:169
+msgid "add and edit users and groups, add group members, change user passwords"
+msgstr ""
+
+#: Acl/Rights.php:172
+msgid "manage applications"
+msgstr ""
+
+#: Acl/Rights.php:173
+msgid "enable and disable applications, edit application settings"
+msgstr ""
+
+#: Acl/Rights.php:176
+msgid "manage roles"
+msgstr ""
+
+#: Acl/Rights.php:177
+msgid ""
+"add and edit roles, add new members to roles, add application rights to roles"
+msgstr ""
+
+#: Acl/Rights.php:180
+msgid "manage shared tags"
+msgstr ""
+
+#: Acl/Rights.php:181
+msgid "add, delete and edit shared tags"
+msgstr ""
+
+#: Acl/Rights.php:184
+msgid "view access log"
+msgstr ""
+
+#: Acl/Rights.php:185
+msgid "view access log list"
+msgstr ""
+
+#: Acl/Rights.php:188
+msgid "view accounts"
+msgstr ""
+
+#: Acl/Rights.php:189
+msgid "view accounts list and details"
+msgstr ""
+
+#: Acl/Rights.php:192
+msgid "view applications"
+msgstr ""
+
+#: Acl/Rights.php:193
+msgid "view applications list and details"
+msgstr ""
+
+#: Acl/Rights.php:196
+msgid "view roles"
+msgstr ""
+
+#: Acl/Rights.php:197
+msgid "view roles list and details"
+msgstr ""

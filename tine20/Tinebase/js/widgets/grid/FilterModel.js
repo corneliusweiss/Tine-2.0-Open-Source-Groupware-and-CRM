@@ -88,7 +88,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 {operator: 'equals',   label: _('is equal to')},
                 {operator: 'greater',  label: _('is greater than')},
                 {operator: 'less',     label: _('is less than')},
-                {operator: 'not',      label: _('is not')},
+                {operator: 'not',      label: _('is not')}
                 //{operator: 'in',       label: _('is in')}
             ]
         });
@@ -108,7 +108,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
         if (operatorStore.getCount() > 1) {
             var operator = new Ext.form.ComboBox({
                 filter: filter,
-                width: 100,
+                width: 80,
                 id: 'tw-ftb-frow-operatorcombo-' + filter.id,
                 mode: 'local',
                 lazyInit: false,
@@ -120,7 +120,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 displayField: 'label',
                 valueField: 'operator',
                 value: filter.get('operator') ? filter.get('operator') : this.defaultOperator,
-                renderTo: el,
+                renderTo: el
             });
             operator.on('select', function(combo, newRecord, newKey) {
                 if (combo.value != combo.filter.get('operator')) {
@@ -161,17 +161,38 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
     valueRenderer: function(filter, el) {
         // value
         var value = new Ext.form.TextField({
+            //hideTrigger: true,
+            //triggerClass: 'x-form-clear-trigger',
             filter: filter,
             width: 200,
             id: 'tw-ftb-frow-valuefield-' + filter.id,
             value: filter.data.value ? filter.data.value : this.defaultValue,
             renderTo: el,
+            listeners: {
+                scope: this,
+                specialkey: function(field, e){
+                    if(e.getKey() == e.ENTER){
+                        //field.trigger.setVisible(field.getValue().length > 0);
+                        this.onFiltertrigger();
+                    }
+                }/*,
+                change: function() {
+                    //console.log('change');
+                }*/
+            }/*,
+            onTriggerClick: function() {
+                value.setValue(null);
+                //value.trigger.hide();
+                this.fireEvent('change');
+            }*/
         });
+        /*
         value.on('specialkey', function(field, e){
              if(e.getKey() == e.ENTER){
                  this.onFiltertrigger();
              }
         }, this);
+        */
         
         return value;
     },

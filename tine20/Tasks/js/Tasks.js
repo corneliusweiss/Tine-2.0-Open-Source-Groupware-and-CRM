@@ -23,7 +23,7 @@ Tine.Tasks.getPanel =  function() {
     
     // this function is called each time the user activates the Tasks app
     tree.on('beforeexpand', function(panel) {
-        Tine.Tinebase.MainScreen.setActiveToolbar(this.getToolbar());
+        Tine.Tinebase.MainScreen.setActiveToolbar(this.toolbar, true);
         this.updateMainToolbar();
         
         Tine.Tinebase.MainScreen.setActiveContentPanel(this.grid, true);
@@ -46,6 +46,10 @@ Tine.Tasks.mainGrid = {
      * holds instance of application tree
      */
     tree: null,
+    /**
+     * {Ext.Toolbar}
+     */
+    toolbar: null,
     /**
      * holds grid
      */
@@ -152,6 +156,8 @@ Tine.Tasks.mainGrid = {
     
     	this.actions = {
             editInPopup: new Ext.Action({
+                requiredGrant: 'readGrant',
+                
                 text: this.translation._('Edit task'),
     			disabled: true,
     			actionType: 'edit',
@@ -160,21 +166,20 @@ Tine.Tasks.mainGrid = {
                 scope: this
             }),
             addInPopup: new Ext.Action({
+                requiredGrant: 'addGrant',
     			actionType: 'add',
                 text: this.translation._('Add task'),
                 handler: this.handlers.editInPopup,
                 iconCls: 'TasksIconCls',
                 scope: this
             }),
-            deleteSingle: new Ext.Action({
-                text: this.translation._('Delete task'),
-                handler: this.handlers.deleteTasks,
-    			disabled: true,
-                iconCls: 'action_delete',
-                scope: this
-            }),
-    		deleteMultiple: new Ext.Action({
-                text: this.translation._('Delete tasks'),
+            deleteTasks: new Ext.Action({
+                requiredGrant: 'deleteGrant',
+                allowMultiple: true,
+                singularText: 'Delete task',
+                pluralText: 'Delete tasks',
+                translationObject: this.translation,
+                text: this.translation.ngettext('Delete task', 'Delete tasks', 1),
                 handler: this.handlers.deleteTasks,
     			disabled: true,
                 iconCls: 'action_delete',
@@ -184,16 +189,11 @@ Tine.Tasks.mainGrid = {
         
         this.filter.owner = Tine.Tinebase.Registry.get('currentAccount').accountId;
         this.initStore();
+        this.initToolbar();
         this.initGrid();
         
     },
     
-    /*
-    initMainScreen: function() {
-        this.updateMainToolbar();
-	},
-    */
-	
 	initStore: function(){
 	    this.store = new Ext.data.JsonStore({
 			id: 'id',
@@ -237,7 +237,7 @@ Tine.Tasks.mainGrid = {
             // toolbar
 			this.filter.showClosed = Ext.getCmp('TasksShowClosed') ? Ext.getCmp('TasksShowClosed').pressed : false;
 			this.filter.organizer = Ext.getCmp('TasksorganizerFilter') ? Ext.getCmp('TasksorganizerFilter').getValue() : '';
-			this.filter.query = Ext.getCmp('quickSearchField') ? Ext.getCmp('quickSearchField').getValue() : '';
+			this.filter.query = Ext.getCmp('TasksQuickSearchField') ? Ext.getCmp('TasksQuickSearchField').getValue() : '';
 			this.filter.status_id = Ext.getCmp('TasksStatusFilter') ? Ext.getCmp('TasksStatusFilter').getValue() : '';
 			//this.filter.due
 			//this.filter.tag
@@ -256,9 +256,14 @@ Tine.Tasks.mainGrid = {
     						linkedId: ''					
     	                },
     	                success: function(_result, _request) {
-    						store.commitChanges();
+                            store.commitChanges();
+                            
+                            // update task in grid store to prevent concurrency problems
+                            var updatedTask = new Tine.Tasks.Task(Ext.util.JSON.decode(_result.responseText));
+                            Tine.Tasks.fixTask(updatedTask);
+                            task.data = updatedTask.data;
     
-    						// reloading the store feels like 1.x
+    						// reloading the store feels like http 1.x
     						// maybe we should reload if the sort critera changed, 
     						// but even this might be confusing
     						//store.load({params: this.paging});
@@ -279,17 +284,11 @@ Tine.Tasks.mainGrid = {
     {
         var menu = Ext.menu.MenuMgr.get('Tinebase_System_AdminMenu');
         menu.removeAll();
-        /*menu.add(
-            {text: 'product', handler: Tine.Crm.Main.handlers.editProductSource}
-        );*/
 
         var adminButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_AdminButton');
         adminButton.setIconClass('TasksTreePanel');
-        //if(Tine.Tasks.rights.indexOf('admin') > -1) {
-        //    adminButton.setDisabled(false);
-        //} else {
-            adminButton.setDisabled(true);
-        //}
+
+        adminButton.setDisabled(true);
 
         var preferencesButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_PreferencesButton');
         preferencesButton.setIconClass('TasksTreePanel');
@@ -322,13 +321,13 @@ Tine.Tasks.mainGrid = {
     
 	// toolbar must be generated each time this fn is called, 
 	// as tinebase destroys the old toolbar when setting a new one.
-	getToolbar: function(){
-		var quickSearchField = new Ext.ux.SearchField({
-			id: 'quickSearchField',
+	initToolbar: function(){
+		var TasksQuickSearchField = new Ext.ux.SearchField({
+			id: 'TasksQuickSearchField',
 			width: 200,
 			emptyText: this.translation._('Enter searchfilter')
 		});
-		quickSearchField.on('change', function(field){
+		TasksQuickSearchField.on('change', function(field){
 			if(this.filter.query != field.getValue()){
 				this.store.load({params: this.paging});
 			}
@@ -376,14 +375,14 @@ Tine.Tasks.mainGrid = {
             //combo.triggers[0].show();
         }, this);
 		
-		var toolbar = new Ext.Toolbar({
+		this.toolbar = new Ext.Toolbar({
 			id: 'Tasks_Toolbar',
 			split: false,
 			height: 26,
 			items: [
 			    this.actions.addInPopup,
 				this.actions.editInPopup,
-				this.actions.deleteSingle,
+				this.actions.deleteTasks,
 				new Ext.Toolbar.Separator(),
 				'->',
 				showClosedToggle,
@@ -391,10 +390,8 @@ Tine.Tasks.mainGrid = {
 				//'Organizer: ', ' ',	organizerFilter,
 				new Ext.Toolbar.Separator(),
 				'->',
-				this.translation._('Search:'), ' ', ' ', quickSearchField]
+				this.translation._('Search:'), ' ', ' ', TasksQuickSearchField]
 		});
-	   
-	    return toolbar;
 	},
 	
     initGrid: function(){
@@ -511,10 +508,7 @@ Tine.Tasks.mainGrid = {
 		}, this);
 		
 		this.grid.getSelectionModel().on('selectionchange', function(sm){
-			var disabled = sm.getCount() != 1;
-			this.actions.editInPopup.setDisabled(disabled);
-			this.actions.deleteSingle.setDisabled(disabled);
-			this.actions.deleteMultiple.setDisabled(!disabled);
+            Tine.widgets.ActionUpdater(sm, this.actions);
 		}, this);
 		
 		this.grid.on('rowcontextmenu', function(_grid, _rowIndex, _eventObject) {
@@ -523,22 +517,15 @@ Tine.Tasks.mainGrid = {
                 _grid.getSelectionModel().selectRow(_rowIndex);
             }
 
-			var numSelected = _grid.getSelectionModel().getCount();
-			//if (numSelected < 1) {
-			//	return;
-			//}
-			
-			var items = numSelected > 1 ? [this.actions.deleteMultiple] : [
-			    this.actions.editInPopup,
-                this.actions.deleteSingle,
-                '-',
-                this.actions.addInPopup
-			];
-            
 			var ctxMenu = new Ext.menu.Menu({
-		        //id:'ctxMenuAddress1', 
-		        items: items
+		        items: [
+                    this.actions.editInPopup,
+                    this.actions.deleteTasks,
+                    '-',
+                    this.actions.addInPopup
+                ]
 		    });
+            
             ctxMenu.showAt(_eventObject.getXY());
         }, this);
 		
@@ -614,7 +601,6 @@ Tine.Tasks.EditDialog = function(task) {
 				Ext.MessageBox.wait(translation._('Please wait'), translation._('Saving Task'));
 				
 				// merge changes from form into task record
-				// @todo here is a problem with the linking-form values, if "apply" is clicked, the linking params are lost 
 				form.updateRecord(task);
 				
 	            Ext.Ajax.request({
@@ -623,7 +609,6 @@ Tine.Tasks.EditDialog = function(task) {
 		                task: Ext.util.JSON.encode(task.data),
 						linkingApp: formData.linking.link_app1,
 						linkedId: formData.linking.link_id1 //,
-						//jsonKey: Tine.Tinebase.Registry.get('jsonKey')
 		            },
 		            success: function(_result, _request) {
 		                
@@ -754,15 +739,17 @@ Tine.Tasks.EditDialog = function(task) {
 	
 	var viewport = new Ext.Viewport({
         layout: 'border',
-        items: dlg
+        items: dlg,
+        listeners: {
+            scope: this,
+            render: function() {
+                dlg.updateToolbars.defer(10, dlg, [task]);
+            }
+        }
     });
-    
+
     // load form with initial data
     dlg.getForm().loadRecord(task);
-    
-    if(task.get('id') > 0) {
-        dlg.action_delete.enable();
-    }
 };
 
 // generalised popup
@@ -784,9 +771,6 @@ Tine.Tasks.EditPopup = Ext.extend(Ext.ux.PopupWindow, {
 
 // fixes a task
 Tine.Tasks.fixTask = function(task) {
-	if (task.data.container_id) {
-        task.data.container_id = Ext.util.JSON.decode(task.data.container_id);
-    }
     if (task.data.due) {
         task.data.due = Date.parseDate(task.data.due, 'c');
     }

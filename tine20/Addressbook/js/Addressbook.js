@@ -209,10 +209,13 @@ Tine.Addressbook.Main = {
 	
 	renderer: {
         contactTid: function(_data, _cell, _record, _rowIndex, _columnIndex, _store) {
-            //switch(_data) {
-            //    default:
+            //console.log(_record.get('owner').type);
+            switch(_record.get('owner').type) {
+                case 'internal':
+                    return "<img src='images/oxygen/16x16/actions/user-female.png' width='12' height='12' alt='contact' ext:qtip='" + Tine.Addressbook.Main.translation._("Internal Contacts") + "'/>";
+                default:
                     return "<img src='images/oxygen/16x16/actions/user.png' width='12' height='12' alt='contact'/>";
-            //}
+            }
 	    }		
 	},
 
@@ -222,6 +225,7 @@ Tine.Addressbook.Main = {
         this.translation.textdomain('Addressbook');
     
         this.actions.addContact = new Ext.Action({
+            requiredGrant: 'addGrant',
             text: this.translation._('add contact'),
             handler: this.handlers.addContact,
             iconCls: 'action_addContact',
@@ -229,6 +233,7 @@ Tine.Addressbook.Main = {
         });
         
         this.actions.editContact = new Ext.Action({
+            requiredGrant: 'readGrant',
             text: this.translation._('edit contact'),
             disabled: true,
             handler: this.handlers.editContact,
@@ -237,7 +242,12 @@ Tine.Addressbook.Main = {
         });
         
         this.actions.deleteContact = new Ext.Action({
-            text: this.translation._('delete contact'),
+            requiredGrant: 'deleteGrant',
+            allowMultiple: true,
+            singularText: 'delete contact',
+            pluralText: 'delete contacts',
+            translationObject: this.translation,
+            text: this.translation.ngettext('delete contact', 'delete contacts', 1),
             disabled: true,
             handler: this.handlers.deleteContact,
             iconCls: 'action_delete',
@@ -245,6 +255,8 @@ Tine.Addressbook.Main = {
         });
 
         this.actions.exportContact = new Ext.Action({
+            requiredGrant: 'readGrant',
+            allowMultiple: true,
             text: this.translation._('export as pdf'),
             disabled: true,
             handler: this.handlers.exportContact,
@@ -253,6 +265,7 @@ Tine.Addressbook.Main = {
         });
 
         this.actions.callContact = new Ext.Action({
+            requiredGrant: 'readGrant',
         	id: 'Addressbook_Contacts_CallContact',
             text: this.translation._('call contact'),
             disabled: true,
@@ -266,7 +279,9 @@ Tine.Addressbook.Main = {
         
         // init grid store
         this.initStore();
+        this.initToolbar();
         this.initContactsGrid();
+        
     },
 
     updateMainToolbar : function() 
@@ -290,9 +305,9 @@ Tine.Addressbook.Main = {
         preferencesButton.setDisabled(true);
     },
 	
-    displayContactsToolbar: function()
+    initToolbar: function()
     {
-        var contactToolbar = new Ext.Toolbar({
+        this.contactToolbar = new Ext.Toolbar({
             id: 'Addressbook_Contacts_Toolbar',
             split: false,
             height: 26,
@@ -302,14 +317,9 @@ Tine.Addressbook.Main = {
                 this.actions.deleteContact,
                 '-',
                 this.actions.exportContact,
-                ( Tine.Dialer && Tine.Dialer.rights && Tine.Dialer.rights.indexOf('run') > -1 ) ? new Ext.Toolbar.MenuButton(this.actions.callContact) : '',
-                //'->',
-                //this.translation._('Filter: '), tagFilter,
-                //this.translation._('Search: '), quickSearchField
+                ( Tine.Dialer && Tine.Dialer.rights && Tine.Dialer.rights.indexOf('run') > -1 ) ? new Ext.Toolbar.MenuButton(this.actions.callContact) : ''
             ]
         });
-
-        Tine.Tinebase.MainScreen.setActiveToolbar(contactToolbar);
     },
 
     initContactsGrid: function() 
@@ -329,11 +339,7 @@ Tine.Addressbook.Main = {
                 {label: this.translation._('City') + '  (' + this.translation._('Company Address') + ')',       field: 'adr_one_locality'},
                 {label: this.translation._('Street') + ' (' + this.translation._('Private Address') + ')',      field: 'adr_two_street', defaultOperator: 'equals', valueType: 'int'},
                 {label: this.translation._('Postal Code') + ' (' + this.translation._('Private Address') + ')', field: 'adr_two_postalcode', defaultOperator: 'equals', valueType: 'int'},
-                {label: this.translation._('City') + '  (' + this.translation._('Private Address') + ')',       field: 'adr_two_locality'},
-                
-                //new Tine.widgets.container.ContainerFilter({ field: 'owner'})
-                //{label: 'Full Name', field: 'n_fn', defaultOperator: 'equals'},
-                //{label: 'Container', field: 'owner'},
+                {label: this.translation._('City') + '  (' + this.translation._('Private Address') + ')',       field: 'adr_two_locality'}
              ],
              defaultFilter: 'query',
              filters: []
@@ -392,31 +398,24 @@ Tine.Addressbook.Main = {
         ]);
         
         columnModel.defaultSortable = true; // by default columns are sortable
-        
+                
         // the rowselection model
         var rowSelectionModel = new Ext.grid.RowSelectionModel({multiSelect:true});
 
         rowSelectionModel.on('selectionchange', function(_selectionModel) {
+            // update toolbars
+            Tine.widgets.ActionUpdater(_selectionModel, this.actions, 'owner');
+            
             var rowCount = _selectionModel.getCount();
-
             if(rowCount < 1) {
-                // no row selected
-                this.actions.deleteContact.setDisabled(true);
-                this.actions.editContact.setDisabled(true);
-                this.actions.exportContact.setDisabled(true);
-                this.actions.callContact.setDisabled(true);
-            } else if(rowCount > 1) {
-                // more than one row selected
-                this.actions.deleteContact.setDisabled(false);
-                this.actions.editContact.setDisabled(true);
-                this.actions.exportContact.setDisabled(false);
-                this.actions.callContact.setDisabled(true);
-            } else {
-                // only one row selected
-                this.actions.deleteContact.setDisabled(false);
-                this.actions.editContact.setDisabled(false);
-                this.actions.exportContact.setDisabled(false);
+                // clear preview
+                var clearTpl = new Ext.Template(
+                    '<div class="preview-panel-empty">' + this.translation._('Select contact') + '</div>'
+                );
+                clearTpl.overwrite(Ext.getCmp('adr-preview-panel').body);    
                 
+            }  else if (rowCount == 1) {
+                // only one row selected
                 if(Tine.Dialer && Tine.Dialer.rights && Tine.Dialer.rights.indexOf('run') > -1) {
 	                var callMenu = Ext.menu.MenuMgr.get('Addressbook_Contacts_CallContact_Menu');
 	                callMenu.removeAll();
@@ -456,6 +455,107 @@ Tine.Addressbook.Main = {
                 }
             }
         }, this);
+
+        // define a template to use for the detail view
+        // @todo add tags?
+        // @todo use Ext.util.TextMetrics?
+        var detailTpl = new Ext.XTemplate(
+            '<tpl for=".">',
+                '<div id="previewPanel">',
+                    '<div class="preview-panel preview-panel-company preview-panel-address">',
+                        '{[this.encode(values.org_name)]}{[this.encode(values.org_unit, "prefix", " / ")]}<br/>',
+                        '{[this.encode(values.adr_one_street)]}<br/>',
+                        '{[this.encode(values.adr_one_postalcode, " ")]}{[this.encode(values.adr_one_locality)]}<br/>',
+                        '{[this.encode(values.adr_one_region, " / ")]}{[this.encode(values.adr_one_countryname, "country")]}<br/>',
+                    '</div>',
+                    '<div class="preview-panel preview-panel-company preview-panel-contact">',
+                        '<img src="images/oxygen/16x16/apps/kcall.png"/>&nbsp;{[this.encode(values.tel_work)]}<br/>',
+                        '<img src="images/oxygen/16x16/devices/phone.png"/>&nbsp;{[this.encode(values.tel_cell)]}<br/>',
+                        '<img src="images/oxygen/16x16/devices/printer.png"/>&nbsp;{[this.encode(values.tel_fax)]}<br/>',
+                        '<img src="images/oxygen/16x16/actions/kontact-mail.png"/>&nbsp;',
+                            '<a href="mailto:{[this.encode(values.email)]}">{[this.encode(values.email, "shorttext")]}</a><br/>',
+                        '<img src="images/oxygen/16x16/actions/network.png"/>&nbsp;',
+                            '<a href="{[this.encode(values.url)]}" target="_blank">{[this.encode(values.url, "shorttext")]}</a><br/>',
+                        /*
+                        this.translation._('Job Title') + ': {[this.encode(values.title)]}<br/>',
+                        this.translation._('Job Role') + ': {[this.encode(values.role)]}<br/>',
+                        this.translation._('Room') + ': {[this.encode(values.room)]}<br/>',
+                        */
+                    '</div>',
+                    '<div class="preview-panel preview-panel-address">',
+                        '{[this.encode(values.n_fn)]}<br/>',
+                        '{[this.encode(values.adr_two_street)]}<br/>',
+                        '{[this.encode(values.adr_two_postalcode, " ")]}{[this.encode(values.adr_two_locality)]}<br/>',
+                        '{[this.encode(values.adr_two_region, " / ")]}{[this.encode(values.adr_two_countryname, "country")]}<br/>',
+                    '</div>',
+                    '<div class="preview-panel preview-panel-contact">',
+                        '<img src="images/oxygen/16x16/apps/kcall.png"/>&nbsp;{[this.encode(values.tel_home)]}<br/>',
+                        '<img src="images/oxygen/16x16/devices/phone.png"/>&nbsp;{[this.encode(values.tel_cell_private)]}<br/>',
+                        '<img src="images/oxygen/16x16/devices/printer.png"/>&nbsp;{[this.encode(values.tel_fax_home)]}<br/>',
+                        '<img src="images/oxygen/16x16/actions/kontact-mail.png"/>&nbsp;',
+                            '<a href="mailto:{[this.encode(values.email_home)]}">{[this.encode(values.email_home, "shorttext")]}</a><br/>',
+                        '<img src="images/oxygen/16x16/actions/network.png"/>&nbsp;',
+                            '<a href="{[this.encode(values.url_home)]}" target="_blank">{[this.encode(values.url_home, "shorttext")]}</a><br/>',
+                    '</div>',
+                    /*
+                    '<div class="preview-panel">',
+                        '<u>' + this.translation._('Tags') + '</u><br/>',
+                        '{[this.getTags(values.tags)]}',
+                    '</div>',
+                    */
+                    '<div class="preview-panel preview-panel-description">',
+                        //'<u>' + this.translation._('Description') + '</u><br/>',
+                        '{[this.encode(values.note, "longtext")]}',
+                    '</div>',
+                    '<div class="preview-panel-image">',
+                        '<img src="{jpegphoto}" />',
+                    '</div>',
+                '</div>',
+            '</tpl>',
+        	{
+                encode: function(value, type, prefix) {
+                	//var metrics = Ext.util.TextMetrics.createInstance('previewPanel');
+                	if (value) {
+                		if (type) {
+                			switch (type) {
+                				case 'country':
+                				    value = Locale.getTranslationData('Territory', value);
+                				    break;
+                                case 'longtext':
+                                    value = Ext.util.Format.ellipsis(value, 300);
+                                    break;
+                                case 'shorttext':
+                                    //console.log(metrics.getWidth(value));
+                                    value = Ext.util.Format.ellipsis(value, 26);
+                                    break;
+                                case 'prefix':
+                                    if (prefix) {
+                                        value = prefix + value;
+                                    }
+                                    break;
+                                default:
+                                    value += type;
+                			}                			
+                		}
+                        return Ext.util.Format.htmlEncode(value);
+                	} else {
+                		return '';
+                	}
+                },
+                getTags: function(value) {
+                	var result = '';
+                	for (var i=0; i<value.length; i++) {
+                		result += value[i].name + ' ';
+                	}
+                	return result;
+                }
+            }
+        );
+        
+        rowSelectionModel.on('rowselect', function(sm, rowIdx, r) {
+            var detailPanel = Ext.getCmp('adr-preview-panel');
+            detailTpl.overwrite(detailPanel.body, r.data);
+        }, this);
         
         // the gridpanel
         var gridPanel = new Ext.grid.GridPanel({
@@ -474,8 +574,7 @@ Tine.Addressbook.Main = {
                 forceFit:true,
                 ignoreAdd: true,
                 emptyText: 'No contacts to display'
-            })            
-            
+            })                        
         });
         
         gridPanel.on('rowcontextmenu', function(_grid, _rowIndex, _eventObject) {
@@ -516,22 +615,74 @@ Tine.Addressbook.Main = {
 
         // temporary resizeing
         filterToolbar.on('bodyresize', function(ftb, w, h) {
-            var availableGridHeight = Ext.getCmp('center-panel').getSize().height;
-            gridPanel.setHeight(availableGridHeight - h);
+            /*
+            var layout = Ext.getCmp('adr-filtertoolbar-panel');
+            layout.setHeight(h);
+            if (layout.rendered) {
+                layout.el.setSize(w,h);
+                console.log(layout);
+                layout.doLayout();
+                //layout.layout();
+            }
+            */
+            var c = Ext.getCmp('center-panel');
+            var p = Ext.getCmp('adr-preview-panel');
+            if (c.rendered && p.rendered) {
+                var availableGridHeight = Ext.getCmp('center-panel').getSize().height - Ext.getCmp('adr-preview-panel').getSize().height - h;
+                gridPanel.setHeight(availableGridHeight);
+            }
+            
         }, this);
-        
         this.gridPanel = new Ext.Panel({
-            border: false,
-            layout: 'fit',
-            tbar: filterToolbar,
-            items: gridPanel
+            layout: 'border',
+            items: [/*{
+                id: 'adr-filtertoolbar-panel',
+                region: 'north',
+                layout: 'fit',
+                border: false,
+                collapsible:true,
+                collapseMode: 'mini',
+                //collapsed: true,
+                split: true,
+                height: 27,
+                items: filterToolbar
+            }, */{
+                id: 'adr-center-panel',
+                region: 'center',
+                border: false,
+                layout: 'fit',              
+                tbar: filterToolbar,
+                items: gridPanel
+            },{
+                // the new preview panel
+                id: 'adr-preview-panel',
+                region: 'south',
+                collapsible:true,
+                collapseMode: 'mini',
+                //collapsed: true,
+                split: true,
+                layout: 'fit',
+                height: 125,
+                html: '<div class="preview-panel-empty">' + this.translation._('Select contact') + '</div>' 
+            }]
         });
+        this.gridPanel.on('resize', function(panel) {
+            //panel.syncSize();
+            /*
+            panel.items.each(function(item) {
+                console.log(item);
+                if (item.rendered){
+                item.syncSize();
+                }
+            }, this);
+            */
+        }, this);
     },
     
     /**
      * init the contacts json grid store
      */
-    initStore: function(){
+    initStore: function() {
 
         this.store = new Ext.data.JsonStore({
         	id: 'id',
@@ -559,10 +710,10 @@ Tine.Addressbook.Main = {
             }
             
             // paging toolbar only works with this properties in the options!
-            options.params.sort  = store.getSortState() ? store.getSortState().field : this.paging.sort,
-            options.params.dir   = store.getSortState() ? store.getSortState().direction : this.paging.dir,
-            options.params.start = options.params.start ? options.params.start : this.paging.start,
-            options.params.limit = options.params.limit ? options.params.limit : this.paging.limit
+            options.params.sort  = store.getSortState() ? store.getSortState().field : this.paging.sort;
+            options.params.dir   = store.getSortState() ? store.getSortState().direction : this.paging.dir;
+            options.params.start = options.params.start ? options.params.start : this.paging.start;
+            options.params.limit = options.params.limit ? options.params.limit : this.paging.limit;
             
             options.params.paging = Ext.util.JSON.encode(options.params);
             
@@ -581,8 +732,7 @@ Tine.Addressbook.Main = {
         }, this);
     },
     
-    show: function(_node) 
-    {
+    show: function(_node) {
         var currentToolbar = Tine.Tinebase.MainScreen.getActiveToolbar();
 
         if(currentToolbar === false || currentToolbar.id != 'Addressbook_Contacts_Toolbar') {
@@ -591,19 +741,17 @@ Tine.Addressbook.Main = {
             }
             Tine.Tinebase.MainScreen.setActiveContentPanel(this.gridPanel, true);
             this.store.load({});
-            this.displayContactsToolbar();
+            Tine.Tinebase.MainScreen.setActiveToolbar(this.contactToolbar, true);
             this.updateMainToolbar();
             
         } else {
             // note: if node is clicked, it is not selected!
             _node.getOwnerTree().selectPath(_node.getPath());
-        	
             this.store.load({});  
         }
     },
     
-    reload: function() 
-    {
+    reload: function() {
         if(Ext.ComponentMgr.all.containsKey('Addressbook_Contacts_Grid')) {
             setTimeout ("Ext.getCmp('Addressbook_Contacts_Grid').getStore().reload()", 200);
         }
@@ -645,7 +793,7 @@ Tine.Addressbook.ContactEditDialog = {
                           	opener.Ext.ux.PopupWindowMgr.get(window).purgeListeners();
                             window.close();
                         } else {
-                            this.updateToolbarButtons(contactData.owner.account_grants, contactData.id);
+                            this.updateToolbarButtons(this.contactRecord);
                             
                             Ext.MessageBox.hide();
                         }
@@ -708,15 +856,14 @@ Tine.Addressbook.ContactEditDialog = {
         this.contactRecord = new Tine.Addressbook.Model.Contact(_contactData);
     },
 
-    updateToolbarButtons: function(_rights, contactId)
-    {    	
-        with(_rights) {
-            Ext.getCmp('contactDialog').action_saveAndClose.setDisabled(!editGrant);
-            Ext.getCmp('contactDialog').action_applyChanges.setDisabled(!editGrant);
-            Ext.getCmp('contactDialog').action_delete.setDisabled(!deleteGrant);
-        }
+    
+    updateToolbarButtons: function(contact)
+    {
+        var dialog = Ext.getCmp('contactDialog');
+        dialog.updateToolbars.defer(10, dialog, [contact, 'owner']);
         
         // add contact id to export button and enable it if id is set
+        var contactId = contact.get('id');
         if (contactId) {
         	Ext.getCmp('exportButton').contactId = contactId;
             Ext.getCmp('exportButton').setDisabled(false);
@@ -761,7 +908,7 @@ Tine.Addressbook.ContactEditDialog = {
         });
 
         this.updateContactRecord(_contactData);
-        this.updateToolbarButtons(_contactData.owner.account_grants, _contactData.id);
+        this.updateToolbarButtons(this.contactRecord);
         
         dialog.getForm().loadRecord(this.contactRecord);
         Ext.getCmp('addressbookeditdialog-jpegimage').setValue(this.contactRecord.get('jpegphoto'));

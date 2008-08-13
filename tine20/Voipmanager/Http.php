@@ -54,7 +54,9 @@ class Voipmanager_Http extends Tinebase_Application_Http_Abstract
     public function editSnomPhone($phoneId=NULL)
     {
         $controller = Voipmanager_Controller::getInstance();
-
+        $snomTemplates = $controller->getSnomTemplates();
+        $snomLocations = $controller->getSnomLocations();
+        
         $asteriskSipPeers = $controller->searchAsteriskSipPeers('name');
         $encodedAsteriskSipPeers = Zend_Json::encode($asteriskSipPeers->toArray());    
         
@@ -92,39 +94,29 @@ class Voipmanager_Http extends Tinebase_Application_Http_Abstract
             }
 
             $encodedWritable = Zend_Json::encode($_notWritable);
-
                 
             $_phoneData = array_merge($_phoneSettingsData,$_phoneData);
             
             // encode the data arrays
             $encodedSnomPhone = Zend_Json::encode($_phoneData);
-            $encodedSnomLines = Zend_Json::encode($snomLines->toArray());
+            $encodedSnomLines = Zend_Json::encode($snomPhone->lines->toArray());
             
-            if(empty($_phoneOwner)) {
-                $encodedPhoneOwner = '[]'; 
-            } else {
-                $encodedPhoneOwner = Zend_Json::encode($_phoneOwner);
-            }
         } else {
-            //$phone = new Voipmanager_Model_SnomPhone();
-            //$lines = new Tinebase_Record_RecordSet('Voipmanager_Model_SnomLine');
             $encodedWritable = '{}';
-            $encodedSnomPhone = '{}';
+            $encodedSnomPhone = "{current_model:'snom320',redirect_event:'none'}";
             $encodedSnomLines = '[]';
-            $encodedPhoneOwner = '[]';
-            
+
             $encodedSettings = '{}';
         }
 
         $currentAccount = Zend_Registry::get('currentAccount')->toArray();
 
-        $encodedTemplates = Zend_Json::encode($controller->getSnomTemplates()->toArray());
-        $encodedLocations = Zend_Json::encode($controller->getSnomLocations()->toArray());        
+        $encodedTemplates = Zend_Json::encode($snomTemplates->toArray());
+        $encodedLocations = Zend_Json::encode($snomLocations->toArray());        
                         
         $view = new Zend_View();
          
         $view->setScriptPath('Tinebase/views');
-        //$view->jsExecute = 'Tine.Voipmanager.Snom.Phones.EditDialog.display(' . $encodedSnomPhone . ', ' . $encodedSnomLines . ', ' . $encodedAsteriskSipPeers . ', ' . $encodedTemplates . ', ' . $encodedLocations . ', '. $encodedWritable .', ' . $encodedPhoneOwner . ');';
         $view->jsExecute = 'Tine.Voipmanager.Snom.Phones.EditDialog.display(' . $encodedSnomPhone . ', ' . $encodedSnomLines . ', ' . $encodedAsteriskSipPeers . ', ' . $encodedTemplates . ', ' . $encodedLocations . ', '. $encodedWritable .');';
 
         $view->configData = array(

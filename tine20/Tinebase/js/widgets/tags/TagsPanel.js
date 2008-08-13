@@ -45,15 +45,16 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
     searchField: null,
     
     iconCls: 'action_tag',
-    layout: 'hfit',
+    layout: 'fit',
     bodyStyle: 'padding: 2px 2px 2px 2px',
     collapsible: true,
+    border: false,
     
     /**
      * @private
      */
     initComponent: function(){
-        this.title =  _('Tags'),
+        this.title =  _('Tags');
         // init recordTagsStore
         this.tags = [];
         this.recordTagsStore = new Ext.data.JsonStore({
@@ -78,25 +79,28 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
         
         this.initSearchField();
         
-        this.bbar = [
-            this.searchField, '->',
-            new Ext.Button({
-                text: '',
-                iconCls: 'action_add',
-                tooltip: _('Add a new personal tag'),
-                scope: this,
-                handler: function() {
-                    Ext.Msg.prompt(_('Add New Personal Tag'),
-                                   _('Please note: You create a personal tag. Only you can see it!') + ' <br />' + _('Enter tag name:'), 
-                        function(btn, text) {
-                            if (btn == 'ok'){
-                                this.onTagAdd(text);
-                            }
-                        }, 
-                    this, false, this.searchField.lastQuery);
-                }
-            })
-        ];
+        this.bottomBar = new Ext.Toolbar({
+            style: 'border: 0px;',
+            items:[
+                this.searchField, '->',
+                new Ext.Button({
+                    text: '',
+                    iconCls: 'action_add',
+                    tooltip: _('Add a new personal tag'),
+                    scope: this,
+                    handler: function() {
+                        Ext.Msg.prompt(_('Add New Personal Tag'),
+                                       _('Please note: You create a personal tag. Only you can see it!') + ' <br />' + _('Enter tag name:'), 
+                            function(btn, text) {
+                                if (btn == 'ok'){
+                                    this.onTagAdd(text);
+                                }
+                            }, 
+                        this, false, this.searchField.lastQuery);
+                    }
+                })
+            ]
+        });
         
         var tagTpl = new Ext.XTemplate(
             '<tpl for=".">',
@@ -269,10 +273,15 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
             })
         };
         
-        this.items = [
-            this.dataView,
-            this.formField
-        ];
+        this.items = [{
+            xtype: 'panel',
+            layout: 'fit',
+            bbar: this.bottomBar,
+            items: [
+                this.dataView,
+                this.formField
+            ]
+        }];
         Tine.widgets.tags.TagPanel.superclass.initComponent.call(this);
     },
     /**
@@ -292,9 +301,13 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
         Tine.widgets.tags.TagPanel.superclass.onResize.call(this, w, h);
         // maximize search field and let space for add button
         if (this.searchField.rendered && w) {
-            this.searchField.setWidth(w-30);
+            
+            w = this.getSize().width - 12;
+            this.searchField.setWidth(w);
+            this.searchField.syncSize();
         }
     },
+    
     /**
      * @private
      */
@@ -331,7 +344,9 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
                         color: '#FFFFFF'
                     });
                     
-                    this.el.mask();
+                    if (! Ext.isIE) {
+                    	this.el.mask();
+                    }
                     Ext.Ajax.request({
                         params: {
                             method: 'Tinebase.saveTag', 
@@ -409,6 +424,7 @@ Tine.widgets.tags.TagPanel = Ext.extend(Ext.Panel, {
         this.searchField = new Ext.form.ComboBox({
             store: this.availableTagsStore,
             mode: 'local',
+            //width: 170,
             enableKeyEvents: true,
             displayField:'name',
             typeAhead: true,

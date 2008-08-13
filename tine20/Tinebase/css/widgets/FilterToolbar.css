@@ -1,13 +1,14 @@
 .action_delThisFilter {
-    background-image:url(../../../images/oxygen/16x16/actions/edit-clear-locationbar-rtl.png) !important;
+    /*background-image:url(../../../images/oxygen/16x16/actions/edit-clear-locationbar-rtl.png) !important;*/
+    background-image:url(../../../images/minus-gray.png) !important;
 }
 
 .action_delAllFilter {
-    background-image:url(../../../images/oxygen/16x16/actions/edit-clear-locationbar-ltr.png) !important;
+    background-image:url(../../../images/x-gray.png) !important;
 }
 
 .action_addFilter {
-    background-image:url(../../../images/oxygen/16x16/actions/edit-add.png) !important;
+    background-image:url(../../../images/plus-gray.png) !important;
 }
 
 .action_saveFilter {

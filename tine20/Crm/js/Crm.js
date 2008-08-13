@@ -347,27 +347,8 @@ Tine.Crm.Main = {
         var rowSelectionModel = new Ext.grid.RowSelectionModel({multiSelect:true});
         
         rowSelectionModel.on('selectionchange', function(_selectionModel) {
-            var rowCount = _selectionModel.getCount();
-
-            if(rowCount < 1) {
-                this.actions.editLead.setDisabled(true);
-                this.actions.deleteLead.setDisabled(true);
-                this.actions.exportLead.setDisabled(true);
-                this.actions.addTask.setDisabled(true);
-            } 
-            if (rowCount == 1) {
-               this.actions.editLead.setDisabled(false);
-               this.actions.deleteLead.setDisabled(false);               
-               this.actions.exportLead.setDisabled(false);
-               // @todo reactivate?
-               //this.actions.addTask.setDisabled(false);
-            }    
-            if(rowCount > 1) {                
-               this.actions.editLead.setDisabled(true);
-               this.actions.deleteLead.setDisabled(false);
-               this.actions.exportLead.setDisabled(false);
-               this.actions.addTask.setDisabled(true);
-            }
+            // update toolbars
+            Tine.widgets.ActionUpdater(_selectionModel, this.actions, 'container');
         }, this);
         
         var gridPanel = new Ext.grid.GridPanel({
@@ -427,6 +408,7 @@ Tine.Crm.Main = {
     
         // set actions
         this.actions.addLead = new Ext.Action({
+            requiredGrant: 'addGrant',
             text: this.translation._('Add lead'),
             tooltip: this.translation._('Add new lead'),
             iconCls: 'actionAdd',
@@ -439,6 +421,7 @@ Tine.Crm.Main = {
         });
         
         this.actions.editLead = new Ext.Action({
+            requiredGrant: 'readGrant',
             text: this.translation._('Edit lead'),
             tooltip: this.translation._('Edit selected lead'),
             disabled: true,
@@ -448,7 +431,12 @@ Tine.Crm.Main = {
         });
         
         this.actions.deleteLead = new Ext.Action({
-            text: this.translation._('Delete lead'),
+            requiredGrant: 'deleteGrant',
+            allowMultiple: true,
+            singularText: 'Delete lead',
+            pluralText: 'Delete leads',
+            translationObject: this.translation,
+            text: this.translation.ngettext('Delete lead', 'Delete leads', 1),
             tooltip: this.translation._('Delete selected leads'),
             disabled: true,
             handler: this.handlers.handlerDelete,
@@ -457,6 +445,8 @@ Tine.Crm.Main = {
         });
         
         this.actions.exportLead = new Ext.Action({
+            requiredGrant: 'readGrant',
+            allowMultiple: true,
             text: this.translation._('Export as PDF'),
             tooltip: this.translation._('Export selected lead as PDF'),
             disabled: true,
@@ -466,6 +456,7 @@ Tine.Crm.Main = {
         });
         
         this.actions.addTask = new Ext.Action({
+            requiredGrant: 'readGrant',
             text: this.translation._('Add task'),
             tooltip: this.translation._('Add task for selected lead'),
             handler: this.handlers.handlerAddTask,
@@ -797,16 +788,13 @@ Tine.Crm.LeadEditDialog = {
             });          
             
             // update event handler
-            contactPopup.on('update', function(contact) {                
-                // set link properties
-                contact.id = contact.data.id;
-                //contact.data.link_id = selectedContact.data.link_id;
-                contact.data.relation_type = selectedContact.data.relation_type;
-                
-                // add contact to store (remove the old one first)
-                var storeContacts = Ext.StoreMgr.lookup('ContactsStore');
-                storeContacts.remove(selectedContact);
-                storeContacts.add(contact);                                
+            contactPopup.on('update', function(contact) {            	
+            	// copy values from edited contact
+            	selectedContact.beginEdit();
+            	for (var p in contact.data) { 
+                    selectedContact.set(p, contact.get(p));
+                }
+                selectedContact.endEdit();
             }, this);            
         },
 
@@ -867,14 +855,13 @@ Tine.Crm.LeadEditDialog = {
             });          
             
             // update event handler
-            taskPopup.on('update', function(task) {           
-                // set link properties
-                task.id = task.data.id;
-                
-                // add task to store (remove the old one first)
-                var storeContacts = Ext.StoreMgr.lookup('TasksStore');
-                storeContacts.remove(selectedTask);
-                storeContacts.add(task);                                
+            taskPopup.on('update', function(task) {
+                // copy values from edited task
+                selectedTask.beginEdit();
+                for (var p in task.data) { 
+                    selectedTask.set(p, task.get(p));
+                }
+                selectedTask.endEdit();
             }, this);
         },
 
@@ -919,11 +906,13 @@ Tine.Crm.LeadEditDialog = {
         }
 
         // set the relation type
-        relation.type = record.data.relation_type.toUpperCase();
+        if (!relation.type) {
+            relation.type = record.data.relation_type.toUpperCase();
+        }
         
         // do not do recursion!
         delete record.data.relation;
-        delete record.data.relation_type;
+        //delete record.data.relation_type;
         
         // save record data        
         relation.related_record = record.data;
@@ -947,12 +936,14 @@ Tine.Crm.LeadEditDialog = {
     	
     	// contacts
         var storeContacts = Ext.StoreMgr.lookup('ContactsStore');
+        //console.log(storeContacts);
         storeContacts.each(function(record) {                     
             relations.push(this.getRelationData(record));
         }, this);
         
         // tasks
-        var storeTasks = Ext.StoreMgr.lookup('TasksStore');        
+        var storeTasks = Ext.StoreMgr.lookup('TasksStore');    
+        //console.log(storeTasks);
         storeTasks.each(function(record) {
             relations.push(this.getRelationData(record));
         }, this);
@@ -1047,6 +1038,9 @@ Tine.Crm.LeadEditDialog = {
                 
                 rowSelectionModel = new Ext.grid.RowSelectionModel({multiSelect:true});
                 rowSelectionModel.on('selectionchange', function(_selectionModel) {
+                    // update toolbars
+                    //Tine.widgets.ActionUpdater(_selectionModel, this.actions);
+                    
                     var rowCount = _selectionModel.getCount();                    
                     if(rowCount < 1) {
                         this.actions.editContact.setDisabled(true);
@@ -1060,6 +1054,7 @@ Tine.Crm.LeadEditDialog = {
                         this.actions.editContact.setDisabled(true);
                         this.actions.unlinkContact.setDisabled(false);
                     }
+                    
                 }, this);
                 
                 bbarItems = [                
@@ -1877,7 +1872,13 @@ Tine.Crm.LeadEditDialog = {
         var viewport = new Ext.Viewport({
             layout: 'border',
             id: 'editViewport',
-            items: leadEdit
+            items: leadEdit,
+            listeners: {
+                scope: this,
+                render: function() {
+                    leadEdit.updateToolbars.defer(10, leadEdit, [lead, 'container']);
+                }
+            }
         });
 
         leadEdit.getForm().loadRecord(lead);
@@ -1901,7 +1902,7 @@ Tine.Crm.Model.Lead = Ext.data.Record.create([
     {name: 'leadstate_id',  type: 'int'},
     {name: 'leadtype_id',   type: 'int'},
     {name: 'leadsource_id', type: 'int'},
-    {name: 'container',     type: 'int'},
+    {name: 'container'                 },
     {name: 'start',         type: 'date', dateFormat: 'c'},
     {name: 'description',   type: 'string'},
     {name: 'end',           type: 'date', dateFormat: 'c'},

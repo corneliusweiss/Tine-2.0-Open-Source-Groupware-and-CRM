@@ -29,59 +29,54 @@
     margin-right: 5px;
 }
 
-/* form hacking */
-.x-tool-toggle-expander {
-    position: relative;
-	top: -23px;
-	left: 1px;
-	margin-bottom: -15px;
+/******** preview panel classes ********/
+
+.preview-panel {
+	font-size: 11px;
+	float:left;
+	padding-left: 5px;
+	padding-top: 5px; 
+	white-space: normal;
+	height: 130px;
 }
 
-.x-ux-form-icontextfield-labelicon {
-    width: 13px;
-    height: 13px;
+.preview-panel-contact {
+    width: 190px;
 }
 
-.ext-strict .x-form-text {
-    height: 15px;
+.preview-panel-address {
+	width: 170px;
 }
 
-.ext-safari .x-form-text {
-    height: 17px;
+.preview-panel img {
+	vertical-align: middle;
+}
+	
+.preview-panel-company {
+	background-color: #eeeeee;
 }
 
-.x-form-field {
+.preview-panel-description {
     font-size: 11px;
+    width: 250px;
+    background-color: #eeeeee;
 }
 
-.x-form-item {
-    font-size: 11px;
-    /*font-weight: bold;*/
-    margin-bottom: 2px;
+.preview-panel-image {
+    padding-left: 5px;
+    padding-top: 5px; 
+	float:right;
+    width: 100px;
 }
 
-.x-fieldset {
-    padding: 5px 5px 0px 5px;
-    margin: 0px;
-    margin-bottom: 5px;
+.preview-panel-image img {
+	border: 1px solid gray;
 }
 
-.x-form-field-wrap .x-form-trigger {
-    height: 18px;
+.preview-panel-empty {
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
 }
 
-.ext-safari .x-form-field-wrap .x-form-trigger {
-    height: 18px;
-}
-
-.ext-safari .x-small-editor .x-form-trigger {
-    height: 17px;
-}
-
-.x-tab-strip-top .x-tab-strip-active .x-tab-right span.x-tab-strip-text {
-    padding-bottom: 3px;
-}
-
-.x-tab-strip span.x-tab-strip-text {
-    padding:3px 0pt;
-}

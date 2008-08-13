@@ -446,7 +446,8 @@ class Admin_Controller
     public function getTags($query, $sort, $dir, $start, $limit)
     {
         $filter = new Tinebase_Tags_Model_Filter(array(
-            'name'        => $query,
+            'name'        => '%' . $query . '%',
+            'description' => '%' . $query . '%',
             'type'        => Tinebase_Tags_Model_Tag::TYPE_SHARED
         ));
         $paging = new Tinebase_Model_Pagination(array(
@@ -545,8 +546,8 @@ class Admin_Controller
         $this->checkRight('VIEW_ROLES');
        
         $filter = new Tinebase_Acl_Model_RoleFilter(array(
-            'name'        => $query,
-            'description' => $query
+            'name'        => '%' . $query . '%',
+            'description' => '%' . $query . '%'
         ));
         $paging = new Tinebase_Model_Pagination(array(
             'start' => $start,

@@ -61,13 +61,8 @@ class Addressbook_Json extends Tinebase_Application_Json_Abstract
         //$contacts->setTimezone($this->_userTimezone);
         //$contacts->convertDates = true;
         
-        $result = array();
-        foreach ($contacts as $contact) {
-            $result[] = $this->_contactToJson($contact);
-        }
-        
         return array(
-            'results'       => $result,
+            'results'       => $this->_multipleContactsToJson($contacts),
             'totalcount'    => Addressbook_Controller::getInstance()->searchContactsCount($filter)
         );
     }    
@@ -114,7 +109,7 @@ class Addressbook_Json extends Tinebase_Application_Json_Abstract
 
         $result = array('success'           => true,
                         'welcomeMessage'    => 'Entry updated',
-                        'updatedData'       => $this->_contactToJson($contact, TRUE)
+                        'updatedData'       => $this->_contactToJson($contact)
         );         
         
         return $result;
@@ -129,25 +124,45 @@ class Addressbook_Json extends Tinebase_Application_Json_Abstract
      * @param Addressbook_Model_Contact $_contact
      * @return array contact data
      * 
-     * @todo add account grants again for list view -> improve performance first
+     * @todo get tags (?) / account grants for all records at once 
      */
-    protected function _contactToJson($_contact, $_getAccountGrants = FALSE)
-    {
-        //$_contact->tags = $_contact->tags->toArray();
-        
+    protected function _contactToJson($_contact)
+    {        
         $result = $_contact->toArray();
-        $result['owner'] = Tinebase_Container::getInstance()->getContainerById($_contact->owner)->toArray();
         
-        // removed for list view because it took 50% of the execution time
-        if ($_getAccountGrants) {
-            $result['owner']['account_grants'] = Tinebase_Container::getInstance()->getGrantsOfAccount(Zend_Registry::get('currentAccount'), $_contact->owner)->toArray();
-        }
+        $result['owner'] = Tinebase_Container::getInstance()->getContainerById($_contact->owner)->toArray();
+        $result['owner']['account_grants'] = Tinebase_Container::getInstance()->getGrantsOfAccount(Zend_Registry::get('currentAccount'), $_contact->owner)->toArray();
+        
+        // get tags?
+        //$result['tags'] = Tinebase_Tags::getInstance()->getTagsOfRecord($_contact)->toArray();        
         
         $result['jpegphoto'] = $this->_getImageLink($_contact);
         
         return $result;
     }
-            
+
+    /**
+     * returns multiple contacts prepared for json transport
+     *
+     * @param Tinebase_Record_RecordSet $_contacts Addressbook_Model_Contact
+     * @return array contacts data
+     */
+    protected function _multipleContactsToJson(Tinebase_Record_RecordSet $_contacts)
+    {        
+        // get acls for contacts
+        Tinebase_Container::getInstance()->getGrantsOfRecords($_contacts, Zend_Registry::get('currentAccount'), 'owner');
+        
+        $result = $_contacts->toArray();
+        
+        foreach ($result as &$contact) {
+            $contact['jpegphoto'] = $this->_getImageLink($contact);
+        }
+        
+        //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($result, true));
+        
+        return $result;
+    }
+    
     /**
      * returns a image link
      * 
@@ -157,7 +172,7 @@ class Addressbook_Json extends Tinebase_Application_Json_Abstract
     protected function _getImageLink($contact)
     {
         if (!empty($contact->jpegphoto)) {
-            $link =  'index.php?method=Tinebase.getImage&application=Addressbook&location=&id=' . $contact['id'] . '&width=90&height=90&$ratiomode=0';
+            $link =  'index.php?method=Tinebase.getImage&application=Addressbook&location=&id=' . $contact['id'] . '&width=90&height=90&ratiomode=0';
         } else {
             $link = 'images/empty_photo.jpg';
         }

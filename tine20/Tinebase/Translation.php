@@ -34,10 +34,7 @@ class Tinebase_Translation
         } catch (Zend_Translate_Exception $e) {
             Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ .' locale not found: ' . (string)Zend_Registry::get('locale'));
             // the locale of the user is not available
-            // translate with locale en
-            $translate->setLocale('en');
         }
-        
         return $translate;
     }
     
@@ -64,7 +61,7 @@ class Tinebase_Translation
         	case 'ext':
         	   $dir = 'ExtJS/build/locale/';
                $prefix = 'ext-lang-';
-               $suffix = '-min.js';
+               $suffix = '.js';
                break;
         	default:
         		throw new Exception('no such location');

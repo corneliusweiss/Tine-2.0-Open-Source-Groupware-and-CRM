@@ -311,4 +311,4 @@ Tine.Dialer.Main = {
         }
         //this.loadData(_node);		
 	}
-}
+};

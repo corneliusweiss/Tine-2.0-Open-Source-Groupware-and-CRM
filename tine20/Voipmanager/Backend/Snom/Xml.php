@@ -56,11 +56,15 @@ class Voipmanager_Backend_Snom_Xml
         'TR'    => 'Turkce',
     );
     
-    public function __construct()
+    public function __construct($_db = NULL)
     {
-        $this->_db = Zend_Db_Table_Abstract::getDefaultAdapter();
+        if($_db instanceof Zend_Db_Adapter_Abstract) {
+            $this->_db = $_db;
+        } else {
+            $this->_db = Zend_Db_Table_Abstract::getDefaultAdapter();
+        }
     }
-    
+        
     public function getConfig(Voipmanager_Model_SnomPhone $_phone)
     {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><settings></settings>');
@@ -76,7 +80,17 @@ class Voipmanager_Backend_Snom_Xml
                 $child->addAttribute('perm', 'RO');
             }
         }
-                        
+        
+        // reset old dialplan
+        $child = $xmlPhoneSettings->addChild('user_dp_str1');
+        $child->addAttribute('perm', 'RW');
+        // disable redundant keys
+        $child = $xmlPhoneSettings->addChild('dkey_directory', 'url http://erp2.mwdev.net/index.php?mac=$mac&amp;method=Voipmanager.directory');
+        $child->addAttribute('perm', 'RW');
+        // add directory button
+        $child = $xmlPhoneSettings->addChild('redundant_fkeys', 'off');
+        $child->addAttribute('perm', 'RO');
+        
         $phoneSettings = $this->_getPhoneSettings($_phone);
         foreach($phoneSettings as $key => $value) {
           $child = $xmlPhoneSettings->addChild($key, $value['value']);
@@ -96,6 +110,10 @@ class Voipmanager_Backend_Snom_Xml
                 $child->addAttribute('idx', $lineId);
                 $child->addAttribute('perm', 'RO');
             }
+            // reset old dialplan
+            $child = $xmlPhoneSettings->addChild('user_dp_str');
+            $child->addAttribute('idx', $lineId);
+            $child->addAttribute('perm', 'RO');
         }
         
         $guiLanguages = $xml->addChild('gui-languages');
@@ -118,11 +136,23 @@ class Voipmanager_Backend_Snom_Xml
         $dialPlan = $xml->addChild('dialplan');
     
         $child = $dialPlan->addChild('template');
-        $child->addAttribute('match', '[1-8].');
+        $child->addAttribute('match', '[1-4].');
         $child->addAttribute('timeout', 0);
         $child->addAttribute('scheme', 'sip');
         $child->addAttribute('user', 'phone');
-    
+        
+        $child = $dialPlan->addChild('template');
+        $child->addAttribute('match', '5..');
+        $child->addAttribute('timeout', 0);
+        $child->addAttribute('scheme', 'sip');
+        $child->addAttribute('user', 'phone');
+        
+        $child = $dialPlan->addChild('template');
+        $child->addAttribute('match', '[6-8].');
+        $child->addAttribute('timeout', 0);
+        $child->addAttribute('scheme', 'sip');
+        $child->addAttribute('user', 'phone');
+        
         $child = $dialPlan->addChild('template');
         $child->addAttribute('match', '9..');
         $child->addAttribute('timeout', 0);

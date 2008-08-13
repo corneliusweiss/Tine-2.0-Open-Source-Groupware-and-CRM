@@ -33,7 +33,7 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
      */
     actions: {
         changePassword: null,
-        logout: null,
+        logout: null
     },
     
     /**
@@ -97,22 +97,6 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
             ]
     
         });
-        
-        // init application toolbar
-        var applicationToolbar = new Ext.Toolbar({
-            id: 'applicationToolbar',
-            height: 26
-        });
-        
-        // default app
-        applicationToolbar.on('render', function(){
-            if(! this.defaultAppPanel.collapsed) {
-                this.defaultAppPanel.fireEvent('beforeexpand', this.defaultAppPanel);
-            }
-            this.defaultAppPanel.expand();
-            
-        }, this);
-        
     
         // init app chooser
         this.applicationArcordion = new Ext.Panel({
@@ -126,7 +110,7 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
             },
             items: this.getPanels()
         });
-        
+                    
         // init generic mainscreen layout
         this.items = [{
             region: 'north',
@@ -145,12 +129,11 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
                 ]
             },{
                 region: 'center',
+                layout: 'card',
+                activeItem: 0,
                 height: 26,
                 border: false,
-                id:     'north-panel-2',
-                items: [
-                    applicationToolbar
-                ]
+                id:     'north-panel-2'
             }]
         }, {
             region: 'south',
@@ -209,16 +192,17 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
         var userApps = Tine.Tinebase.Registry.get('userApplications');
         
         var panels = [];
+        var app, appPanel;
         for(var i=0; i<userApps.length; i++) {
-            var app = userApps[i];
+            app = userApps[i];
             if(app.status != 'enabled') {
                 continue;
             }
             try{
-                var appPanel = Tine[app.name].getPanel();
+                appPanel = Tine[app.name].getPanel();
                 panels.push(appPanel);
                 
-                if (i == 0 || app.name == this.defaultAppName) {
+                if (i === 0 || app.name == this.defaultAppName) {
                     this.defaultAppPanel = appPanel;
                 }
             } catch(e) {
@@ -238,12 +222,26 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
      * @private
      */
     render: function() {
-        new Ext.Viewport({
+        var viewport = new Ext.Viewport({
             layout: 'border',
-            items: this.items
+            items: this.items,
+            listeners: {
+                scope: this,
+                render: this.ativateDefaultApp
+            }
         });
     },
     
+    ativateDefaultApp: function() {
+        if (this.defaultAppPanel.rendered) {
+            if(! this.defaultAppPanel.collapsed) {
+                this.defaultAppPanel.fireEvent('beforeexpand', this.defaultAppPanel);
+            }
+            this.defaultAppPanel.expand();
+        } else {
+            this.ativateDefaultApp.defer(10, this);
+        }
+    },
     /**
      * @private
      */
@@ -296,8 +294,9 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
                     iconCls: 'action_saveAndClose',
                     handler: function() {
                         var form = Ext.getCmp('changePasswordPanel').getForm();
+                        var values;
                         if (form.isValid()) {
-                            var values = form.getValues();
+                            values = form.getValues();
                             if (values.newPassword == values.newPasswordSecondTime) {
                                 Ext.Ajax.request({
                                     waitTitle: _('Please Wait!'),
@@ -375,10 +374,11 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
         // get container to which component will be added
         var centerPanel = Ext.getCmp('center-panel');
         _panel.keep = _keep;
-        
+
+        var i,p;
         if(centerPanel.items) {
-            for (var i=0; i<centerPanel.items.length; i++){
-                var p =  centerPanel.items.get(i);
+            for (i=0; i<centerPanel.items.length; i++){
+                p =  centerPanel.items.get(i);
                 if (! p.keep) {
                     centerPanel.remove(p);
                 }
@@ -399,11 +399,11 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
      */
     getActiveToolbar: function() {
         var northPanel = Ext.getCmp('north-panel-2');
-        
-        if(northPanel.items) {
-            return northPanel.items.get(0);
+
+        if(northPanel.layout.activeItem && northPanel.layout.activeItem.el) {
+            return northPanel.layout.activeItem.el;
         } else {
-            return false;
+            return false;            
         }
     },
     
@@ -412,17 +412,26 @@ Tine.Tinebase.MainScreenClass = Ext.extend(Ext.Component, {
      * 
      * @param {Ext.Toolbar}
      */
-    setActiveToolbar: function(_toolbar) {
+    setActiveToolbar: function(_toolbar, _keep) {
         var northPanel = Ext.getCmp('north-panel-2');
+        _toolbar.keep = _keep;
+        
+        var i,t;
         if(northPanel.items) {
-            for (var i=0; i<northPanel.items.length; i++){
-                northPanel.remove(northPanel.items.get(i));
+            for (i=0; i<northPanel.items.length; i++){
+                t = northPanel.items.get(i);
+                if (! t.keep) {
+                    northPanel.remove(t);
+                }
             }  
         }
-        //var toolbarPanel = Ext.getCmp('applicationToolbar');
         
-        northPanel.add(_toolbar);
-        northPanel.doLayout();
+        if(_toolbar.keep && _toolbar.rendered) {
+            northPanel.layout.setActiveItem(_toolbar.id);
+        } else {
+            northPanel.add(_toolbar);
+            northPanel.layout.setActiveItem(_toolbar.id);
+        }
     }
 
 });

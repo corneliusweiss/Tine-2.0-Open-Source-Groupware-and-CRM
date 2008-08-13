@@ -94,8 +94,9 @@ class Addressbook_Model_ContactFilter extends Tinebase_Record_Abstract
      */
     public function setFromArray(array $_data)
     {
-        Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " setting filters from array with data: " .
-            print_r($_data, true));
+        //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " setting filters from array with data: " .
+        //    print_r($_data, true));
+        
         $data = array();
         foreach ($_data as $filter) {
             $field = (isset($filter['field']) && isset($filter['value'])) ? $filter['field'] : '';
@@ -129,7 +130,7 @@ class Addressbook_Model_ContactFilter extends Tinebase_Record_Abstract
         
         foreach ($this->_properties as $field => $value)
         {
-            Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " append sql for filter '$field' width value '$value'");
+            //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " append sql for filter '$field' width value '$value'");
             $value = str_replace(array('*', '_'), array('%', '\_'), $value);
             
             switch ($field) {

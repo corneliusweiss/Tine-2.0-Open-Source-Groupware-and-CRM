@@ -46,7 +46,15 @@ class Voipmanager_Json extends Tinebase_Application_Json_Abstract
             'totalcount'  => 0
         );
         
-        $rows = Voipmanager_Controller::getInstance()->getSnomPhones($sort, $dir, $query);
+        $filter = new Voipmanager_Model_SnomPhoneFilter(array(
+            'query' => $query
+        ));
+        $pagination = new Tinebase_Model_Pagination(array(
+            'sort'  => $sort,
+            'dir'   => $dir
+        ));
+        
+        $rows = Voipmanager_Controller::getInstance()->getSnomPhones($filter, $pagination);
         
         $_rows = $rows->toArray();
 
@@ -87,8 +95,8 @@ class Voipmanager_Json extends Tinebase_Application_Json_Abstract
 
         $phone = Voipmanager_Controller::getInstance()->getSnomPhone($phoneId);
         
-        $result = $phone->toArray();      
-          
+        $result = $phone->toArray();    
+
         return $result;
     }    
     

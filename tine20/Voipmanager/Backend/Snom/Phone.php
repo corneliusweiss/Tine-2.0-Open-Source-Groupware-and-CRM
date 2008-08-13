@@ -26,40 +26,46 @@ class Voipmanager_Backend_Snom_Phone
 	/**
 	 * the constructor
 	 */
-    public function __construct()
+    public function __construct($_db = NULL)
     {
-        $this->_db      = Zend_Db_Table_Abstract::getDefaultAdapter();
+        if($_db instanceof Zend_Db_Adapter_Abstract) {
+            $this->_db = $_db;
+        } else {
+            $this->_db = Zend_Db_Table_Abstract::getDefaultAdapter();
+        }
     }
-    
+        
 	/**
 	 * search phones
 	 * 
      * @param Voipmanager_Model_SnomPhoneFilter $_filter
-     * @param Tinebase_Model_Pagination $_pagination
+     * @param Tinebase_Model_Pagination|optional $_pagination
 	 * @return Tinebase_Record_RecordSet of subtype Voipmanager_Model_SnomPhone
 	 */
-    public function search(Voipmanager_Model_SnomPhoneFilter $_filter, Tinebase_Model_Pagination $_pagination, $_accountId = NULL)
+    public function search(Voipmanager_Model_SnomPhoneFilter $_filter, $_pagination, $_accountId = NULL)
     {	
         $where = array();
         
         $select = $this->_db->select()
             ->from(array('phones' => SQL_TABLE_PREFIX . 'snom_phones'));
             
-        $_sort = $_pagination->toArray();
-        
-        if($_sort['sort'] == 'location_id') {
-            $select->join(array('loc' => SQL_TABLE_PREFIX . 'snom_location'), 'phones.location_id = loc.id', array('location' => 'name'));    
-            $_sort['sort'] = 'location';
-            $_pagination->setFromArray($_sort);
+        if($_pagination instanceof Tinebase_Model_Pagination) {
+            $_sort = $_pagination->toArray();
+            
+            if($_sort['sort'] == 'location_id') {
+                $select->join(array('loc' => SQL_TABLE_PREFIX . 'snom_location'), 'phones.location_id = loc.id', array('location' => 'name'));    
+                $_sort['sort'] = 'location';
+                $_pagination->setFromArray($_sort);
+            }
+    
+            if($_sort['sort'] == 'template_id') {
+                $select->join(array('temp' => SQL_TABLE_PREFIX . 'snom_templates'), 'phones.template_id = temp.id', array('template' => 'name'));        
+                $_sort['sort'] = 'template';
+                $_pagination->setFromArray($_sort);
+            }
+            
+            $_pagination->appendPagination($select);
         }
-
-        if($_sort['sort'] == 'template_id') {
-            $select->join(array('temp' => SQL_TABLE_PREFIX . 'snom_templates'), 'phones.template_id = temp.id', array('template' => 'name'));        
-            $_sort['sort'] = 'template';
-            $_pagination->setFromArray($_sort);
-        }
-        
-        $_pagination->appendPagination($select);
 
         if(!empty($_filter->query)) {
             $select->where($this->_db->quoteInto('(macaddress LIKE ? OR ipaddress LIKE ? OR description LIKE ?)', '%' . $_filter->query . '%'));
@@ -67,18 +73,16 @@ class Voipmanager_Backend_Snom_Phone
             // handle the other fields separately
         }
 
-        if($_accountId) {
-            $_validPhoneIds = $this->getValidPhoneIds($_accountId);   
+        if(!empty($_filter->accountId)) {
+            $_validPhoneIds = $this->getValidPhoneIds($_filter->accountId);   
             if(empty($_validPhoneIds)) {
                 return false;    
             }         
             $select->where($this->_db->quoteInto('id IN (?)', $_validPhoneIds));
         }
 
-
         $stmt = $select->query();
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
-        
         
        	$result = new Tinebase_Record_RecordSet('Voipmanager_Model_SnomPhone', $rows);
 		
@@ -141,14 +145,7 @@ class Voipmanager_Backend_Snom_Phone
         $stmt = $select->query();
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);      
         
-        $result = new Tinebase_Record_RecordSet('Voipmanager_Model_SnomPhoneRight');
-        // add accountDisplayName
-        foreach ($rows as $row) {
-            $user = Tinebase_User::getInstance()->getUserById($row['account_id']);
-            $row['accountDisplayName'] = $user->accountDisplayName;
-            
-            $result->addRecord(new Voipmanager_Model_SnomPhoneRight($row));
-        }
+        $result = new Tinebase_Record_RecordSet('Voipmanager_Model_SnomPhoneRight', $rows);
         
         return $result;        
     }    
@@ -189,13 +186,12 @@ class Voipmanager_Backend_Snom_Phone
 	 */    
     public function getValidPhoneIds($_accountId)
     {
-        if(empty($_accountId)) 
-        {
+        if(empty($_accountId)) {
             throw new UnderflowException('no accountId set');
         }    
         
         $select = $this->_db->select()    
-            ->from(array('phoneACL' => SQL_TABLE_PREFIX . 'snom_phones_acl'), array('phone_id'))
+            ->from(SQL_TABLE_PREFIX . 'snom_phones_acl', array('snom_phone_id'))
             ->where($this->_db->quoteInto('account_id = ?', $_accountId));            
 
         $stmt = $select->query();
@@ -334,7 +330,31 @@ class Voipmanager_Backend_Snom_Phone
         return $this->get($_phone);
     }        
     
-
+    /**
+     * update redirect for an existing phone
+     *
+     * @param Voipmanager_Model_SnomPhone $_phone the phonedata
+     * @return Voipmanager_Model_SnomPhone
+     */
+    public function updateRedirect(Voipmanager_Model_SnomPhone $_phone)
+    {
+        if (! $_phone->isValid()) {
+            throw new Exception('invalid phone');
+        }
+        
+        $phoneId = $_phone->getId();
+        $redirectData = array(
+            'redirect_event'    => $_phone->redirect_event,
+            'redirect_number'   => $_phone->redirect_number,
+            'redirect_time'     => $_phone->redirect_time
+        );
+        
+        $where = array($this->_db->quoteInto('id = ?', $phoneId));
+        $this->_db->update(SQL_TABLE_PREFIX . 'snom_phones', $redirectData, $where);
+        
+        return $this->get($_phone);
+    }            
+    
     /**
      * update an existing myPhone
      *
