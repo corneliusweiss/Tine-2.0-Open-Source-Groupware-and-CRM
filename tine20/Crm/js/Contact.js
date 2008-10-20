@@ -71,7 +71,7 @@ Tine.Crm.Contact.ComboBox = Ext.extend(Ext.form.ComboBox, {
     valueField: 'id',
     typeAhead: false,
     loadingText: 'Searching...',
-    hideTrigger: true,
+    //hideTrigger: true,
     pageSize: 10,
     itemSelector: 'div.search-item',
     store: null,
