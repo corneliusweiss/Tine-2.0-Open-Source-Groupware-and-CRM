@@ -190,7 +190,7 @@ msgstr "Aufgabe zum Lead hinzufügen"
 
 #: js/Crm.js:622
 msgid "Lead states"
-msgstr "Lead Stati"
+msgstr "Lead Status"
 
 #: js/Crm.js:623
 msgid "Lead sources"
