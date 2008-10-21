@@ -269,6 +269,24 @@ msgstr "Narozeniny"
 msgid "Select contact"
 msgstr "Vybrat kontakt"
 
+#: js/Addressbook.js:432
+msgid "Work"
+msgstr ""
+
+#: js/Addressbook.js:440
+#, fuzzy
+msgid "Home"
+msgstr "Domácí URL"
+
+#: js/Addressbook.js:448
+msgid "Cell"
+msgstr ""
+
+#: js/Addressbook.js:456
+#, fuzzy
+msgid "Cell private"
+msgstr "Město (privátní adresa)"
+
 #: js/Addressbook.js:508
 msgid "Tags"
 msgstr "Štítky"

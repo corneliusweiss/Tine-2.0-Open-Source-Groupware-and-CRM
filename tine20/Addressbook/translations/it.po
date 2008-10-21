@@ -261,6 +261,22 @@ msgstr ""
 msgid "Select contact"
 msgstr ""
 
+#: js/Addressbook.js:432
+msgid "Work"
+msgstr ""
+
+#: js/Addressbook.js:440
+msgid "Home"
+msgstr ""
+
+#: js/Addressbook.js:448
+msgid "Cell"
+msgstr ""
+
+#: js/Addressbook.js:456
+msgid "Cell private"
+msgstr ""
+
 #: js/Addressbook.js:508
 msgid "Tags"
 msgstr ""
