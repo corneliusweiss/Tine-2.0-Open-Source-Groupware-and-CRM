@@ -99,7 +99,6 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
      *
      * @return Crm_Model_Lead
      * 
-     * @todo add creator as internal contact 
      * @todo update test
      */
     public function getEmptyLead()
@@ -118,20 +117,22 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($defaultData, true));
         $emptyLead = new Crm_Model_Lead($defaultData, true);
         
-        // add creator as RESPONSIBLE
-        $userContact = Addressbook_Controller::getInstance()->getContactByUserId($this->_currentAccount->getId());
-        $emptyLead->relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation');
-        $emptyLead->relations->addRecord(new Tinebase_Model_Relation(array(
-            'own_id'                 => 0,
-            'own_model'              => 'Crm_Model_Lead',
-            'own_backend'            => Crm_Backend_Factory::SQL,
-            'own_degree'             => Tinebase_Model_Relation::DEGREE_SIBLING,
-            'related_model'          => 'Addressbook_Model_Contact',
-            'related_backend'        => Addressbook_Backend_Factory::SQL,
-            'related_id'             => $userContact->getId(),
-            'type'                   => 'RESPONSIBLE',
-            'related_record'         => $userContact->toArray()
-        )));
+        // add creator as RESPONSIBLE (only if user backend isn't LDAP)
+        if (Tinebase_User::getConfiguredBackend() !== Tinebase_User::LDAP) {
+            $userContact = Addressbook_Controller::getInstance()->getContactByUserId($this->_currentAccount->getId());
+            $emptyLead->relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation');
+            $emptyLead->relations->addRecord(new Tinebase_Model_Relation(array(
+                'own_id'                 => 0,
+                'own_model'              => 'Crm_Model_Lead',
+                'own_backend'            => Crm_Backend_Factory::SQL,
+                'own_degree'             => Tinebase_Model_Relation::DEGREE_SIBLING,
+                'related_model'          => 'Addressbook_Model_Contact',
+                'related_backend'        => Addressbook_Backend_Factory::SQL,
+                'related_id'             => $userContact->getId(),
+                'type'                   => 'RESPONSIBLE',
+                'related_record'         => $userContact->toArray()
+            )));
+        }
         
         return $emptyLead;
     }
