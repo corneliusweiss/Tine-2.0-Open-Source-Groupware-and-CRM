@@ -416,12 +416,11 @@ class Tinebase_Controller
                 break;
             }
         } else {
-            $backendType = 'File';
+            $backendType = 'Test';
             $frontendOptions = array(
                 'caching' => false
             );
             $backendOptions = array(
-                'cache_dir' => session_save_path()
             );
         }    
 
