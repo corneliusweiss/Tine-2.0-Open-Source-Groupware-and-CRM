@@ -136,12 +136,20 @@ class Tasks_Controller extends Tinebase_Container_Abstract implements Tinebase_E
      */
     public function getTask($_uid)
     {
-        $Task = $this->_backend->get($_uid);
-        if (! $this->_currentAccount->hasGrant($Task->container_id, Tinebase_Model_Container::GRANT_READ)) {
+        $record = $this->_backend->get($_uid);
+        if (! $this->_currentAccount->hasGrant($record->container_id, Tinebase_Model_Container::GRANT_READ)) {
             throw new Exception('Not allowed!');
         }
         
-        return $Task;
+        // get tags / notes / relations
+        if ($record->has('tags')) {
+            Tinebase_Tags::getInstance()->getTagsOfRecord($record);
+        }            
+        if ($record->has('notes')) {
+            $record->notes = Tinebase_Notes::getInstance()->getNotesOfRecord('Tasks_Model_Task', $record->getId());
+        }
+            
+        return $record;
     }
     
     /**
@@ -181,7 +189,28 @@ class Tasks_Controller extends Tinebase_Container_Abstract implements Tinebase_E
         if(empty($_task->class_id)) {
             $_task->class_id = NULL;
         }
-        return $this->_backend->create($_task);
+        
+        // add modlog info
+        if ($_task->has('created_by')) {
+            Tinebase_Timemachine_ModificationLog::setRecordMetaData($_task, 'create');
+        }
+        
+        $record = $this->_backend->create($_task);
+
+        // set tags / notes
+        if ($record->has('tags') && !empty($_record->tags)) {
+            $record->tags = $_task->tags;
+            Tinebase_Tags::getInstance()->setTagsOfRecord($record);
+        }        
+        if ($record->has('notes')) {
+            if (isset($_task->notes)) {
+                $record->notes = $_task->notes;
+                Tinebase_Notes::getInstance()->setNotesOfRecord($record);
+            }
+            Tinebase_Notes::getInstance()->addSystemNote($record, $this->_currentAccount->getId(), 'created');                
+        }
+        
+        return $this->getTask($record->getId());
     }
 
     /**
@@ -213,8 +242,14 @@ class Tasks_Controller extends Tinebase_Container_Abstract implements Tinebase_E
             throw new Exception('Not allowed!');
         }
         
-        $Task = $this->_backend->update($_task);
-        return $Task;
+        $record = $this->_backend->update($_task);
+        
+        // set tags (notes are done in backend)
+        if ($record->has('tags') && isset($_task->tags)) {
+            Tinebase_Tags::getInstance()->setTagsOfRecord($_task);
+        }
+            
+        return $this->getTask($record->getId());
     }
     
     /**

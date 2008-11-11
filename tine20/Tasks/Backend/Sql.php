@@ -330,6 +330,14 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
             $this->insertDependentRows($taskParts);
             
             Tinebase_TransactionManager::getInstance()->commitTransaction($transactionId);
+            
+            // hack, cause modlog is here yet
+            if ($_task->has('notes')) {
+                if (isset($_task->notes)) {
+                    Tinebase_Notes::getInstance()->setNotesOfRecord($_task);
+                }
+                Tinebase_Notes::getInstance()->addSystemNote($_task, $this->_currentAccount->getId(), 'changed', $currentMods);
+            }    
 
             return $this->get($_task->id);
             

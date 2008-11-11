@@ -405,7 +405,7 @@ Tine.Tasks.mainGrid = {
             store: this.store,
 			tbar: pagingToolbar,
 			clicksToEdit: 'auto',
-            enableColumnHide:false,
+            //enableColumnHide:false,
             enableColumnMove:false,
             region:'center',
 			sm: new Ext.grid.RowSelectionModel(),
@@ -480,7 +480,15 @@ Tine.Tasks.mainGrid = {
 		            quickaddField: new Tine.Tasks.status.ComboBox({
                         autoExpand: true
                     })
-				}
+				}, {
+                    id: 'creation_time',
+                    header: this.translation._("Creation Time"),
+                    hidden: true,
+                    width: 130,
+                    sortable: true,
+                    dataIndex: 'creation_time',
+                    renderer: Tine.Tinebase.Common.dateTimeRenderer
+                }
 				//{header: "Completed", width: 200, sortable: true, dataIndex: 'completed'}
 		    ],
 		    quickaddMandatory: 'summary',
@@ -627,6 +635,7 @@ Tine.Tasks.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
         this.containerName =  this.translation._('to do list');
         this.containersName =  this.translation._('to do lists');
         
+        this.tbarItems = [new Tine.widgets.activities.ActivitiesAddButton({})];
         this.items = this.getTaskFormPanel();
         Tine.Tasks.EditDialog.superclass.initComponent.call(this);
     },
@@ -653,6 +662,7 @@ Tine.Tasks.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
         
         this.getForm().loadRecord(this.task);
         this.updateToolbars(this.task);
+        this.handleCompletedDate();
         Ext.MessageBox.hide();
     },
     
@@ -733,70 +743,115 @@ Tine.Tasks.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
 		});
 	},
 	
-	getTaskFormPanel: function() { return {
-		layout:'column',
-		autoHeight: true,
-		labelWidth: 90,
-		border: false,
-
-		items: [{
-            columnWidth: 0.65,
-            border:false,
-            layout: 'form',
-            defaults: {
-                anchor: '95%',
-                xtype: 'textfield'
-            },
-			items:[{
-				fieldLabel: this.translation._('Summary'),
-				hideLabel: true,
-				xtype: 'textfield',
-				name: 'summary',
-				emptyText: this.translation._('Enter short name...'),
-				allowBlank: false
-			}, {
-				fieldLabel: this.translation._('Notes'),
-				hideLabel: true,
-                emptyText: this.translation._('Enter description...'),
-				name: 'description',
-				xtype: 'textarea',
-				height: 150
-			}]
-		}, {
-            columnWidth: 0.35,
-            border:false,
-            layout: 'form',
-            defaults: {
-                anchor: '95%'
-            },
-            items:[ 
-                new Ext.ux.PercentCombo({
-                    fieldLabel: this.translation._('Percentage'),
-                    editable: false,
-                    name: 'percent'
-                }), 
-                new Tine.Tasks.status.ComboBox({
-                    fieldLabel: this.translation._('Status'),
-                    name: 'status_id'
-                }), 
-                new Tine.widgets.Priority.Combo({
-                    fieldLabel: this.translation._('Priority'),
-                    name: 'priority'
-                }), 
-                new Ext.ux.form.ClearableDateField({
-                    fieldLabel: this.translation._('Due date'),
-                    name: 'due'
-                })/*, 
-                new Tine.widgets.container.selectionComboBox({
-                    fieldLabel: this.translation._('Saved in'),
-                    name: 'container_id',
-                    itemName: 'Tasks',
-                    appName: 'Tasks'
-                })*/
-            ]
-        }]
-	};}
+	getTaskFormPanel: function() { 
+        return {
+            xtype: 'tabpanel',
+            height: 394,
+            border: false,
+            plain:true,
+            activeTab: 0,
+            border: false,
+            items:[{
+                title: this.translation._('Task'),
+                autoScroll: true,
+                border: false,
+                frame: true,
+                layout: 'border',
+                items: [{
+                    region: 'center',
+                    xtype: 'columnform',
+                    labelAlign: 'top',
+                    formDefaults: {
+                        xtype:'textfield',
+                        anchor: '100%',
+                        labelSeparator: '',
+                        columnWidth: .333
+                    },
+                    items: [[{
+                        columnWidth: 1,
+                        fieldLabel: this.translation._('Summary'),
+                        name: 'summary',
+                        listeners: {render: function(field){field.focus(false, 250);}},
+                        allowBlank: false
+                    }], [ new Ext.ux.form.ClearableDateField({
+                        fieldLabel: this.translation._('Due date'),
+                        name: 'due'
+                    }), new Tine.widgets.Priority.Combo({
+                        fieldLabel: this.translation._('Priority'),
+                        name: 'priority'
+                    }), new Tine.widgets.AccountpickerField({
+                        fieldLabel: this.translation._('Responsible'),
+                        name: 'organizer'
+                    })], [{
+                        columnWidth: 1,
+                        fieldLabel: this.translation._('Notes'),
+                        emptyText: this.translation._('Enter description...'),
+                        name: 'description',
+                        xtype: 'textarea',
+                        height: 200
+                    }], [new Ext.ux.PercentCombo({
+                        fieldLabel: this.translation._('Percentage'),
+                        editable: false,
+                        name: 'percent'
+                    }), new Tine.Tasks.status.ComboBox({
+                        fieldLabel: this.translation._('Status'),
+                        name: 'status_id',
+                        listeners: {scope: this, 'change': this.handleCompletedDate}
+                    }), new Ext.form.DateField({
+                        fieldLabel: this.translation._('Completed'),
+                        name: 'completed'
+                    })]]
+                }, {
+                    // activities and tags
+                    layout: 'accordion',
+                    animate: true,
+                    region: 'east',
+                    width: 210,
+                    split: true,
+                    collapsible: true,
+                    collapseMode: 'mini',
+                    margins: '0 5 0 5',
+                    border: true,
+                    items: [
+                        new Tine.widgets.activities.ActivitiesPanel({
+                            app: 'Tasks',
+                            showAddNoteForm: false,
+                            border: false,
+                            bodyStyle: 'border:1px solid #B5B8C8;'
+                        }),
+                        new Tine.widgets.tags.TagPanel({
+                            border: false,
+                            bodyStyle: 'border:1px solid #B5B8C8;'
+                        })
+                    ]
+                }]
+            }, new Tine.widgets.activities.ActivitiesTabPanel({
+                app: this.appName,
+                record_id: this.task.id,
+                record_model: 'Tasks_Model_Task'
+            })]
+        };
+    },
+    
+    /**
+     * handling for the completed field
+     */
+    handleCompletedDate: function() {
+        var status = Tine.Tasks.status.getStatus(this.getForm().findField('status_id').getValue());
+        var completed = this.getForm().findField('completed');
+        
+        if (status.get('status_is_open') == 1) {
+            completed.setValue(null);
+            completed.setDisabled(true);
+        } else {
+            if (! Ext.isDate(completed.getValue())){
+                completed.setValue(new Date());
+            }
+            completed.setDisabled(false);
+        }
+    }
 });
+
 
 /**
  * Tasks Edit Popup
@@ -804,8 +859,8 @@ Tine.Tasks.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
 Tine.Tasks.EditDialog.openWindow = function (config) {
     config.task = config.task ? config.task : new Tine.Tasks.Task({}, 0);
     var window = Tine.WindowFactory.getWindow({
-        width: 700,
-        height: 300,
+        width: 800,
+        height: 470,
         name: Tine.Tasks.EditDialog.prototype.windowNamePrefix + config.task.id,
         layout: Tine.Tasks.EditDialog.prototype.windowLayout,
         itemsConstructor: 'Tine.Tasks.EditDialog',
@@ -850,7 +905,7 @@ Tine.Tasks.TaskArray = [
     // ical common fields with multiple appearance
     { name: 'attach' },
     { name: 'attendee' },
-    { name: 'categories' },
+    { name: 'tags' },
     { name: 'comment' },
     { name: 'contact' },
     { name: 'related' },
@@ -864,7 +919,9 @@ Tine.Tasks.TaskArray = [
     { name: 'exdate' },
     { name: 'exrule' },
     { name: 'rdate' },
-    { name: 'rrule' }
+    { name: 'rrule' },
+    // tine 2.0 notes field
+    { name: 'notes'}
 ];
 Tine.Tasks.Task = Ext.data.Record.create(
     Tine.Tasks.TaskArray
