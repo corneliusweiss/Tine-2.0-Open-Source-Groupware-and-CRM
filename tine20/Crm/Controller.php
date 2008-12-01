@@ -881,7 +881,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
             Zend_Registry::get('logger')->debug(__CLASS__ . '::' . __METHOD__ . '::' . __LINE__ . ' no responsibles found for lead: ' . 
                 $_lead->getId() . ' sending notification to all people having read access to container ' . $_lead->container);
                 
-            $containerGrants = Tinebase_Container::getInstance()->getGrantsOfContainer($_lead->container);
+            $containerGrants = Tinebase_Container::getInstance()->getGrantsOfContainer($_lead->container, TRUE);
             // NOTE: we just send notifications to users, not to groups or anyones!
             foreach ($containerGrants as $grant) {
                 if ($grant['account_type'] == 'user' && $grant['readGrant'] == 1) {

@@ -65,6 +65,14 @@ class Tinebase_Relation_Backend_Sql
     	$id = $_relation->generateUID();
     	$_relation->setId($id);
     	
+        // check if relation is already set (with is_deleted=1)  
+        if ($deletedId = $this->_checkExistance($_relation)) {
+            $where = array(
+                $this->_db->getAdapter()->quoteInto('id IN (?)', $deletedId)
+            );          
+            $this->_db->delete($where);
+        }
+                
 		$data = $_relation->toArray();
 		unset($data['related_record']);
 
@@ -266,5 +274,31 @@ class Tinebase_Relation_Backend_Sql
         }
         return $data;
     }
+    
+    /**
+     * check if relation already exists but is_deleted
+     *
+     * @param Tinebase_Model_Relation $_relation
+     * @return string relation id
+     */
+    protected function _checkExistance($_relation)
+    {
+
+        $where = array(
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_model') . ' = ?', $_rel
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_backend') . ' = ?', $_r
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_id') . ' = ?', $_relati
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('related_id') . ' = ?', $_re
+            $this->_db->getAdapter()->quoteIdentifier('is_deleted') . ' = 1'
+        );
+        
+        $relationRow = $this->_db->fetchRow($where);
+        
+        if($relationRow) {
+            return $relationRow->id;
+        } else {
+            return FALSE;
+        }
+    }    
+    
 } // end of Tinebase_Relation_Backend_Sql
-?>

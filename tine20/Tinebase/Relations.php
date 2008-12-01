@@ -104,7 +104,7 @@ class Tinebase_Relations
             $current = $currentRelations[$currentRelations->getIndexById($relationId)];
             $update = $relations[$relations->getIndexById($relationId)];
             
-            if (! $current->related_record->isEqual($update->related_record)) {
+            if (! $current->related_record->isEqual($update->related_record, array('jpegphoto'))) {
                 $this->_setAppRecord($update);
             }
             
@@ -173,7 +173,7 @@ class Tinebase_Relations
                 $json = Zend_Json::encode($relation->related_record);
             }
             $relation->related_record = new $relation->related_model();
-            $relation->related_record->setFromJson($json);
+            $relation->related_record->setFromJsonInUsersTimezone($json);
         }
     }
     
