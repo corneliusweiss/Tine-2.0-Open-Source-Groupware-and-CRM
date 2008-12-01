@@ -154,10 +154,7 @@ class Crm_Controller extends Tinebase_Container_Abstract implements Tinebase_Eve
         $leads = $backend->search($_filter, $_pagination);
         
         if ( $_getRelations ) {
-            foreach ($leads as $lead) {
-                //$this->getLinkedProperties($lead);
-                $this->getLeadLinks($lead);
-            }
+            $leads->setByIndices('relations', Tinebase_Relations::getInstance()->getMultipleRelations('Crm_Model_Lead', Crm_Backend_Factory::SQL, $leads->getId()));
         }
         
         return $leads;
