@@ -450,6 +450,7 @@ class Tinebase_Controller
             switch($dbBackend) {
                 case self::PDO_MYSQL:
                     $db = Zend_Db::factory('Pdo_Mysql', $dbConfig->toArray());
+                    $db->query("SET SQL_MODE='';");
                     break;
                 case self::PDO_OCI:
                     $db = Zend_Db::factory('Pdo_Oci', $dbConfig->toArray());
