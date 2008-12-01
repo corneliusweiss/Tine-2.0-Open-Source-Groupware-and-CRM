@@ -124,12 +124,12 @@ class Tinebase_Controller
         $this->setupMailer();
 
         $this->setupDatabaseConnection();
+        
+        $this->setupCache();
 
         $this->setupUserTimezone();
         
         $this->setupUserLocale();
-        
-        $this->setupCache();
         
         header('X-API: http://www.tine20.org/apidocs/tine20/');
     }
@@ -426,6 +426,11 @@ class Tinebase_Controller
 
         // getting a Zend_Cache_Core object
         $cache = Zend_Cache::factory('Core', $backendType, $frontendOptions, $backendOptions);
+        
+        // some important caches
+        Zend_Date::setOptions(array('cache' => $cache));
+        Zend_Locale::setCache($cache);
+        
         Zend_Registry::set('cache', $cache);
     }
     
