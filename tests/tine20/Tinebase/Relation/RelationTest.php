@@ -274,6 +274,7 @@ class Tinebase_Relation_RelationTest extends PHPUnit_Framework_TestCase
     {
         $backend = new Tinebase_Relation_Backend_Sql();
         $backend->purgeAllRelations($this->_crmId['model'], $this->_crmId['backend'], $this->_crmId['id']);
+        $backend->purgeAllRelations($this->_crmId2['model'], $this->_crmId2['backend'], $this->_crmId2['id']);
     }
 }
 
