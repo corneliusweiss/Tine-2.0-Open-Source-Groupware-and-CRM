@@ -125,28 +125,52 @@ class Tinebase_Relations
      * 
      * @todo support $_ignoreACL? we would need to implement this in app controllers
      * 
-     * @param  string $_model     own model to get relations for
-     * @param  string $_backend   own backend to get relations for
-     * @param  string $_id        own id to get relations for 
-     * @param  bool   $_ignoreAcl get relations without checking permissions
+     * @param  string       $_model     own model to get relations for
+     * @param  string       $_backend   own backend to get relations for
+     * @param  string|array $_id        own id to get relations for 
+     * @param  bool         $_ignoreAcl get relations without checking permissions
      * @return Tinebase_Record_RecordSet of Tinebase_Model_Relation
      */
     public function getRelations($_model, $_backend, $_id, $_ignoreAcl=false)
     {
-        Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  get relations $_model, $_backend, $_id");
-        #$cache = Zend_Registry::get('cache');
-        #$cacheId = 'getRelations' . $_model . $_backend . $_id;
-        #$result = $cache->load($cacheId);
-        
-        #if (!$result) {
+        Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  model: '$_model' backend: '$_backend' ids:" . print_r((array)$_id, true));
     
-            $result = $this->_backend->getAllRelations($_model, $_backend, $_id);
-            $this->resolveAppRecords($result);
-
-            // save result and tag it with 'container'
-            #$cache->save($result, $cacheId, array('relations'));
-        #}
+        $result = $this->_backend->getAllRelations($_model, $_backend, $_id);
+        $this->resolveAppRecords($result);
             
+        return $result;
+    }
+    
+    /**
+     * get all relations of all given records
+     * 
+     * @todo support $_ignoreACL? we would need to implement this in app controllers
+     * 
+     * @param  string $_model     own model to get relations for
+     * @param  string $_backend   own backend to get relations for
+     * @param  array  $_ids       own ids to get relations for 
+     * @param  bool   $_ignoreAcl get relations without checking permissions
+     * @return array  key from $_ids => Tinebase_Record_RecordSet of Tinebase_Model_Relation
+     */
+    public function getMultipleRelations($_model, $_backend, $_ids, $_ignoreAcl=false)
+    {
+        // prepare a record set for each given id
+        $result = array();
+        foreach ($_ids as $key => $id) {
+            $result[$key] = new Tinebase_Record_RecordSet('Tinebase_Model_Relation', array(),  true);
+        }
+        
+        // fetch all relations in a single set
+        $relations = $this->getRelations($_model, $_backend, $_ids, $_ignoreAcl);
+        
+        // sort relations into corrensponding sets
+        foreach ($relations as $relation) {
+            $keys = array_keys($_ids, $relation->own_id);
+            foreach ($keys as $key) {
+                $result[$key]->addRecord($relation);
+            }
+        }
+        
         return $result;
     }
     
@@ -220,7 +244,7 @@ class Tinebase_Relations
      */
     protected function resolveAppRecords($_relations)
     {
-        Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  resolve app records for " . count($_relations) . " relations");
+        //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  resolve app records for " . count($_relations) . " relations");
         // seperate relations by model
         $modelMap = array();
         foreach ($_relations as $relation) {
@@ -232,13 +256,13 @@ class Tinebase_Relations
         
         // fill related_record
         foreach ($modelMap as $modelName => $relations) {
-            Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  resolving " . count($relations) . " relation(s) of $modelName");
+            //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . "  resolving " . count($relations) . " relation(s) of $modelName");
             list($appName, $i, $itemName) = explode('_', $modelName);
             $appController = Tinebase_Controller::getInstance()->getApplicationInstance($appName);
             $getMultipleMethod = 'getMultiple' . $itemName . 's';
             //Zend_Registry::get('logger')->debug('Tinebase_Relations: ' . print_r($relations->related_id, true));
             $records = $appController->$getMultipleMethod($relations->related_id);
-            Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " $appName returned " . count($records) . " record(s)");
+            //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . " $appName returned " . count($records) . " record(s)");
             
             foreach ($relations as $relation) {
                 $recordIndex    = $records->getIndexById($relation->related_id);

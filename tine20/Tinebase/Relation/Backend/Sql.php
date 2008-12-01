@@ -158,40 +158,41 @@ class Tinebase_Relation_Backend_Sql
     /**
      * returns all relations of a given record and optionally only of given role
      * 
-     * @param  string $_model    own model to get all relations for
-     * @param  string $_backend  own backend to get all relations for
-     * @param  string $_id       own id to get all relations for 
-     * @param  string $_degree   only breaks relations of given degree
-     * @param  string $_type     only breaks relations of given type
-     * @param  boolean $_returnAll gets all relations (default: only get not deleted/broken relations)
+     * @param  string       $_model    own model to get all relations for
+     * @param  string       $_backend  own backend to get all relations for
+     * @param  string|array $_id       own id to get all relations for 
+     * @param  string       $_degree   only breaks relations of given degree
+     * @param  string       $_type     only breaks relations of given type
+     * @param  boolean      $_returnAll gets all relations (default: only get not deleted/broken relations)
      * @return Tinebase_Record_RecordSet of Tinebase_Model_Relation
      */
-    public function getAllRelations( $_model, $_backend, $_id, $_degree = NULL, $_type = NULL, $_returnAll = false  )
+    public function getAllRelations($_model, $_backend, $_id, $_degree = NULL, $_type = NULL, $_returnAll = false)
     {
-    	$where = array(
-    	    'own_model   = ' . $this->_db->getAdapter()->quote($_model),
-    	    'own_backend = ' . $this->_db->getAdapter()->quote($_backend),
-            'own_id      = ' . $this->_db->getAdapter()->quote($_id),
-    	    //'is_deleted  = '  . $this->_db->getAdapter()->quote((bool)$_returnBroken)
-    	);
-    	
-    	if (!$_returnAll) {
-    	    $where[] = 'is_deleted = FALSE';
-    	}
-    	if ($_degree) {
-            $where[] = $this->_db->getAdapter()->quoteInto('own_degree = ?', $_degree);
+        $_id = $_id ? (array)$_id : array('');
+        $where = array(
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_model') .' = ?', $_model),
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_backend') .' = ?',$_backend),
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_id') .' IN (?)' , $_id),
+            //'is_deleted  = '  . $this->_db->quote((bool)$_returnBroken)
+        );
+        
+        if (!$_returnAll) {
+            $where[] = $this->_db->getAdapter()->quoteIdentifier('is_deleted') . ' = FALSE';
+        }
+        if ($_degree) {
+            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->quoteIdentifier('own_degree') . ' = ?', $_degree);
         }
         if ($_type) {
-            $where[] = $this->_db->getAdapter()->quoteInto('type = ?', $_type);
+            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->quoteIdentifier('type') . ' = ?', $_type);
         }
         
        // Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($where, true));
         
-        $relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation');
+        $relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation', array(), true);
         foreach ($this->_db->fetchAll($where) as $relation) {
-        	$relations->addRecord(new Tinebase_Model_Relation($relation->toArray(), true));
+            $relations->addRecord(new Tinebase_Model_Relation($relation->toArray(), true));
         }
-   		return $relations; 
+        return $relations; 
     } // end of member function getAllRelations
     
     /**
@@ -285,10 +286,10 @@ class Tinebase_Relation_Backend_Sql
     {
 
         $where = array(
-            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_model') . ' = ?', $_rel
-            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_backend') . ' = ?', $_r
-            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_id') . ' = ?', $_relati
-            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('related_id') . ' = ?', $_re
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_model') . ' = ?', $_relation->own_model),
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_backend') . ' = ?', $_relation->own_backend),
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_id') . ' = ?', $_relation->own_id),
+            $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('related_id') . ' = ?', $_relation->related_id),
             $this->_db->getAdapter()->quoteIdentifier('is_deleted') . ' = 1'
         );
         
