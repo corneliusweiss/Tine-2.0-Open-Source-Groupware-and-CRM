@@ -136,10 +136,10 @@ class Tinebase_Relation_Backend_Sql
      * @param  string $_backend  own backend to break all relations for
      * @param  string $_id       own id to break all relations for
      * @param  string $_degree   only breaks relations of given degree
-     * @param  string $_type     only breaks relations of given type
+     * @param  array  $_type     only breaks relations of given type
      * @return void
      */
-    public function breakAllRelations( $_model, $_backend, $_id, $_degree = NULL, $_type = NULL )
+    public function breakAllRelations( $_model, $_backend, $_id, $_degree = NULL, $_type = array() )
     {
         $relationIds = $this->getAllRelations($_model, $_backend, $_id, $_degree, $_type)->getArrayOfIds();
         if (!empty($relationIds)) {
@@ -161,12 +161,12 @@ class Tinebase_Relation_Backend_Sql
      * @param  string       $_model    own model to get all relations for
      * @param  string       $_backend  own backend to get all relations for
      * @param  string|array $_id       own id to get all relations for 
-     * @param  string       $_degree   only breaks relations of given degree
-     * @param  string       $_type     only breaks relations of given type
+     * @param  string       $_degree   only return relations of given degree
+     * @param  array        $_type     only return relations of given type
      * @param  boolean      $_returnAll gets all relations (default: only get not deleted/broken relations)
      * @return Tinebase_Record_RecordSet of Tinebase_Model_Relation
      */
-    public function getAllRelations($_model, $_backend, $_id, $_degree = NULL, $_type = NULL, $_returnAll = false)
+    public function getAllRelations($_model, $_backend, $_id, $_degree = null, array $_type = array(), $_returnAll = false)
     {
         $_id = $_id ? (array)$_id : array('');
         $where = array(
@@ -180,15 +180,15 @@ class Tinebase_Relation_Backend_Sql
             $where[] = $this->_db->getAdapter()->quoteIdentifier('is_deleted') . ' = FALSE';
         }
         if ($_degree) {
-            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->quoteIdentifier('own_degree') . ' = ?', $_degree);
+            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('own_degree') . ' = ?', $_degree);
         }
-        if ($_type) {
-            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->quoteIdentifier('type') . ' = ?', $_type);
+        if (! empty($_type)) {
+            $where[] = $this->_db->getAdapter()->quoteInto($this->_db->getAdapter()->quoteIdentifier('type') . ' IN (?)', $_type);
         }
         
        // Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($where, true));
         
-        $relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation', array(), true);
+        $relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation');
         foreach ($this->_db->fetchAll($where) as $relation) {
             $relations->addRecord(new Tinebase_Model_Relation($relation->toArray(), true));
         }
@@ -238,7 +238,7 @@ class Tinebase_Relation_Backend_Sql
      */
     public function purgeAllRelations($_ownModel, $_ownBackend, $_ownId)
     {
-        $relationIds = $this->getAllRelations($_ownModel, $_ownBackend, $_ownId, NULL, NULL, true)->getArrayOfIds();
+        $relationIds = $this->getAllRelations($_ownModel, $_ownBackend, $_ownId, NULL, array(), true)->getArrayOfIds();
         
         //Zend_Registry::get('logger')->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($relationIds, true));
         

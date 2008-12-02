@@ -192,7 +192,7 @@ class Tasks_Backend_Sql implements Tasks_Backend_Interface
             $taskArray = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
             
             foreach ($taskArray as $task) {
-                $taskSet->addRecord(new Tasks_Model_Task($task));
+                $taskSet->addRecord(new Tasks_Model_Task($task, true));
             }
         }
         return $taskSet;

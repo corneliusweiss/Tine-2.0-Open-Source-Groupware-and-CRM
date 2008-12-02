@@ -238,7 +238,7 @@ class Addressbook_Backend_Sql implements Addressbook_Backend_Interface
             $contactsArray = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
             
             foreach ($contactsArray as $contact) {
-                $contacts->addRecord(new Addressbook_Model_Contact($contact));
+                $contacts->addRecord(new Addressbook_Model_Contact($contact, true));
             }
         }
         return $contacts;

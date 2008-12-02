@@ -252,7 +252,7 @@ class Crm_JsonTest extends PHPUnit_Framework_TestCase
                 'related_model'          => 'Addressbook_Model_Contact',
                 'related_backend'        => Addressbook_Backend_Factory::SQL,
                 'related_id'             => $this->objects['contact']->getId(),
-                'type'                   => 'RESPONSIBLE',
+                'type'                   => 'PARTNER',
                 //'related_record'         => $this->objects['contact']->toArray()
             )        
         );
@@ -294,11 +294,9 @@ class Crm_JsonTest extends PHPUnit_Framework_TestCase
         $json = new Crm_Json();
         $emptyLead = $json->getLead(NULL);
         
-        $startDate = new Zend_Date($emptyLead['start'], Tinebase_Record_Abstract::ISO8601LONG);
-        
-        sleep(1);
-        
-        $this->assertEquals(1, Zend_Date::now()->compare($startDate));
+        //$startDate = new Zend_Date($emptyLead['start'], Tinebase_Record_Abstract::ISO8601LONG);
+         
+        $this->assertFalse(empty($emptyLead['start']));
         $this->assertEquals(Zend_Registry::get('currentAccount')->accountFullName, $emptyLead['relations'][0]['related_record']['n_fn']);
     }
         
@@ -333,6 +331,7 @@ class Crm_JsonTest extends PHPUnit_Framework_TestCase
         
         $result = $json->searchLeads(Zend_Json::encode($this->objects['filter']));
         $leads = $result['results'];
+
         $initialLead = $leads[0];
 
         $this->assertEquals($this->objects['initialLead']->description, $initialLead['description']);        
@@ -347,8 +346,10 @@ class Crm_JsonTest extends PHPUnit_Framework_TestCase
     {   
         $json = new Crm_Json();
 
-        $result = $json->searchLeads(Zend_Json::encode($this->objects['filter']));        
-        $initialLead = $result['results'][0];
+        $result = $json->searchLeads(Zend_Json::encode($this->objects['filter']));
+        $initialLeadId = $result['results'][0]['id'];
+        
+        $initialLead = $json->getLead($initialLeadId);
         
         $updatedLead = $this->objects['updatedLead'];
         $updatedLead->id = $initialLead['id'];

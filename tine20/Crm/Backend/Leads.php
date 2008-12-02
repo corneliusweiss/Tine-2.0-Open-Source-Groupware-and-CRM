@@ -67,7 +67,7 @@ class Crm_Backend_Leads extends Tinebase_Abstract_SqlTableBackend
      */
     public function search(Crm_Model_LeadFilter $_filter, Crm_Model_LeadPagination $_pagination = NULL)
     {
-        $set = new Tinebase_Record_RecordSet('Crm_Model_Lead');
+        $set = new Tinebase_Record_RecordSet('Crm_Model_Lead', array(), true);
         
         // empty means, that e.g. no shared containers exist
         if (empty($_filter->container)) {
