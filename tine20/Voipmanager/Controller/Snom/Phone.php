@@ -32,7 +32,7 @@ class Voipmanager_Controller_Snom_Phone extends Voipmanager_Controller_Abstract
      * don't use the constructor. use the singleton 
      */
     private function __construct() {
-        $this->_backend      = new Voipmanager_Backend_Snom_Phone($this->_getDatabaseBackend());
+        $this->_backend      = new Voipmanager_Backend_Snom_Phone($this->getDatabaseBackend());
     }
         
     /**
@@ -224,7 +224,7 @@ class Voipmanager_Controller_Snom_Phone extends Voipmanager_Controller_Abstract
         
         foreach($_phone->lines as $line) {
             $line->snomphone_id = $phone->getId();
-            $addedLine = Voipmanager_Controller_Snom_Line::getInstance()->createe($line);
+            $addedLine = Voipmanager_Controller_Snom_Line::getInstance()->create($line);
         }
         
         // save phone rights
