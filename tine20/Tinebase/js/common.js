@@ -98,7 +98,7 @@ Tine.Tinebase.common = {
         var Hs = String.format(Tine.Tinebase.tranlation.ngettext('{0} hour', '{0} hours', H), H);
         var is = String.format(Tine.Tinebase.tranlation.ngettext('{0} minute', '{0} minutes', i), i);
         
-        return '<div style="width: 100%; text-align: right;">' + ( H ? Hs + ', ' + is : is ) + '</div>';
+        return ( H ? Hs + ', ' + is : is );
     },
     
     /**
@@ -133,6 +133,18 @@ Tine.Tinebase.common = {
         }
         iconCls = type == 'user' ? 'renderer renderer_accountUserIcon' : 'renderer renderer_accountGroupIcon';
         return '<div class="' + iconCls  + '">&#160;</div>' + Ext.util.Format.htmlEncode(displayName); 
+    },
+    
+    /**
+     * return yes or no in the selected language for a boolean value
+     * 
+     * @param {string} value
+     * @return {string}
+     */
+    booleanRenderer: function(value) {
+        var translationString = String.format("{0}",(value==1) ? Locale.getTranslationData('Question', 'yes') : Locale.getTranslationData('Question', 'no'));
+        
+        return translationString.substr(0, translationString.indexOf(':'));
     },
     
     /** 

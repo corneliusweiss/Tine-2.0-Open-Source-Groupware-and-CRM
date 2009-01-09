@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tine 2.0
  * 
  * @package     Timetracker
@@ -65,7 +65,6 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
      * returns cm
      * @private
      * 
-     * @todo    add more columns
      */
     getColumns: function(){
         return [{
@@ -85,13 +84,39 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             renderer: Tine.Tinebase.common.timeRenderer
         }, {
             id: 'timeaccount_id',
-            header: this.app.i18n._("Time account"),
-            width: 800,
+            header: this.app.i18n._("Time Account"),
+            width: 500,
             sortable: true,
             dataIndex: 'timeaccount_id',
             renderer: function(timeaccount) {
                 return new Tine.Timetracker.Model.Timeaccount(timeaccount).getTitle();
             }
+        },{
+            id: 'description',
+            hidden: true,
+            header: this.app.i18n._("Description"),
+            width: 400,
+            sortable: true,
+            dataIndex: 'description',
+            renderer: function(description) {
+            	return Ext.util.Format.htmlEncode(description);
+            }
+        },{
+            id: 'is_billable',
+            hidden: true,
+            header: this.app.i18n._("Billable"),
+            width: 100,
+            sortable: true,
+            dataIndex: 'is_billable',
+            renderer: Tine.Tinebase.common.booleanRenderer
+        },{
+            id: 'is_cleared',
+            hidden: true,
+            header: this.app.i18n._("Cleared"),
+            width: 100,
+            sortable: true,
+            dataIndex: 'is_cleared',
+            renderer: Tine.Tinebase.common.booleanRenderer
         },{
             id: 'account_id',
             header: this.app.i18n._("Account"),
@@ -115,15 +140,107 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             
             showDefault: function(body) {
                 var totalsum = Tine.Tinebase.common.minutesRenderer(this.gridpanel.store.proxy.jsonReader.jsonData.totalsum);
-                console.log(totalsum);
-                var tpl = new Ext.XTemplate(' total time of all {totalcount} timesheets: ' + totalsum + '&nbsp;&nbsp;&nbsp;');
+                var tpl = new Ext.XTemplate(
+		'<div class="preview-panel-timesheet-nobreak">',
+			'<!-- Preview timeframe -->',			
+			'<div class="preview-panel preview-panel-timesheet-left">',
+				'<div class="bordercorner_1"></div>',
+				'<div class="bordercorner_2"></div>',
+				'<div class="bordercorner_3"></div>',
+				'<div class="bordercorner_4"></div>',
+				'<div class="preview-panel-declaration">timeframe</div>',
+				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+					'<span class="preview-panel-bold">',
+					'First Entry<br/>',
+					'Last Entry<br/>',
+					'Duration<br/>',
+					'<br/>',
+					'</span>',
+				'</div>',
+				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+					'<span class="preview-panel-nonbold">',
+					'<br/>',
+					'<br/>',
+					'<br/>',
+					'<br/>',
+					'</span>',
+				'</div>',
+			'</div>',
+			'<!-- Preview summary -->',
+			'<div class="preview-panel-timesheet-right">',
+				'<div class="bordercorner_gray_1"></div>',
+				'<div class="bordercorner_gray_2"></div>',
+				'<div class="bordercorner_gray_3"></div>',
+				'<div class="bordercorner_gray_4"></div>',
+				'<div class="preview-panel-declaration">summary</div>',
+				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+					'<span class="preview-panel-bold">',
+					'Total Timesheets<br/>',
+					'Total Time<br/>',
+					'Billable Timesheets<br/>',
+					'Time of Billable Timesheets<br/>',
+					'</span>',
+				'</div>',
+				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+					'<span class="preview-panel-nonbold">',
+					'{totalcount}<br/>',
+					totalsum + '<br/>',
+					'<br/>',
+					'<br/>',
+					'</span>',
+				'</div>',
+			'</div>',
+		'</div>'
+				//' total time of all {totalcount} timesheets: ' + totalsum + '&nbsp;&nbsp;&nbsp;'
+				);
                 tpl.overwrite(body, this.gridpanel.store.proxy.jsonReader.jsonData);
             },
             
             tpl: new Ext.XTemplate(
-                '<div class="detailPanel">',
-                    '{[this.encode(values.description)]}',
-                '</div>', {
+		'<div class="preview-panel-timesheet-nobreak">',	
+			'<!-- Preview beschreibung -->',
+			'<div class="preview-panel preview-panel-timesheet-left">',
+				'<div class="bordercorner_1"></div>',
+				'<div class="bordercorner_2"></div>',
+				'<div class="bordercorner_3"></div>',
+				'<div class="bordercorner_4"></div>',
+				'<div class="preview-panel-declaration">beschreibung</div>',
+				'<div class="preview-panel-timesheet-description preview-panel-left">',
+					'<span class="preview-panel-nonbold">',
+					 '{[this.encode(values.description)]}',
+					'<br/>',
+					'</span>',
+				'</div>',
+			'</div>',
+			'<!-- Preview detail-->',
+			'<div class="preview-panel-timesheet-right">',
+				'<div class="bordercorner_gray_1"></div>',
+				'<div class="bordercorner_gray_2"></div>',
+				'<div class="bordercorner_gray_3"></div>',
+				'<div class="bordercorner_gray_4"></div>',
+				'<div class="preview-panel-declaration">detail</div>',
+				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+					'<span class="preview-panel-bold">',
+					'Ansprechpartner<br/>',
+					'Newsletter<br/>',
+					'Ticketnummer<br/>',
+					'Ticketsubjekt<br/>',
+					'</span>',
+				'</div>',
+				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+					'<span class="preview-panel-nonbold">',
+					'<br/>',
+					'<br/>',
+					'<br/>',
+					'<br/>',
+					'</span>',
+				'</div>',
+			'</div>',
+		'</div>',{
+
+              //  '<div class="detailPanel">',
+                //    '{[this.encode(values.description)]}',
+                //'</div>', {
                 encode: function(value, type, prefix) {
                     if (value) {
                         return Ext.util.Format.htmlEncode(value);

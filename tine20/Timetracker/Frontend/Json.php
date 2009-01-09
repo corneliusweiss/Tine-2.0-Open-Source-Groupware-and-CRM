@@ -202,17 +202,27 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     }     
     
     /**
-     * get sum of timesheet durations
+     * export records matching given arguments
      *
-     * @param string $filter json encoded
-     * @return integer
-     * 
-     * @deprecated do we need this and the getSum in controller+backend?
+     * @param string $_filter json encoded
+     * @param string $_format only csv implemented
+     * @return array
      */
-    public function getTimesheetSum($filter)
+    public function exportTimesheets($_filter, $_format)
     {
-        $filter = new Timetracker_Model_TimesheetFilter(Zend_Json::decode($filter));
-        return $this->_timesheetController->getSum($filter);
+        if ($_format != 'csv') {
+            throw new Timetracker_Exception_UnexpectedValue('Format ' . $_format . ' not supported yet.');
+        }
+        
+        $filter = new Timetracker_Model_TimesheetFilter(Zend_Json::decode($_filter));
+        $csvExportClass = new Timetracker_Export_Csv();
+        
+        $result = $csvExportClass->exportTimesheets($filter);
+        
+        return array(
+            'filename'      => $result,
+            //'totalcount'    => $_controller->searchCount($filter)
+        );
     }
     
     /**
@@ -224,14 +234,6 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     public function getTimesheet($id)
     {
         return $this->_get($id, $this->_timesheetController);
-        
-        // @deprecated ?
-        /*
-        $ts['timeaccount_id'] = $ts['timeaccount_id'] ? $this->_timeaccountController->get($ts['timeaccount_id'])->toArray() : $ts['timeaccount_id'];
-        $ts['account_id'] = $ts['account_id'] ? Tinebase_User::getInstance()->getUserById($ts['account_id'])->toArray() : $ts['account_id'];
-        
-        return $ts;
-        */
     }
 
     /**

@@ -1,4 +1,4 @@
-Ext.namespace('Tine.Addressbook');
+﻿Ext.namespace('Tine.Addressbook');
 
 /**************************** panel ****************************************/
 
@@ -336,7 +336,7 @@ Tine.Addressbook.Main = {
                 this.actions.deleteContact,
                 '-',
                 this.actions.exportContact,
-                ( Tine.Phone && Tine.Phone.rights && Tine.Phone.rights.indexOf('run') > -1 ) ? new Ext.Toolbar.MenuButton(this.actions.callContact) : ''
+                (Tine.Phone && Tine.Tinebase.common.hasRight('run', 'Phone')) ? new Ext.Toolbar.MenuButton(this.actions.callContact) : ''
             ]
         });
     },
@@ -417,7 +417,61 @@ Tine.Addressbook.Main = {
         ]);
         
         columnModel.defaultSortable = true; // by default columns are sortable
-                
+
+		// define clear preview tpl
+		var clearTpl = new Ext.Template(	
+			'<div class="preview-panel-timesheet-nobreak">',	
+	            '<!-- Preview contacts -->',
+				'<div class="preview-panel preview-panel-timesheet-left">',
+					'<div class="bordercorner_1"></div>',
+					'<div class="bordercorner_2"></div>',
+					'<div class="bordercorner_3"></div>',
+					'<div class="bordercorner_4"></div>',
+					'<div class="preview-panel-declaration">contacts</div>',
+					'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+						'<span class="preview-panel-bold">',
+							this.translation._('Select contact') + '<br/>',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+						'</span>',
+					'</div>',
+					'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+						'<span class="preview-panel-nonbold">',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+						'</span>',
+					'</div>',
+				'</div>',
+				'<!-- Preview xxx -->',
+				'<div class="preview-panel-timesheet-right">',
+					'<div class="bordercorner_gray_1"></div>',
+					'<div class="bordercorner_gray_2"></div>',
+					'<div class="bordercorner_gray_3"></div>',
+					'<div class="bordercorner_gray_4"></div>',
+					'<div class="preview-panel-declaration"></div>',
+					'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+						'<span class="preview-panel-bold">',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+						'</span>',
+					'</div>',
+					'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+						'<span class="preview-panel-nonbold">',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+							'<br/>',
+						'</span>',
+					'</div>',
+				'</div>',
+			'</div>'		
+		);
+		
         // the rowselection model
         var rowSelectionModel = new Ext.grid.RowSelectionModel({multiSelect:true});
 
@@ -427,15 +481,10 @@ Tine.Addressbook.Main = {
             
             var rowCount = _selectionModel.getCount();
             if(rowCount < 1) {
-                // clear preview
-                var clearTpl = new Ext.Template(
-                    '<div class="preview-panel-empty">' + this.translation._('Select contact') + '</div>'
-                );
                 clearTpl.overwrite(Ext.getCmp('adr-preview-panel').body);    
-                
             }  else if (rowCount == 1) {
                 // only one row selected
-                if(Tine.Phone && Tine.Phone.rights && Tine.Phone.rights.indexOf('run') > -1) {
+                if((Tine.Phone && Tine.Tinebase.common.hasRight('run', 'Phone'))) {
 	                var callMenu = Ext.menu.MenuMgr.get('Addressbook_Contacts_CallContact_Menu');
 	                callMenu.removeAll();
 	                var contact = _selectionModel.getSelected();
@@ -477,59 +526,89 @@ Tine.Addressbook.Main = {
 
         // define a template to use for the detail view
         // @todo add tags?
-        // @todo use Ext.util.TextMetrics?
         var detailTpl = new Ext.XTemplate(
             '<tpl for=".">',
-                '<div id="previewPanel">',
-                    '<div class="preview-panel preview-panel-company preview-panel-address">',
-                        '{[this.encode(values.org_name)]}{[this.encode(values.org_unit, "prefix", " / ")]}<br/>',
-                        '{[this.encode(values.adr_one_street)]}<br/>',
-                        '{[this.encode(values.adr_one_postalcode, " ")]}{[this.encode(values.adr_one_locality)]}<br/>',
-                        '{[this.encode(values.adr_one_region, " / ")]}{[this.encode(values.adr_one_countryname, "country")]}<br/>',
+				'<div class="preview-panel-adressbook-nobreak">',
+                '<div class="preview-panel-left">',                
+                    '<!-- Preview image -->',
+                    '<div class="preview-panel preview-panel-left preview-panel-image">',
+                        '<div class="bordercorner_1"></div>',
+                        '<div class="bordercorner_2"></div>',
+                        '<div class="bordercorner_3"></div>',
+                        '<div class="bordercorner_4"></div>',
+                        '<img src="{jpegphoto}"/>',
                     '</div>',
-                    '<div class="preview-panel preview-panel-company preview-panel-contact">',
-                        '<img src="images/oxygen/16x16/apps/kcall.png"/>&nbsp;{[this.encode(values.tel_work)]}<br/>',
-                        '<img src="images/oxygen/16x16/devices/phone.png"/>&nbsp;{[this.encode(values.tel_cell)]}<br/>',
-                        '<img src="images/oxygen/16x16/devices/printer.png"/>&nbsp;{[this.encode(values.tel_fax)]}<br/>',
-                        '<img src="images/oxygen/16x16/actions/kontact-mail.png"/>&nbsp;',
-                            '<a href="mailto:{[this.encode(values.email)]}">{[this.encode(values.email, "shorttext")]}</a><br/>',
-                        '<img src="images/oxygen/16x16/actions/network.png"/>&nbsp;',
-                            '<a href="{[this.encode(values.url)]}" target="_blank">{[this.encode(values.url, "shorttext")]}</a><br/>',
+                
+                    '<!-- Preview office -->',
+                    '<div class="preview-panel preview-panel-office preview-panel-left">',                
+                        '<div class="bordercorner_1"></div>',
+                        '<div class="bordercorner_2"></div>',
+                        '<div class="bordercorner_3"></div>',
+                        '<div class="bordercorner_4"></div>',
+                        '<div class="preview-panel-declaration">buero</div>',
+                        '<div class="preview-panel-address preview-panel-left">',
+                            '<span class="preview-panel-bold">{[this.encode(values.org_name)]}{[this.encode(values.org_unit, "prefix", " / ")]}</span><br/>',
+                            '{[this.encode(values.adr_one_street)]}<br/>',
+                            '{[this.encode(values.adr_one_postalcode, " ")]}{[this.encode(values.adr_one_locality)]}<br/>',
+                            '{[this.encode(values.adr_one_region, " / ")]}{[this.encode(values.adr_one_countryname, "country")]}<br/>',
+                        '</div>',
+                        '<div class="preview-panel-contact preview-panel-right">',
+                            '<span class="preview-panel-symbolcompare">' + this.translation._('Phone') + '</span>{[this.encode(values.tel_work)]}<br/>',
+                            '<span class="preview-panel-symbolcompare">' + this.translation._('Mobile') + '</span>{[this.encode(values.tel_cell)]}<br/>',
+                            '<span class="preview-panel-symbolcompare">' + this.translation._('Fax') + '</span>{[this.encode(values.tel_fax)]}<br/>',
+                            '<span class="preview-panel-symbolcompare">' + this.translation._('E-Mail') + '</span><a href="mailto:{[this.encode(values.email)]}">{[this.encode(values.email, "shorttext")]}</a><br/>',
+                            '<span class="preview-panel-symbolcompare">' + this.translation._('Web') + '</span><a href="{[this.encode(values.url)]}" target="_blank">{[this.encode(values.url, "shorttext")]}</a><br/>',
                         /*
-                        this.translation._('Job Title') + ': {[this.encode(values.title)]}<br/>',
-                        this.translation._('Job Role') + ': {[this.encode(values.role)]}<br/>',
-                        this.translation._('Room') + ': {[this.encode(values.room)]}<br/>',
+                            '<img src="images/oxygen/16x16/apps/kcall.png"/> 
+                            '<img src="images/oxygen/16x16/apps/phone.png"/> 
+                            '<img src="images/oxygen/16x16/apps/printer.png"/>
+                            '<img src="images/oxygen/16x16/apps/kontact-mail.png"/>
+                            '<img src="images/oxygen/16x16/apps/network.png"/>
                         */
+                        '</div>',
                     '</div>',
-                    '<div class="preview-panel preview-panel-address">',
-                        '{[this.encode(values.n_fn)]}<br/>',
+                '</div>',
+
+                '<!-- Preview privat -->',
+                '<div class="preview-panel preview-panel-privat preview-panel-left">',                
+                    '<div class="bordercorner_1"></div>',
+                    '<div class="bordercorner_2"></div>',
+                    '<div class="bordercorner_3"></div>',
+                    '<div class="bordercorner_4"></div>',
+                    '<div class="preview-panel-declaration">privat</div>',
+                    '<div class="preview-panel-address preview-panel-left">',
+                        '<span class="preview-panel-bold">{[this.encode(values.n_fn)]}</span><br/>',
                         '{[this.encode(values.adr_two_street)]}<br/>',
                         '{[this.encode(values.adr_two_postalcode, " ")]}{[this.encode(values.adr_two_locality)]}<br/>',
                         '{[this.encode(values.adr_two_region, " / ")]}{[this.encode(values.adr_two_countryname, "country")]}<br/>',
                     '</div>',
-                    '<div class="preview-panel preview-panel-contact">',
-                        '<img src="images/oxygen/16x16/apps/kcall.png"/>&nbsp;{[this.encode(values.tel_home)]}<br/>',
-                        '<img src="images/oxygen/16x16/devices/phone.png"/>&nbsp;{[this.encode(values.tel_cell_private)]}<br/>',
-                        '<img src="images/oxygen/16x16/devices/printer.png"/>&nbsp;{[this.encode(values.tel_fax_home)]}<br/>',
-                        '<img src="images/oxygen/16x16/actions/kontact-mail.png"/>&nbsp;',
-                            '<a href="mailto:{[this.encode(values.email_home)]}">{[this.encode(values.email_home, "shorttext")]}</a><br/>',
-                        '<img src="images/oxygen/16x16/actions/network.png"/>&nbsp;',
-                            '<a href="{[this.encode(values.url_home)]}" target="_blank">{[this.encode(values.url_home, "shorttext")]}</a><br/>',
-                    '</div>',
-                    /*
-                    '<div class="preview-panel">',
-                        '<u>' + this.translation._('Tags') + '</u><br/>',
-                        '{[this.getTags(values.tags)]}',
-                    '</div>',
-                    */
-                    '<div class="preview-panel preview-panel-description">',
-                        //'<u>' + this.translation._('Description') + '</u><br/>',
-                        '{[this.encode(values.note, "longtext")]}',
-                    '</div>',
-                    '<div class="preview-panel-image">',
-                        '<img src="{jpegphoto}" />',
-                    '</div>',
+                    '<div class="preview-panel-contact preview-panel-right">',
+                        '<span class="preview-panel-symbolcompare">' + this.translation._('Phone') + '</span>{[this.encode(values.tel_home)]}<br/>',
+                        '<span class="preview-panel-symbolcompare">' + this.translation._('Mobile') + '</span>{[this.encode(values.tel_cell_home)]}<br/>',
+                        '<span class="preview-panel-symbolcompare">' + this.translation._('Fax') + '</span>{[this.encode(values.tel_fax_home)]}<br/>',
+                        '<span class="preview-panel-symbolcompare">' + this.translation._('E-Mail') + '</span><a href="mailto:{[this.encode(values.email)]}">{[this.encode(values.email_home, "shorttext")]}</a><br/>',
+                        '<span class="preview-panel-symbolcompare">' + this.translation._('Web') + '</span><a href="{[this.encode(values.url)]}" target="_blank">{[this.encode(values.url_home, "shorttext")]}</a><br/>',
+                        /*
+                        '<!-- <img src="images/oxygen/16x16/apps/kcall.png"/>--> <span class="preview-panel-symbolcompare">phone</span>0404040<br/>',
+                        '<!-- <img src="images/oxygen/16x16/apps/phone.png"/>--> <span class="preview-panel-symbolcompare">mobil</span>040404<br/>',
+                        '<!-- <img src="images/oxygen/16x16/apps/printer.png"/>--> <span class="preview-panel-symbolcompare">fax</span>04040<br/>',
+                        '<!-- <img src="images/oxygen/16x16/apps/kontact-mail.png"/>--> <span class="preview-panel-symbolcompare">mail</span><a href="mailto:mai@me.dd">mai@me.dd</a><br/>',
+                        '<!-- <img src="images/oxygen/16x16/apps/network.png"/>--> <span class="preview-panel-symbolcompare">web</span><a href="{[this.encode(values.url_home)]}" target="_blank">{[this.encode(values.url_home, "shorttext")]}</a><br/>',
+                        */
+                    '</div>',                
                 '</div>',
+                
+                '<!-- Preview info -->',
+                '<div class="preview-panel-description preview-panel-left">',
+                    '<div class="bordercorner_gray_1"></div>',
+                    '<div class="bordercorner_gray_2"></div>',
+                    '<div class="bordercorner_gray_3"></div>',
+                    '<div class="bordercorner_gray_4"></div>',
+                    '<div class="preview-panel-declaration">info</div>',
+                    '{[this.encode(values.note, "longtext")]}',
+                '</div>',
+                '</div>',
+                //  '{[this.getTags(values.tags)]}',
             '</tpl>',
         	{
                 encode: function(value, type, prefix) {
@@ -541,11 +620,11 @@ Tine.Addressbook.Main = {
                 				    value = Locale.getTranslationData('Territory', value);
                 				    break;
                                 case 'longtext':
-                                    value = Ext.util.Format.ellipsis(value, 300);
+                                    value = Ext.util.Format.ellipsis(value, 135);
                                     break;
                                 case 'shorttext':
                                     //console.log(metrics.getWidth(value));
-                                    value = Ext.util.Format.ellipsis(value, 26);
+                                    value = Ext.util.Format.ellipsis(value, 18);
                                     break;
                                 case 'prefix':
                                     if (prefix) {
@@ -569,7 +648,7 @@ Tine.Addressbook.Main = {
                 	return result;
                 }
             }
-        );
+        );		
         
         rowSelectionModel.on('rowselect', function(sm, rowIdx, r) {
             var detailPanel = Ext.getCmp('adr-preview-panel');
@@ -691,7 +770,7 @@ Tine.Addressbook.Main = {
                 split: true,
                 layout: 'fit',
                 height: 125,
-                html: '<div class="preview-panel-empty">' + this.translation._('Select contact') + '</div>' 
+				html: clearTpl.applyTemplate({})
             }]
         });
         this.gridPanel.on('resize', function(panel) {
