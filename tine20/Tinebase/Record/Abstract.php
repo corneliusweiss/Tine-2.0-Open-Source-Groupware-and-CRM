@@ -486,12 +486,10 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
             if(is_array($_data[$field])) {
                 foreach($_data[$field] as $dataKey => $dataValue) {
                 	if ($dataValue instanceof Zend_Date) continue;
-                	$dataValue = $this->_convertISO8601ToISO8601LONG($dataValue);
-                    $_data[$field][$dataKey] =  (int)$dataValue == 0 ? NULL : new Zend_Date($dataValue, Tinebase_Record_Abstract::ISO8601LONG);
+                    $_data[$field][$dataKey] =  (int)$dataValue == 0 ? NULL : new Zend_Date($dataValue, $_format);
                 }
             } else {
-                $_data[$field] = $this->_convertISO8601ToISO8601LONG($_data[$field]);
-                $_data[$field] = (int)$_data[$field] == 0 ? NULL : new Zend_Date($_data[$field], Tinebase_Record_Abstract::ISO8601LONG);
+                $_data[$field] = (int)$_data[$field] == 0 ? NULL : new Zend_Date($_data[$field], $_format);
             }
         }
     }
@@ -511,6 +509,23 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
         $cutedISO = str_replace('T', ' ', $cutedISO);
         
         return $cutedISO;
+    }
+    
+    /**
+     * converts an iso formated date into a timestamp
+     *
+     * @param  string Zend_Date::ISO8601 representation of a datetime filed
+     * @return int    UNIX Timestamp
+     */
+    protected function _convertISOToTs($_ISO)
+    {
+        $matches = array();
+        preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $_ISO, $matches);
+
+        if (count($matches) == 7) {
+            list($match, $year, $month, $day, $hour, $minute, $second) = $matches;
+            return  mktime($hour, $minute, $second, $month, $day, $year);
+        }
     }
     
     /**
