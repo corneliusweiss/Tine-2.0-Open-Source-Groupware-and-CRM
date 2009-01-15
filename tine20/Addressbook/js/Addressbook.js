@@ -182,7 +182,7 @@ Tine.Addressbook.Main = {
 	    /**
 	     * onclick handler for deleteBtn
 	     */
-	    deleteContact: function(_button, _event) {
+	    deleteContact: function(btn, e) {
             var selectedRows = Ext.getCmp('Addressbook_Contacts_Grid').getSelectionModel().getSelections();
 	        Ext.MessageBox.confirm(
                 this.translation._('Are you Sure?'), 
@@ -339,7 +339,7 @@ Tine.Addressbook.Main = {
     initToolbar: function() {
         this.contactToolbar = new Ext.Toolbar({
             id: 'Addressbook_Contacts_Toolbar',
-            //split: false,
+            split: false,
             height: 26,
             items: [
                 this.actions.addContact, 
@@ -559,7 +559,7 @@ Tine.Addressbook.Main = {
                         '<div class="bordercorner_4"></div>',
                         '<div class="preview-panel-declaration">buero</div>',
                         '<div class="preview-panel-address preview-panel-left">',
-                            '<span class="preview-panel-bold">{[this.encode(values.org_name)]}{[this.encode(values.org_unit, "prefix", " / ")]}</span><br/>',
+                            '<span class="preview-panel-bold">{[this.encode(values.org_name, "mediumtext")]}{[this.encode(values.org_unit, "prefix", " / ")]}</span><br/>',
                             '{[this.encode(values.adr_one_street)]}<br/>',
                             '{[this.encode(values.adr_one_postalcode, " ")]}{[this.encode(values.adr_one_locality)]}<br/>',
                             '{[this.encode(values.adr_one_region, " / ")]}{[this.encode(values.adr_one_countryname, "country")]}<br/>',
@@ -633,6 +633,9 @@ Tine.Addressbook.Main = {
                 				    break;
                                 case 'longtext':
                                     value = Ext.util.Format.ellipsis(value, 135);
+                                    break;
+                                case 'mediumtext':
+                                    value = Ext.util.Format.ellipsis(value, 30);
                                     break;
                                 case 'shorttext':
                                     //console.log(metrics.getWidth(value));
@@ -727,7 +730,7 @@ Tine.Addressbook.Main = {
 
         gridPanel.on('keydown', function(e){
              if(e.getKey() == e.DELETE && Ext.getCmp('Addressbook_Contacts_Grid').getSelectionModel().getCount() > 0){
-                 this.handlers.deleteContact();
+                 this.handlers.deleteContact.call(this);
              }
         }, this);
 

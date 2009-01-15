@@ -34,13 +34,15 @@ class Tinebase_Export_Csv
      * @param array $dataArray
      * @param char $delimiter
      * @param char $enclosure
+     * @param char $escapeEnclosure
      */
-    public static function fputcsv($filePointer, $dataArray, $delimiter=',', $enclosure=''){
+    public static function fputcsv($filePointer, $dataArray, $delimiter=',', $enclosure='"', $escapeEnclosure='"'){
         $string = "";
         $writeDelimiter = false;
         foreach($dataArray as $dataElement) {
             if($writeDelimiter) $string .= $delimiter;
-            $string .= $enclosure . $dataElement . $enclosure;
+            $escapedDataElement = preg_replace("/$enclosure/", $escapeEnclosure . $enclosure , $dataElement);
+            $string .= $enclosure . $escapedDataElement . $enclosure;
             $writeDelimiter = true;
         } 
         $string .= "\n";
@@ -49,7 +51,7 @@ class Tinebase_Export_Csv
     }
 
     /**
-     * export timesheets to csv file
+     * export records to csv file
      *
      * @param Tinebase_Record_RecordSet $_records
      * @param boolean $_toStdout
@@ -58,17 +60,14 @@ class Tinebase_Export_Csv
      * 
      * @todo add specific export values
      * @todo save in special download path
-     * @todo save skipped fields elsewhere (preferences?)
      */
     public function exportRecords(Tinebase_Record_RecordSet $_records, $_toStdout = FALSE, $_skipFields = array()) {
         
-        $filename = ($_toStdout) ? 'STDOUT' : $this->_downloadPath . DIRECTORY_SEPARATOR . date('Y-m-d') . '_timesheet_export_' . time() . '.csv';
+        $filename = ($_toStdout) ? 'STDOUT' : $this->_downloadPath . DIRECTORY_SEPARATOR . md5(uniqid(rand(), true)) . '.csv';
         
-        /*
         if (count($_records) < 1) {
-            throw new Tinebase_Exception_NotFound('No records found.');
+            return FALSE;
         }
-        */
                 
         // to ensure the order of fields we need to sort it ourself!
         $fields = array();
@@ -101,7 +100,7 @@ class Tinebase_Export_Csv
         foreach ($_records as $record) {
             $recordArray = array();
             foreach ($fields as $fieldName) {
-                $recordArray[] = '"' . $record->$fieldName . '"';
+                $recordArray[] = $record->$fieldName;
             }
             self::fputcsv($filehandle, $recordArray);
         }

@@ -27,7 +27,6 @@ class Timetracker_Export_Csv extends Tinebase_Export_Csv
      * @return string filename
      * 
      * @todo add specific export values
-     * @todo add ods (open office spreadsheet) creation
      */
     public function exportTimesheets($_filter) {
         

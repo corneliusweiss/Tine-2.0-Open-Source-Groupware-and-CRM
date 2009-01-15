@@ -49,7 +49,10 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
                 new Tine.Timetracker.TimeAccountGridFilter(),
                 {label: this.app.i18n._('Account'),      field: 'account_id', valueType: 'user'},
                 {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date'},
-                {label: this.app.i18n._('Description'),  field: 'description' }
+                {label: this.app.i18n._('Description'),  field: 'description' },
+                {label: this.app.i18n._('Billable'),     field: 'is_billable', valueType: 'bool', defaultValue: true },
+                {label: this.app.i18n._('Cleared'),      field: 'is_cleared',  valueType: 'bool', defaultValue: false },
+                new Tine.widgets.tags.TagFilter({app: this.app})
              ],
              defaultFilter: 'start_date',
              filters: []
@@ -251,18 +254,40 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
      * return additional tb items
      * 
      * @todo add duplicate button
+     * @todo move export buttons to single menu/split button
      */
     getToolbarItems: function(){
+
+        this.action_exportOds = new Tine.widgets.grid.ExportButton({
+            text: this.app.i18n._('Export as ODS'),
+            format: 'ods',
+            exportFunction: 'Timetracker.exportTimesheets',
+            filterToolbar: this.filterToolbar
+        });
+    	
         this.action_exportCsv = new Tine.widgets.grid.ExportButton({
-            text: this.app.i18n._('Export All'),
+            text: this.app.i18n._('Export as CSV'),
             format: 'csv',
             exportFunction: 'Timetracker.exportTimesheets',
             filterToolbar: this.filterToolbar
         });
         
+        /*
+        // isn't working yet
+        var exportMenuButton = new Ext.menu.Menu({
+            text: this.app.i18n._('Export All'),
+            menu: [
+                this.action_exportCsv,
+                this.action_exportOds
+            ]
+        })
+        */
+        
         return [
             new Ext.Toolbar.Separator(),
-            this.action_exportCsv
+            //exportMenuButton
+            this.action_exportCsv,
+            this.action_exportOds
             /*
             ,[{
                 text: this.app.i18n._('Duplicate'),
