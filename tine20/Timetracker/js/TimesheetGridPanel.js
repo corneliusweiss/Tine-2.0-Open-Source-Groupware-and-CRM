@@ -45,7 +45,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
-                {label: this.app.i18n._('Timesheet'),    field: 'query',    operators: ['contains']},
+                //{label: this.app.i18n._('Timesheet'),    field: 'query',    operators: ['contains']}, // query only searches description
                 new Tine.Timetracker.TimeAccountGridFilter(),
                 {label: this.app.i18n._('Account'),      field: 'account_id', valueType: 'user'},
                 {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date'},
@@ -101,7 +101,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             }
         },{
             id: 'is_billable',
-            hidden: true,
+            //hidden: true,
             header: this.app.i18n._("Billable"),
             width: 100,
             sortable: true,
@@ -136,105 +136,137 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
         this.detailsPanel = new Tine.widgets.grid.DetailsPanel({
             gridpanel: this,
             
+            // use default Tpl for default and multi view
+            defaultTpl: new Ext.XTemplate(
+                '<div class="preview-panel-timesheet-nobreak">',
+                    '<!-- Preview timeframe -->',           
+                    '<div class="preview-panel preview-panel-timesheet-left">',
+                        '<div class="bordercorner_1"></div>',
+                        '<div class="bordercorner_2"></div>',
+                        '<div class="bordercorner_3"></div>',
+                        '<div class="bordercorner_4"></div>',
+                        '<div class="preview-panel-declaration">timeframe</div>',
+                        '<div class="preview-panel-timesheet-leftside preview-panel-left">',
+                            '<span class="preview-panel-bold">',
+                            'First Entry<br/>',
+                            'Last Entry<br/>',
+                            'Duration<br/>',
+                            '<br/>',
+                            '</span>',
+                        '</div>',
+                        '<div class="preview-panel-timesheet-rightside preview-panel-left">',
+                            '<span class="preview-panel-nonbold">',
+                            '<br/>',
+                            '<br/>',
+                            '<br/>',
+                            '<br/>',
+                            '</span>',
+                        '</div>',
+                    '</div>',
+                    '<!-- Preview summary -->',
+                    '<div class="preview-panel-timesheet-right">',
+                        '<div class="bordercorner_gray_1"></div>',
+                        '<div class="bordercorner_gray_2"></div>',
+                        '<div class="bordercorner_gray_3"></div>',
+                        '<div class="bordercorner_gray_4"></div>',
+                        '<div class="preview-panel-declaration">summary</div>',
+                        '<div class="preview-panel-timesheet-leftside preview-panel-left">',
+                            '<span class="preview-panel-bold">',
+                            'Total Timesheets<br/>',
+                            'Total Time<br/>',
+                            'Billable Timesheets<br/>',
+                            'Time of Billable Timesheets<br/>',
+                            '</span>',
+                        '</div>',
+                        '<div class="preview-panel-timesheet-rightside preview-panel-left">',
+                            '<span class="preview-panel-nonbold">',
+                            '{count}<br/>',
+                            '{sum}<br/>',
+                            '{countbillable}<br/>',
+                            '{sumbillable}<br/>',
+                            '</span>',
+                        '</div>',
+                    '</div>',
+                '</div>'            
+            ),
+            
             showDefault: function(body) {
-                var totalsum = Tine.Tinebase.common.minutesRenderer(this.gridpanel.store.proxy.jsonReader.jsonData.totalsum);
-                var tpl = new Ext.XTemplate(
-		'<div class="preview-panel-timesheet-nobreak">',
-			'<!-- Preview timeframe -->',			
-			'<div class="preview-panel preview-panel-timesheet-left">',
-				'<div class="bordercorner_1"></div>',
-				'<div class="bordercorner_2"></div>',
-				'<div class="bordercorner_3"></div>',
-				'<div class="bordercorner_4"></div>',
-				'<div class="preview-panel-declaration">timeframe</div>',
-				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
-					'<span class="preview-panel-bold">',
-					'First Entry<br/>',
-					'Last Entry<br/>',
-					'Duration<br/>',
-					'<br/>',
-					'</span>',
-				'</div>',
-				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
-					'<span class="preview-panel-nonbold">',
-					'<br/>',
-					'<br/>',
-					'<br/>',
-					'<br/>',
-					'</span>',
-				'</div>',
-			'</div>',
-			'<!-- Preview summary -->',
-			'<div class="preview-panel-timesheet-right">',
-				'<div class="bordercorner_gray_1"></div>',
-				'<div class="bordercorner_gray_2"></div>',
-				'<div class="bordercorner_gray_3"></div>',
-				'<div class="bordercorner_gray_4"></div>',
-				'<div class="preview-panel-declaration">summary</div>',
-				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
-					'<span class="preview-panel-bold">',
-					'Total Timesheets<br/>',
-					'Total Time<br/>',
-					'Billable Timesheets<br/>',
-					'Time of Billable Timesheets<br/>',
-					'</span>',
-				'</div>',
-				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
-					'<span class="preview-panel-nonbold">',
-					'{totalcount}<br/>',
-					totalsum + '<br/>',
-					'<br/>',
-					'<br/>',
-					'</span>',
-				'</div>',
-			'</div>',
-		'</div>'
-				//' total time of all {totalcount} timesheets: ' + totalsum + '&nbsp;&nbsp;&nbsp;'
-				);
-                tpl.overwrite(body, this.gridpanel.store.proxy.jsonReader.jsonData);
+            	
+            	console.log(this.gridpanel.store.proxy.jsonReader.jsonData);
+            	
+				var data = {
+				    count: this.gridpanel.store.proxy.jsonReader.jsonData.totalcount,
+				    countbillable: this.gridpanel.store.proxy.jsonReader.jsonData.totalcountbillable,
+				    sum:  Tine.Tinebase.common.minutesRenderer(this.gridpanel.store.proxy.jsonReader.jsonData.totalsum),
+				    sumbillable: Tine.Tinebase.common.minutesRenderer(this.gridpanel.store.proxy.jsonReader.jsonData.totalsumbillable)
+			    };
+                
+			    //console.log(this.gridpanel.store.proxy.jsonReader.jsonData);
+			    
+                this.defaultTpl.overwrite(body, data);
+            },
+            
+            showMulti: function(sm, body) {
+                var data = {
+                    count: sm.getCount(),
+                    countbillable: 0,
+                    sum: 0,
+                    sumbillable: 0
+                };
+                sm.each(function(record){
+                    data.sum = data.sum + parseInt(record.data.duration);
+                    if (record.data.is_billable == '1') {
+                    	data.countbillable++;
+                    	data.sumbillable = data.sumbillable + parseInt(record.data.duration);
+                    }
+                });
+                data.sum = Tine.Tinebase.common.minutesRenderer(data.sum);
+                data.sumbillable = Tine.Tinebase.common.minutesRenderer(data.sumbillable);
+                
+                this.defaultTpl.overwrite(body, data);
             },
             
             tpl: new Ext.XTemplate(
-		'<div class="preview-panel-timesheet-nobreak">',	
-			'<!-- Preview beschreibung -->',
-			'<div class="preview-panel preview-panel-timesheet-left">',
-				'<div class="bordercorner_1"></div>',
-				'<div class="bordercorner_2"></div>',
-				'<div class="bordercorner_3"></div>',
-				'<div class="bordercorner_4"></div>',
-				'<div class="preview-panel-declaration">beschreibung</div>',
-				'<div class="preview-panel-timesheet-description preview-panel-left">',
-					'<span class="preview-panel-nonbold">',
-					 '{[this.encode(values.description)]}',
-					'<br/>',
-					'</span>',
-				'</div>',
-			'</div>',
-			'<!-- Preview detail-->',
-			'<div class="preview-panel-timesheet-right">',
-				'<div class="bordercorner_gray_1"></div>',
-				'<div class="bordercorner_gray_2"></div>',
-				'<div class="bordercorner_gray_3"></div>',
-				'<div class="bordercorner_gray_4"></div>',
-				'<div class="preview-panel-declaration">detail</div>',
-				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
-					'<span class="preview-panel-bold">',
-					'Ansprechpartner<br/>',
-					'Newsletter<br/>',
-					'Ticketnummer<br/>',
-					'Ticketsubjekt<br/>',
-					'</span>',
-				'</div>',
-				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
-					'<span class="preview-panel-nonbold">',
-					'<br/>',
-					'<br/>',
-					'<br/>',
-					'<br/>',
-					'</span>',
-				'</div>',
-			'</div>',
-		'</div>',{
+        		'<div class="preview-panel-timesheet-nobreak">',	
+        			'<!-- Preview beschreibung -->',
+        			'<div class="preview-panel preview-panel-timesheet-left">',
+        				'<div class="bordercorner_1"></div>',
+        				'<div class="bordercorner_2"></div>',
+        				'<div class="bordercorner_3"></div>',
+        				'<div class="bordercorner_4"></div>',
+        				'<div class="preview-panel-declaration">beschreibung</div>',
+        				'<div class="preview-panel-timesheet-description preview-panel-left">',
+        					'<span class="preview-panel-nonbold">',
+        					 '{[this.encode(values.description)]}',
+        					'<br/>',
+        					'</span>',
+        				'</div>',
+        			'</div>',
+        			'<!-- Preview detail-->',
+        			'<div class="preview-panel-timesheet-right">',
+        				'<div class="bordercorner_gray_1"></div>',
+        				'<div class="bordercorner_gray_2"></div>',
+        				'<div class="bordercorner_gray_3"></div>',
+        				'<div class="bordercorner_gray_4"></div>',
+        				'<div class="preview-panel-declaration">detail</div>',
+        				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+        					'<span class="preview-panel-bold">',
+        					'Ansprechpartner<br/>',
+        					'Newsletter<br/>',
+        					'Ticketnummer<br/>',
+        					'Ticketsubjekt<br/>',
+        					'</span>',
+        				'</div>',
+        				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
+        					'<span class="preview-panel-nonbold">',
+        					'<br/>',
+        					'<br/>',
+        					'<br/>',
+        					'<br/>',
+        					'</span>',
+        				'</div>',
+        			'</div>',
+        		'</div>',{
 
               //  '<div class="detailPanel">',
                 //    '{[this.encode(values.description)]}',

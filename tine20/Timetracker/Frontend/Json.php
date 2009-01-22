@@ -149,12 +149,15 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
      */
     protected function getTimesheetGrantsByTimeaccountGrants($timeaccountGrantsArray, $timesheetOwnerId)
     {
+        $manageAllRight = Timetracker_Controller_Timeaccount::getInstance()->checkRight(Timetracker_Acl_Rights::MANAGE_TIMEACCOUNTS, FALSE);
         $currentUserId = Tinebase_Core::getUser()->getId();
-        $modifyGrant = ($timeaccountGrantsArray['book_own'] && $timesheetOwnerId == $currentUserId) || $timeaccountGrantsArray['book_all'];
+        
+        $modifyGrant = $manageAllRight || ($timeaccountGrantsArray['book_own'] && $timesheetOwnerId == $currentUserId) || $timeaccountGrantsArray['book_all'];
             
         $timeaccountGrantsArray['readGrant']   = true;
         $timeaccountGrantsArray['editGrant']   = $modifyGrant;
         $timeaccountGrantsArray['deleteGrant'] = $modifyGrant;
+        
         
         return $timeaccountGrantsArray;
     }
@@ -195,7 +198,9 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     {
         $result = $this->_search($filter, $paging, $this->_timesheetController, 'Timetracker_Model_TimesheetFilter');
         
+        $result['totalcountbillable'] = $result['totalcount']['countBillable'];
         $result['totalsum'] = $result['totalcount']['sum'];
+        $result['totalsumbillable'] = $result['totalcount']['sumBillable'];
         $result['totalcount'] = $result['totalcount']['count'];
         
         return $result;

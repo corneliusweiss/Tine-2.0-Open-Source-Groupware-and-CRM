@@ -18,88 +18,406 @@
  * @subpackage	Export
  * 
  */
-class Timetracker_Export_Ods extends Tinebase_Export_Ods
+class Timetracker_Export_Ods extends OpenDocument_Document
 {
+    /**
+     * user styles
+     *
+     * @var array
+     */
+    protected $_userStyles = array(
+        '<number:date-style style:name="nShortDate" number:automatic-order="true" 
+                xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" 
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0">
+            <number:day number:style="long"/>
+            <number:text>.</number:text>
+            <number:month number:style="long"/>
+            <number:text>.</number:text>
+            <number:year number:style="long"/>
+        </number:date-style>',
+        '<style:style style:name="ceHeader" style:family="table-cell" 
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:table-cell-properties fo:background-color="#ccffff"/>
+            <style:paragraph-properties fo:text-align="center" fo:margin-left="0cm"/>
+            <style:text-properties fo:font-weight="bold"/>
+        </style:style>',
+        '<style:style style:name="ceBold" style:family="table-cell" 
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:text-properties fo:font-weight="bold"/>
+        </style:style>',
+        '<style:style style:name="ceAlternate" style:family="table-cell" style:data-style-name="nShortDate"
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:table-cell-properties fo:background-color="#ccccff"/>
+        </style:style>',
+        '<style:style style:name="ceAlternateCentered" style:family="table-cell" style:data-style-name="nShortDate"
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:table-cell-properties fo:background-color="#ccccff"/>
+            <style:paragraph-properties fo:text-align="center" fo:margin-left="0cm"/>
+        </style:style>',
+        '<style:style style:name="ceShortDate" style:family="table-cell" style:data-style-name="nShortDate"
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:paragraph-properties fo:text-align="center" fo:margin-left="0cm"/>
+        </style:style>'
+    );
+    
+    /**
+     * translation object
+     *
+     * @var Zend_Translate
+     */
+    protected $_translate;
+    
+    /**
+     * export config array
+     *
+     * @var array
+     */
+    protected $_config = array();
+    
+    /**
+     * first row of body (records)
+     *
+     */
+    protected $_firstRow = 4;
+    
+    /**
+     * the constructor
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct(OpenDocument_Document::SPREADSHEET);
+        
+        $this->_translate = Tinebase_Translation::getTranslation('Timetracker');
+        $this->_config = $this->_getExportConfig();
+    }
+    
     /**
      * export timesheets to Ods file
      *
      * @param Timetracker_Model_TimesheetFilter $_filter
      * @return string filename
-     * 
-     * @todo add specific export values
-     * @todo add fields array to preferences
      */
     public function exportTimesheets($_filter) {
         
+        // get timesheets by filter
         $timesheets = Timetracker_Controller_Timesheet::getInstance()->search($_filter);
-        if (count($timesheets) < 1) {
-            throw new Timetracker_Exception_NotFound('No Timesheets found.');
-        }
-
+        $lastCell = count($timesheets) + $this->_firstRow - 1;
+        
         // resolve timeaccounts
         $timeaccountIds = $timesheets->timeaccount_id;
         $timeaccounts = Timetracker_Controller_Timeaccount::getInstance()->getMultiple(array_unique(array_values($timeaccountIds)));
+                
+        // build export table
+        $table = $this->getBody()->appendTable('Timesheets');        
+        $this->_addHead($table, $_filter, $timeaccounts);
+        $this->_addBody($table, $timesheets, $timeaccounts);
+        $this->_addFooter($table, $lastCell);
         
-        // resolve accounts
-        $accountIds = $timesheets->account_id;
-        $accounts = Tinebase_User::getInstance()->getMultiple(array_unique(array_values($accountIds)));
+        // add overview table
+        $this->_addOverviewTable($lastCell);
         
-        // build export array
-        list($fields, $headline) = $this->_getExportFields();
-        
-        $exportArray = array();
-        foreach ($timesheets as $timesheet) {
-            $row = array();
-            foreach ($fields as $key => $params) {
-                switch($params['type']) {
-                    case 'timeaccount':
-                        $value = $timeaccounts[$timeaccounts->getIndexById($timesheet->timeaccount_id)]->$params['field'];
-                        $row[] = $value;
-                        break;
-                    case 'account':
-                        $value = $accounts[$accounts->getIndexById($timesheet->account_id)]->$params['field'];
-                        $row[] = $value;
-                        break;
-                    default:
-                        $row[] = preg_replace('/"/', "'", $timesheet->$key);
-                }
-            }
-            $exportArray[] = $row;
-            
-            //$timesheet->timeaccount_id = $timeaccounts[$timeaccounts->getIndexById($timesheet->timeaccount_id)]->title;
-            //$timesheet->account_id = $accounts[$accounts->getIndexById($timesheet->account_id)]->accountDisplayName;
-        }
-        
-        //$filename = parent::exportRecords($timesheets);
-        $filename = parent::exportArray($exportArray, $headline);
-        
+        // create file
+        $filename = $this->getDocument();        
         return $filename;
     }
     
     /**
-     * get export fields
-     * - record fieldname => headline (translated)
+     * add ods head (headline, column styles)
+     *
+     * @param OpenDocument_SpreadSheet_Table $table
+     * @param Timetracker_Model_TimesheetFilter $_filter
+     * @param Tinebase_Record_RecordSet $timeaccounts
+     */
+    protected function _addHead($table, $_filter, $timeaccounts)
+    {
+        $columnId = 0;
+        foreach($this->_config['fields'] as $field) {
+            $column = $table->appendColumn();
+            $column->setStyle('co' . $columnId);
+            if($field['type'] == 'date') {
+                $column->setDefaultCellStyle('ceShortDate');
+            }
+            $this->_addColumnStyle('co' . $columnId, $field['width']);
+            
+            $columnId++;
+        }
+        
+
+        // add header (replace placeholders)
+        $row = $table->appendRow();
+        if (isset($this->_config['header'])) {
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_filter->toArray(), true));
+            
+            $locale = Tinebase_Core::get('locale');
+            
+            $patterns = array(
+                '/\{date\}/', 
+                '/\{user\}/',
+                '/\{filter\}/'
+            );
+            
+            $filters = array();
+            foreach ($_filter->toArray() as $key => $value) {
+                switch($key) {
+                    case 'timeaccount_id':
+                        $value = $timeaccounts[$timeaccounts->getIndexById($value[0])]->title;
+                        break;
+                    case 'account_id':
+                        $value = Tinebase_User::getInstance()->getUserById($value)->accountDisplayName;
+                        break;
+                }
+                $filters[] = $key . '=' . $value;
+            }
+            $replacements = array(
+                Zend_Date::now()->toString(Zend_Locale_Format::getDateFormat($locale), $locale),
+                Tinebase_Core::getUser()->accountDisplayName,
+                $this->_translate->_('Filter') . ': ' . implode(', ', $filters)
+            );
+            
+            foreach($this->_config['header'] as $headerCell) {
+                // replace data
+                $value = preg_replace($patterns, $replacements, $headerCell);
+                $cell = $row->appendCell('string', $value);                
+            }
+        }
+        
+        $row = $table->appendRow();
+        
+        // add table headline
+        $row = $table->appendRow();
+        foreach($this->_config['fields'] as $field) {
+            $cell = $row->appendCell('string', $field['header']);
+            $cell->setStyle('ceHeader');
+        }
+    }
+    
+    /**
+     * add single export row
+     *
+     * @param OpenDocument_SpreadSheet_Table $table
+     * @param Tinebase_Record_RecordSet $timesheets
+     * @param Tinebase_Record_RecordSet $timeaccounts
+     */
+    protected function _addBody($table, $timesheets, $timeaccounts)
+    {
+        // resolve accounts
+        $accountIds = $timesheets->account_id;
+        $accounts = Tinebase_User::getInstance()->getMultiple(array_unique(array_values($accountIds)));
+        
+        if ($this->_config['customFields']) {
+            // we need the sql backend if the export contains custom fields
+            // @todo remove that when getMultiple() fetches the custom fields as well
+            $timesheetBackend = new Timetracker_Backend_Timesheet();
+        }
+        
+        // add timesheet rows
+        $i = 0;
+        foreach ($timesheets as $timesheet) {
+            
+            // check if we need to get the complete timesheet with custom fields
+            // @todo remove that when getMultiple() fetches the custom fields as well
+            if ($this->_config['customFields']) {
+                $timesheet = $timesheetBackend->get($timesheet->getId());
+            }
+            
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($timesheet->toArray(), true));
+            
+            $row = $table->appendRow();
+
+            foreach ($this->_config['fields'] as $key => $params) {
+                
+                $style = 'ceAlternate';
+                $type = $params['type'];
+                
+                switch($params['type']) {
+                    case 'timeaccount':
+                        $value = $timeaccounts[$timeaccounts->getIndexById($timesheet->timeaccount_id)]->$params['field'];
+                        $type = 'string';
+                        break;
+                    case 'account':
+                        $value = $accounts[$accounts->getIndexById($timesheet->account_id)]->$params['field'];
+                        $type = 'string';
+                        break;
+                    case 'date':
+                        $value = $timesheet->$key;
+                        $style = 'ceAlternateCentered';
+                        break;
+                    default:
+                        if (isset($params['custom']) && $params['custom']) {
+                            // add custom fields
+                            if (isset($timesheet->customfields[$key])) {
+                                $value = $timesheet->customfields[$key];
+                            } else {
+                                $value = '';
+                            }
+                            
+                        } else {
+                            // all remaining
+                            $value = (isset($params['divisor'])) ? $timesheet->$key / $params['divisor'] : $timesheet->$key;
+                        }
+                        
+                        // set special value from params
+                        if (isset($params['values'])) {
+                            $value = $params['values'][$value];
+                        }
+                        
+                        break;
+                }
+                
+                // check for replacements
+                if (isset($params['replace'])) {
+                    $value = preg_replace($params['replace']['pattern'], $params['replace']['replacement'], $value);
+                }
+
+                // check for matches
+                if (isset($params['match'])) {
+                    preg_match($params['match'], $value, $matches);
+                    $value = $matches[1];
+                }
+                
+                // create cell with type and value and add style
+                $cell = $row->appendCell($type, $value);
+                    
+                if ($i % 2 == 1) {
+                     $cell->setStyle($style);
+                }
+                
+            }        
+            $i++;
+        }
+        
+    }
+    
+    /**
+     * add table footer (formulas, ...)
+     *
+     * @param OpenDocument_SpreadSheet_Table $table
+     * @param integer $lastCell
+     */
+    protected function _addFooter($table, $lastCell)
+    {
+        // add footer
+        $row = $table->appendRow();
+        $row = $table->appendRow();
+        $row->appendCell('string');
+        $row->appendCell('string');
+        $row->appendCell('string');
+        $row->appendCell('string', $this->_translate->_('Total Sum'));
+        $cell = $row->appendCell('float', 0);
+        // set sum for timesheet duration (for example E2:E10)
+        $cell->setFormula('oooc:=SUM(' . $this->_config['sumColumn'] . $this->_firstRow . ':' . $this->_config['sumColumn'] . $lastCell . ')');   
+        $cell->setStyle('ceBold');     
+    }
+    
+    /**
+     * add overview table
+     *
+     * @param integer $lastCell
+     */
+    protected function _addOverviewTable($lastCell)
+    {
+        $table = $this->getBody()->appendTable('Overview');
+        
+        $row = $table->appendRow();
+        $row->appendCell('string', $this->_translate->_('Not billable'));
+        $cell = $row->appendCell('float', 0);
+        $cell->setFormula('oooc:=SUMIF(Timesheets.' . 
+            $this->_config['billableColumn'] . $this->_firstRow . ':Timesheets.' . $this->_config['billableColumn'] . $lastCell . 
+            ';0;Timesheets.' . $this->_config['sumColumn'] . $this->_firstRow . ':Timesheets.' . $this->_config['sumColumn'] . $lastCell . ')');
+        #$cell->setStyle('ceBold');     
+        
+        $row = $table->appendRow();
+        $row->appendCell('string', $this->_translate->_('Billable'));
+        $cell = $row->appendCell('float', 0);
+        $cell->setFormula('oooc:=SUMIF(Timesheets.' . 
+            $this->_config['billableColumn'] . $this->_firstRow . ':Timesheets.' . $this->_config['billableColumn'] . $lastCell . 
+            ';1;Timesheets.' . $this->_config['sumColumn'] . $this->_firstRow . ':Timesheets.' . $this->_config['sumColumn'] . $lastCell . ')');
+        #$cell->setStyle('ceBold');     
+        
+        $row = $table->appendRow();
+        $row->appendCell('string', $this->_translate->_('Total'));
+        $cell = $row->appendCell('float', 0);
+        $cell->setFormula('oooc:=SUM(Timesheets.' . 
+            $this->_config['sumColumn'] . $this->_firstRow . ':Timesheets.' . $this->_config['sumColumn'] . $lastCell . ')');
+        $cell->setStyle('ceBold');     
+    }
+    
+    /**
+     * get export config
+     * - filename should be: /config/Timetracker/export.inc.php
+     * - perhaps we could get this from user preferences later
      *
      * @return array
      */
-    protected function _getExportFields()
+    protected function _getExportConfig()
     {
-        $translate = Tinebase_Translation::getTranslation('Timetracker');
-        $fields = array(
-            'start_date' => array('type' => 'default'),
-            'description' => array('type' => 'default'),
-            'timeaccount_id' => array('type' => 'timeaccount', 'field' => 'title'),
-            'account_id' => array('type' => 'account', 'field' => 'accountDisplayName'),
-            'duration' => array('type' => 'default'),
-        );
-        $headline = array(
-            $translate->_('Date'),
-            $translate->_('Description'),
-            $translate->_('Site'),
-            $translate->_('Staff Member'),
-            $translate->_('Duration'),
+        $config = Tinebase_Core::getConfig();
+        
+        $exportConfig = (isset($config->timesheetExport)) ? $config->timesheetExport->toArray() : array(
+            'customFields' => FALSE,
+            'sumColumn' => 'E',
+            'billableColumn' => 'F',
+            'overviewTable' => TRUE,
+            'fields' => array(
+                'start_date' => array(
+                    'header'    => $this->_translate->_('Date'),
+                    'type'      => 'date', 
+                    'width'     => '2,5cm'
+                ),
+                'description' => array(
+                    'header'    => $this->_translate->_('Description'),
+                    'type'      => 'string', 
+                    'width'     => '10cm'
+                ),
+                'timeaccount_id' => array(
+                    'header'    => $this->_translate->_('Timeaccount'),
+                    'type'      => 'timeaccount', 
+                    'field'     => 'title', 
+                    'width'     => '7cm',
+                    'replace'   => array('pattern' => "/^XYZ /", 'replacement' => '')
+                ),
+                'account_id' => array(
+                    'header'    => $this->_translate->_('Staff Member'),
+                    'type'      => 'account', 
+                    'field'     => 'accountDisplayName', 
+                    'width'     => '4cm'
+                ),
+                'duration' => array(
+                    'header'    => $this->_translate->_('Duration'),
+                    'type'      => 'float', 
+                    'width'     => '2cm',
+                    'divisor'   => 60 
+                ),
+                'is_billable' => array(
+                    'header'    => $this->_translate->_('Billable'),
+                    'type'      => 'float', 
+                    'width'     => '3cm'
+                ),
+                'is_cleared' => array(
+                    'header'    => $this->_translate->_('Cleared'),
+                    'type'      => 'float', 
+                    'width'     => '3cm'
+                ),
+            )
         );
         
-        return array($fields, $headline);
+        return $exportConfig;
+    }
+    
+    /**
+     * add style/width to column
+     *
+     * @param string $_styleName
+     * @param string $_columnWidth (for example: '2,5cm')
+     */
+    protected function _addColumnStyle($_styleName, $_columnWidth) 
+    {
+        $this->addStyle('<style:style style:name="' . $_styleName . '" style:family="table-column" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"><style:table-column-properties style:column-width="' . $_columnWidth . '"/></style:style>');
     }
 }
