@@ -7,7 +7,7 @@
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @version     $Id$
+ * @version     $Id:Int.php 6299 2009-01-22 10:00:31Z p.schuele@metaways.de $
  */
 
 /**
@@ -79,6 +79,10 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
          } else {
             // finally append query to select object
             $_select->where($this->field . $action['sqlop'], $value);
+            
+             if ($this->_operator == 'not') {
+                 $_select->orWhere($field . ' IS NULL');
+             }
          }
      }
 }
