@@ -23,7 +23,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
     /**
      * ISO8601LONG datetime representation
      */
-    const ISO8601LONG = 'YYYY-MM-dd HH:mm:ss';
+    const ISO8601LONG = 'yyyy-MM-dd HH:mm:ss';
     
 	/**
      * should datas be validated on the fly(false) or only on demand(true)
@@ -486,10 +486,10 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
             if(is_array($_data[$field])) {
                 foreach($_data[$field] as $dataKey => $dataValue) {
                 	if ($dataValue instanceof Zend_Date) continue;
-                    $_data[$field][$dataKey] =  (int)$dataValue == 0 ? NULL : new Zend_Date($dataValue, $_format);
+                    $_data[$field][$dataKey] =  (int)$dataValue == 0 ? NULL : new Zend_Date($this->_convertISOToTs($dataValue), NULL);
                 }
             } else {
-                $_data[$field] = (int)$_data[$field] == 0 ? NULL : new Zend_Date($_data[$field], $_format);
+                $_data[$field] = (int)$_data[$field] == 0 ? NULL : new Zend_Date($this->_convertISOToTs($_data[$field]), NULL);
             }
         }
     }
@@ -520,7 +520,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
     protected function _convertISOToTs($_ISO)
     {
         $matches = array();
-        preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $_ISO, $matches);
+        preg_match("/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})/", $_ISO, $matches);
 
         if (count($matches) == 7) {
             list($match, $year, $month, $day, $hour, $minute, $second) = $matches;
