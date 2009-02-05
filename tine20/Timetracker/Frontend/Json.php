@@ -231,12 +231,13 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     /**
      * update some fields of multiple records
      *
-     * @param string $what
+     * @param string $filter
      * @param string $values
+     * @return array with number of updated records
      */
-    public function updateMultipleTimesheets($what, $values)
+    public function updateMultipleTimesheets($filter, $values)
     {
-        $this->_updateMultiple($what, $values, $this->_timesheetController);
+        return $this->_updateMultiple($filter, $values, $this->_timesheetController, 'Timetracker_Model_TimesheetFilter');
     }
     
     /**

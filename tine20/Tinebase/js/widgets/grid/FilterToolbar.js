@@ -272,8 +272,13 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
                 tr.child('td[class=tw-ftb-frow-prefix]').dom.innerHTML = _('Show');
                 
                 // hack for the save/delete all btns which are now in the first row
-                this.actions.saveFilter.getEl().applyStyles('display: inline');
-                this.actions.removeAllFilters.getEl().applyStyles('display: inline');
+                if (Ext.isSafari) {
+                    this.actions.removeAllFilters.getEl().applyStyles('float: left');
+                } else {
+                    this.actions.saveFilter.getEl().applyStyles('display: inline');
+                    this.actions.removeAllFilters.getEl().applyStyles('display: inline');
+                }
+                
                 tr.child('td[class=tw-ftb-frow-searchbutton]').insertFirst(this.actions.saveFilter.getEl());
                 tr.child('td[class=tw-ftb-frow-searchbutton]').insertFirst(this.actions.removeAllFilters.getEl());
                 
@@ -409,7 +414,8 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
      */
     deleteFilter: function(filter) {
         var fRow = this.el.child('tr[id=tw-ftb-frowid-' + filter.id + ']');
-        var isLast = this.filterStore.getAt(this.filterStore.getCount()-1).id == filter.id;
+        //var isLast = this.filterStore.getAt(this.filterStore.getCount()-1).id == filter.id;
+        var isLast = this.filterStore.getCount() == 1;
         this.filterStore.remove(this.filterStore.getById(filter.id));
         
         if (isLast) {
@@ -445,15 +451,27 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
         this.onFilterRowsChange();
     },
     
+    /**
+     * @todo generalise TA quick hack ;-)
+     */
     getValue: function() {
         var filters = [];
+        var ta_filters = [];
         this.filterStore.each(function(filter) {
             var line = {};
             for (formfield in filter.formFields) {
                 line[formfield] = filter.formFields[formfield].getValue();
             }
-            filters.push(line);
+            if (line.field.match(/^timeaccount_/)) {
+                line.field = line.field.replace(/^timeaccount_/, '');
+                ta_filters.push(line);
+            } else {
+                filters.push(line);
+            }
         }, this);
+        if (ta_filters.length > 0) {
+            filters.push({field: 'timeaccount_id', operator: 'AND', value: ta_filters});
+        }
         return filters;
     }
     

@@ -14,45 +14,74 @@
  * timeaccount filter Class
  * @package     Timetracker
  */
-class Timetracker_Model_TimeaccountFilter extends Tinebase_Record_AbstractFilter
+class Timetracker_Model_TimeaccountFilter extends Tinebase_Model_Filter_FilterGroup implements Tinebase_Model_Filter_AclFilter 
 {
     /**
-     * application the record belongs to
-     *
-     * @var string
+     * @var string application of this filter group
      */
-    protected $_application = 'Timetracker';
+    protected $_applicationName = 'Timetracker';
     
     /**
-     * the constructor
-     * it is needed because we have more validation fields in Tasks
-     * 
-     * @param mixed $_data
-     * @param bool $bypassFilters sets {@see this->bypassFilters}
-     * @param bool $convertDates sets {@see $this->convertDates}
-     * 
-     * @todo    add more validators/filters
+     * @var array filter model fieldName => definition
      */
-    public function __construct($_data = NULL, $_bypassFilters = false, $_convertDates = true)
+    protected $_filterModel = array(
+        'id'             => array('filter' => 'Tinebase_Model_Filter_Id'),
+        'query'          => array('filter' => 'Tinebase_Model_Filter_Query', 'options' => array('fields' => array('number', 'title'))),
+        'title'          => array('filter' => 'Tinebase_Model_Filter_Text'),
+        'number'         => array('filter' => 'Tinebase_Model_Filter_Text'),
+        'description'    => array('filter' => 'Tinebase_Model_Filter_Text'),
+        'tag'            => array('filter' => 'Tinebase_Model_Filter_Tag'),
+        'showClosed'     => array('custom' => true),
+        'isBookable'     => array('custom' => true),
+    );
+    
+    /**
+     * @var array one of theese grants must be met
+     */
+    protected $_requiredGrants = array(
+        Timetracker_Model_TimeaccountGrants::BOOK_OWN
+    );
+    
+    /**
+     * is resolved
+     *
+     * @var boolean
+     */
+    protected $_isResolved = FALSE;
+    
+    /**
+     * set options
+     *
+     * @param array $_options
+     */
+    protected function _setOptions(array $_options)
     {
-        $this->_validators = array_merge($this->_validators, array(
-            'description'          => array(Zend_Filter_Input::ALLOW_EMPTY => true),
-            'tag'                  => array(Zend_Filter_Input::ALLOW_EMPTY => true),
-        // 'special' defines a filter rule that doesn't fit into the normal operator/opSqlMap model 
-            'showClosed'           => array('allowEmpty' => true, 'InArray' => array(true,false), 'special' => TRUE),
-            'isBookable'           => array('allowEmpty' => true, 'InArray' => array(true,false), 'special' => TRUE),
-        ));
-        
-        // define query fields
-        $this->_queryFields = array(
-            'number',
-            'title'
-        );
-        
-        parent::__construct($_data, $_bypassFilters, $_convertDates);
-    }    
-
-   /**
+        $_options['useTimesheetAcl'] = array_key_exists('useTimesheetAcl', $_options) ? $_options['useTimesheetAcl'] : FALSE;
+        parent::_setOptions($_options);
+    }
+    
+    /**
+     * returns acl filter of this group or NULL if not set
+     *
+     * @return Tinebase_Model_Filter_AclFilter
+     */
+    public function getAclFilter()
+    {
+        return $this;
+    }
+    
+    /**
+     * sets the grants this filter needs to assure
+     *
+     * @param array $_grants
+     */
+    public function setRequiredGrants(array $_grants)
+    {
+        $this->_requiredGrants = $_grants;
+        $this->_isResolved = FALSE;
+    }
+    
+    /**
      * appends current filters to a given select object
      * 
      * @param  Zend_Db_Select
@@ -60,21 +89,56 @@ class Timetracker_Model_TimeaccountFilter extends Tinebase_Record_AbstractFilter
      */
     public function appendFilterSql($_select)
     {
-        $db = Tinebase_Core::getDb();
+        // ensure acl policies
+        $this->_appendAclSqlFilter($_select);
         
-        if(isset($this->showClosed) && $this->showClosed){
-            // nothing to filter
-        } else {
-            $_select->where($db->quoteIdentifier('is_open') . ' = 1');
-        }
-        
-        // add container filter
-        if (!empty($this->container) && is_array($this->container)) {
-            $_select->where($db->quoteInto($db->quoteIdentifier('container_id') . ' IN (?)', $this->container));
-        }
+        // manage show closed
+        $this->_appendShowClosedSql($_select);
         
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $_select->__toString());
         
         parent::appendFilterSql($_select);
+    }
+    
+    protected function _appendShowClosedSql($_select)
+    {
+        $showClosed = false;
+        foreach ($this->_customData as $customData) {
+            if ($customData['field'] == 'showClosed' && $customData['value'] == true) {
+                $showClosed = true;
+            }
+        }
+        if($showClosed){
+            // nothing to filter
+        } else {
+            $_select->where(Tinebase_Core::getDb()->quoteIdentifier('is_open') . ' = 1');
+        }
+    }
+    
+    protected function _appendAclSqlFilter($_select)
+    {
+        if (Timetracker_Controller_Timesheet::getInstance()->checkRight(Timetracker_Acl_Rights::MANAGE_TIMEACCOUNTS, FALSE, FALSE)) {
+            return;
+        }
+        
+        if (! $this->_isResolved) {
+            // get all timeaccounts user has required grants for
+            $result = array();
+            foreach ($this->_requiredGrants as $grant) {
+                //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' value:' . $this->_value);
+                $result = array_merge($result, Timetracker_Model_TimeaccountGrants::getTimeaccountsByAcl($grant, TRUE));
+            }
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' value:' . $result);
+            $this->_validTimeaccounts = array_unique($result);
+            $this->_isResolved = TRUE;
+        }
+        
+        $db = Tinebase_Core::getDb();
+        
+        $field = $db->quoteIdentifier('id');
+        $where = $db->quoteInto("$field IN (?)", empty($this->_validTimeaccounts) ? array('') : $this->_validTimeaccounts);
+        
+        
+        $_select->where($where);
     }
 }

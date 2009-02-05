@@ -69,13 +69,15 @@ class Tinebase_Acl_RolesTest extends PHPUnit_Framework_TestCase
             'description'           => 'test role for phpunit',
         ));
 
-        // add account for group / role member tests
-        try {
-            Tinebase_User::getInstance()->getUserById($this->objects['user']->accountId) ;
-        } catch ( Exception $e ) {
-            Tinebase_User::getInstance()->addUser(  $this->objects['user'] );
-        }
         
+        $translate = Tinebase_Translation::getTranslation('Tinebase');
+        
+        // add account for group / role member tests
+        $user = Tinebase_User::getInstance()->getUserById($this->objects['user']->accountId) ;
+        if ($user->accountDisplayName == $translate->_('unknown')) {
+            Tinebase_User::getInstance()->addUser($this->objects['user']);
+        }
+                
         return;        
     }
 

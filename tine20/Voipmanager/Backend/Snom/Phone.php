@@ -9,6 +9,7 @@
  * @version     $Id$
  *
  * @todo        add save rights function
+ * @todo        add search function to interface again when search function is removed
  */
 
 /**
@@ -32,11 +33,11 @@ class Voipmanager_Backend_Snom_Phone extends Tinebase_Application_Backend_Sql_Ab
      * add the fields to search for to the query
      *
      * @param  Zend_Db_Select $_select current where filter
-     * @param  Voipmanager_Model_Snom_LocationFilter $_filter the filter values to search for
+     * @param  Voipmanager_Model_Snom_PhoneFilter $_filter the filter values to search for
      * 
      * @todo    update/use this
      */
-    protected function _addFilter(Zend_Db_Select $_select, Voipmanager_Model_Snom_LocationFilter $_filter)
+    protected function _addFilter(Zend_Db_Select $_select, Voipmanager_Model_Snom_PhoneFilter $_filter)
     {
         if(!empty($_filter->query)) {
             $_select->where($this->_db->quoteInto('(' . $this->_db->quoteIdentifier('description') . ' LIKE ? OR ' .
@@ -47,14 +48,14 @@ class Voipmanager_Backend_Snom_Phone extends Tinebase_Application_Backend_Sql_Ab
 	/**
 	 * search phones
 	 * 
-     * @param Voipmanager_Model_Snom_PhoneFilter $_filter
+     * @param Tinebase_Model_Filter_FilterGroup $_filter
      * @param Tinebase_Model_Pagination|optional $_pagination
 	 * @return Tinebase_Record_RecordSet of subtype Voipmanager_Model_Snom_Phone
 	 * @deprecated
 	 * 
 	 * @todo   replace this
 	 */
-    public function search(Tinebase_Record_Interface $_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL)
+    public function search(/*Tinebase_Model_Filter_FilterGroup */$_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL, $_onlyIds = FALSE)
     {	
         $where = array();
         
@@ -76,7 +77,7 @@ class Voipmanager_Backend_Snom_Phone extends Tinebase_Application_Backend_Sql_Ab
                 $_pagination->setFromArray($_sort);
             }
             
-            $_pagination->appendPagination($select);
+            $_pagination->appendPaginationSql($select);
         }
 
         if(!empty($_filter->query)) {
@@ -116,7 +117,7 @@ class Voipmanager_Backend_Snom_Phone extends Tinebase_Application_Backend_Sql_Ab
             $_acl->setId($id);
         }
         
-        unset($_acl->accountDisplayName);
+        unset($_acl->account_name);
         
         $result = $this->_db->insert(SQL_TABLE_PREFIX . 'snom_phones_acl', $_acl->toArray());
         

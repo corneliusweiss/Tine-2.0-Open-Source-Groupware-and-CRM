@@ -50,6 +50,7 @@ Tine.Timetracker.TimesheetEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
             this.getForm().findField('account_id').setDisabled(! (grants.book_all || grants.manage_all || manageRight));
             this.getForm().findField('is_billable').setDisabled(! (grants.manage_billable || grants.manage_all || manageRight));
             this.getForm().findField('is_cleared').setDisabled(! (/*grants.manage_billable ||*/ grants.manage_all || manageRight));
+            this.getForm().findField('billed_in').setDisabled(! (grants.manage_all || manageRight));
         }
         
         if (timeaccount && timeaccount.data.is_billable == "0" || this.record.get('timeaccount_id').is_billable == "0") {
@@ -59,6 +60,37 @@ Tine.Timetracker.TimesheetEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
         	   this.getForm().findField('is_billable').setValue(0);
         	}
         }
+    },
+
+    /**
+     * this gets called when initializing and if cleared checkbox is changed
+     * 
+     * @param {} field
+     * @param {} newValue
+     * 
+     * @todo    add prompt later?
+     */
+    onClearedUpdate: function(field, checked) {
+    	
+        this.getForm().findField('billed_in').setDisabled(! checked);
+
+        /*
+    	if (checked && this.getForm().findField('billed_in').getValue() == '') {
+    		// open modal window to type in billed in value
+            Ext.Msg.prompt(
+                this.app.i18n._('Billed in ...'),
+                this.app.i18n._('Billed in ...'), 
+                function(btn, text) {
+                    if (btn == 'ok'){
+                        this.getForm().findField('billed_in').setValue(text);
+                    }
+                },
+                this
+            );                		
+    	} else {
+    		this.getForm().findField('billed_in').setValue('');
+    	}
+    	*/
     },
     
     /**
@@ -133,10 +165,10 @@ Tine.Timetracker.TimesheetEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                         name: 'description',
                         allowBlank: false,
                         xtype: 'textarea',
-                        height: 200
+                        height: 150
                     }], [new Tine.widgets.AccountpickerField({
                         allowBlank: false,
-                        columnWidth: .5,
+                        columnWidth: 1,
                         disabled: true,
                         fieldLabel: this.app.i18n._('Account'),
                         name: 'account_id'
@@ -153,7 +185,18 @@ Tine.Timetracker.TimesheetEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                         disabled: true,
                         boxLabel: this.app.i18n._('Cleared'),
                         name: 'is_cleared',
-                        xtype: 'checkbox'
+                        xtype: 'checkbox',
+                        listeners: {
+                            scope: this,
+                            check: this.onClearedUpdate
+                        }                        
+                    }, {
+                        columnWidth: .5,
+                        disabled: true,
+                        //emptyText: this.app.i18n._('not cleared yet...'),
+                        fieldLabel: this.app.i18n._('Cleared In'),
+                        name: 'billed_in',
+                        xtype: 'textfield'
                     }]] 
                 }, {
                     // activities and tags

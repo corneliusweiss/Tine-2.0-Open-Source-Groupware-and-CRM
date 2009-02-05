@@ -1399,7 +1399,7 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
         // tables with application_id as foreign key
         $appIdTables = array(
             'application_tables' => 'application_tables::application_id--applications::id',
-            'container' => 'container::application_id--applications::id',
+            'container' => 'container_application_id',
             'role_rights' => 'role_rights::application_id--applications::id',
             'config' => 'config::application_id--applications::id',
             'config_user' => 'config_user::application_id--applications::id',
@@ -1560,10 +1560,14 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
                 </reference>
             </index>
         ');
-        $this->_backend->dropForeignKey('container_acl', 'container_id');
+        try {
+            $this->_backend->dropForeignKey('container_acl', 'container_id');
+        } catch (Zend_Db_Statement_Exception $ze) {
+            // skip error
+        }
         $this->_backend->addForeignKey('container_acl', $declaration);
         
-        $this->setApplicationVersion('Tinebase', '0.18');
+        $this->setApplicationVersion('Tinebase', '0.18');            
     }
 
     /**

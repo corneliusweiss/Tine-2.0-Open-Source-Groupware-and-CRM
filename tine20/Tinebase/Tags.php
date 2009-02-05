@@ -55,6 +55,10 @@ class Tinebase_Tags
         return self::$_instance;
     }
     
+    /**
+     * the constructor
+     *
+     */
     private function __construct()
     {
         $this->_db = Tinebase_Core::getDb();
@@ -73,7 +77,7 @@ class Tinebase_Tags
         $select = $_filter->getSelect();
         
         Tinebase_Model_TagRight::applyAclSql($select, $_filter->grant);
-        $_paging->appendPagination($select);
+        $_paging->appendPaginationSql($select);
         
         return new Tinebase_Record_RecordSet('Tinebase_Model_Tag', $this->_db->fetchAssoc($select));
     }
@@ -167,7 +171,7 @@ class Tinebase_Tags
             case Tinebase_Model_Tag::TYPE_SHARED:
                 // @todo move to controller later?
                 if ( !Tinebase_Acl_Roles::getInstance()
-                        ->hasRight('Tinebase', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS) ) {
+                        ->hasRight('Admin', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS) ) {
                     throw new Tinebase_Exception_AccessDenied('Your are not allowed to create this tag');
                 }
                 $_tag->owner = 0;
@@ -195,7 +199,7 @@ class Tinebase_Tags
     {
         $currentAccountId = Tinebase_Core::getUser()->getId();
         $manageSharedTagsRight = Tinebase_Acl_Roles::getInstance()
-            ->hasRight('Tinebase', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS);
+            ->hasRight('Admin', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS);
         
         if ( ($_tag->type == Tinebase_Model_Tag::TYPE_PERSONAL && $_tag->owner == $currentAccountId) ||
              ($_tag->type == Tinebase_Model_Tag::TYPE_SHARED && $manageSharedTagsRight) ) {
@@ -232,7 +236,7 @@ class Tinebase_Tags
     {
         $currentAccountId = Tinebase_Core::getUser()->getId();
         $manageSharedTagsRight = Tinebase_Acl_Roles::getInstance()
-            ->hasRight('Tinebase', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS);
+            ->hasRight('Admin', $currentAccountId, Admin_Acl_Rights::MANAGE_SHARED_TAGS);
         $tags = $this->getTagsById($_ids);
         if (count($tags) != count((array)$_ids)) {
             throw new Tinebase_Exception_AccessDenied('You are not allowed to delete this tags');
@@ -260,7 +264,7 @@ class Tinebase_Tags
      * @param Tinebase_Record_Abstract  $_record        the record object
      * @param string                    $_tagsProperty  the property in the record where the tags are in (defaults: 'tags')
      * @param string                    $_right         the required right current user must have on the tags
-     * return Tinebase_Record_RecordSet tags of record
+     * @return Tinebase_Record_RecordSet tags of record
      */
     public function getTagsOfRecord($_record, $_tagsProperty='tags', $_right=Tinebase_Model_TagRight::VIEW_RIGHT)
     {

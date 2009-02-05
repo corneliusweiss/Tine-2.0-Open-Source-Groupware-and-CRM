@@ -65,12 +65,19 @@ class Tinebase_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstract
      *
      * @param  string $localeString
      * @param  bool   $saveaspreference
+     * @param  bool   $setcookie
      * @return array
      */
-    public function setLocale($localeString, $saveaspreference)
+    public function setLocale($localeString, $saveaspreference, $setcookie)
     {
         Tinebase_Core::setupUserLocale($localeString, $saveaspreference);
         $locale = Tinebase_Core::get('locale');
+        
+        // save in cookie (expires in 30 days)
+        if ($setcookie) {
+            setcookie('TINE20LOCALE', $localeString, time()+60*60*24*30);
+        }        
+        
         /* No need for return values yet. Client needs to reload!
         return array(
             'locale' => array(
@@ -390,7 +397,7 @@ class Tinebase_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstract
                 'changepw'         => (isset(Tinebase_Core::getConfig()->accounts)
                                         && isset(Tinebase_Core::getConfig()->accounts->changepw))
                                             ? Tinebase_Core::getConfig()->accounts->changepw
-                                            : false
+                                            : true
             );
         }
         return $registryData;

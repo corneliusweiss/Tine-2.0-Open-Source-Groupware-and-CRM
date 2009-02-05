@@ -33,11 +33,142 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
         this.actionToolbarItems = this.getToolbarItems();
         this.initDetailsPanel();
         
+        /********** Quick hack for mass update, to be generalized!!! **************/
+        /********** NOTE: The comment above means: do not CnP ;-) *****************/
+        this.contextMenuItems = [
+            '-', this.exportButton, '-', {
+            text: _('Mass Update'),
+            iconCls: 'action_edit',
+            disabled: !Tine.Tinebase.common.hasRight('manage', 'Timetracker', 'timeaccounts'),
+            scope: this,
+            menu: {
+                items: [
+                    '<b class="x-ux-menu-title">' + _('Update field:') + '</b>',
+                    {
+                        text: this.app.i18n._('Billable'),
+                        field: 'is_billable',
+                        scope: this,
+                        handler: this.onMassUpdate
+                    }, {
+                        text: this.app.i18n._('Cleared'),
+                        field: 'is_cleared',
+                        scope: this,
+                        handler: this.onMassUpdate
+                    }, {
+                        text: this.app.i18n._('Cleared in'),
+                        field: 'billed_in',
+                        scope: this,
+                        handler: this.onMassUpdate
+                    }
+                ]
+            }}
+        ];
+        
         this.plugins = this.plugins || [];
         this.plugins.push(this.filterToolbar);
         
         Tine.Timetracker.TimesheetGridPanel.superclass.initComponent.call(this);
     },
+    
+    onMassUpdate: function(btn, e) {
+        var input;
+        
+        switch (btn.field) {
+            case 'is_billable':
+            case 'is_cleared':
+//                input = new Ext.form.ComboBox({
+//                    fieldLabel: btn.text,
+//                    name: btn.field,
+//                    width: 40,
+//                    mode: 'local',
+//                    forceSelection: true,
+//                    triggerAction: 'all',
+//                    store: [
+//                        [0, Locale.getTranslationData('Question', 'no').replace(/:.*/, '')], 
+//                        [1, Locale.getTranslationData('Question', 'yes').replace(/:.*/, '')]
+//                    ]
+//                });
+                    input = new Ext.form.Checkbox({
+                        hideLabel: true,
+                        boxLabel: btn.text,
+                        name: btn.field
+                    });
+                break;
+            default:
+                input = new Ext.form.TextField({
+                    fieldLabel: btn.text,
+                    name: btn.field
+                });
+        }
+        
+        var sm = this.grid.getSelectionModel();
+        var filter = sm.getSelectionFilter();
+        
+        var updateForm = new Ext.FormPanel({
+            border: false,
+            labelAlign: 'top',
+            buttonAlign: 'right',
+            items: input,
+            defaults: {
+                anchor: '90%'
+            }
+        });
+        var win = new Ext.Window({
+            title: String.format(_('Update {0} records'), sm.getCount()),
+            width: 300,
+            height: 150,
+            layout: 'fit',
+            plain: true,
+            closeAction: 'close',
+            autoScroll: true,
+            items: updateForm,
+            buttons: [{
+                text: _('Cancel'),
+                iconCls: 'action_cancel',
+                handler: function() {
+                    win.close();
+                }
+            }, {
+                text: _('Ok'),
+                iconCls: 'action_saveAndClose',
+                scope: this,
+                handler: function() {
+                    win.close();
+                    this.grid.loadMask.show();
+                    
+                    var update = {};
+                    update[input.name] = input.getValue();
+                    
+                    // some adjustments
+                    if (input.name == 'is_cleared' && !update[input.name]) {
+                        // reset billed_in field
+                        update.billed_in = '';
+                    }
+                    if (input.name == 'billed_in' && update[input.name].length > 0) {
+                        // set is cleard dynamically
+                        update.is_cleared = true;
+                    }
+                    
+                    this.recordProxy.updateRecords(filter, update, {
+                        scope: this,
+                        success: function(response) {
+                            this.store.load();
+                            
+                            Ext.Msg.show({
+                               title: _('Success'),
+                               msg: String.format(_('Updated {0} records'), response.count),
+                               buttons: Ext.Msg.OK,
+                               animEl: 'elId',
+                               icon: Ext.MessageBox.INFO
+                            });
+                        }
+                    });
+                }
+            }]
+        });
+        win.show();
+    },
+    /********** END OF QUICK HACK *****************/
     
     /**
      * initialises filter toolbar
@@ -47,8 +178,10 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             filterModels: [
                 //{label: this.app.i18n._('Timesheet'),    field: 'query',    operators: ['contains']}, // query only searches description
                 new Tine.Timetracker.TimeAccountGridFilter(),
+                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Number'), field: 'timeaccount_number'},
+                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Title'),   field: 'timeaccount_title'},
                 {label: this.app.i18n._('Account'),      field: 'account_id', valueType: 'user'},
-                {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date'},
+                {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date', pastOnly: true},
                 {label: this.app.i18n._('Description'),  field: 'description' },
                 {label: this.app.i18n._('Billable'),     field: 'is_billable', valueType: 'bool', defaultValue: true },
                 {label: this.app.i18n._('Cleared'),      field: 'is_cleared',  valueType: 'bool', defaultValue: false },
@@ -250,12 +383,15 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
         				'<div class="bordercorner_gray_4"></div>',
         				'<div class="preview-panel-declaration">detail</div>',
         				'<div class="preview-panel-timesheet-leftside preview-panel-left">',
+        				// @todo add custom fields here
+        				/*
         					'<span class="preview-panel-bold">',
         					'Ansprechpartner<br/>',
         					'Newsletter<br/>',
         					'Ticketnummer<br/>',
         					'Ticketsubjekt<br/>',
         					'</span>',
+        			    */
         				'</div>',
         				'<div class="preview-panel-timesheet-rightside preview-panel-left">',
         					'<span class="preview-panel-nonbold">',
@@ -273,7 +409,10 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
                 //'</div>', {
                 encode: function(value, type, prefix) {
                     if (value) {
-                        return Ext.util.Format.htmlEncode(value);
+                        var encoded = Ext.util.Format.htmlEncode(value);
+                        encoded = Ext.util.Format.nl2br(encoded);
+                        
+                        return encoded;
                     } else {
                         return '';
                     }
@@ -288,44 +427,31 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
      * @todo add duplicate button
      * @todo move export buttons to single menu/split button
      */
-    getToolbarItems: function(){
-
-        this.action_exportOds = new Tine.widgets.grid.ExportButton({
-            text: this.app.i18n._('Export as ODS'),
-            format: 'ods',
-            exportFunction: 'Timetracker.exportTimesheets',
-            filterToolbar: this.filterToolbar
+    getToolbarItems: function() {
+        this.exportButton = new Ext.Action({
+            text: _('Export'),
+            iconCls: 'action_export',
+            scope: this,
+            requiredGrant: 'readGrant',
+            disabled: true,
+            allowMultiple: true,
+            menu: {
+                items: [
+                    new Tine.widgets.grid.ExportButton({
+                        text: this.app.i18n._('Export as ODS'),
+                        format: 'ods',
+                        exportFunction: 'Timetracker.exportTimesheets',
+                        gridPanel: this
+                    }),
+                    new Tine.widgets.grid.ExportButton({
+                        text: this.app.i18n._('Export as CSV'),
+                        format: 'csv',
+                        exportFunction: 'Timetracker.exportTimesheets',
+                        gridPanel: this
+                    })
+                ]
+            }
         });
-    	
-        this.action_exportCsv = new Tine.widgets.grid.ExportButton({
-            text: this.app.i18n._('Export as CSV'),
-            format: 'csv',
-            exportFunction: 'Timetracker.exportTimesheets',
-            filterToolbar: this.filterToolbar
-        });
-        
-        /*
-        // isn't working yet
-        var exportMenuButton = new Ext.menu.Menu({
-            text: this.app.i18n._('Export All'),
-            menu: [
-                this.action_exportCsv,
-                this.action_exportOds
-            ]
-        })
-        */
-        
-        return [
-            new Ext.Toolbar.Separator(),
-            //exportMenuButton
-            this.action_exportCsv,
-            this.action_exportOds
-            /*
-            ,[{
-                text: this.app.i18n._('Duplicate'),
-                iconCls: 'action_duplicate'
-            }]
-            */
-        ];
+        return ['-', this.exportButton];
     } 
 });

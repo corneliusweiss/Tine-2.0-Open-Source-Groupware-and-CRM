@@ -23,7 +23,7 @@ Tine.widgets.grid.ExportButton = function(config) {
     Tine.widgets.grid.ExportButton.superclass.constructor.call(this);
 };
 
-Ext.extend(Tine.widgets.grid.ExportButton, Ext.Button, {	
+Ext.extend(Tine.widgets.grid.ExportButton, Ext.Action, {	
     /**
      * @cfg {String} icon class
      */
@@ -37,29 +37,25 @@ Ext.extend(Tine.widgets.grid.ExportButton, Ext.Button, {
      */
     exportFunction: null,
     /**
-     * @cfg {Object} the filter toolbar with filter settings
+     * @cfg {Tine.Tinebase.widgets.grid.FilterSelectionModel} sm
      */
-    filterToolbar: null,
+    sm: null,
     /**
-     * @cfg {String} application tree id
+     * @cfg {Tine.Tinebase.widgets.app.GridPanel} gridPanel
+     * use this alternativly to sm
      */
-    appTreeId: null,
+    gridPanel: null,
     
     /**
      * do export
      */
-    doExport: function() {    	
-    	var filterSettings = this.filterToolbar.getValue();
+    doExport: function() {
+        // get selection model
+        if (!this.sm) {
+            this.sm = this.gridPanel.grid.getSelectionModel();
+        }
         
-        // add container to filter
-    	if (this.appTreeId) {
-            var nodeAttributes = Ext.getCmp(this.appTreeId).getSelectionModel().getSelectedNode().attributes || {};
-            filterSettings.push(
-                {field: 'containerType', operator: 'equals', value: nodeAttributes.containerType ? nodeAttributes.containerType : 'all' },
-                {field: 'container',     operator: 'equals', value: nodeAttributes.container ? nodeAttributes.container.id : null       },
-                {field: 'owner',         operator: 'equals', value: nodeAttributes.owner ? nodeAttributes.owner.accountId : null        }
-            );
-    	}
+    	var filterSettings = this.sm.getSelectionFilter();
 
         //console.log(filterSettings);
     	//Tine.Tinebase.common.openWindow('exportWindow', 'index.php?method=' + 
@@ -105,3 +101,4 @@ Ext.extend(Tine.widgets.grid.ExportButton, Ext.Button, {
         this.doExport();
     }
 });
+

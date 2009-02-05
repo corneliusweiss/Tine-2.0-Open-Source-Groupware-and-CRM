@@ -98,9 +98,9 @@ abstract class Tinebase_Application_Frontend_Json_Abstract extends Tinebase_Appl
      *
      * @param   $_recordData
      * @param   Tinebase_Application_Controller_Record_Interface $_controller the record controller
-     * @param   $_modelName
+     * @param   $_modelName for example: 'Task' for Tasks_Model_Task
      * @param   $_identifier of the record (default: id)
-     * @return array created/updated record
+     * @return  array created/updated record
      */
     protected function _save($_recordData, Tinebase_Application_Controller_Record_Interface $_controller, $_modelName, $_identifier = 'id')
     {
@@ -118,13 +118,21 @@ abstract class Tinebase_Application_Frontend_Json_Abstract extends Tinebase_Appl
     /**
      * update multiple records
      *
-     * @param string $_what json encoded filter or array of ids
-     * @param string $_values json encoded key/value pairs 
+     * @param string $_filter json encoded filter
+     * @param string $_data json encoded key/value pairs 
      * @param Tinebase_Application_Controller_Record_Interface $_controller
+     * @param string FilterGroup name
+     * @return array with number of updated records
      */
-    protected function _updateMultiple($_what, $_values, Tinebase_Application_Controller_Record_Interface $_controller)
+    protected function _updateMultiple($_filter, $_data, Tinebase_Application_Controller_Record_Interface $_controller, $_filterModel)
     {
-         $_controller->updateMultiple(Zend_Json::decode($_what), Zend_Json::decode($_values));
+        $filter = new $_filterModel(Zend_Json::decode($_filter));
+        
+        $result = $_controller->updateMultiple($filter, Zend_Json::decode($_data));
+        
+        return array(
+            'count'       => $result,
+        );
     }
     
     /**

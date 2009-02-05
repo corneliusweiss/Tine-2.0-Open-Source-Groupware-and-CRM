@@ -47,6 +47,11 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
      */
     contextMenuItems: [],
     /**
+     * @cfg {Bool} evalGrants
+     * should grants of a grant-aware records be evaluated (defaults to true)
+     */
+    evalGrants: true,
+    /**
      * @cfg {Object} defaultSortInfo
      */
     defaultSortInfo: {},
@@ -219,7 +224,8 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
             listeners: {
                 scope: this,
                 'update': this.onStoreUpdate,
-                'beforeload': this.onStoreBeforeload
+                'beforeload': this.onStoreBeforeload,
+                'load': this.onStoreLoad
             }
         });
     },
@@ -229,14 +235,35 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
      * @private
      */
     initGrid: function() {
+        // init sel model
+        this.selectionModel = new Tine.Tinebase.widgets.grid.FilterSelectionModel({
+            store: this.store
+        }),
+        this.selectionModel.on('selectionchange', function(sm) {
+            Tine.widgets.actionUpdater(sm, this.actions, this.recordClass.getMeta('containerProperty'), !this.evalGrants);
+            
+        }, this);
+        
         // we allways have a paging toolbar
-        this.pagingToolbar = new Ext.PagingToolbar({
+        this.pagingToolbar = new Ext.ux.grid.PagingToolbar({
             pageSize: 50,
             store: this.store,
             displayInfo: true,
             displayMsg: Tine.Tinebase.tranlation._('Displaying records {0} - {1} of {2}').replace(/records/, this.i18nRecordsName),
-            emptyMsg: String.format(Tine.Tinebase.tranlation._("No {0} to display"), this.i18nRecordsName)
+            emptyMsg: String.format(Tine.Tinebase.tranlation._("No {0} to display"), this.i18nRecordsName),
+            displaySelectionHelper: true,
+            sm: this.selectionModel
         });
+        // mark next grid refresh as paging-refresh
+        this.pagingToolbar.on('beforechange', function() {
+            this.grid.getView().isPagingRefresh = true;
+        }, this);
+        this.pagingToolbar.on('render', function() {
+            //Ext.fly(this.pagingToolbar.el.dom).createChild({cls:'x-tw-selection-info', html: '<b>100 Selected</b>'});
+            //console.log('h9er');
+            //this.pagingToolbar.addFill();
+            //this.pagingToolbar.add('sometext');
+        }, this);
         
         // init view
         var view =  new Ext.grid.GridView({
@@ -250,7 +277,13 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
                     v.scrollTop = v.scroller.dom.scrollTop;
                 },
                 refresh: function(v) {
-                    v.scroller.dom.scrollTop = v.scrollTop;
+                    // on paging-refreshes (prev/last...) we don't preserv the scroller state
+                    if (v.isPagingRefresh) {
+                        v.scrollToTop();
+                        v.isPagingRefresh = false;
+                    } else {
+                        v.scroller.dom.scrollTop = v.scrollTop;
+                    }
                 }
             }
         });
@@ -262,7 +295,7 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         this.grid = new Grid(Ext.applyIf(this.gridConfig, {
             border: false,
             store: this.store,
-            sm: new Ext.grid.RowSelectionModel({}),
+            sm: this.selectionModel,
             view: view
         }));
         
@@ -283,9 +316,6 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
             this.contextMenu.showAt(e.getXY());
         }, this);
         
-        this.grid.getSelectionModel().on('selectionchange', function(sm) {
-            Tine.widgets.actionUpdater(sm, this.actions, this.recordClass.getMeta('containerProperty'));
-        }, this);
     },
     
     /**
@@ -322,6 +352,19 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         
         // fix nasty paging tb
         Ext.applyIf(options.params, this.defaultPaging);
+    },
+    
+    /**
+     * called after a new set of Records has been loaded
+     * 
+     * @param  {Ext.data.Store} this.store
+     * @param  {Array}          loaded records
+     * @param  {Array}          load options
+     * @return {Void}
+     */
+    onStoreLoad: function(store, records, options) {
+        // save used filter
+        this.store.lastFilter = options.params.filter;
     },
     
     /**

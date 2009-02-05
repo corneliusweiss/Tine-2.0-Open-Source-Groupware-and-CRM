@@ -9,6 +9,7 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
+ * @todo add search and searchCount again when voipmanager refactoring is finished
  */
 
 /**
@@ -22,19 +23,20 @@ interface Tinebase_Application_Backend_Interface
     /**
      * Search for records matching given filter
      *
-     * @param  Tinebase_Record_Interface  $_filter
-     * @param  Tinebase_Model_Pagination $_pagination
+     * @param  Tinebase_Model_Filter_FilterGroup $_filter
+     * @param  Tinebase_Model_Pagination         $_pagination
+     * @param  boolean                           $_onlyIds
      * @return Tinebase_Record_RecordSet
      */
-    public function search(Tinebase_Record_Interface $_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL);
+    //public function search(Tinebase_Model_Filter_FilterGroup $_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL, $_onlyIds = FALSE);
     
     /**
      * Gets total count of search with $_filter
      * 
-     * @param Tinebase_Record_Interface $_filter
+     * @param Tinebase_Model_Filter_FilterGroup $_filter
      * @return int
      */
-    public function searchCount(Tinebase_Record_Interface $_filter);
+    //public function searchCount(Tinebase_Model_Filter_FilterGroup $_filter);
     
     /**
      * Return a single record
@@ -83,9 +85,10 @@ interface Tinebase_Application_Backend_Interface
      * Updates multiple entries
      *
      * @param array $_ids to update
-     * @param array $_values
+     * @param array $_data
+     * @return integer number of affected rows
      */
-    public function updateMultiple($_ids, $_values);
+    public function updateMultiple($_ids, $_data);
         
     /**
      * Deletes one or more existing persistent record(s)

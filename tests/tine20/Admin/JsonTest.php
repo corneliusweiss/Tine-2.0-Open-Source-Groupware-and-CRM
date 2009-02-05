@@ -69,7 +69,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
             'description'   => 'updated group'
         )); 
             	
-        $this->objects['account'] = new Tinebase_Model_FullUser(array(
+        $this->objects['user'] = new Tinebase_Model_FullUser(array(
             'accountId'             => 10,
             'accountLoginName'      => 'tine20phpunit',
             'accountDisplayName'    => 'tine20phpunit',
@@ -94,7 +94,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         )); 
         
         /*
-        $this->objects['application'] = new Tinebase_Model_Application ( array(
+        $this->objects['application'] = new Tinebase_Model_Application (array(
             'id'                    => 5,
             'name'                  => 'Crm',
             'status'                => 'enabled',
@@ -105,16 +105,17 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
 
         $this->objects['application'] = Tinebase_Application::getInstance()->getApplicationByName('Crm');
        
-        $this->objects['role'] = new Tinebase_Model_Role ( array(
+        $this->objects['role'] = new Tinebase_Model_Role(array(
             'name'                  => 'phpunit test role',
             'description'           => 'phpunit test role',
         ));
         
+        $translate = Tinebase_Translation::getTranslation('Tinebase');
+        
         // add account for group / role member tests
-        try {
-            Tinebase_User::getInstance()->getUserById($this->objects['account']->accountId) ;
-        } catch ( Exception $e ) {
-            Tinebase_User::getInstance()->addUser(  $this->objects['account'] );
+        $user = Tinebase_User::getInstance()->getUserById($this->objects['user']->accountId) ;
+        if ($user->accountDisplayName == $translate->_('unknown')) {
+            Tinebase_User::getInstance()->addUser($this->objects['user']);
         }
         
         return;
@@ -131,8 +132,8 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
     {
         // remove accounts for group member tests
         try {
-            Tinebase_User::getInstance()->deleteUser(  $this->objects['account']->accountId );
-        } catch ( Exception $e ) {
+            Tinebase_User::getInstance()->deleteUser($this->objects['user']->accountId);
+        } catch (Exception $e) {
             // do nothing
         }
                      
@@ -147,7 +148,39 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         $accounts = $this->_backend->getUsers('PHPUnit', 'accountDisplayName', 'ASC', 0, 10);
         
         $this->assertGreaterThan(0, $accounts['totalcount']);
-    }    
+    }
+    
+    /**
+     * get account that doesn't exist (by id)
+     *
+     */
+    public function testGetNonExistentAccountById()
+    {
+        $translate = Tinebase_Translation::getTranslation('Tinebase');
+        $id = 12334567;
+        
+        // add account for group / role member tests
+        $user = Tinebase_User::getInstance()->getUserById($id);
+        
+        $this->assertEquals($translate->_('unknown'), $user->accountDisplayName);
+        $this->assertEquals($id, $user->accountId);
+    }
+
+    /**
+     * get account that doesn't exist (by login name)
+     *
+     */
+    public function testGetNonExistentAccountByLoginName()
+    {
+        $translate = Tinebase_Translation::getTranslation('Tinebase');
+        $loginName = 'something';
+        
+        // add account for group / role member tests
+        $user = Tinebase_User::getInstance()->getUserByLoginName($loginName);
+        
+        $this->assertEquals($translate->_('unknown'), $user->accountDisplayName);
+        $this->assertEquals(0, $user->accountId);
+    }
 
     /**
      * try to save group data
@@ -155,10 +188,10 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testAddGroup()
     {
-        //print_r ( $this->objects['initialGroup']->toArray());
-        $encodedData = Zend_Json::encode( $this->objects['initialGroup']->toArray() );
+        //print_r ($this->objects['initialGroup']->toArray());
+        $encodedData = Zend_Json::encode($this->objects['initialGroup']->toArray());
         
-        $result = $this->_backend->saveGroup( $encodedData, Zend_Json::encode(array()) );
+        $result = $this->_backend->saveGroup($encodedData, Zend_Json::encode(array()));
         
         $this->assertEquals($this->objects['initialGroup']->description, $result['description']);
     }    
@@ -172,16 +205,16 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         $accountData = $this->objects['accountUpdate']->toArray();
         $accountData['accountPrimaryGroup'] = Tinebase_Group_Sql::getInstance()->getGroupByName('tine20phpunit')->getId();
         
-        $encodedData = Zend_Json::encode( $accountData );
+        $encodedData = Zend_Json::encode($accountData);
         
         $account = $this->_backend->saveUser($encodedData, 'test', 'test');
         
-        $this->assertTrue ( is_array($account) );
+        $this->assertTrue(is_array($account));
         $this->assertEquals('tine20phpunitup', $account['accountLoginName']);
         $this->assertEquals(Tinebase_Group_Sql::getInstance()->getGroupByName('tine20phpunit')->getId(), $account['accountPrimaryGroup']['id']);
         // check password
         $authResult = Tinebase_Auth::getInstance()->authenticate($account['accountLoginName'], 'test');
-        $this->assertTrue ( $authResult->isValid() );
+        $this->assertTrue($authResult->isValid());
     }    
 
     /**
@@ -190,12 +223,12 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testDeleteAccounts()
     {
-        $encodedAccountIds = Zend_Json::encode(array($this->objects['account']->accountId));
+        $encodedAccountIds = Zend_Json::encode(array($this->objects['user']->accountId));
         
         $this->_backend->deleteUsers($encodedAccountIds);
         
-        $this->setExpectedException ( 'Exception' );
-        Tinebase_User::getInstance()->getUserById($this->objects['account']->getId);
+        $this->setExpectedException('Exception');
+        Tinebase_User::getInstance()->getUserById($this->objects['user']->getId);
     }
 
     /**
@@ -204,9 +237,9 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testSetAccountState()
     {
-        $this->_backend->setAccountState(Zend_Json::encode(array($this->objects['account']->getId())), 'disabled');
+        $this->_backend->setAccountState(Zend_Json::encode(array($this->objects['user']->getId())), 'disabled');
         
-        $account = Tinebase_User::getInstance()->getFullUserById($this->objects['account']);
+        $account = Tinebase_User::getInstance()->getFullUserById($this->objects['user']);
         
         $this->assertEquals('disabled', $account->accountStatus);    
     }
@@ -217,10 +250,10 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testResetPassword()
     {
-        $this->_backend->resetPassword(Zend_Json::encode($this->objects['account']->toArray()), 'password');
+        $this->_backend->resetPassword(Zend_Json::encode($this->objects['user']->toArray()), 'password');
         
-        $authResult = Tinebase_Auth::getInstance()->authenticate($this->objects['account']->accountLoginName, 'password');
-        $this->assertTrue ( $authResult->isValid() );    
+        $authResult = Tinebase_Auth::getInstance()->authenticate($this->objects['user']->accountLoginName, 'password');
+        $this->assertTrue($authResult->isValid());    
     }
     
     /**
@@ -245,13 +278,13 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         // set encoded data array
         $data = $this->objects['updatedGroup']->toArray();
         $data['id'] = $group->getId();
-        $encodedData = Zend_Json::encode( $data );
+        $encodedData = Zend_Json::encode($data);
         
         // add group members array and encode it
-        $groupMembers = array( $this->objects['account']->accountId );
-        $encodedGroupMembers = Zend_Json::encode( $groupMembers );        
+        $groupMembers = array($this->objects['user']->accountId);
+        $encodedGroupMembers = Zend_Json::encode($groupMembers);        
         
-        $result = $this->_backend->saveGroup( $encodedData, $encodedGroupMembers );
+        $result = $this->_backend->saveGroup($encodedData, $encodedGroupMembers);
 
         $this->assertGreaterThan(0,sizeof($result['groupMembers'])); 
         $this->assertEquals($this->objects['updatedGroup']->description, $result['description']); 
@@ -266,13 +299,13 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         $group = Tinebase_Group::getInstance()->getGroupByName($this->objects['updatedGroup']->name);
 
         // set group members
-        Tinebase_Group::getInstance()->setGroupMembers($group->getId(), array( $this->objects['account']->accountId ));
+        Tinebase_Group::getInstance()->setGroupMembers($group->getId(), array($this->objects['user']->accountId));
         
         // get group members with json
         $getGroupMembersArray = $this->_backend->getGroupMembers($group->getId());
         
-        $this->assertTrue ( isset($getGroupMembersArray['results'][0]));
-        $this->assertEquals($this->objects['account']->accountDisplayName, $getGroupMembersArray['results'][0]['accountDisplayName']);
+        $this->assertTrue(isset($getGroupMembersArray['results'][0]));
+        $this->assertEquals($this->objects['user']->accountDisplayName, $getGroupMembersArray['results'][0]['accountDisplayName']);
         $this->assertGreaterThan(0, $getGroupMembersArray['totalcount']);
     }       
     
@@ -284,10 +317,10 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
     {
     	// delete group with json.php function
     	$group = Tinebase_Group::getInstance()->getGroupByName($this->objects['initialGroup']->name);
-    	$groupId = Zend_Json::encode( array($group->getId()) );
-    	$result = $this->_backend->deleteGroups( $groupId );
+    	$groupId = Zend_Json::encode(array($group->getId()));
+    	$result = $this->_backend->deleteGroups($groupId);
     	
-    	$this->assertTrue( $result['success'] );
+    	$this->assertTrue($result['success']);
     	
     	// try to get deleted group
     	$this->setExpectedException('Tinebase_Exception_Record_NotDefined');
@@ -309,7 +342,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         
         $accessLogs = $this->_backend->getAccessLogEntries($from->get(Tinebase_Record_Abstract::ISO8601LONG), $to->get(Tinebase_Record_Abstract::ISO8601LONG), NULL, '{"sort":"li","dir":"DESC","start":0,"limit":50}');
         
-        //print_r ( $accessLogs );
+        //print_r($accessLogs);
       
         // check total count
         $this->assertGreaterThan(0, sizeof($accessLogs['results']));
@@ -328,15 +361,15 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         
         $accessLogs = $this->_backend->getAccessLogEntries($from->get(Tinebase_Record_Abstract::ISO8601LONG), $to->get(Tinebase_Record_Abstract::ISO8601LONG), 'tine20admin', '{"sort":"li","dir":"DESC","start":0,"limit":50}');
 
-        //print_r ( $accessLogs );
+        //print_r($accessLogs);
         
         $deleteLogIds = array();
-        foreach ( $accessLogs['results'] as $log ) {
+        foreach ($accessLogs['results'] as $log) {
             $deleteLogIds[] = $log['id'];
         }
         
         // delete logs
-        $this->_backend->deleteAccessLogEntries( Zend_Json::encode($deleteLogIds) );
+        $this->_backend->deleteAccessLogEntries(Zend_Json::encode($deleteLogIds));
         
         // check total count
         $accessLogs = $this->_backend->getAccessLogEntries($from->get(Tinebase_Record_Abstract::ISO8601LONG), $to->get(Tinebase_Record_Abstract::ISO8601LONG), 'tine20admin', 'id', 'ASC', 0, 10);
@@ -350,7 +383,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testGetApplication()
     {
-        $application = $this->_backend->getApplication( $this->objects['application']->getId() );
+        $application = $this->_backend->getApplication($this->objects['application']->getId());
         
         $this->assertEquals($application['status'], $this->objects['application']->status);
         
@@ -362,7 +395,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testGetApplications()
     {
-        $applications = $this->_backend->getApplications( NULL, NULL, 'ASC', 0, 10);
+        $applications = $this->_backend->getApplications(NULL, NULL, 'ASC', 0, 10);
         
         $this->assertGreaterThan(0, $applications['totalcount']);
     }
@@ -374,14 +407,14 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testSetApplicationState()
     {
-        $this->_backend->setApplicationState( Zend_Json::encode(array($this->objects['application']->getId())), 'disabled' );
+        $this->_backend->setApplicationState(Zend_Json::encode(array($this->objects['application']->getId())), 'disabled');
         
-        $application = $this->_backend->getApplication( $this->objects['application']->getId() );
+        $application = $this->_backend->getApplication($this->objects['application']->getId());
 
         $this->assertEquals($application['status'], 'disabled');
 
         // enable again
-        $this->_backend->setApplicationState( Zend_Json::encode(array($this->objects['application']->getId())), 'enabled' );
+        $this->_backend->setApplicationState(Zend_Json::encode(array($this->objects['application']->getId())), 'enabled');
     }
 
     /**
@@ -391,7 +424,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
     public function testAddRole()
     {
         // account to add as role member
-        $account = Tinebase_User::getInstance()->getUserById($this->objects['account']->accountId);
+        $account = Tinebase_User::getInstance()->getUserById($this->objects['user']->accountId);
         
         $encodedData = Zend_Json::encode($this->objects['role']->toArray());
         $encodedRoleMembers = Zend_Json::encode(array(
@@ -430,9 +463,9 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
     public function testGetRoleRights()
     {
         $role = Tinebase_Acl_Roles::getInstance()->getRoleByName($this->objects['role']->name);
-        $rights = $this->_backend->getRoleRights( $role->getId() );
+        $rights = $this->_backend->getRoleRights($role->getId());
         
-        //print_r ( $rights );
+        //print_r ($rights);
         $this->assertGreaterThan(0, $rights['totalcount']);
         $this->assertEquals(Tinebase_Acl_Rights::RUN, $rights['results'][0]['right']);
     }
@@ -450,7 +483,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         
         $result = $this->_backend->saveRole($encodedData, Zend_Json::encode(array()),Zend_Json::encode(array()));
         
-        $this->assertEquals( "updated description", $result['description']);        
+        $this->assertEquals("updated description", $result['description']);        
     }
 
     /**
@@ -459,7 +492,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testGetRoles()
     {
-        $roles = $this->_backend->getRoles( NULL, NULL, 'ASC', 0, 10);
+        $roles = $this->_backend->getRoles(NULL, NULL, 'ASC', 0, 10);
         
         $this->assertGreaterThan(0, $roles['totalcount']);
     }
@@ -479,7 +512,7 @@ class Admin_JsonTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result['success']);
         
         // try to get it, shouldn't be found
-        $this->setExpectedException( 'Exception');
+        $this->setExpectedException('Exception');
         $role = Tinebase_Acl_Roles::getInstance()->getRoleByName($this->objects['role']->name);
         
     }    

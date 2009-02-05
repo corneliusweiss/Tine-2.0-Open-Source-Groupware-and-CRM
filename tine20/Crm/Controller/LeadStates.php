@@ -114,7 +114,7 @@ class Crm_Controller_LeadStates extends Tinebase_Application_Controller_Abstract
         
         // add / create
         foreach ($_leadStates as $leadState) {
-            if (in_array($leadState->id, $migration['toCreateIds'])) {
+            if (empty($leadState->id) || in_array($leadState->id, $migration['toCreateIds'])) {
                 $backend->create($leadState);
             }
         }

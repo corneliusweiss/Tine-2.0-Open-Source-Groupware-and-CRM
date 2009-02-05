@@ -18,7 +18,7 @@
  * 
  * filters one int in one property
  */
-class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
+class Tinebase_Model_Filter_Int extends Tinebase_Model_Filter_Abstract
 {
     /**
      * @var array list of allowed operators
@@ -38,8 +38,8 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
      */
     protected $_opSqlMap = array(
         'equals'     => array('sqlop' => ' = ?'   ,     'wildcards' => '?'  ),
-        'startswith' => array('sqlop' => ' LIKE ?',     'wildcards' => '%?' ),
-        'endswith'   => array('sqlop' => ' LIKE ?',     'wildcards' => '?%' ),
+        'startswith' => array('sqlop' => ' LIKE ?',     'wildcards' => '?%' ),
+        'endswith'   => array('sqlop' => ' LIKE ?',     'wildcards' => '%?' ),
         'greater'    => array('sqlop' =>  ' > ?',       'wildcards' => '?'  ),
         'less'       => array('sqlop' =>  ' < ?',       'wildcards' => '?'  ),
         'not'        => array('sqlop' => ' NOT LIKE ?', 'wildcards' => '?'  ),
@@ -47,7 +47,7 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
     );
     
     /**
-     * appeds sql to given select statement
+     * appends sql to given select statement
      *
      * @param Zend_Db_Select $_select
      */
@@ -57,28 +57,30 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
          
          // quote field identifier
          // ZF 1.7+ $field = $_select->getAdapter()->quoteIdentifier($this->field);
-         $field = $db = Tinebase_Core::getDb()->quoteIdentifier($this->field);
+         $field = Tinebase_Core::getDb()->quoteIdentifier($this->_field);
          
          // replace wildcards from user
          $value = str_replace(array('*', '_'), array('%', '\_'), $this->_value);
          
          // add wildcard to value according to operator
-         $value = str_replace('/?/', $value, $action['wildcards']);
+         $value = str_replace('?', $value, $action['wildcards']);
          
          if (in_array($this->_operator, array('equals', 'greater', 'less', 'in'))) {
-             // discard wildcards silenly
+             // discard wildcards silently
              $value = str_replace(array('%', '\\_'), '', $value);
              
              if ($this->_operator == 'in' && empty($value)) {
                  // prevent sql error
                  $_select->where('1=0');
+             } elseif ($this->_operator == 'equals' && ($value === '' || $value === NULL || $value === false)) {
+                 $_select->where($field . 'IS NULL');
              } else {
                  // finally append query to select object
-                 $_select->where($this->field . $action['sqlop'], $value, Zend_Db::INT_TYPE);
+                 $_select->where($field . $action['sqlop'], $value, Zend_Db::INT_TYPE);
              }
          } else {
             // finally append query to select object
-            $_select->where($this->field . $action['sqlop'], $value);
+            $_select->where($field . $action['sqlop'], $value);
             
              if ($this->_operator == 'not') {
                  $_select->orWhere($field . ' IS NULL');

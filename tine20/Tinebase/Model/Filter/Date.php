@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Cornelius Weiss <c.weiss@metaways.de>
  * @version     $Id$
+ * 
+ * @todo        add times (hh:mm:ss) if $this->_options['isDateTime']
  */
 
 /**
@@ -34,7 +36,7 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
      * @var array maps abstract operators to sql operators
      */
     protected $_opSqlMap = array(
-        'equals'     => array('sqlop' => ' = ?'),
+        'equals'     => array('sqlop' => ' LIKE ?'),
         'within'     => array('sqlop' => array(' >= ? ', ' <= ?')),
         'before'     => array('sqlop' => ' < ?'),
         'after'      => array('sqlop' => ' > ?')
@@ -69,23 +71,26 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
      * @param string $_dateFormat
      * @return array|string date value
      * 
+     * @todo fix problem with day of week in 'this week' filter (sunday is first day of the week in english locales) 
+     * --> get that info from locale
      */
     protected function _getDateValues($_operator, $_value, $_dateFormat = 'yyyy-MM-dd')
     {        
-        if ($_operator === 'before' || $_operator === 'after' || $_operator === 'equals') {
-            $value = substr($_value, 0, 10);
-
-        } else {
+        if ($_operator === 'within') {
             $date = new Zend_Date();
-            $dayOfWeek = $date->get(Zend_Date::WEEKDAY_DIGIT);
             
             // special values like this week, ...
             switch($_value) {
+                case 'weekNext':
+                    $date->add(21, Zend_Date::DAY);
                 case 'weekBeforeLast':    
                     $date->sub(7, Zend_Date::DAY);
                 case 'weekLast':    
                     $date->sub(7, Zend_Date::DAY);
                 case 'weekThis':
+                    $dayOfWeek = $date->get(Zend_Date::WEEKDAY_DIGIT);
+                    // in german locale sunday is last day of the week
+                    $dayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek;
                     $date->sub($dayOfWeek-1, Zend_Date::DAY);
                     $monday = $date->toString($_dateFormat);
                     $date->add(6, Zend_Date::DAY);
@@ -96,6 +101,8 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
                         $sunday,
                     );
                     break;
+                case 'monthNext':
+                    $date->add(2, Zend_Date::MONTH);
                 case 'monthLast':
                     $date->sub(1, Zend_Date::MONTH);
                 case 'monthThis':
@@ -111,6 +118,8 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
                         $last,
                     );
                     break;
+                case 'yearNext':
+                    $date->add(2, Zend_Date::YEAR);
                 case 'yearLast':
                     $date->sub(1, Zend_Date::YEAR);
                 case 'yearThis':
@@ -119,6 +128,8 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
                         $date->toString('yyyy') . '-12-31',
                     );                
                     break;
+                case 'quarterNext':
+                    $date->add(6, Zend_Date::MONTH);
                 case 'quarterLast':
                     $date->sub(3, Zend_Date::MONTH);
                 case 'quarterThis':
@@ -141,10 +152,37 @@ class Tinebase_Model_Filter_Date extends Tinebase_Model_Filter_Abstract
                         $last
                     );                
                     break;
+                case 'dayNext':
+                    $date->add(2, Zend_Date::DAY);
+                case 'dayLast':
+                    $date->sub(1, Zend_Date::DAY);
+                case 'today':
+                    $value = array(
+                        $date->toString('yyyy-MM-dd'), 
+                        $date->toString('yyyy-MM-dd'), 
+                    );                
+                    break;
                 default:
                     Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' value unknown: ' . $_value);
                     $value = '';
             }        
+        } else  {
+
+            $value = substr($_value, 0, 10);
+            
+            if (isset($this->_options['isDateTime']) && $this->_options['isDateTime']) {
+                switch ($_operator) {
+                    case 'before':
+                        $value .= ' 00:00:00';
+                        break;
+                    case 'after':
+                        $value .= ' 23:59:59';
+                        break;
+                    case 'equals':
+                        $value .= '%';                
+                        break;
+                }
+            }            
         }
         
         return $value;

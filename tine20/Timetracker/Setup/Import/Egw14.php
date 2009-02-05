@@ -9,8 +9,6 @@
  * @copyright   Copyright (c) 2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$ 
  *
- * @todo        timeaccount grants: user groups for special projects (SOW-42248, ...) 
- * @todo        import more relevant record fields?
  */
 
 /**
@@ -59,7 +57,14 @@ class Timetracker_Setup_Import_Egw14
      *
      * @var boolean
      */
-    protected $_utf8Encode = FALSE;
+    protected $_utf8Encode = TRUE;
+    
+    /**
+     * import categories
+     *
+     * @var boolean
+     */
+    protected $_importCategories = FALSE;
     
     /**
      * egw timesheet categories
@@ -97,15 +102,13 @@ class Timetracker_Setup_Import_Egw14
      * @var array
      */
     protected $_projectFilter = array(
-				      /*
         array(
             'name' => 'pm_number',
             //'operator' => 'not',
             'operator' => 'contains',
             'value' => '^SOW',
         ),
-				      */
-        
+        /*
         array(
             'name' => 'pm_number',
             //'operator' => 'not',
@@ -114,7 +117,7 @@ class Timetracker_Setup_Import_Egw14
             //'value' => '^S-AB-42964$'
             'value' => 'S-AB-42964'
         )
-        
+        */
     );
     
     /**
@@ -146,7 +149,9 @@ class Timetracker_Setup_Import_Egw14
     public function import()
     {
         // get timesheet categories
-        $this->_tsCategories = $this->_getTimesheetCategories();
+        if ($this->_importCategories) {
+            $this->_tsCategories = $this->_getTimesheetCategories();
+        }
         
         echo "Importing custom fields for timesheets data from egroupware ...";
         $this->importTimesheetCustomFields();
@@ -677,6 +682,7 @@ class Timetracker_Setup_Import_Egw14
                 'description'           => (!empty($row['ts_description'])) ? $this->_convertDescription($row['ts_description']) : 'not set (imported)',
                 'is_cleared'            => 1,
                 'is_billable'           => ($row['cat_id'] == $this->_unbillableCatId) ? 0 : 1,
+                'billed_in'             => 'imported'
             );
             
             // add custom fields

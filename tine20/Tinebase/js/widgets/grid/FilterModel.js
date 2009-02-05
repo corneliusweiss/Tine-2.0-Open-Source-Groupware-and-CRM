@@ -83,6 +83,8 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 case 'group':
                 case 'user':
                 case 'bool':
+                case 'number':
+                case 'percentage':
                     this.defaultOperator = 'equals';
                     break;
                 case 'string':
@@ -100,10 +102,14 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 case 'bool':
                     this.defaultValue = '1';
                     break;
+                case 'percentage':
+                    this.defaultValue = '0';
+                    break;
                 case 'date':
                 case 'account':
                 case 'group':
                 case 'user':
+                case 'number':
                 default:
                     break;
             }
@@ -120,15 +126,17 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
         var operatorStore = new Ext.data.JsonStore({
             fields: ['operator', 'label'],
             data: [
-                {operator: 'contains', label: _('contains')},
-                {operator: 'equals',   label: _('is equal to')},
-                {operator: 'greater',  label: _('is greater than')},
-                {operator: 'less',     label: _('is less than')},
-                {operator: 'not',      label: _('is not')},
-                {operator: 'in',       label: _('is in')},
-                {operator: 'before',   label: _('is before')},
-                {operator: 'after',    label: _('is after')},
-                {operator: 'within',   label: _('is within')}
+                {operator: 'contains',   label: _('contains')},
+                {operator: 'equals',     label: _('is equal to')},
+                {operator: 'greater',    label: _('is greater than')},
+                {operator: 'less',       label: _('is less than')},
+                {operator: 'not',        label: _('is not')},
+                {operator: 'in',         label: _('is in')},
+                {operator: 'before',     label: _('is before')},
+                {operator: 'after',      label: _('is after')},
+                {operator: 'within',     label: _('is within')},
+                {operator: 'startswith', label: _('starts with')},
+                {operator: 'endswith',   label: _('ends with')}
             ]
         });
 
@@ -136,10 +144,14 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
         if (this.operators.length == 0) {
             switch (this.valueType) {
                 case 'string':
-                    this.operators.push('contains', 'equals', 'not');
+                    this.operators.push('contains', 'equals', 'startswith', 'endswith', 'not');
                     break;
                 case 'date':
                     this.operators.push('equals', 'before', 'after', 'within');
+                    break;
+                case 'number':
+                case 'percentage':
+                    this.operators.push('equals', 'greater', 'less');
                     break;
                 default:
                     this.operators.push(this.defaultOperator);
@@ -230,6 +242,15 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
             case 'date':
                 value = this.dateValueRenderer(filter, el);
                 break;
+            case 'percentage':
+                value = new Ext.ux.PercentCombo({
+                    filter: filter,
+                    width: 200,
+                    id: 'tw-ftb-frow-valuefield-' + filter.id,
+                    value: filter.data.value ? filter.data.value : this.defaultValue,
+                    renderTo: el
+                });
+                break;
             case 'user':
                 value = new Tine.widgets.AccountpickerField({
                     filter: filter,
@@ -256,7 +277,12 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 });
                 break;
             case 'string':
+            case 'number':
             default:
+                // @todo: we need a Ext.ux.form.ClearableTextField
+                //        which in contrast to a TriggerField displays
+                //        the trigger in the area of the field and not with
+                //        extra space right of it!
                 value = new Ext.form.TextField({
                     //hideTrigger: true,
                     //triggerClass: 'x-form-clear-trigger',
@@ -311,8 +337,30 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
      * we place a picker and a combo in the dom element and hide the one we don't need yet
      */
     dateValueRenderer: function(filter, el) {
-        var operator = filter.get('operator') ? filter.filter.get('operator') : this.defaultOperator;
+        var operator = filter.get('operator') ? filter.get('operator') : this.defaultOperator;
         var valueType = operator == 'within' ? 'withinCombo' : 'datePicker';
+        
+        var pastOps = [
+            ['dayThis',         _('today')], 
+            ['dayLast',         _('yesterday')], 
+            ['weekThis',        _('this week')], 
+            ['weekLast',        _('last week')],
+            ['weekBeforeLast',  _('the week before last')],
+            ['monthThis',       _('this month')],
+            ['monthLast',       _('last month')],
+            ['quarterThis',     _('this quarter')],
+            ['quarterLast',     _('last quarter')],
+            ['yearThis',        _('this year')],
+            ['yearLast',        _('last year')]
+        ];
+        
+        var futureOps = [
+            ['dayNext',         _('tomorrow')], 
+            ['weekNext',        _('next week')], 
+            ['monthNext',       _('next month')],
+            ['quarterNext',     _('next quarter')],
+            ['yearNext',        _('next year')]
+        ];
         
         filter.withinCombo = new Ext.form.ComboBox({
             hidden: valueType != 'withinCombo',
@@ -325,17 +373,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
             forceSelection: true,
             typeAhead: true,
             triggerAction: 'all',
-            store: [
-                ['weekThis',        _('this week')], 
-                ['weekLast',        _('last week')],
-                ['weekBeforeLast',  _('the week before last')],
-                ['monthThis',       _('this month')],
-                ['monthLast',       _('last month')],
-                ['quarterThis',     _('this quarter')],
-                ['quarterLast',     _('last quarter')],
-                ['yearThis',        _('this year')],
-                ['yearLast',        _('last year')]
-            ]
+            store: this.pastOnly ? pastOps : futureOps.concat(pastOps)
         });
 
         filter.datePicker = new Ext.form.DateField({

@@ -81,6 +81,7 @@ Ext.extend(Tine.widgets.container.TreePanel, Ext.tree.TreePanel, {
 	iconCls: 'x-new-application',
 	rootVisible: false,
 	border: false,
+    autoScroll: true,
 	
 	// holds treenode which got a contextmenu
 	ctxNode: null,
@@ -181,6 +182,7 @@ Ext.extend(Tine.widgets.container.TreePanel, Ext.tree.TreePanel, {
         this.on('click', function(node){
             // note: if node is clicked, it is not selected!
             node.getOwnerTree().selectPath(node.getPath());
+            node.expand();
         }, this);
         
 	    this.on('contextmenu', function(node, event){

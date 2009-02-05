@@ -28,6 +28,10 @@ Tine.Timetracker.TimeAccountSelect = Ext.extend(Ext.form.ComboBox, {
      */
     showClosed: false,
     /**
+     * @cfg {bool} blurOnSelect blurs combobox when item gets selected
+     */
+    blurOnSelect: false,
+    /**
      * @cfg {Object} defaultPaging 
      */
     defaultPaging: {
@@ -88,6 +92,12 @@ Tine.Timetracker.TimeAccountSelect = Ext.extend(Ext.form.ComboBox, {
         );
         
         Tine.Timetracker.TimeAccountSelect.superclass.initComponent.call(this);
+        
+        if (this.blurOnSelect){
+            this.on('select', function(){
+                this.fireEvent('blur', this);
+            }, this);
+        }
     },
     
     getValue: function() {
@@ -156,7 +166,7 @@ Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterMode
         this.label = this.app.i18n._("Time Account");
         this.operators = ['equals'];
     },
-    
+   
     /**
      * value renderer
      * 
@@ -169,6 +179,7 @@ Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterMode
             filter: filter,
             onlyBookable: false,
             showClosed: true,
+            blurOnSelect: true,
             width: 200,
             listWidth: 500,
             id: 'tw-ftb-frow-valuefield-' + filter.id,
@@ -180,7 +191,7 @@ Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterMode
                  this.onFiltertrigger();
              }
         }, this);
-        value.on('select', this.onFiltertrigger, this);
+        //value.on('select', this.onFiltertrigger, this);
         
         return value;
     }

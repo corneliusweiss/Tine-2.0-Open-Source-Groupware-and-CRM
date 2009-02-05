@@ -131,18 +131,6 @@ Tine.Crm.Main = {
         sort: 'lead_name',
         dir: 'ASC'
     },
-    
-    /**
-     * holds current filters
-     */
-    filter: {
-        containerType: 'personal',
-        query: '',
-        container: false,
-        tag: false,
-        probability: 0,
-        leadstate: false
-    },    
 
 	handlers: {
 		/**
@@ -224,57 +212,7 @@ Tine.Crm.Main = {
     /**
      * showCrmToolbar function
      */
-    showCrmToolbar: function()
-    {                
-        var quickSearchField = new Ext.ux.SearchField({
-            id: 'quickSearchField',
-            width: 200,
-            emptyText: this.translation._('Enter searchfilter')
-        });
-        
-        quickSearchField.on('change', function(field){
-            if(this.filter.query != field.getValue()){
-                this.store.load({params: this.paging});
-            }
-        }, this);
-
-            
-       var filterComboLeadstate = new Ext.ux.form.ClearableComboBox({
-            fieldLabel: this.translation._('Leadstate'), 
-            blankText: this.translation._('Leadstate') + '...',
-            emptyText: this.translation._('leadstate') + '...',
-            id:'filterLeadstate',
-            name:'leadstate',
-            hideLabel: true,
-            width: 180,   
-            store: Tine.Crm.LeadState.getStore(),
-            hiddenName: 'leadstate_id',
-            valueField: 'id',
-            displayField: 'leadstate',
-            typeAhead: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: false 
-        }); 
-       
-        filterComboLeadstate.on('select', function() {
-       	    this.store.load({params: this.paging});
-        }, this);
-      
-        var filterComboProbability = new Ext.ux.PercentCombo({
-            fieldLabel: this.translation._('Probability'), 
-            blankText: this.translation._('Probability') + '...',            
-            emptyText: this.translation._('Probability') + '...',
-            id: 'filterProbability',
-            name:'probability',
-            hideLabel: true,            
-            width:90            	
-        });
-                
-		filterComboProbability.on('select', function() {
-			this.store.load({params: this.paging});
-		}, this);      
-		
+    showCrmToolbar: function() {
         /**
          * handlerToggleDetails function
          */          
@@ -318,34 +256,25 @@ Tine.Crm.Main = {
                 this.actions.deleteLead,
                 //actions.actionAddTask,
                 this.actions.exportLead,
-                '->',
+                '-',
                 new Ext.Button({
-                    tooltip: this.translation._('Show details'),
+                    text: this.translation._('Show details'),
                     enableToggle: true,
                     id: 'crmShowDetailsButton',
                     iconCls: 'showDetailsAction',
-                    cls: 'x-btn-icon',
+                    //cls: 'x-btn-icon',
                     handler: handlerToggleDetails
                 }),                    
-                '-',
                 new Ext.Button({
-                    tooltip: this.translation._('Show closed leads'),
+                    text: this.translation._('Show closed leads'),
                     enableToggle: true,
                     iconCls: 'showEndedLeadsAction',
-                    cls: 'x-btn-icon',
+                    //cls: 'x-btn-icon',
                     id: 'crmShowClosedLeadsButton',
                     handler: function(toggle) {                        
                         Ext.getCmp('gridCrm').getStore().reload();
                     }                    
-                }),
-                ' ',                
-                filterComboLeadstate,
-                ' ',
-                filterComboProbability,                
-                new Ext.Toolbar.Separator(),
-                '->',
-                ' ',
-                quickSearchField
+                })
             ]
         });
         
@@ -368,6 +297,24 @@ Tine.Crm.Main = {
     initGridPanel: function() 
     { 
         //var dataStore = this.createDataStore();
+        // the filter toolbar
+        this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
+            id : 'crmLeadsFilterToolbar',
+            filterModels: [
+                {label: this.translation._('Lead'),        field: 'query',    operators: ['contains']},
+                {label: this.translation._('Lead name'),   field: 'lead_name' },
+                new Tine.Crm.LeadState.Filter({}),
+                {label: this.translation._('Probability'), field: 'probability', valueType: 'percentage'},
+                {label: this.translation._('Turnover'),    field: 'turnover', valueType: 'number', defaultOperator: 'greater'},
+                new Tine.widgets.tags.TagFilter({app: Tine.Tinebase.appMgr.get('Crm')})
+             ],
+             defaultFilter: 'query',
+             filters: []
+        });
+        
+        this.filterToolbar.on('change', function() {
+            this.store.load({});
+        }, this);
         
         var pagingToolbar = new Ext.PagingToolbar({ // inline paging toolbar
             pageSize: 50,
@@ -375,7 +322,10 @@ Tine.Crm.Main = {
             displayInfo: true,
             displayMsg: this.translation._('Displaying leads {0} - {1} of {2}'),
             emptyMsg: this.translation._('No leads found.')
-        }); 
+        });
+        pagingToolbar.on('beforechange', function() {
+            Ext.getCmp('gridCrm').getView().isPagingRefresh = true;
+        }, this);
         
         var ctxMenuGrid = new Ext.menu.Menu({
 	        id:'ctxMenuGrid', 
@@ -397,7 +347,6 @@ Tine.Crm.Main = {
         }); */
         
         var columnModel = new Ext.grid.ColumnModel([
-            
 			{resizable: true, header: this.translation._('Lead id'), id: 'id', dataIndex: 'id', width: 20, hidden: true},
             {resizable: true, header: this.translation._('Lead name'), id: 'lead_name', dataIndex: 'lead_name', width: 200},
             {resizable: true, header: this.translation._('Partner'), id: 'lead_partner', dataIndex: 'partner', width: 175, sortable: false, renderer: Tine.Crm.Main.renderer.shortContact},
@@ -443,7 +392,13 @@ Tine.Crm.Main = {
                         v.scrollTop = v.scroller.dom.scrollTop;
                     },
                     refresh: function(v) {
-                        v.scroller.dom.scrollTop = v.scrollTop;
+                        // on paging-refreshes (prev/last...) we don't preserv the scroller state
+                        if (v.isPagingRefresh) {
+                            v.scrollToTop();
+                            v.isPagingRefresh = false;
+                        } else {
+                            v.scroller.dom.scrollTop = v.scrollTop;
+                        }
                     }
                 }
             })            
@@ -469,7 +424,17 @@ Tine.Crm.Main = {
             });           
         }, this);
        
-        this.gridPanel = gridPanel;
+        this.gridPanel = new Ext.Panel({
+            layout: 'border',
+            border: false,
+            items: [{
+                region: 'center',
+                border: false,
+                layout: 'fit',              
+                tbar: this.filterToolbar,
+                items: gridPanel
+            }]
+        });
         //Tine.Tinebase.MainScreen.setActiveContentPanel(gridPanel);
     },    
       
@@ -573,31 +538,35 @@ Tine.Crm.Main = {
         
         // prepare filter
         this.store.on('beforeload', function(store, options){
-            
-            // for some reasons, paging toolbar eats sort and dir
-            if (store.getSortState()) {
-                this.filter.sort = store.getSortState().field;
-                this.filter.dir = store.getSortState().direction;
-            } else {
-                this.filter.sort = this.store.sort;
-                this.filter.dir = this.store.dir;
+            if (!options.params) {
+                options.params = {};
             }
-            this.filter.start = options.params.start;
-            this.filter.limit = options.params.limit;
             
-            // container
+            // paging toolbar only works with this properties in the options!
+            options.params.sort  = store.getSortState() ? store.getSortState().field : this.paging.sort;
+            options.params.dir   = store.getSortState() ? store.getSortState().direction : this.paging.dir;
+            options.params.start = options.params.start ? options.params.start : this.paging.start;
+            options.params.limit = options.params.limit ? options.params.limit : this.paging.limit;
+            
+            options.params.paging = Ext.util.JSON.encode(options.params);
+            
+            var filterToolbar = Ext.getCmp('crmLeadsFilterToolbar');
+            var filter = filterToolbar ? filterToolbar.getValue() : [];
+            
+            // add container to filter
             var nodeAttributes = Ext.getCmp('crmTree').getSelectionModel().getSelectedNode().attributes || {};
-            this.filter.containerType = nodeAttributes.containerType ? nodeAttributes.containerType : 'all';
-            this.filter.container = nodeAttributes.container ? nodeAttributes.container.id : null;
-            this.filter.owner = nodeAttributes.owner ? nodeAttributes.owner.accountId : null;
-
+            filter.push(
+                {field: 'containerType', operator: 'equals', value: nodeAttributes.containerType ? nodeAttributes.containerType : 'all' },
+                {field: 'container',     operator: 'equals', value: nodeAttributes.container ? nodeAttributes.container.id : null       },
+                {field: 'owner',         operator: 'equals', value: nodeAttributes.owner ? nodeAttributes.owner.accountId : null        }
+            );
+            
             // toolbar
-            this.filter.showClosed = Ext.getCmp('crmShowClosedLeadsButton') ? Ext.getCmp('crmShowClosedLeadsButton').pressed : false;
-            this.filter.probability = Ext.getCmp('filterProbability') ? Ext.getCmp('filterProbability').getValue() : '';
-            this.filter.query = Ext.getCmp('quickSearchField') ? Ext.getCmp('quickSearchField').getValue() : '';
-            this.filter.leadstate = Ext.getCmp('filterLeadstate') ? Ext.getCmp('filterLeadstate').getValue() : '';
-
-            options.params.filter = Ext.util.JSON.encode(this.filter);
+            if (Ext.getCmp('crmShowClosedLeadsButton') && Ext.getCmp('crmShowClosedLeadsButton').pressed) {
+                filter.push({field: 'showClosed', operator: 'equals', value: true});
+            }
+            
+            options.params.filter = Ext.util.JSON.encode(filter);
         }, this);
         
         this.store.on('datachanged', function(store) {
@@ -617,7 +586,7 @@ Tine.Crm.Main = {
     {    	
         var currentToolbar = Tine.Tinebase.MainScreen.getActiveToolbar();
         if (currentToolbar === false || currentToolbar.id != 'crmToolbar') {
-            if (!this.girdPanel) {
+            if (!this.gridPanel) {
                 this.initComponent();
             }
             Tine.Tinebase.MainScreen.setActiveContentPanel(this.gridPanel, true);
@@ -831,9 +800,13 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
          */
         addTask: function(_button, _event) {
             var taskPopup = Tine.Tasks.EditDialog.openWindow({
-                relatedApp: 'Crm'
+                relatedApp: 'Crm',
+                listeners: {
+                    scope: this,
+                    update: this.onTaskUpdate
+                }
             });
-            taskPopup.on('update', this.onTaskUpdate, this);
+            //taskPopup.on('update', this.onTaskUpdate, this);
         },
             
         /**
@@ -845,9 +818,13 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             var selectedTask = selectedRows[0];
             
             var taskPopup = Tine.Tasks.EditDialog.openWindow({
-                record: selectedTask
+                record: selectedTask,
+                listeners: {
+                    scope: this,
+                    update: this.onTaskUpdate
+                }
             });
-            taskPopup.on('update', this.onTaskUpdate, this);
+            //taskPopup.on('update', this.onTaskUpdate, this);
         },
         
         /**
@@ -933,6 +910,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      * update event handler for related tasks
      */
     onTaskUpdate: function(task) {
+        console.log(task);
         var storeTasks = Ext.StoreMgr.lookup('TasksStore');
         var myTask = storeTasks.getById(task.id);
         
@@ -1283,10 +1261,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             }
         }, this);        
         
-        grid.on('rowdblclick', function(_gridPanel, _rowIndexPar, ePar) {
-            var record = _gridPanel.getStore().getAt(_rowIndexPar);
-            Tine.Tasks.EditDialog.openWindow({record: record});
-        });            
+        grid.on('rowdblclick', this.handlers.editTask, this);
 
         return grid;       
     },

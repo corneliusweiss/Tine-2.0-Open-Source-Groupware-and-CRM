@@ -76,7 +76,7 @@ Tine.Addressbook.Main = {
     
     /**
      * @cfg {Array} default filters
-     * @todo container filters not in filter logig yet!
+     * @todo container filters not in filter logic yet!
      * @see store.on(beforeload)
      */
     //filter: [],
@@ -297,13 +297,11 @@ Tine.Addressbook.Main = {
         this.initStore();
         this.initContactsGrid();
 
-        // we have to init this button after the contacts grid because we need the filter toolbar here
         this.action_exportCsv = new Tine.widgets.grid.ExportButton({
             text: this.translation._('Csv Export All'),
             format: 'csv',
             exportFunction: 'Addressbook.exportContacts',
-            filterToolbar: this.filterToolbar,
-            appTreeId: 'Addressbook_Tree'
+            sm: Ext.getCmp('Addressbook_Contacts_Grid').getSelectionModel()
         });
 
         this.initToolbar();
@@ -346,7 +344,7 @@ Tine.Addressbook.Main = {
                 this.actions.editContact,
                 this.actions.deleteContact,
                 '-',
-                this.action_exportCsv,
+                //this.action_exportCsv,
                 this.actions.exportContact,
                 (Tine.Phone && Tine.Tinebase.common.hasRight('run', 'Phone')) ? new Ext.Toolbar.MenuButton(this.actions.callContact) : ''
             ]
@@ -365,11 +363,12 @@ Tine.Addressbook.Main = {
                 {label: this.translation._('Job Title'),    field: 'title'},
                 {label: this.translation._('Job Role'),    field: 'role'},
                 new Tine.widgets.tags.TagFilter({app: this.app}),
-                {label: this.translation._('Street') + ' (' + this.translation._('Company Address') + ')',      field: 'adr_one_street', defaultOperator: 'equals', valueType: 'int'},
-                {label: this.translation._('Postal Code') + ' (' + this.translation._('Company Address') + ')', field: 'adr_one_postalcode', defaultOperator: 'equals', valueType: 'int'},
+                //{label: this.translation._('Birthday'),    field: 'bday', valueType: 'date'},
+                {label: this.translation._('Street') + ' (' + this.translation._('Company Address') + ')',      field: 'adr_one_street', defaultOperator: 'equals'},
+                {label: this.translation._('Postal Code') + ' (' + this.translation._('Company Address') + ')', field: 'adr_one_postalcode', defaultOperator: 'equals'},
                 {label: this.translation._('City') + '  (' + this.translation._('Company Address') + ')',       field: 'adr_one_locality'},
-                {label: this.translation._('Street') + ' (' + this.translation._('Private Address') + ')',      field: 'adr_two_street', defaultOperator: 'equals', valueType: 'int'},
-                {label: this.translation._('Postal Code') + ' (' + this.translation._('Private Address') + ')', field: 'adr_two_postalcode', defaultOperator: 'equals', valueType: 'int'},
+                {label: this.translation._('Street') + ' (' + this.translation._('Private Address') + ')',      field: 'adr_two_street', defaultOperator: 'equals'},
+                {label: this.translation._('Postal Code') + ' (' + this.translation._('Private Address') + ')', field: 'adr_two_postalcode', defaultOperator: 'equals'},
                 {label: this.translation._('City') + '  (' + this.translation._('Private Address') + ')',       field: 'adr_two_locality'}
              ],
              defaultFilter: 'query',
@@ -386,7 +385,11 @@ Tine.Addressbook.Main = {
             displayInfo: true,
             displayMsg: this.translation._('Displaying contacts {0} - {1} of {2}'),
             emptyMsg: this.translation._("No contacts to display")
-        }); 
+        });
+        // mark next grid refresh as paging-refresh
+        pagingToolbar.on('beforechange', function() {
+            Ext.getCmp('Addressbook_Contacts_Grid').getView().isPagingRefresh = true;
+        }, this);
         
         // the columnmodel
         var columnModel = new Ext.grid.ColumnModel([
@@ -485,7 +488,9 @@ Tine.Addressbook.Main = {
 		);
 		
         // the rowselection model
-        var rowSelectionModel = new Ext.grid.RowSelectionModel({multiSelect:true});
+        var rowSelectionModel = new Tine.Tinebase.widgets.grid.FilterSelectionModel({
+            store: this.store
+        });
 
         rowSelectionModel.on('selectionchange', function(_selectionModel) {
             // update toolbars
@@ -650,7 +655,8 @@ Tine.Addressbook.Main = {
                                     value += type;
                 			}                			
                 		}
-                        return Ext.util.Format.htmlEncode(value);
+                		value = Ext.util.Format.htmlEncode(value);
+                        return Ext.util.Format.nl2br(value);
                 	} else {
                 		return '';
                 	}
@@ -693,7 +699,13 @@ Tine.Addressbook.Main = {
                         v.scrollTop = v.scroller.dom.scrollTop;
                     },
                     refresh: function(v) {
-                        v.scroller.dom.scrollTop = v.scrollTop;
+                        // on paging-refreshes (prev/last...) we don't preserv the scroller state
+                        if (v.isPagingRefresh) {
+                            v.scrollToTop();
+                            v.isPagingRefresh = false;
+                        } else {
+                            v.scroller.dom.scrollTop = v.scrollTop;
+                        }
                     }
                 }
             })              
@@ -852,6 +864,11 @@ Tine.Addressbook.Main = {
             
             options.params.filter = Ext.util.JSON.encode(filter);
         }, this);
+        
+        // save used filter
+        this.store.on('load', function(store, records, options) {
+            this.store.lastFilter = Ext.util.JSON.decode(options.params.filter);
+        }, this)
     },
     
     show: function(_node) {
@@ -1195,9 +1212,36 @@ Tine.Addressbook.Model.ContactArray = [
     {name: 'notes'}
 ];
 
-Tine.Addressbook.Model.Contact = Ext.data.Record.create(
-    Tine.Addressbook.Model.ContactArray
-);
+/**
+ * @type {Tine.Tinebase.Record}
+ * Contact record definition
+ */
+Tine.Addressbook.Model.Contact = Tine.Tinebase.Record.create(Tine.Addressbook.Model.ContactArray, {
+    appName: 'Addressbook',
+    modelName: 'Contact',
+    idProperty: 'id',
+    titleProperty: 'n_fn',
+    // ngettext('Contact', 'Contacts', n);
+    recordName: 'Contact',
+    recordsName: 'Contacts',
+    containerProperty: 'container_id',
+    // ngettext('addressbook', 'addressbooks', n);
+    containerName: 'addressbook',
+    containersName: 'addressbooks'
+});
+/* not possible yet as we don't have the container client side
+Tine.Addressbook.Model.Contact.getDefaultData = function() { 
+
+};*/
+
+/**
+ * default timesheets backend
+ */
+Tine.Addressbook.contactBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Addressbook',
+    modelName: 'Contact',
+    recordClass: Tine.Addressbook.Model.Contact
+});
 
 /**
  * salutation model

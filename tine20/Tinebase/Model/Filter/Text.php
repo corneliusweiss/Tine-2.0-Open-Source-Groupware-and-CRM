@@ -38,14 +38,14 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
     protected $_opSqlMap = array(
         'equals'     => array('sqlop' => ' LIKE ?',     'wildcards' => '?'  ),
         'contains'   => array('sqlop' => ' LIKE ?',     'wildcards' => '%?%'),
-        'startswith' => array('sqlop' => ' LIKE ?',     'wildcards' => '%?' ),
-        'endswith'   => array('sqlop' => ' LIKE ?',     'wildcards' => '?%' ),
+        'startswith' => array('sqlop' => ' LIKE ?',     'wildcards' => '?%' ),
+        'endswith'   => array('sqlop' => ' LIKE ?',     'wildcards' => '%?' ),
         'not'        => array('sqlop' => ' NOT LIKE ?', 'wildcards' => '?'  ),
         'in'         => array('sqlop' => ' IN (?)',     'wildcards' => '?'  ),
     );
     
     /**
-     * appeds sql to given select statement
+     * appends sql to given select statement
      *
      * @param Zend_Db_Select $_select
      */
@@ -55,7 +55,7 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
          
          // quote field identifier
          // ZF 1.7+ $field = $_select->getAdapter()->quoteIdentifier($this->field);
-         $field = $db = Tinebase_Core::getDb()->quoteIdentifier($this->_field);
+         $field = Tinebase_Core::getDb()->quoteIdentifier($this->_field);
          
          // replace wildcards from user
          $value = str_replace(array('*', '_'), array('%', '\_'), $this->_value);
@@ -63,11 +63,15 @@ class Tinebase_Model_Filter_Text extends Tinebase_Model_Filter_Abstract
          // add wildcard to value according to operator
          $value = str_replace('?', $value, $action['wildcards']);
          
-         // finally append query to select object
-         $_select->where($field . $action['sqlop'], $value);
+         $where = Tinebase_Core::getDb()->quoteInto($field . $action['sqlop'], $value);
          
          if ($this->_operator == 'not') {
-             $_select->orWhere($field . ' IS NULL');
+             $where = "( $where OR $field IS NULL)";
          }
+         
+         // finally append query to select object
+         $_select->where($where);
+         
+         
      }
 }

@@ -79,11 +79,14 @@ class Timetracker_Controller_Timesheet extends Tinebase_Application_Controller_R
     public function getTimesheetsByTimeaccountId($_timeaccountId)
     {
         $filter = new Timetracker_Model_TimesheetFilter(array(
-            array(
+            /*array(
                 'field' => 'timeaccount_id', 
                 'operator' => 'equals', 
                 'value' => $_timeaccountId
-            ),             
+            ),*/
+            array('field' => 'timeaccount_id', 'operator' => 'AND', 'value' => array(
+                array('field' => 'id', 'operator' => 'equals', 'value' => $_timeaccountId),
+            ))           
         ));
         
         $records = $this->search($filter);
@@ -188,4 +191,44 @@ class Timetracker_Controller_Timesheet extends Tinebase_Application_Controller_R
         
         return $hasGrant;
     }
+    
+    /**
+     * Removes timeaccounts where current user has no access to
+     * 
+     * @param Tinebase_Model_Filter_FilterGroup $_filter
+     * @param string $_action get|update
+     */
+    protected function _checkFilterACL(/*Tinebase_Model_Filter_FilterGroup*/ $_filter, $_action = 'get')
+    {
+        $aclFilter = $_filter->getAclFilter();
+        
+        /*
+        if (! $aclFilter) {
+            // force a timeaccount_id filter (ACL)
+            $aclFilter = $_filter->createFilter('timeaccount_id', 'AND', NULL);
+            $_filter->addFilter($aclFilter);
+        }
+        */
+        
+        // do something like that
+        switch ($_action) {
+            case 'get':
+                $aclFilter->setRequiredGrants(array(
+                    Timetracker_Model_TimeaccountGrants::BOOK_OWN,
+                    Timetracker_Model_TimeaccountGrants::BOOK_ALL,
+                    Timetracker_Model_TimeaccountGrants::VIEW_ALL,
+                    Timetracker_Model_TimeaccountGrants::MANAGE_ALL,
+                ));
+                break;
+            case 'update':
+                $aclFilter->setRequiredGrants(array(
+                    Timetracker_Model_TimeaccountGrants::BOOK_OWN,
+                    Timetracker_Model_TimeaccountGrants::BOOK_ALL,
+                    Timetracker_Model_TimeaccountGrants::MANAGE_ALL,
+                ));
+                break;
+            default:
+                throw new Timetracker_Exception_UnexpectedValue('Unknown action: ' . $_action);
+        }
+    }     
 }

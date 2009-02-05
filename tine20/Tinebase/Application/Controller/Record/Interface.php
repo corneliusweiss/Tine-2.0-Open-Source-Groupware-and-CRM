@@ -9,6 +9,7 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
+ * @todo add search and searchCount again when voipmanager refactoring is finished
  */
 
 /**
@@ -28,7 +29,7 @@ interface Tinebase_Application_Controller_Record_Interface
      * @return Tinebase_Record_RecordSet
      * @todo add that again when all controllers use the same search() footprint
      */
-    //public function search(Tinebase_Record_Interface $_filter = NULL, Tinebase_Record_Interface $_pagination = NULL, $_getRelations = FALSE);
+    //public function search(Tinebase_Record_Interface $_filter = NULL, Tinebase_Record_Interface $_pagination = NULL, $_getRelations = FALSE, $_onlyIds = FALSE);
     
     /**
      * Gets total count of search with $_filter
@@ -91,10 +92,11 @@ interface Tinebase_Application_Controller_Record_Interface
     /**
      * update multiple records
      * 
-     * @param   array|Tinebase_Record_Interface $_what array of record identifiers or filter
-     * @param   array $_values
+     * @param   Tinebase_Model_Filter_FilterGroup $_filter
+     * @param   array $_data
+     * @return  integer number of updated records
      */
-    public function updateMultiple($_what, $_values);
+    public function updateMultiple($_what, $_data);
     
     /**
      * Deletes a set of records.

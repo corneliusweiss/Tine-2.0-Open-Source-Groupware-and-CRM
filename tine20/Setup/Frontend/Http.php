@@ -38,53 +38,58 @@ class Setup_Frontend_Http
     /**
      * handle request (call -ApplicationName-_Cli.-MethodName- or -ApplicationName-_Cli.getHelp)
      *
-     * @param Zend_Console_Getopt $_opts
      * @return boolean success
      */
     public function handle()
     {
-        $this->_update();
-        $this->_install();
+        $updateDone = $this->_update();
+        $this->_install($updateDone);
     }
     
     /**
      * install new applications
      *
-     * @param Zend_Console_Getopt $_opts
+     * @param boolean $_updated
      */
-    protected function _install()
+    protected function _install($_updated = FALSE)
     {
         $controller = new Setup_Controller();
-
-        $applications = $controller->getInstallableApplications();
         
-        foreach($applications as $key => &$application) {
-            try {
-                Tinebase_Application::getInstance()->getApplicationByName($key);
-                // application is already installed
-                unset($applications[$key]);
-            } catch (Tinebase_Exception_NotFound $e) {
-                // application is not yet installed
-            } catch(Zend_Db_Statement_Exception $e) {
-                // base tables not yet installed
+        if ($_updated || $this->_check()) {
+            $applications = $controller->getInstallableApplications();
+            
+            foreach($applications as $key => &$application) {
+                try {
+                    Tinebase_Application::getInstance()->getApplicationByName($key);
+                    // application is already installed
+                    unset($applications[$key]);
+                } catch (Tinebase_Exception_NotFound $e) {
+                    // application is not yet installed
+                } catch(Zend_Db_Statement_Exception $e) {
+                    // base tables not yet installed
+                }
             }
+            
+            $controller->installApplications(array_keys($applications));
+            
+            if(array_key_exists('Tinebase', $applications)) {
+                $import = new Setup_Import_TineInitial();
+                //$import = new Setup_Import_Egw14();
+                $import->import();
+            }
+            
+            echo "Successfully installed " . count($applications) . " applications.<br/>";   
+                 
+        } else {
+            echo "Extension / Environment Check failed. Nothing installed.<br/>";
         }
-        
-        $controller->installApplications(array_keys($applications));
-        
-        if(array_key_exists('Tinebase', $applications)) {
-            $import = new Setup_Import_TineInitial();
-            //$import = new Setup_Import_Egw14();
-            $import->import();
-        }
-        
-        echo "Successfully installed " . count($applications) . " applications.<br>";        
     }
 
     /**
      * update existing applications
      *
      * @param Zend_Console_Getopt $_opts
+     * @return boolean update done
      */
     protected function _update()
     {
@@ -94,7 +99,7 @@ class Setup_Frontend_Http
             $applications = Tinebase_Application::getInstance()->getApplications(NULL, 'id');
         } catch(Zend_Db_Statement_Exception $e) {
             // application installed at all
-            return;
+            return FALSE;
         }
         
         foreach($applications as $key => &$application) {
@@ -108,6 +113,54 @@ class Setup_Frontend_Http
             $controller->updateApplications($applications);
         }
         
-        echo "Updated " . count($applications) . " applications.<br>";        
+        echo "Updated " . count($applications) . " applications.<br>";
+        return TRUE;        
+    }
+
+    /**
+     * check environment
+     *
+     * @return boolean if check is successful
+     * 
+     * @todo use this in cli as well (move to controller?)
+     */
+    protected function _check()
+    {
+        $success = TRUE;
+        
+        // check php environment
+        $requiredIniSettings = array(
+            'magic_quotes_sybase'  => 0,
+            'magic_quotes_gpc'     => 0,
+            'magic_quotes_runtime' => 0,
+            'mbstring.func_overload' => 0,
+            'eaccelerator.enable' => 0,
+            'memory_limit' => '128M'
+        );
+        
+        foreach ($requiredIniSettings as $variable => $newValue) {
+            $oldValue = ini_get($variable);
+            if ($variable == 'memory_limit') {
+                $required = intval(substr($newValue,0,strpos($newValue,'M')));
+                $set = intval(substr($oldValue,0,strpos($oldValue,'M')));  
+                if ( $set < $required) {
+                    echo "Sorry, your environment is not supported. You need to set $variable equal or greater than $newValue (now: $oldValue).";
+                    $success = FALSE;
+                }
+            } elseif ($oldValue != $newValue) {
+                if (ini_set($variable, $newValue) === false) {
+                    echo "Sorry, your environment is not supported. You need to set $variable from $oldValue to $newValue.";
+                    $success = FALSE;
+                }
+            }
+        }
+        
+        $extCheck = new Setup_ExtCheck('Setup/essentials.xml');
+        $extOutput = $extCheck->getOutput();
+        echo $extOutput;
+        
+        $success = ($success && !preg_match("/FAILURE/", $extOutput));
+        
+        return $success;
     }
 }

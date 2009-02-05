@@ -6,355 +6,339 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id: Voipmanager.js 3083 2008-06-25 15:51:22Z twadewitz $
  *
+ * @todo        check this for deprecated code
+ * @todo        use snom phone grid as initial grid
  */
  
 Ext.namespace('Tine.Voipmanager');
 
-Tine.Voipmanager = function() {
-    /**
-     * builds the voipmanager applications tree
-     */
-        
-    var _initialTree = [{
-        text: 'Asterisk',
-        cls: 'treemain',
-        allowDrag: false,
-        allowDrop: true,
-        id: 'asterisk',
-        icon: false,
-        children: [{
-            text: "SipPeers",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "sipPeers",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "sipPeers",
-            viewRight: 'sipPeers'
-        }, {
-            text: "Dialplan",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "dialplan",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "dialplan",
-            viewRight: 'dialplan'
-        }, {
-            text: "Context",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "context",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "context",
-            viewRight: 'context'
-        }, {
-            text: "Voicemail",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "voicemail",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "voicemail",
-            viewRight: 'voicemail'
-        }, {
-            text: "Meetme",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "meetme",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "meetme",
-            viewRight: 'meetme'
-        }, {
-            text: "Queues",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "queues",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "queues",
-            viewRight: 'queues'
-        }],
-        leaf: null,
-        expanded: true,
-        dataPanelType: 'asterisk',
-        viewRight: 'asterisk'
-    }, {
-        text: 'Snom',
-        cls: 'treemain',
-        allowDrag: false,
-        allowDrop: true,
-        id: 'snom',
-        icon: false,
-        children: [{
-            text: 'Phones',
-            cls: 'treemain',
-            allowDrag: false,
-            allowDrop: true,
-            id: 'phones',
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: 'phones',
-            viewRight: 'phones'
-        }, {
-            text: "Location",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "location",
-            icon: false,
-            children: [],
-            leaf: true,
-            expanded: true,
-            dataPanelType: "location",
-            viewRight: 'location'
-        }, {
-            text: "Templates",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "templates",
-            icon: false,
-            children: [],
-            leaf: null,
-            expanded: true,
-            dataPanelType: "templates",
-            viewRight: 'templates'
-        }, {
-            text: "Keylayout",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "keylayout",
-            icon: false,
-            children: [],
-            leaf: null,
-            expanded: true,
-            disabled: true,
-            dataPanelType: "keylayout",
-            viewRight: 'keylayout'
-        }, {
-            text: "Settings",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "settings",
-            icon: false,
-            children: [],
-            leaf: null,
-            expanded: true,
-            dataPanelType: "settings",
-            viewRight: 'settings'
-        }, {
-            text: "Software",
-            cls: "treemain",
-            allowDrag: false,
-            allowDrop: true,
-            id: "software",
-            icon: false,
-            children: [],
-            leaf: null,
-            expanded: true,
-            dataPanelType: "software",
-            viewRight: 'software'
-        }],
-        leaf: null,
-        expanded: true,
-        dataPanelType: 'snom',
-        viewRight: 'snom'
-    }];
-        
-    /**
-     * creates the voipmanager menu tree
-     *
-     */
-    var _getVoipmanagerTree = function(){
-        var translation = new Locale.Gettext();
-        translation.textdomain('Voipmanager');
-        
-        
-        var treeLoader = new Ext.tree.TreeLoader({
-            dataUrl: 'index.php',
-            baseParams: {
-                //jsonKey: Tine.Tinebase.registry.get('jsonKey'),
-                method: 'Voipmanager.getSubTree',
-                location: 'mainTree'
-            }
-        });
-        treeLoader.on("beforeload", function(_loader, _node){
-            _loader.baseParams.node = _node.id;
-        }, this);
-        
-        var treePanel = new Ext.tree.TreePanel({
-            title: 'Voipmanager',
-            id: 'voipmanager-tree',
-            iconCls: 'VoipmanagerIconCls',
-            loader: treeLoader,
-            rootVisible: false,
-            border: false
-        });
-        
-        // set the root node
-        var treeRoot = new Ext.tree.TreeNode({
-            text: 'root',
-            draggable: false,
-            allowDrop: false,
-            id: 'root'
-        });
-        treePanel.setRootNode(treeRoot);
-        
-
-        for (var i = 0; i < _initialTree.length; i++) {
-        
-            var node = new Ext.tree.AsyncTreeNode(_initialTree[i]);
-            
-            // check view right
-            // view rights don't exist in voipmanager at the moment
-            /*
-            if (_initialTree[i].viewRight && !Tine.Tinebase.common.hasRight('view', _initialTree[i].viewRight)) {
-                node.disabled = true;
-            }
-            */
-
-            treeRoot.appendChild(node);
-        }
 
 
+Tine.Voipmanager.TreePanel = Ext.extend(Ext.tree.TreePanel,{
+    rootVisible: false,
+    border: false,
+    
+    initComponent: function() {
+        this.root = {
+            id: 'root',
+            children: [{
+		        text: this.app.i18n._('Asterisk'),
+		        cls: 'treemain',
+		        allowDrag: false,
+		        allowDrop: true,
+		        id: 'Asterisk',
+		        icon: false,
+		        children: [{
+		            text: this.app.i18n._('SipPeer'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "SipPeer",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Dialplan'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Dialplan",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            disabled: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Context'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Context",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Voicemail'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Voicemail",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Meetme'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Meetme",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Queues'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Queues",
+		            icon: false,
+		            disabled: true,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }],
+		        leaf: null,
+		        expanded: true,
+		        dataPanelType: 'asterisk',
+		        viewRight: 'asterisk'
+		    }, {
+		        text: this.app.i18n._('Snom'),
+		        cls: 'treemain',
+		        allowDrag: false,
+		        allowDrop: true,
+		        id: 'Snom',
+		        icon: false,
+		        children: [{
+		            text: this.app.i18n._('Phones'),
+		            cls: 'treemain',
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: 'Phone',
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Location'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Location",
+		            icon: false,
+		            children: [],
+		            leaf: true,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Templates'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Template",
+		            icon: false,
+		            children: [],
+		            leaf: null,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Keylayout'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Keylayout",
+		            icon: false,
+		            children: [],
+		            leaf: null,
+		            expanded: true,
+		            disabled: true
+		        }, {
+		            text: this.app.i18n._('Setting'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Setting",
+		            icon: false,
+		            children: [],
+		            leaf: null,
+		            expanded: true
+		        }, {
+		            text: this.app.i18n._('Software'),
+		            cls: "treemain",
+		            allowDrag: false,
+		            allowDrop: true,
+		            id: "Software",
+		            icon: false,
+		            children: [],
+		            leaf: null,
+		            expanded: true
+		        }],
+		        leaf: null,
+		        expanded: true,
+		        dataPanelType: 'snom',
+		        viewRight: 'snom'
+		    }]
+        };
         
-        treePanel.on('click', function(_node, _event) {
-            if ( _node.disabled ) {
+    	Tine.Voipmanager.TreePanel.superclass.initComponent.call(this);
+        
+        this.on('click', function(node) {
+            if (node.disabled) {
                 return false;
             }
-
-            var currentToolbar = Tine.Tinebase.MainScreen.getActiveToolbar();
-
-            switch(_node.attributes.dataPanelType) {
-                case 'phones':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerPhones') {
-                        Ext.getCmp('gridVoipmanagerPhones').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Snom.Phones.Main.show(_node);
-                    }
-                    break;                    
-                    
-                case 'location':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerLocation') {
-                        Ext.getCmp('gridVoipmanagerLocation').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Snom.Location.Main.show(_node);
-                    }
-                    break;                                        
-                    
-                case 'templates':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerTemplates') {
-                        Ext.getCmp('gridVoipmanagerTemplates').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Snom.Templates.Main.show(_node);
-                    }
-                    break;                     
-                    
-                case 'software':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerSoftware') {
-                        Ext.getCmp('gridVoipmanagerSoftware').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Snom.Software.Main.show(_node);
-                    }
-                    break;                      
-                    
-                case 'sipPeers':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerSipPeers') {
-                        Ext.getCmp('gridVoipmanagerSipPeers').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Asterisk.SipPeers.Main.show(_node);
-                    }
-                    break;        
-                    
-                case 'context':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerContext') {
-                        Ext.getCmp('gridVoipmanagerContext').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Asterisk.Context.Main.show(_node);
-                    }
-                    break;  
-                    
-                case 'voicemail':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerVoicemail') {
-                        Ext.getCmp('gridVoipmanagerVoicemail').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Asterisk.Voicemail.Main.show(_node);
-                    }
-                    break;     
-                    
-                case 'settings':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerSettings') {
-                        Ext.getCmp('gridVoipmanagerSettings').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Snom.Settings.Main.show(_node);
-                    }
-                    break;            
-					
-
-                case 'meetme':
-                    if(currentToolbar !== false && currentToolbar.id == 'toolbarVoipmanagerMeetme') {
-                        Ext.getCmp('gridVoipmanagerMeetme').getStore().load({params:{start:0, limit:50}});
-                    } else {
-                        Tine.Voipmanager.Asterisk.Meetme.Main.show(_node);
-                    }
-                    break; 					                                                                                                    
-            }
+            
+            var contentType = node.getPath().split('/')[3];
+            var contentGroup = node.getPath().split('/')[2];
+                                
+            this.app.getMainScreen().activeContentType = contentType;
+            this.app.getMainScreen().activeContentGroup = contentGroup;
+            this.app.getMainScreen().show();
+            
+            
+            
         }, this);
-
-        treePanel.on('beforeexpand', function(_panel) {
-            if(_panel.getSelectionModel().getSelectedNode() === null) {
-                _panel.expandPath('/root');
-                _panel.selectPath('/root/snom/phones');
-            }
-            _panel.fireEvent('click', _panel.getSelectionModel().getSelectedNode());
-        }, this);
-
-        treePanel.on('contextmenu', function(_node, _event) {
-            _event.stopEvent();
-            //_node.select();
-            //_node.getOwnerTree().fireEvent('click', _node);
-            //console.log(_node.attributes.contextMenuClass);
-            /* switch(_node.attributes.contextMenuClass) {
-                case 'ctxMenuContactsTree':
-                    ctxMenuContactsTree.showAt(_event.getXY());
-                    break;
-            } */
-        });
-
-        return treePanel;
-    };
+	},
     
-    // public functions and variables
-    return {
-        getPanel: _getVoipmanagerTree
-    };
+    /**
+     * @private
+     */
+    afterRender: function() {
+        Tine.Voipmanager.TreePanel.superclass.afterRender.call(this);
+        var type = this.app.getMainScreen().activeContentType;
+
+        this.expandPath('/root/snom');
+        this.selectPath('/root/snom/phones');
+    },
     
-}();
+    /**
+     * returns a filter plugin to be used in a grid
+     * 
+     * @deprecated
+     * @todo remove that
+     */
+    getFilterPlugin: function() {
+        if (!this.filterPlugin) {
+            var scope = this;
+            this.filterPlugin = new Tine.widgets.grid.FilterPlugin({
+                getValue: function() {
+                    var nodeAttributes = scope.getSelectionModel().getSelectedNode().attributes || {};
+                    return [
+                        {field: 'containerType', operator: 'equals', value: nodeAttributes.containerType ? nodeAttributes.containerType : 'all' },
+                        {field: 'container',     operator: 'equals', value: nodeAttributes.container ? nodeAttributes.container.id : null       },
+                        {field: 'owner',         operator: 'equals', value: nodeAttributes.owner ? nodeAttributes.owner.accountId : null        }
+                    ];
+                }
+            });
+        }
+        
+        return this.filterPlugin;
+    }
+});
+
+/**
+ * default Asterisk.Context backend
+ */
+Tine.Voipmanager.AsteriskContextBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'AsteriskContext',
+    recordClass: Tine.Voipmanager.Model.AsteriskContext
+});
+
+
+/**
+ * default Asterisk.SipPeer backend
+ */
+Tine.Voipmanager.AsteriskSipPeerBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'AsteriskSipPeer',
+    recordClass: Tine.Voipmanager.Model.AsteriskSipPeer
+}); 
+
+/**
+ * default Asterisk.Voicemail backend
+ */
+Tine.Voipmanager.AsteriskVoicemailBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'AsteriskVoicemail',
+    recordClass: Tine.Voipmanager.Model.AsteriskVoicemail
+});
+
+/**
+ * default Asterisk.Meetme backend
+ */
+Tine.Voipmanager.AsteriskMeetmeBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'AsteriskMeetme',
+    recordClass: Tine.Voipmanager.Model.AsteriskMeetme
+});
+
+
+
+/**
+ * default Snom.Phone backend
+ */
+Tine.Voipmanager.SnomPhoneBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomPhone',
+    recordClass: Tine.Voipmanager.Model.SnomPhone
+});
+
+/**
+ * default Snom.Location backend
+ */
+Tine.Voipmanager.SnomLocationBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomLocation',
+    recordClass: Tine.Voipmanager.Model.SnomLocation
+});
+
+/**
+ * default Snom.Template backend
+ */
+Tine.Voipmanager.SnomTemplateBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomTemplate',
+    recordClass: Tine.Voipmanager.Model.SnomTemplate
+});
+
+/**
+ * default Snom.Software backend
+ */
+Tine.Voipmanager.SnomSoftwareBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomSoftware',
+    recordClass: Tine.Voipmanager.Model.SnomSoftware
+});
+
+/**
+ * default Snom.SoftwareImage backend
+ */
+Tine.Voipmanager.SnomSoftwareImageBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomSoftwareImage',
+    recordClass: Tine.Voipmanager.Model.SnomSoftwareImage
+});
+
+/**
+ * default Snom.Line backend
+ */
+Tine.Voipmanager.SnomLineBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomLine',
+    recordClass: Tine.Voipmanager.Model.SnomLine
+});
+
+/**
+ * default Snom.Setting backend
+ */
+Tine.Voipmanager.SnomSettingBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomSetting',
+    recordClass: Tine.Voipmanager.Model.SnomSetting
+});
+
+/**
+ * default Snom.Owner backend
+ */
+Tine.Voipmanager.SnomOwnerBackend = new Tine.Tinebase.widgets.app.JsonBackend({
+    appName: 'Voipmanager',
+    modelName: 'SnomOwner',
+    recordClass: Tine.Voipmanager.Model.SnomOwner
+});
+
+
+
 
 Tine.Voipmanager.Data = {
   
