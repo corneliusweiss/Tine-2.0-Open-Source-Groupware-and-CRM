@@ -49,6 +49,15 @@ Tine.Tinebase.tineInit = {
     },
     
     initWindow: function() {
+        // disable browsers native context menu globaly
+        Ext.getBody().on('contextmenu', Ext.emptyFn, this, {preventDefault: true});
+        // disable the native 'select all'
+        Ext.getBody().on('keydown', function(e) {
+            if(e.ctrlKey && e.getKey() == e.A){
+                e.preventDefault();
+            }
+        });
+
         //init window is done in Ext.ux.PopupWindowMgr. yet
         this.initList.initWindow = true;
     },
@@ -62,7 +71,7 @@ Tine.Tinebase.tineInit = {
     initBootSplash: function() {
         centerSplash = function() {
             var vp = Ext.getBody().getSize();
-            p = Ext.get('tine-viewport-waitcycle');
+            var p = Ext.get('tine-viewport-waitcycle');
             p.moveTo(vp.width/2 - this.splash.width/2, vp.height/2 - this.splash.height/2);
         };
         
@@ -317,6 +326,7 @@ Tine.Tinebase.tineInit = {
             
             if (Tine.Tinebase.registry.get('userApplications')) {
                 var userApps = Tine.Tinebase.registry.get('userApplications');
+                var app;
                 for(var i=0; i<userApps.length; i++) {
                     app = userApps[i];
                     
