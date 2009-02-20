@@ -78,7 +78,48 @@ Ext.extend(Tine.Tinebase.widgets.app.MainScreen, Ext.util.Observable, {
             this.treePanel = new Tine[this.app.appName].TreePanel({app: this.app});
         }
         
-        Tine.Tinebase.MainScreen.setActiveTreePanel(this.treePanel, true);
+        if(!this.filterPanel && Tine[this.app.appName].FilterPanel) {
+            this.filterPanel = new Tine[this.app.appName].FilterPanel({
+                app: this.app,
+                treePanel: this.treePanel
+            });
+        }
+        
+        if (this.filterPanel) {
+            var containersName = this.app.i18n.n_hidden(this.treePanel.recordClass.getMeta('containerName'), this.treePanel.recordClass.getMeta('containersName'), 50);
+            
+            this.leftTabPanel = new Ext.TabPanel({
+                border: false,
+                activeItem: 0,
+                layoutOnTabChange: true,
+                autoScroll: true,
+                items: [{
+                    title: containersName,
+                    layout: 'fit',
+                    items: this.treePanel,
+                    autoScroll: true
+                }, {
+                    title: _('Saved filter'),
+                    layout: 'fit',
+                    items: this.filterPanel,
+                    autoScroll: true
+                }],
+                getPersistentFilterNode: this.filterPanel.getPersistentFilterNode.createDelegate(this.filterPanel)
+            
+            });
+            
+            Tine.Tinebase.MainScreen.setActiveTreePanel(this.leftTabPanel, true);
+        } else {
+            Tine.Tinebase.MainScreen.setActiveTreePanel(this.treePanel, true);
+        }
+    },
+    
+    getTreePanel: function() {
+        if (this.leftTabPanel) {
+            return this.leftTabPanel;
+        } else {
+            return this.treePanel;
+        }
     },
     
     /**
@@ -99,6 +140,10 @@ Ext.extend(Tine.Tinebase.widgets.app.MainScreen, Ext.util.Observable, {
         
         Tine.Tinebase.MainScreen.setActiveContentPanel(this.gridPanel, true);
         this.gridPanel.store.load();
+    },
+    
+    getContentPanel: function() {
+        return this.gridPanel;
     },
     
     /**

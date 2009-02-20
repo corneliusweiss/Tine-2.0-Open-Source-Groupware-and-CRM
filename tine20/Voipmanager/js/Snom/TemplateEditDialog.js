@@ -51,34 +51,28 @@ Tine.Voipmanager.SnomTemplateEditDialog = Ext.extend(Tine.widgets.dialog.EditDia
                     preventScrollbars: false,
                     height: 40
                 }, {
-                    xtype: 'combo',
-                    fieldLabel: this.app.i18n._('Software Version'),
+                    xtype:'reccombo',
                     name: 'software_id',
+                    fieldLabel: this.app.i18n._('Software Version'),
                     displayField: 'name',
-                    valueField: 'id',
-                    triggerAction: 'all',
-                    editable: false,
-                    forceSelection: true,
                     store: new Ext.data.Store({
-                        fields: Tine.Voipmanager.Model.SnomSoftware,
+                    	fields: Tine.Voipmanager.Model.SnomSoftware,
                         proxy: Tine.Voipmanager.SnomSoftwareBackend,
+                        reader: Tine.Voipmanager.SnomSoftwareBackend.getReader(),
                         remoteSort: true,
-                        sortInfo: {field: 'name', dir: 'ASC'}
+                        sortInfo: {field: 'name', dir: 'ASC'}                        
                     })
                 }, {
-                    xtype: 'combo',
-                    fieldLabel: this.app.i18n._('Settings'),
+                    xtype:'reccombo',
                     name: 'setting_id',
+                    fieldLabel: this.app.i18n._('Settings'),
                     displayField: 'name',
-                    valueField: 'id',
-                    triggerAction: 'all',
-                    editable: false,
-                    forceSelection: true,
                     store: new Ext.data.Store({
                         fields: Tine.Voipmanager.Model.SnomSetting,
                         proxy: Tine.Voipmanager.SnomSettingBackend,
+                        reader: Tine.Voipmanager.SnomSettingBackend.getReader(),
                         remoteSort: true,
-                        sortInfo: {field: 'name', dir: 'ASC'}
+                        sortInfo: {field: 'name', dir: 'ASC'}                        
                     })
                 }, {
                     xtype: 'combo',

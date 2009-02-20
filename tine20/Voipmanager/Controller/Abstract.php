@@ -8,8 +8,6 @@
  * @author      Philipp Schuele <p.schuele@metaways.de>
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
- *
- * @todo        rename Voipmanager_Controller_AbstractNew to Voipmanager_Controller_Abstract later
  */
 
 /**
@@ -50,9 +48,11 @@ abstract class Voipmanager_Controller_Abstract extends Tinebase_Application_Cont
     protected function getDatabaseBackend() 
     {
         if(isset(Zend_Registry::get('configFile')->voipmanager) && isset(Zend_Registry::get('configFile')->voipmanager->database)) {
-            $dbConfig = Zend_Registry::get('configFile')->voipmanager->database;
+            $dbConfig = Tinebase_Core::get('configFile')->voipmanager->database;
         
             $dbBackend = constant('Tinebase_Core::' . strtoupper($dbConfig->get('backend', Tinebase_Core::PDO_MYSQL)));
+            
+            Tinebase_Core::set('voipdbTablePrefix', (isset($dbConfig->tableprefix)) ? $dbConfig->tableprefix : SQL_TABLE_PREFIX);
             
             switch($dbBackend) {
                 case Tinebase_Core::PDO_MYSQL:
@@ -66,6 +66,7 @@ abstract class Voipmanager_Controller_Abstract extends Tinebase_Application_Cont
                     break;
             }
         } else {
+            Tinebase_Core::set('voipdbTablePrefix', SQL_TABLE_PREFIX);
             $db = Zend_Registry::get('dbAdapter');
         }
         

@@ -30,6 +30,7 @@ class Timetracker_Model_TimeaccountFilter extends Tinebase_Model_Filter_FilterGr
         'title'          => array('filter' => 'Tinebase_Model_Filter_Text'),
         'number'         => array('filter' => 'Tinebase_Model_Filter_Text'),
         'description'    => array('filter' => 'Tinebase_Model_Filter_Text'),
+        'status'         => array('filter' => 'Tinebase_Model_Filter_Text'),
         'tag'            => array('filter' => 'Tinebase_Model_Filter_Tag'),
         'showClosed'     => array('custom' => true),
         'isBookable'     => array('custom' => true),
@@ -150,5 +151,25 @@ class Timetracker_Model_TimeaccountFilter extends Tinebase_Model_Filter_FilterGr
         
         
         $_select->where($where);
+    }
+    
+    /**
+     * returns array with the filter settings of this filter group 
+     *
+     * @param  bool $_valueToJson resolve value for json api?
+     * @return array
+     */
+    public function toArray($_valueToJson = false)
+    {
+        $result = parent::toArray($_valueToJson);
+        
+        foreach ($result as &$filterData) {
+            if ($filterData['field'] == 'id' && $_valueToJson == true) {
+                //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' value:' . print_r($filterData['value'], true));
+                $filterData['value'] = Timetracker_Controller_Timeaccount::getInstance()->get($filterData['value'])->toArray();
+            }
+        }
+        
+        return $result;
     }
 }

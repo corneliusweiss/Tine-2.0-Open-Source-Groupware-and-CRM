@@ -153,7 +153,8 @@ Tine.Voipmanager.SnomPhoneEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                 'idletext':'',
                 'lineactive':0,
                 'linenumber':this.linesStore.getCount()+1,
-                'snomphone_id':''
+                'snomphone_id':'',
+                'name': ''
             });         
             this.linesStore.add(_snomRecord);
         }                                            	
@@ -305,45 +306,30 @@ Tine.Voipmanager.SnomPhoneEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                         maxLength: 12,
                         allowBlank: false
                     }, {
-                        xtype: 'combo',
-                        fieldLabel: this.app.i18n._('Template'),
+                        xtype:'reccombo',
                         name: 'template_id',
+                        fieldLabel: this.app.i18n._('Template'),
                         displayField: 'name',
-                        valueField: 'id',
-                        triggerAction: 'all',
-                        editable: false,
-                        forceSelection: true,
-                        allowBlank: false,
                         store: new Ext.data.Store({
                             fields: Tine.Voipmanager.Model.SnomTemplate,
                             proxy: Tine.Voipmanager.SnomTemplateBackend,
+                            reader: Tine.Voipmanager.SnomTemplateBackend.getReader(),
                             remoteSort: true,
-                            sortInfo: {field: 'name', dir: 'ASC'},
-                            listeners: {
-                            	scope: this,
-                            	load: this.onTemplateChange
-                            }
+                            sortInfo: {field: 'name', dir: 'ASC'}
                         }),
                         listeners: {
-                        	scope: this,
-                            select: this.onTemplateChange,
-                            render: function(combo) {
-                            	combo.store.load();
-                            }
+                            scope: this,
+                            select: this.onTemplateChange
                         }
                     }], [{
-                        xtype: 'combo',
-                        fieldLabel: this.app.i18n._('Location'),
+                        xtype:'reccombo',
                         name: 'location_id',
+                        fieldLabel: this.app.i18n._('Location'),
                         displayField: 'name',
-                        valueField: 'id',
-                        triggerAction: 'all',
-                        editable: false,
-                        forceSelection: true,
-                        allowBlank: false,
                         store: new Ext.data.Store({
-                            fields: Tine.Voipmanager.Model.SnomLocation,
+                        	fields: Tine.Voipmanager.Model.SnomLocation,
                             proxy: Tine.Voipmanager.SnomLocationBackend,
+                            reader: Tine.Voipmanager.SnomLocationBackend.getReader(),
                             remoteSort: true,
                             sortInfo: {field: 'name', dir: 'ASC'}
                         })
@@ -636,13 +622,6 @@ Tine.Voipmanager.SnomPhoneEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
            width: 25
         });         
         
-        Ext.ux.comboBoxRenderer = function(combo) {
-          return function(value) {
-            var rec = combo.store.getById(value);
-            return (rec == null ? '' : rec.get(combo.displayField) );
-          };
-        };          
-        
         var combo = new Ext.form.ComboBox({
             typeAhead: true,
             triggerAction: 'all',
@@ -659,8 +638,8 @@ Tine.Voipmanager.SnomPhoneEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                 remoteSort: true,
                 sortInfo: {field: 'name', dir: 'ASC'}
             })
-        }); 
-        
+        });
+
         var columnModel = new Ext.grid.ColumnModel([
             { resizable: true, id: 'id', header: 'line', dataIndex: 'id', width: 20, hidden: true },
             {
@@ -670,7 +649,17 @@ Tine.Voipmanager.SnomPhoneEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog
                 dataIndex: 'asteriskline_id',
                 width: 80,
                 editor: combo,
-                renderer: Ext.ux.comboBoxRenderer(combo)
+                renderer: function (value, b, record) {
+                    if (record.data && record.data.name) {
+                    	return record.data.name;
+                    } else {
+                    	if(combo.store.getById(value)) {
+                            return combo.store.getById(value).get('name');
+                    	} else {
+                    		return '';
+                    	}
+                    }
+                }
             },
             {
                 resizable: true,

@@ -66,12 +66,14 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
             'Tinebase/js/ux/grid/QuickaddGridPanel.js',
             'Tinebase/js/ux/grid/RowExpander.js',
             'Tinebase/js/ux/grid/PagingToolbar.js',
+            'Tinebase/js/ux/grid/GridViewMenuPlugin.js',
             'Tinebase/js/ux/file/Uploader.js',
             'Tinebase/js/ux/form/IconTextField.js',
             'Tinebase/js/ux/form/MirrorTextField.js',
             'Tinebase/js/ux/form/ColumnFormPanel.js',
             'Tinebase/js/ux/form/ExpandFieldSet.js',
             'Tinebase/js/ux/form/ClearableComboBox.js',
+            'Tinebase/js/ux/form/RecordsComboBox.js',
             'Tinebase/js/ux/form/DateTimeField.js',
             'Tinebase/js/ux/form/ClearableDateField.js',
             'Tinebase/js/ux/form/ImageField.js',
@@ -109,6 +111,7 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
             'Tinebase/js/widgets/grid/ExportButton.js',
             'Tinebase/js/widgets/grid/FilterToolbar.js',
             'Tinebase/js/widgets/grid/FilterSelectionModel.js',
+            'Tinebase/js/widgets/grid/PersistentFilterPicker.js',
             'Tinebase/js/widgets/tags/TagsPanel.js',
             'Tinebase/js/widgets/tags/TagCombo.js',
             'Tinebase/js/widgets/tags/TagFilter.js',
@@ -156,6 +159,7 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
     	   'Tinebase/css/ux/grid/QuickaddGridPanel.css',
     	   'Tinebase/css/ux/grid/IconTextField.css',
     	   'Tinebase/css/ux/grid/PagingToolbar.css',
+    	   'Tinebase/css/ux/grid/GridViewMenuPlugin.css',
     	   'Tinebase/css/ux/form/ExpandFieldSet.css',
     	   'Tinebase/css/ux/form/ImageField.css',
     	   'Tinebase/css/ux/form/Spinner.css',
@@ -432,7 +436,7 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
                ->from(SQL_TABLE_PREFIX . 'temp_files')
                ->where($db->quoteInto($db->quoteIdentifier('id') . ' = ?', $id))
                ->where($db->quoteInto($db->quoteIdentifier('session_id') . ' = ?', session_id()));
-            $tempFile = $db->fetchRow($select, '', Zend_Db::FETCH_ASSOC);
+            $tempFile = $db->fetchRow($select);
 
             $imgInfo = Tinebase_ImageHelper::getImageInfoFromBlob(file_get_contents($tempFile['path']));
             $image = new Tinebase_Model_Image($imgInfo + array(

@@ -172,8 +172,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
      * 
      * @todo add typehint again when voipmanager refactoring is finished
      */
-    public function search(/*Tinebase_Model_Filter_FilterGroup*/ $_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL, $_onlyIds = FALSE)
-    {
+    public function search(Tinebase_Model_Filter_FilterGroup $_filter = NULL, Tinebase_Model_Pagination $_pagination = NULL, $_onlyIds = FALSE)    {
         $result = ($_onlyIds) ? array() : new Tinebase_Record_RecordSet($this->_modelName);
         
         if ($_pagination === NULL) {
@@ -194,7 +193,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
         $rows = $stmt->fetchAll(Zend_Db::FETCH_ASSOC);
         foreach ($rows as $row) {
             if ($_onlyIds) {
-                $result[] = $row['id'];
+                $result[] = $row[$this->_getRecordIdentifier()];
             } else {
                 $record = new $this->_modelName($row, true, true);
                 $result->addRecord($record);
@@ -211,7 +210,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
      * @return int
      * @todo add typehint again when voipmanager refactoring is finished
      */
-    public function searchCount(/*Tinebase_Model_Filter_FilterGroup */$_filter)
+    public function searchCount(Tinebase_Model_Filter_FilterGroup $_filter)
     {        
         $select = $this->_getSelect(array('count' => 'COUNT(*)'));
         $this->_addFilter($select, $_filter);
@@ -290,6 +289,9 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
      * @return Tinebase_Record_Interface Record|NULL
      */
     public function update(Tinebase_Record_Interface $_record) {
+        
+        $identifier = $this->_getRecordIdentifier();
+        
         if (!$_record instanceof $this->_modelName) {
             throw new Tinebase_Exception_InvalidArgument('$_record is of invalid model type');
         }
@@ -307,7 +309,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
         $this->_prepareData($recordArray);
                 
         $where  = array(
-            $this->_db->quoteInto($this->_db->quoteIdentifier($this->_identifier) . ' = ?', $id),
+            $this->_db->quoteInto($this->_db->quoteIdentifier($identifier) . ' = ?', $id),
         );
         
         $this->_db->update($this->_tableName, $recordArray, $where);
@@ -334,6 +336,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
             Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' No records updated.');
             return;
         }
+        $identifier = $this->_getRecordIdentifier();
         
         $recordArray = $_data;
         
@@ -343,7 +346,7 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
         $this->_prepareData($recordArray);
                 
         $where  = array(
-            $this->_db->quoteInto($this->_db->quoteIdentifier($this->_identifier) . ' IN (?)', $_ids),
+            $this->_db->quoteInto($this->_db->quoteIdentifier($identifier) . ' IN (?)', $_ids),
         );
         
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($where, TRUE));
@@ -361,9 +364,10 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
       */
     public function delete($_id) {
         $id = $this->_convertId($_id);
+        $identifier = $this->_getRecordIdentifier();
         
         $where = array(
-            $this->_db->quoteInto($this->_db->quoteIdentifier($this->_identifier) . ' = ?', $id)
+            $this->_db->quoteInto($this->_db->quoteIdentifier($identifier) . ' = ?', $id)
         );
         
         $this->_db->delete($this->_tableName, $where);
@@ -484,8 +488,6 @@ abstract class Tinebase_Application_Backend_Sql_Abstract implements Tinebase_App
      * splits identifier if table name is given (i.e. for joined tables)
      *
      * @return string identifier name
-     * 
-     * @todo    remove legacy code when joins are removed from sql backends
      */
     protected function _getRecordIdentifier()
     {

@@ -299,6 +299,7 @@ Tine.Crm.Main = {
         //var dataStore = this.createDataStore();
         // the filter toolbar
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
+            app: Tine.Tinebase.appMgr.get('Crm'),
             id : 'crmLeadsFilterToolbar',
             filterModels: [
                 {label: this.translation._('Lead'),        field: 'query',    operators: ['contains']},
@@ -694,6 +695,10 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      * @cfg {Tine.Crm.Model.Lead} lead to edit
      */
     lead: null,
+    /**
+     * @cfg {Object} container
+     */
+    forceContainer: null,
     
     /**
      * @private
@@ -746,21 +751,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             var contactWindow = Tine.Addressbook.ContactEditDialog.openWindow({
                 listeners: {
                     scope: this,
-                    'update': function(contact) {
-                        // @deprecated
-                        switch ( _button.contactType ) {
-                            case 'responsible':
-                               contact.data.relation_type = 'responsible';
-                               break;
-                            case 'customer':
-                               contact.data.relation_type = 'customer';
-                               break;
-                            case 'partner':
-                               contact.data.relation_type = 'partner';
-                               break;
-                        }
-                        this.onContactUpdate(contact);
-                    }
+                    'update': this.onContactUpdate
                 }
             });        	
         },
@@ -772,7 +763,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             var selectedRows = Ext.getCmp('crmGridContacts').getSelectionModel().getSelections();
             
             var contactWindow = Tine.Addressbook.ContactEditDialog.openWindow({
-                contact: selectedRows[0],
+                record: selectedRows[0],
                 listeners: {
                     scope: this,
                     'update': this.onContactUpdate
@@ -892,8 +883,13 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      * update event handler for related contacts
      */
     onContactUpdate: function(contact) {
+        var response = {
+            responseText: contact
+        };
+        contact = Tine.Addressbook.contactBackend.recordReader(response);
+        
         var storeContacts = Ext.StoreMgr.lookup('ContactsStore');
-        contact.id = contact.data.id;
+
         var myContact = storeContacts.getById(contact.id);
         if (myContact) {
             myContact.beginEdit();
@@ -902,6 +898,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             }
             myContact.endEdit();
         } else {
+            contact.data.relation_type = 'customer';
             storeContacts.add(contact);
         }        
     },
@@ -910,7 +907,11 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      * update event handler for related tasks
      */
     onTaskUpdate: function(task) {
-        console.log(task);
+        var response = {
+            responseText: task
+        };
+        task = Tine.Tasks.JsonBackend.recordReader(response);
+        
         var storeTasks = Ext.StoreMgr.lookup('TasksStore');
         var myTask = storeTasks.getById(task.id);
         
@@ -1098,7 +1099,7 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
         grid.on('rowdblclick', function(_gridPanel, _rowIndexPar, ePar) {
             var record = _gridPanel.getStore().getAt(_rowIndexPar);
             Tine.Addressbook.ContactEditDialog.openWindow({
-                contact: record,
+                record: record,
                 listeners: {
                     scope: this,
                     'update': this.onContactUpdate
@@ -1822,6 +1823,11 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
     onRecordLoad: function(response) {
         this.getForm().findField('lead_name').focus(false, 250);
         var recordData = Ext.util.JSON.decode(response.responseText);
+        if (this.forceContainer) {
+            recordData.container_id = this.forceContainer;
+            // only force initially!
+            this.forceContainer = null;
+        }
         this.updateRecord(recordData);
         
         // update stores
@@ -1860,6 +1866,12 @@ Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
  * Leads Edit Popup
  */
 Tine.Crm.LeadEditDialog.openWindow = function (config) {
+    // if a concreate container is selected in the tree, take this as default container
+    var treeNode = Ext.getCmp('crmTree') ? Ext.getCmp('crmTree').getSelectionModel().getSelectedNode() : null;
+    if (treeNode && treeNode.attributes && treeNode.attributes.containerType == 'singleContainer') {
+        config.forceContainer = treeNode.attributes.container;
+    }
+    
     config.lead = config.lead ? config.lead : new Tine.Crm.Model.Lead({}, 0);
     var window = Tine.WindowFactory.getWindow({
         width: 800,

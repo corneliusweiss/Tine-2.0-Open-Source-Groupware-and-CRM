@@ -138,9 +138,10 @@ abstract class Tinebase_Model_Filter_Abstract
     /**
      * returns array with the filter settings of this filter
      *
+     * @param  bool $_valueToJson resolve value for json api?
      * @return array
      */
-    public function toArray()
+    public function toArray($_valueToJson = false)
     {
         $result = array(
             'field'     => $this->_field,

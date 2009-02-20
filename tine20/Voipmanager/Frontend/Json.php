@@ -25,6 +25,74 @@ class Voipmanager_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
      */
     protected $_applicationName = 'Voipmanager';
     
+    /**
+     * returns record prepared for json transport
+     *
+     * @param Tinebase_Record_Interface $_record
+     * @return array record data
+     */
+    protected function _recordToJson($_record)
+    {
+        switch (get_class($_record)) {
+            case 'Voipmanager_Model_Snom_Template':
+                $recordArray = parent::_recordToJson($_record);
+                
+                // add snom softwares (no filter + no pagination)
+                $recordArray['software_id'] = array(
+                    'value'     => $_record->software_id,
+                    'records'   => $this->searchSnomSoftwares('', '')
+                );
+
+                // add snom settings (no filter + no pagination)
+                $recordArray['setting_id'] = array(
+                    'value'     => $_record->setting_id,
+                    'records'   => $this->searchSnomSettings('', '')
+                );
+                break;
+                
+            case 'Voipmanager_Model_Snom_Phone':
+                $recordArray = parent::_recordToJson($_record);
+                
+                // add settings
+                $recordArray = array_merge($recordArray, $this->getSnomPhoneSettings($_record->getId()));
+                
+                // add snom templates (no filter + no pagination)
+                $recordArray['template_id'] = array(
+                    'value'     => $_record->template_id,
+                    'records'   => $this->searchSnomTemplates('', '')
+                );
+
+                // add snom locations (no filter + no pagination)
+                $recordArray['location_id'] = array(
+                    'value'     => $_record->location_id,
+                    'records'   => $this->searchSnomLocations('', '')
+                );
+                
+                // add names to lines
+                foreach ($recordArray['lines'] as &$line) {
+                    $line['name'] = Voipmanager_Controller_Asterisk_SipPeer::getInstance()->get($line['asteriskline_id'])->name;
+                }
+                
+                break;
+
+            case 'Voipmanager_Model_Asterisk_SipPeer':
+                $recordArray = parent::_recordToJson($_record);
+                
+                // add snom templates (no filter + no pagination)
+                $recordArray['context'] = array(
+                    'value'     => $_record->context,
+                    'records'   => $this->searchAsteriskContexts('', '')
+                );
+                break;
+            
+            default:
+                $recordArray = parent::_recordToJson($_record);
+        }
+        
+        return $recordArray;
+    }
+    
+    
 /****************************************
  * SNOM PHONE / PHONESETTINGS FUNCTIONS
  *
@@ -68,15 +136,7 @@ class Voipmanager_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
      */
     public function getSnomPhone($id)
     {
-        $record = Voipmanager_Controller_Snom_Phone::getInstance()->get($id);        
-        $result = $record->toArray();      
-        
-        // add settings
-        $result = array_merge($result, $this->getSnomPhoneSettings($record->getId()));
-        
-        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($result, true));
-        
-        return $result;        
+        return $this->_get($id, Voipmanager_Controller_Snom_Phone::getInstance());
     }    
     
     /**
@@ -134,19 +194,6 @@ class Voipmanager_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
      */
     public function deleteSnomPhones($ids)
     {
-        /*
-        $controller = Voipmanager_Controller_Snom_Phone::getInstance();
-        
-        $result = array(
-            'success'   => TRUE
-        );
-        
-        $ids = Zend_Json::decode($ids);
-        Voipmanager_Controller_Snom_Phone::getInstance()->delete($ids);
-        
-        return $result;
-        */
-        
         return $this->_delete($ids, Voipmanager_Controller_Snom_Phone::getInstance());
     }    
 
@@ -352,7 +399,7 @@ class Voipmanager_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     {
         return $this->_get($id, Voipmanager_Controller_Snom_Template::getInstance());
     }
-             
+    
     /**
      * add/update template
      *

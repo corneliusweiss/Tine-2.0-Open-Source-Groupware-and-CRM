@@ -112,6 +112,8 @@ class Tinebase_Notes
         $_filter->appendFilterSql($select);
         $_pagination->appendPaginationSql($select);
         
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
+        
         $rows = $this->_db->fetchAssoc($select);
         $result = new Tinebase_Record_RecordSet('Tinebase_Model_Note', $rows, true);
 
@@ -185,6 +187,11 @@ class Tinebase_Notes
                     'field' => 'record_id',
                     'operator' => 'equals',
                     'value' => $_id
+                ),
+                array(
+                    'field' => 'note_type_id',
+                    'operator' => 'in',
+                    'value' => $this->getNoteTypes(TRUE)->getArrayOfIds()
                 )
             ));
             
@@ -275,22 +282,29 @@ class Tinebase_Notes
      * @param Tinebase_Record_RecordSet RecordSet $_mods (Tinebase_Model_ModificationLog)
      * @param string $_backend   backend of record
      * 
-     * @todo translate strings and field labels
+     * @todo get field translations from application?
      */
     public function addSystemNote($_record, $_userId, $_type, $_mods = NULL, $_backend = 'Sql')
     {
+        $translate = Tinebase_Translation::getTranslation('Tinebase');
         $backend = ucfirst(strtolower($_backend));
         
         $noteType = $this->getNoteTypeByName($_type);
         $user = Tinebase_User::getInstance()->getUserById($_userId);
         
-        $noteText = $_type . ' by ' . $user->accountDisplayName;
+        $noteText = $translate->_($_type) . ' ' . $translate->_('by') . ' ' . $user->accountDisplayName;
         
-        if ($_mods !== NULL ) {
-            $noteText .= ' | changed fields:';
+        if ($_mods !== NULL && count($_mods) > 0) {
+            
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' mods to log: ' . $_mods);
+            
+            $noteText .= ' | ' .$translate->_('Changed fields:');
             foreach ($_mods as $mod) {
-                $noteText .= ' ' . $mod->modified_attribute .' (' . $mod->old_value . ' -> ' . $mod->new_value . ')';
+                $noteText .= ' ' . $translate->_($mod->modified_attribute) .' (' . $mod->old_value . ' -> ' . $mod->new_value . ')';
             }
+        } else if ($_type === 'changed') {
+            // nothing changed -> don't add note
+            return FALSE;
         }
         
         $note = new Tinebase_Model_Note(array(
@@ -341,13 +355,16 @@ class Tinebase_Notes
     /**
      * get all note types
      *
+     * @param boolean|optional $onlyNonSystemNotes
      * @return Tinebase_Record_RecordSet of Tinebase_Model_NoteType
      */
-    public function getNoteTypes()
+    public function getNoteTypes($onlyNonSystemNotes = FALSE)
     {
         $types = new Tinebase_Record_RecordSet('Tinebase_Model_NoteType');
         foreach ($this->_noteTypesTable->fetchAll() as $type) {
-            $types->addRecord(new Tinebase_Model_NoteType($type->toArray(), true));
+            if (!$onlyNonSystemNotes || $type->is_user_type) {
+                $types->addRecord(new Tinebase_Model_NoteType($type->toArray(), true));
+            }
         }
         return $types;         
     }

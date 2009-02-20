@@ -10,7 +10,7 @@
  * @version     $Id$
  *
  * @todo        use functions from Tinebase_Application_Frontend_Json_Abstract
- *              -> get/search/save/getAll
+ *              -> get/save/getAll
  * @todo        remove deprecated functions afterwards
  */
 
@@ -52,22 +52,10 @@ class Addressbook_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
      * @param string $filter json encoded
      * @param string $paging json encoded
      * @return array
-     * 
-     * @todo add timezone?
      */
     public function searchContacts($filter, $paging)
     {
-        $filter = new Addressbook_Model_ContactFilter(Zend_Json::decode($filter));
-        $pagination = new Tinebase_Model_Pagination(Zend_Json::decode($paging));
-        
-        $contacts = Addressbook_Controller_Contact::getInstance()->search($filter, $pagination);
-        //$contacts->setTimezone($this->_userTimezone);
-        //$contacts->convertDates = true;
-        
-        return array(
-            'results'       => $this->_multipleContactsToJson($contacts),
-            'totalcount'    => Addressbook_Controller_Contact::getInstance()->searchCount($filter)
-        );
+        return $this->_search($filter, $paging, Addressbook_Controller_Contact::getInstance(), 'Addressbook_Model_ContactFilter');
     }    
 
     /****************************************** save / delete contacts ****************************/
@@ -75,12 +63,12 @@ class Addressbook_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     /**
      * delete multiple contacts
      *
-     * @param array $_contactIDs list of contactId's to delete
+     * @param array $ids list of contactId's to delete
      * @return array
      */
-    public function deleteContacts($_contactIds)
+    public function deleteContacts($ids)
     {
-        return $this->_delete($_contactIds, Addressbook_Controller_Contact::getInstance());
+        return $this->_delete($ids, Addressbook_Controller_Contact::getInstance());
     }
     
     /**
@@ -131,6 +119,24 @@ class Addressbook_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     }  
     
     /****************************************** helper functions ***********************************/
+    
+    /**
+     * returns multiple records prepared for json transport
+     *
+     * @param Tinebase_Record_RecordSet $_leads Crm_Model_Lead
+     * @return array data
+     */
+    protected function _multipleRecordsToJson(Tinebase_Record_RecordSet $_records)
+    {
+        $result = parent::_multipleRecordsToJson($_records);
+        
+        foreach ($result as &$contact) {
+            $contact['jpegphoto'] = $this->_getImageLink($contact);
+        }
+        
+        return $result;
+    }
+    
 
     /**
      * returns contact prepared for json transport
@@ -153,29 +159,8 @@ class Addressbook_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
         return $result;
     }
 
-    /**
-     * returns multiple contacts prepared for json transport
-     *
-     * @param Tinebase_Record_RecordSet $_contacts Addressbook_Model_Contact
-     * @return array contacts data
-     * 
-     * @deprecated 
-     */
-    protected function _multipleContactsToJson(Tinebase_Record_RecordSet $_contacts)
-    {        
-        // get acls for contacts
-        Tinebase_Container::getInstance()->getGrantsOfRecords($_contacts, Tinebase_Core::get('currentAccount'));
-        
-        $_contacts->setTimezone(Tinebase_Core::get('userTimeZone'));
-        $result = $_contacts->toArray();
-        
-        foreach ($result as &$contact) {
-            $contact['jpegphoto'] = $this->_getImageLink($contact);
-        }
-        
-        return $result;
-    }
     
+
     /**
      * returns a image link
      * 

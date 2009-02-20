@@ -26,70 +26,73 @@ msgstr ""
 msgid "There are no custom fields yet"
 msgstr ""
 
-#: js/widgets/ActivitiesPanel.js:146
+#: js/widgets/ActivitiesPanel.js:138
 msgid "Add a Note..."
 msgstr "Добави записка"
 
-#: js/widgets/ActivitiesPanel.js:161 js/widgets/ActivitiesPanel.js:173
+#: js/widgets/ActivitiesPanel.js:153 js/widgets/ActivitiesPanel.js:165
 #: js/widgets/container/ContainerGrants.js:87
 msgid "Add"
 msgstr "Добави "
 
-#: js/widgets/ActivitiesPanel.js:161 js/widgets/ActivitiesPanel.js:404
-#: js/widgets/ActivitiesPanel.js:532
+#: js/widgets/ActivitiesPanel.js:153 js/widgets/ActivitiesPanel.js:396
+#: js/widgets/ActivitiesPanel.js:525
 msgid "Note"
 msgstr "Записка"
 
-#: js/widgets/ActivitiesPanel.js:174 js/widgets/ActivitiesPanel.js:331
+#: js/widgets/ActivitiesPanel.js:166 js/widgets/ActivitiesPanel.js:323
 msgid "Add new note"
 msgstr "Добави нова записка"
 
-#: js/widgets/ActivitiesPanel.js:205
-msgid "Recent Activities"
-msgstr "Последно изпълнени операции"
+#: js/widgets/ActivitiesPanel.js:197
+#, fuzzy
+msgid "Notes"
+msgstr "Записка"
 
-#: js/widgets/ActivitiesPanel.js:269 js/widgets/ActivitiesPanel.js:330
+#: js/widgets/ActivitiesPanel.js:261 js/widgets/ActivitiesPanel.js:322
 msgid "Add Note"
 msgstr "Добави записка"
 
-#: js/widgets/ActivitiesPanel.js:270
+#: js/widgets/ActivitiesPanel.js:262
 msgid "Enter new note:"
 msgstr "Задай нова записка"
 
-#: js/widgets/ActivitiesPanel.js:317
+#: js/widgets/ActivitiesPanel.js:309
 #, fuzzy
 msgid "Add a {0} Note"
 msgstr "Добави една {0} бележка"
 
-#: js/widgets/ActivitiesPanel.js:402 js/widgets/ActivitiesPanel.js:537
+#: js/widgets/ActivitiesPanel.js:394 js/widgets/ActivitiesPanel.js:530
 msgid "Type"
 msgstr "Тип"
 
-#: js/widgets/ActivitiesPanel.js:405
+#: js/widgets/ActivitiesPanel.js:397
 msgid "Created By"
 msgstr "Зададен/Обработен от"
 
-#: js/widgets/ActivitiesPanel.js:406
+#: js/widgets/ActivitiesPanel.js:398
 msgid "Timestamp"
 msgstr "Дата"
 
-#: js/widgets/ActivitiesPanel.js:420
-msgid "Displaying notes {0} - {1} of {2}"
+#: js/widgets/ActivitiesPanel.js:412
+#, fuzzy
+msgid "Displaying history records {0} - {1} of {2}"
 msgstr "Покажи записки {0} - {1} от {2}"
 
-#: js/widgets/ActivitiesPanel.js:421
-msgid "No notes to display"
+#: js/widgets/ActivitiesPanel.js:413
+#, fuzzy
+msgid "No history to display"
 msgstr "Няма намерени записи"
 
-#: js/widgets/ActivitiesPanel.js:520 Export/Pdf.php:462
-msgid "Activities"
-msgstr "Операции"
+#: js/widgets/ActivitiesPanel.js:511
+msgid "History"
+msgstr ""
 
-#: js/widgets/ActivitiesPanel.js:533
+#: js/widgets/ActivitiesPanel.js:526
 msgid "Time"
 msgstr "Време"
 
-#: js/widgets/ActivitiesPanel.js:535
+#: js/widgets/ActivitiesPanel.js:528
 msgid "User"
 msgstr "Потребител"
 
@@ -131,42 +134,43 @@ msgstr "Съхранен в"
 msgid "Transfering {0}..."
 msgstr "Създаване {0}..."
 
-#: js/widgets/EditDialog.js:363 js/widgets/EditDialog.js:399
-#: js/widgets/app/GridPanel.js:470 js/widgets/tags/TagsPanel.js:254
+#: js/widgets/EditDialog.js:366 js/widgets/EditDialog.js:402
+#: js/widgets/app/GridPanel.js:509 js/widgets/tags/TagsPanel.js:254
 #: js/widgets/tags/TagsPanel.js:363 js/widgets/tags/TagsPanel.js:396
 msgid "Failed"
 msgstr "Грешка"
 
-#: js/widgets/EditDialog.js:363
+#: js/widgets/EditDialog.js:366
 #, fuzzy
 msgid "Could not save {0}."
 msgstr "Тага не беше създаден."
 
-#: js/widgets/EditDialog.js:378
+#: js/widgets/EditDialog.js:381
 msgid "Errors"
 msgstr ""
 
-#: js/widgets/EditDialog.js:378
+#: js/widgets/EditDialog.js:381
 #, fuzzy
 msgid "Please fix the errors noted."
 msgstr "Моля задайте новото име на"
 
-#: js/widgets/EditDialog.js:386 js/widgets/container/ContainerTree.js:303
-#: js/widgets/app/GridPanel.js:455 js/MainScreen.js:433
+#: js/widgets/EditDialog.js:389 js/widgets/container/ContainerTree.js:379
+#: js/widgets/app/GridPanel.js:494
+#: js/widgets/grid/PersistentFilterPicker.js:123 js/MainScreen.js:433
 msgid "Confirm"
 msgstr "Потвърди"
 
-#: js/widgets/EditDialog.js:386
+#: js/widgets/EditDialog.js:389
 #, fuzzy
 msgid "Do you really want to delete this {0}?"
 msgstr "Наистина ли желаете да изтриете "
 
-#: js/widgets/EditDialog.js:388 js/widgets/app/GridPanel.js:458
+#: js/widgets/EditDialog.js:391 js/widgets/app/GridPanel.js:497
 #, fuzzy
 msgid "Deleting {0}"
 msgstr "Изтрива таг"
 
-#: js/widgets/EditDialog.js:399 js/widgets/app/GridPanel.js:470
+#: js/widgets/EditDialog.js:402 js/widgets/app/GridPanel.js:509
 #, fuzzy
 msgid "Could not delete {0}."
 msgstr "Неуспешно изтриване на тага(-овете)"
@@ -180,7 +184,7 @@ msgid "setting new language..."
 msgstr "задава нов език..."
 
 #: js/widgets/LangChooser.js:72 js/widgets/LangChooser.js:94
-#: js/widgets/TimezoneChooser.js:74
+#: js/widgets/TimezoneChooser.js:74 js/widgets/grid/FilterToolbar.js:574
 msgid "Please Wait"
 msgstr "Моля изчакайте"
 
@@ -257,77 +261,92 @@ msgstr "Моите {0}"
 msgid "Shared {0}"
 msgstr "Общи  {0}"
 
-#: js/widgets/container/ContainerTree.js:149
+#: js/widgets/container/ContainerTree.js:150
 #, fuzzy
 msgid "Other Users {0}"
 msgstr "Други потребители {0}"
 
-#: js/widgets/container/ContainerTree.js:275
+#: js/widgets/container/ContainerTree.js:347
 #, fuzzy
 msgid "New {0}"
 msgstr "Нови {0}"
 
-#: js/widgets/container/ContainerTree.js:275
+#: js/widgets/container/ContainerTree.js:347
 #, fuzzy
 msgid "Please enter the name of the new {0}:"
 msgstr "Моля задай името на новите {0}:"
 
-#: js/widgets/container/ContainerTree.js:277
-#: js/widgets/container/ContainerTree.js:305
-#: js/widgets/container/ContainerTree.js:337
-#: js/widgets/container/ContainerGrants.js:34 js/Login.js:120
+#: js/widgets/container/ContainerTree.js:350
+msgid "No {0} added"
+msgstr ""
+
+#: js/widgets/container/ContainerTree.js:350
+#: js/widgets/container/ContainerTree.js:414
+msgid "You have to supply a {0} name!"
+msgstr ""
+
+#: js/widgets/container/ContainerTree.js:353
+#: js/widgets/container/ContainerTree.js:381
+#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerGrants.js:34
+#: js/widgets/grid/PersistentFilterPicker.js:125 js/Login.js:120
 msgid "Please wait"
 msgstr "Моля изчакайте"
 
-#: js/widgets/container/ContainerTree.js:277
+#: js/widgets/container/ContainerTree.js:353
 #, fuzzy
 msgid "Creating {0}..."
 msgstr "Създаване {0}..."
 
-#: js/widgets/container/ContainerTree.js:303
+#: js/widgets/container/ContainerTree.js:379
 #, fuzzy
 msgid "Do you really want to delete the {0} \"{1}\"?"
 msgstr "Наистина ли искате да изтриете {0} \"{0}\"?"
 
-#: js/widgets/container/ContainerTree.js:305
+#: js/widgets/container/ContainerTree.js:381
 #, fuzzy
 msgid "Deleting {0} \"{1}\""
 msgstr "Изтриване {0} \"{0}\""
 
-#: js/widgets/container/ContainerTree.js:332
+#: js/widgets/container/ContainerTree.js:408
 #, fuzzy
 msgid "Please enter the new name of the {0}:"
 msgstr "Моля задай новото име на  {0}:"
 
-#: js/widgets/container/ContainerTree.js:337
+#: js/widgets/container/ContainerTree.js:414
+#, fuzzy
+msgid "Not renamed {0}"
+msgstr "Преименуване {0}"
+
+#: js/widgets/container/ContainerTree.js:417
 #, fuzzy
 msgid "Updating {0} \"{1}\""
 msgstr "Актуализиране {0} \"{0}\""
 
-#: js/widgets/container/ContainerTree.js:371
+#: js/widgets/container/ContainerTree.js:451
 #, fuzzy
-msgid "Manage Permissions for {0} :\"{1}\""
+msgid "Manage Permissions for {0} \"{1}\""
 msgstr "Управление на правата за {0} :\"{0}\""
 
-#: js/widgets/container/ContainerTree.js:384 js/widgets/app/GridPanel.js:168
+#: js/widgets/container/ContainerTree.js:464 js/widgets/app/GridPanel.js:189
 #, fuzzy
 msgid "Add {0}"
 msgstr "Добавяне {0}"
 
-#: js/widgets/container/ContainerTree.js:390 js/widgets/app/GridPanel.js:178
-#: js/widgets/app/GridPanel.js:179 js/widgets/app/GridPanel.js:181
+#: js/widgets/container/ContainerTree.js:470 js/widgets/app/GridPanel.js:199
+#: js/widgets/app/GridPanel.js:200 js/widgets/app/GridPanel.js:202
 #, fuzzy
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "Изтриване {0}"
 msgstr[1] "Изтриване {0}"
 
-#: js/widgets/container/ContainerTree.js:396
+#: js/widgets/container/ContainerTree.js:476
 #, fuzzy
 msgid "Rename {0}"
 msgstr "Преименуване {0}"
 
-#: js/widgets/container/ContainerTree.js:402
+#: js/widgets/container/ContainerTree.js:482
 msgid "Manage permissions"
 msgstr "Управление и обработка на правата"
 
@@ -385,22 +404,33 @@ msgstr "Администратор"
 msgid "Permissions"
 msgstr "Права"
 
-#: js/widgets/app/GridPanel.js:157
+#: js/widgets/app/MainScreen.js:101
+#, fuzzy
+msgid "Saved filter"
+msgstr "съхрани филтър"
+
+#: js/widgets/app/GridPanel.js:178
 #, fuzzy
 msgid "Edit {0}"
 msgstr "Редакция"
 
-#: js/widgets/app/GridPanel.js:252
+#: js/widgets/app/GridPanel.js:273
 #, fuzzy
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "Покажи записки {0} - {1} от {2}"
 
-#: js/widgets/app/GridPanel.js:253 js/widgets/app/GridPanel.js:273
+#: js/widgets/app/GridPanel.js:274
 #, fuzzy
 msgid "No {0} to display"
 msgstr "Няма намерени тагове"
 
-#: js/widgets/app/GridPanel.js:453
+#: js/widgets/app/GridPanel.js:294
+msgid ""
+"No {0} where found. Please try to change your filter-criteria, view-options "
+"or the {1} you search in."
+msgstr ""
+
+#: js/widgets/app/GridPanel.js:492
 #, fuzzy
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
@@ -412,13 +442,32 @@ msgid "Please Select a Group"
 msgstr "Моля селектирай група"
 
 #: js/widgets/AccountpickerPanel.js:55
-#, fuzzy
-msgid "none"
-msgstr "бележка"
+msgid "nobody"
+msgstr ""
 
 #: js/widgets/AccountpickerPanel.js:135
 msgid "please select an account"
 msgstr "Моля избери достъп"
+
+#: js/widgets/grid/PersistentFilterPicker.js:78
+#, fuzzy
+msgid "My saved filters"
+msgstr "съхрани филтър"
+
+#: js/widgets/grid/PersistentFilterPicker.js:119
+#, fuzzy
+msgid "Delete Filter"
+msgstr "Изтрий всички филтри"
+
+#: js/widgets/grid/PersistentFilterPicker.js:123
+#, fuzzy
+msgid "Do you really want to delete the Filter \"{0}\"?"
+msgstr "Наистина ли желаете да изтриете "
+
+#: js/widgets/grid/PersistentFilterPicker.js:125
+#, fuzzy
+msgid "Deleting Filter \"{0}\""
+msgstr "Изтрива таг"
 
 #: js/widgets/grid/FilterModel.js:129
 msgid "contains"
@@ -543,37 +592,56 @@ msgstr "равно на"
 msgid "next year"
 msgstr "Търси"
 
-#: js/widgets/grid/FilterToolbar.js:115
+#: js/widgets/grid/FilterToolbar.js:120
 msgid "add new filter"
 msgstr "Добови филтър"
 
-#: js/widgets/grid/FilterToolbar.js:121
-msgid "Delete all filters"
+#: js/widgets/grid/FilterToolbar.js:126
+#, fuzzy
+msgid "reset all filters"
 msgstr "Изтрий всички филтри"
 
-#: js/widgets/grid/FilterToolbar.js:127
+#: js/widgets/grid/FilterToolbar.js:132
 msgid "start search"
 msgstr "започни търсене"
 
-#: js/widgets/grid/FilterToolbar.js:136
+#: js/widgets/grid/FilterToolbar.js:140 js/widgets/grid/FilterToolbar.js:568
 msgid "save filter"
 msgstr "съхрани филтър"
 
-#: js/widgets/grid/FilterToolbar.js:206
+#: js/widgets/grid/FilterToolbar.js:223
 msgid "select a field"
 msgstr "селектирай поле"
 
-#: js/widgets/grid/FilterToolbar.js:230
+#: js/widgets/grid/FilterToolbar.js:248
 msgid "Delete this filter"
 msgstr "Изтрий филтър"
 
-#: js/widgets/grid/FilterToolbar.js:253
+#: js/widgets/grid/FilterToolbar.js:279
 msgid "and"
 msgstr "и"
 
-#: js/widgets/grid/FilterToolbar.js:272
+#: js/widgets/grid/FilterToolbar.js:298
 msgid "Show"
 msgstr "Покажи"
+
+#: js/widgets/grid/FilterToolbar.js:568
+#, fuzzy
+msgid "Please enter a name for the filter"
+msgstr "Моля задай името на новите {0}:"
+
+#: js/widgets/grid/FilterToolbar.js:571
+msgid "Filter not Saved"
+msgstr ""
+
+#: js/widgets/grid/FilterToolbar.js:571
+msgid "You have to supply a name for the filter!"
+msgstr ""
+
+#: js/widgets/grid/FilterToolbar.js:574
+#, fuzzy
+msgid "Saving filter"
+msgstr "съхрани филтър"
 
 #: js/widgets/tags/TagCombo.js:38
 msgid "tag name"
@@ -879,6 +947,10 @@ msgstr ""
 "Неуспешено зареждане (Upload) на снимка. Моля обърнете се към Вашият "
 "администратор."
 
+#: js/ux/form/RecordsComboBox.js:27
+msgid "Software Version"
+msgstr ""
+
 #: js/ux/ConnectionStatus.js:52
 msgid "online"
 msgstr "мрежов режим на работа"
@@ -922,7 +994,7 @@ msgid_plural "to do lists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/ExceptionDialog.js:26 Frontend/Http.php:290
+#: js/ExceptionDialog.js:26 Frontend/Http.php:294
 msgid "Abnormal End"
 msgstr "Програмен срив"
 
@@ -930,7 +1002,7 @@ msgstr "Програмен срив"
 msgid "Send Report"
 msgstr "Изпрати рапорт"
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:291
+#: js/ExceptionDialog.js:51 Frontend/Http.php:295
 msgid "An error occurred, the program ended abnormal."
 msgstr "Грешка, водеща до рограмен срив."
 
@@ -967,32 +1039,38 @@ msgstr "Край на изпращането"
 msgid "Your report has been sent. Thanks for your contribution"
 msgstr "Вашият протокол е изпратен. Блегодарим Ви за помощта."
 
-#: js/tineInit.js:208
+#: js/tineInit.js:218
 msgid "Connection lost, please check your network!"
 msgstr "Връзка е прекъсната. Моля проверете връзката Ви с интернет!"
 
-#: js/tineInit.js:218 Frontend/Http.php:263
+#: js/tineInit.js:226
+msgid ""
+"The server did not respond to your request. Please check your network or "
+"contact your administrator."
+msgstr ""
+
+#: js/tineInit.js:235 Frontend/Http.php:267
 msgid "Authorisation Required"
 msgstr "Изискано упълномощаване"
 
-#: js/tineInit.js:219
+#: js/tineInit.js:236
 msgid "Your session timed out. You need to login again."
 msgstr ""
 "Времевият лимит на сесията е преминат. Трявва да се регистрирате наново."
 
-#: js/tineInit.js:232
+#: js/tineInit.js:249
 msgid "Insufficient Rights"
 msgstr ""
 
-#: js/tineInit.js:233
+#: js/tineInit.js:250
 msgid "Sorry, you are not permitted to perform this action"
 msgstr ""
 
-#: js/tineInit.js:242
+#: js/tineInit.js:259
 msgid "Concurrent Updates"
 msgstr "Конкурентно актуализиране"
 
-#: js/tineInit.js:243
+#: js/tineInit.js:260
 msgid ""
 "Someone else saved this record while you where editing the data. You need to "
 "reload and make your changes again."
@@ -1054,49 +1132,49 @@ msgstr "Неуспешен вход"
 msgid "Your username and/or your password are wrong!!!"
 msgstr "Вашето(-ите) потребителско име или(и) парола е (са) грешни!!!"
 
-#: Frontend/Http.php:264
+#: Frontend/Http.php:268
 #, fuzzy
 msgid "Your session is not valid. You need to login again."
 msgstr ""
 "Времевият лимит на сесията е преминат. Трявва да се регистрирате наново."
 
-#: Setup/setup.xml:1830
+#: Setup/setup.xml:1941
 msgid "note"
 msgstr "бележка"
 
-#: Setup/setup.xml:1835
+#: Setup/setup.xml:1946
 msgid "default note type"
 msgstr "отсъстващ тип на бележка"
 
-#: Setup/setup.xml:1861
+#: Setup/setup.xml:1972
 msgid "telephone"
 msgstr "телефон"
 
-#: Setup/setup.xml:1866
+#: Setup/setup.xml:1977
 msgid "telephone call"
 msgstr "телефонно позвъняване"
 
-#: Setup/setup.xml:1892
+#: Setup/setup.xml:2003
 msgid "email"
 msgstr "Имейл"
 
-#: Setup/setup.xml:1897
+#: Setup/setup.xml:2008
 msgid "email contact"
 msgstr "Имейл контакт"
 
-#: Setup/setup.xml:1923
+#: Setup/setup.xml:2034
 msgid "created"
 msgstr "създаден"
 
-#: Setup/setup.xml:1928
+#: Setup/setup.xml:2039
 msgid "record created"
 msgstr "създадена документация"
 
-#: Setup/setup.xml:1954
+#: Setup/setup.xml:2065
 msgid "changed"
 msgstr "променен"
 
-#: Setup/setup.xml:1959
+#: Setup/setup.xml:2070
 msgid "record changed"
 msgstr "променена документация"
 
@@ -1125,6 +1203,18 @@ msgstr "Експортирай датата"
 msgid "Created by"
 msgstr "Обработен/създаден от "
 
+#: Export/Pdf.php:462
+msgid "Activities"
+msgstr "Операции"
+
+#: Notes.php:295
+msgid "by"
+msgstr ""
+
+#: Notes.php:301
+msgid "Changed fields:"
+msgstr ""
+
 #: Acl/Rights.php:116
 msgid "Report bugs"
 msgstr "Рапорт на грешките"
@@ -1140,6 +1230,19 @@ msgstr "Провери версия"
 #: Acl/Rights.php:121
 msgid "Check tine20.org for new versions"
 msgstr "Провери tine20.org за нови версии"
+
+#, fuzzy
+#~ msgid "none"
+#~ msgstr "бележка"
+
+#~ msgid "Recent Activities"
+#~ msgstr "Последно изпълнени операции"
+
+#~ msgid "Displaying notes {0} - {1} of {2}"
+#~ msgstr "Покажи записки {0} - {1} от {2}"
+
+#~ msgid "No notes to display"
+#~ msgstr "Няма намерени записи"
 
 #, fuzzy
 #~ msgid "Loading {0}..."
@@ -1704,10 +1807,6 @@ msgstr "Провери tine20.org за нови версии"
 #~ msgstr "Задай име на таг"
 
 #, fuzzy
-#~ msgid "Notes"
-#~ msgstr "Записка"
-
-#, fuzzy
 #~ msgid "Enter description..."
 #~ msgstr "Задай описание"
 
@@ -1726,10 +1825,6 @@ msgstr "Провери tine20.org за нови версии"
 #, fuzzy
 #~ msgid "Displaying software {0} - {1} of {2}"
 #~ msgstr "Покажи записки {0} - {1} от {2}"
-
-#, fuzzy
-#~ msgid "No software to display"
-#~ msgstr "Няма намерени записи"
 
 #, fuzzy
 #~ msgid "add template"

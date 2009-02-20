@@ -175,20 +175,25 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
      */
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
+            allowSaving: true,
             filterModels: [
                 //{label: this.app.i18n._('Timesheet'),    field: 'query',    operators: ['contains']}, // query only searches description
                 new Tine.Timetracker.TimeAccountGridFilter(),
                 {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Number'), field: 'timeaccount_number'},
-                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Title'),   field: 'timeaccount_title'},
+                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Title'),  field: 'timeaccount_title'},
+                new Tine.Timetracker.TimeAccountStatusGridFilter(),
                 {label: this.app.i18n._('Account'),      field: 'account_id', valueType: 'user'},
                 {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date', pastOnly: true},
-                {label: this.app.i18n._('Description'),  field: 'description' },
-                {label: this.app.i18n._('Billable'),     field: 'is_billable', valueType: 'bool', defaultValue: true },
+                {label: this.app.i18n._('Description'),  field: 'ts.description', defaultOperator: 'contains'},
+                {label: this.app.i18n._('Billable'),     field: 'ts.is_billable', valueType: 'bool', defaultValue: true },
                 {label: this.app.i18n._('Cleared'),      field: 'is_cleared',  valueType: 'bool', defaultValue: false },
                 new Tine.widgets.tags.TagFilter({app: this.app})
              ],
              defaultFilter: 'start_date',
-             filters: []
+             filters: [
+                {field: 'start_date', operator: 'within', value: 'weekThis'},
+                {field: 'account_id', operator: 'equals', value: Tine.Tinebase.registry.get('currentAccount')}
+             ]
         });
     },    
     
@@ -205,7 +210,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             sortable: true,
             dataIndex: 'start_date',
             renderer: Tine.Tinebase.common.dateRenderer
-        }, {
+        },{
             id: 'start_time',
             hidden: true,
             header: this.app.i18n._("Start time"),
@@ -213,7 +218,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             sortable: true,
             dataIndex: 'start_time',
             renderer: Tine.Tinebase.common.timeRenderer
-        }, {
+        },{
             id: 'timeaccount_id',
             header: this.app.i18n._("Time Account"),
             width: 500,
@@ -221,6 +226,17 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             dataIndex: 'timeaccount_id',
             renderer: function(timeaccount) {
                 return new Tine.Timetracker.Model.Timeaccount(timeaccount).getTitle();
+            }
+        },{
+            id: 'timeaccount_closed',
+            hidden: true,
+            header: this.app.i18n._("Time Account closed"),
+            width: 100,
+            sortable: true,
+            dataIndex: 'timeaccount_closed',
+            renderer: function(a, b, record) {
+            	var isopen = (record.data.timeaccount_id.is_open == '1');
+                return Tine.Tinebase.common.booleanRenderer(!isopen);
             }
         },{
             id: 'description',
@@ -238,7 +254,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             header: this.app.i18n._("Billable"),
             width: 100,
             sortable: true,
-            dataIndex: 'is_billable',
+            dataIndex: 'is_billable_combined',
             renderer: Tine.Tinebase.common.booleanRenderer
         },{
             id: 'is_cleared',
@@ -248,6 +264,13 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             sortable: true,
             dataIndex: 'is_cleared',
             renderer: Tine.Tinebase.common.booleanRenderer
+        },{
+            id: 'billed_in',
+            hidden: true,
+            header: this.app.i18n._("Cleared in"),
+            width: 150,
+            sortable: true,
+            dataIndex: 'billed_in'
         },{
             id: 'account_id',
             header: this.app.i18n._("Account"),
@@ -278,12 +301,12 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
                         '<div class="bordercorner_2"></div>',
                         '<div class="bordercorner_3"></div>',
                         '<div class="bordercorner_4"></div>',
-                        '<div class="preview-panel-declaration">timeframe</div>',
+                        '<div class="preview-panel-declaration">' /*+ this.app.i18n._('timeframe')*/ + '</div>',
                         '<div class="preview-panel-timesheet-leftside preview-panel-left">',
                             '<span class="preview-panel-bold">',
-                            'First Entry<br/>',
-                            'Last Entry<br/>',
-                            'Duration<br/>',
+                            /*'First Entry'*/'<br/>',
+                            /*'Last Entry*/'<br/>',
+                            /*'Duration*/'<br/>',
                             '<br/>',
                             '</span>',
                         '</div>',
@@ -302,20 +325,20 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
                         '<div class="bordercorner_gray_2"></div>',
                         '<div class="bordercorner_gray_3"></div>',
                         '<div class="bordercorner_gray_4"></div>',
-                        '<div class="preview-panel-declaration">summary</div>',
+                        '<div class="preview-panel-declaration">'/* + this.app.i18n._('summary')*/ + '</div>',
                         '<div class="preview-panel-timesheet-leftside preview-panel-left">',
                             '<span class="preview-panel-bold">',
-                            'Total Timesheets<br/>',
-                            'Total Time<br/>',
-                            'Billable Timesheets<br/>',
-                            'Time of Billable Timesheets<br/>',
+                            this.app.i18n._('Total Timesheets') + '<br/>',
+                            this.app.i18n._('Billable Timesheets') + '<br/>',
+                            this.app.i18n._('Total Time') + '<br/>',
+                            this.app.i18n._('Time of Billable Timesheets') + '<br/>',
                             '</span>',
                         '</div>',
                         '<div class="preview-panel-timesheet-rightside preview-panel-left">',
                             '<span class="preview-panel-nonbold">',
                             '{count}<br/>',
-                            '{sum}<br/>',
                             '{countbillable}<br/>',
+                            '{sum}<br/>',
                             '{sumbillable}<br/>',
                             '</span>',
                         '</div>',
@@ -340,6 +363,7 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
             },
             
             showMulti: function(sm, body) {
+            	
                 var data = {
                     count: sm.getCount(),
                     countbillable: 0,

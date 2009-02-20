@@ -58,5 +58,13 @@ Tine.widgets.tags.TagCombo = Ext.extend(Ext.ux.form.ClearableComboBox, {
                 this.fireEvent('change', this, v, this.startValue);
             }
         }, this);
+    },
+    
+    setValue: function(value) {
+        if(typeof value === 'object' && Object.prototype.toString.call(value) === '[object Object]') {
+            this.store.loadData({results: [value]});
+            value = value.id;
+        }
+        Tine.widgets.tags.TagCombo.superclass.setValue.call(this, value);
     }
 });

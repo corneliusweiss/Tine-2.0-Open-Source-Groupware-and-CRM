@@ -5,7 +5,7 @@
  * @subpackage  Frontend
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id:Json.php 5576 2008-11-21 17:04:48Z p.schuele@metaways.de $
  * 
  */
@@ -43,6 +43,8 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
         $this->_timesheetController = Timetracker_Controller_Timesheet::getInstance();
         $this->_timeaccountController = Timetracker_Controller_Timeaccount::getInstance();
     }
+    
+    /************************************** protected helper functions **************************************/
     
     /**
      * returns record prepared for json transport
@@ -186,6 +188,8 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
              $timeaccount->container_id = $containerId;
          }
     }
+
+    /************************************** public API **************************************/
     
     /**
      * Search for records matching given arguments
@@ -295,4 +299,5 @@ class Timetracker_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
     {
         $this->_delete($ids, $this->_timeaccountController);
     }    
+
 }

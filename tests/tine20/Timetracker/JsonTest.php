@@ -4,7 +4,7 @@
  * 
  * @package     Timetracker
  * @license     http://www.gnu.org/licenses/agpl.html
- * @copyright   Copyright (c) 2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2008-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Philipp Schuele <p.schuele@metaways.de>
  * @version     $Id:JsonTest.php 5576 2008-11-21 17:04:48Z p.schuele@metaways.de $
  * 
@@ -370,6 +370,32 @@ class Timetracker_JsonTest extends PHPUnit_Framework_TestCase
         // cleanup
         $this->_json->deleteTimeaccounts($timesheetData['timeaccount_id']['id']);
     }
+    
+    /**
+     * try to search for Timesheets (with combined is_billable)
+     *
+     */
+    public function testSearchTimesheetsWithCombinedIsBillable()
+    {
+        // create
+        $timesheet = $this->_getTimesheet();
+        $timesheetData = $this->_json->saveTimesheet(Zend_Json::encode($timesheet->toArray()));
+        
+        // update timeaccount -> is_billable = false
+        $ta = Timetracker_Controller_Timeaccount::getInstance()->get($timesheetData['timeaccount_id']['id']);
+        $ta->is_billable = 0;
+        Timetracker_Controller_Timeaccount::getInstance()->update($ta);
+        
+        // search & check
+        $search = $this->_json->searchTimesheets(Zend_Json::encode($this->_getTimesheetFilter()), Zend_Json::encode($this->_getPaging()));
+        $this->assertEquals(0, $search['results'][0]['is_billable_combined']);
+        $this->assertEquals(1, $search['totalcount']);
+        $this->assertEquals(30, $search['totalsum']);
+        $this->assertEquals(0, $search['totalsumbillable']);
+        
+        // cleanup
+        $this->_json->deleteTimeaccounts($timesheetData['timeaccount_id']['id']);
+    }
 
     /******* export tests *****************/
     
@@ -429,6 +455,122 @@ class Timetracker_JsonTest extends PHPUnit_Framework_TestCase
         // cleanup / delete file
         unlink($result);
         $this->_json->deleteTimeaccounts($timesheetData['timeaccount_id']['id']);
+    }
+
+    /******* persistent filter tests *****************/
+    
+    /**
+     * try to save and search persistent filter
+     * 
+     * @todo move this test to tinebase json tests?
+     */
+    public function testSavePersistentTimesheetFilter()
+    {
+        $persistentFiltersJson = new Tinebase_Frontend_Json_PersistentFilter();
+        
+        // create
+        $filterName = Tinebase_Record_Abstract::generateUID();
+        $persistentFiltersJson->save(
+            Zend_Json::encode($this->_getTimesheetFilter()), 
+            $filterName, 
+            'Timetracker_Model_Timesheet'
+        );
+        
+        // get
+        $persistentFilters = $persistentFiltersJson->search(Zend_Json::encode($this->_getPersistentFilterFilter($filterName)));
+        //print_r($persistentFilters);
+        
+        //check
+        $this->assertEquals(1, count($persistentFilters['totalcount'])); 
+        $this->assertEquals($filterName, $persistentFilters['results'][0]['name']);
+        $this->assertEquals(Tinebase_Core::getUser()->getId(), $persistentFilters['results'][0]['account_id']);
+        $this->assertEquals(Tinebase_Core::getUser()->getId(), $persistentFilters['results'][0]['created_by']);
+        $this->assertEquals($persistentFilters['results'][0]['filters'], $this->_getTimesheetFilter());
+
+        // cleanup / delete file
+        $persistentFiltersJson->delete($persistentFilters['results'][0]['id']);
+    }
+
+    /**
+     * try to save/update and search persistent filter
+     * 
+     * @todo move this test to tinebase json tests?
+     */
+    public function testUpdatePersistentTimesheetFilter()
+    {
+        $persistentFiltersJson = new Tinebase_Frontend_Json_PersistentFilter();
+        $tsFilter = $this->_getTimesheetFilter();
+        
+        // create
+        $filterName = Tinebase_Record_Abstract::generateUID();
+        $persistentFiltersJson->save(
+            Zend_Json::encode($tsFilter), 
+            $filterName, 
+            'Timetracker_Model_Timesheet'
+        );
+
+        $persistentFilters = $persistentFiltersJson->search(Zend_Json::encode($this->_getPersistentFilterFilter($filterName)));
+        
+        // update
+        $updatedFilter = $tsFilter;
+        $updatedFilter[0]['value'] = 'blubb';
+        $persistentFiltersJson->save(
+            Zend_Json::encode($updatedFilter), 
+            $filterName, 
+            'Timetracker_Model_Timesheet'
+        );
+        
+        // get
+        $persistentFiltersUpdated = $persistentFiltersJson->search(Zend_Json::encode($this->_getPersistentFilterFilter($filterName)));
+        //print_r($persistentFiltersUpdated);
+        
+        //check
+        $this->assertEquals(1, count($persistentFiltersUpdated['totalcount'])); 
+        $this->assertEquals($filterName, $persistentFiltersUpdated['results'][0]['name']);
+        $this->assertEquals(Tinebase_Core::getUser()->getId(), $persistentFiltersUpdated['results'][0]['account_id']);
+        $this->assertEquals(Tinebase_Core::getUser()->getId(), $persistentFiltersUpdated['results'][0]['last_modified_by']);
+        $this->assertEquals($persistentFiltersUpdated['results'][0]['filters'], $updatedFilter);
+        $this->assertEquals($persistentFilters['results'][0]['id'], $persistentFiltersUpdated['results'][0]['id']);
+
+        // cleanup / delete file
+        $persistentFiltersJson->delete($persistentFiltersUpdated['results'][0]['id']);
+    }
+
+    /**
+     * try to search timesheets with saved persistent filter id
+     * 
+     * @todo move this test to tinebase json tests?
+     */
+    public function testSearchTimesheetsWithPersistentFilter()
+    {
+        $persistentFiltersJson = new Tinebase_Frontend_Json_PersistentFilter();
+        $tsFilter = $this->_getTimesheetFilter();
+        
+        // create
+        $filterName = Tinebase_Record_Abstract::generateUID();
+        $persistentFiltersJson->save(
+            Zend_Json::encode($tsFilter), 
+            $filterName, 
+            'Timetracker_Model_Timesheet'
+        );
+        $timesheet = $this->_getTimesheet();
+        $timesheetData = $this->_json->saveTimesheet(Zend_Json::encode($timesheet->toArray()));
+        
+        // search persistent filter
+        $persistentFilters = $persistentFiltersJson->search(Zend_Json::encode($this->_getPersistentFilterFilter($filterName)));
+        
+        //check
+        $search = $this->_json->searchTimesheets($persistentFilters['results'][0]['id'], Zend_Json::encode($this->_getPaging()));
+        $this->assertEquals($timesheet->description, $search['results'][0]['description']);
+        $this->assertType('array', $search['results'][0]['timeaccount_id'], 'timeaccount_id is not resolved');
+        $this->assertType('array', $search['results'][0]['account_id'], 'account_id is not resolved');
+        $this->assertEquals(1, $search['totalcount']);
+        $this->assertEquals(30, $search['totalsum']);
+        $this->assertEquals($tsFilter, $search['filter']);
+        
+        // cleanup / delete file
+        $persistentFiltersJson->delete($persistentFilters['results'][0]['id']);
+        $this->_json->deleteTimeaccounts($timesheetData['timeaccount_id']['id']);        
     }
     
     /************ protected helper funcs *************/
@@ -544,6 +686,7 @@ class Timetracker_JsonTest extends PHPUnit_Framework_TestCase
         );        
     }
     
+    
     /**
      * get Timesheet filter
      *
@@ -560,6 +703,23 @@ class Timetracker_JsonTest extends PHPUnit_Framework_TestCase
         );        
     }
 
+    /**
+     * get persistent filter filter
+     *
+     * @param string $_name
+     * @return array
+     */
+    protected function _getPersistentFilterFilter($_name)
+    {
+        return array(
+            array(
+                'field' => 'query', 
+                'operator' => 'contains', 
+                'value' => $_name
+            ),
+        );        
+    }
+    
     /**
      * get Timesheet filter with date
      *

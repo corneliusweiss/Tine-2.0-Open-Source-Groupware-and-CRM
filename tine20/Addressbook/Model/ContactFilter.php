@@ -7,7 +7,6 @@
  * @author      Cornelius Weiss <c.weiss@metaways.de>
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
- *
  */
 
 /**
@@ -34,6 +33,7 @@ class Addressbook_Model_ContactFilter extends Tinebase_Model_Filter_FilterGroup
      * @var array filter model fieldName => definition
      */
     protected $_filterModel = array(
+        'id'                   => array('filter' => 'Tinebase_Model_Filter_Id'),
         'query'                => array('filter' => 'Tinebase_Model_Filter_Query', 'options' => array('fields' => array('n_family', 'n_given', 'org_name', 'email', 'adr_one_locality',))),
         'n_given'              => array('filter' => 'Tinebase_Model_Filter_Text'),
         'n_family'             => array('filter' => 'Tinebase_Model_Filter_Text'),
@@ -47,10 +47,10 @@ class Addressbook_Model_ContactFilter extends Tinebase_Model_Filter_FilterGroup
         'adr_two_locality'     => array('filter' => 'Tinebase_Model_Filter_Text'),
         'role'                 => array('filter' => 'Tinebase_Model_Filter_Text'),
         'tag'                  => array('filter' => 'Tinebase_Model_Filter_Tag'),
-        //'bday'                 => array('filter' => 'Tinebase_Model_Filter_Date'),
-        'last_modified_time'   => array('filter' => 'Tinebase_Model_Filter_Date'),
-        'deleted_time'         => array('filter' => 'Tinebase_Model_Filter_Date'),
-        'creation_time'        => array('filter' => 'Tinebase_Model_Filter_Date'),
+        //'bday'               => array('filter' => 'Tinebase_Model_Filter_Date'),
+        'last_modified_time'   => array('filter' => 'Tinebase_Model_Filter_DateTime'),
+        'deleted_time'         => array('filter' => 'Tinebase_Model_Filter_DateTime'),
+        'creation_time'        => array('filter' => 'Tinebase_Model_Filter_DateTime'),
         'container_id'         => array('filter' => 'Tinebase_Model_Filter_Container', 'options' => array('applicationName' => 'Addressbook')),
     );
     

@@ -24,6 +24,7 @@ Tine.Timetracker.Model.TimesheetArray = Tine.Tinebase.Model.genericFields.concat
     { name: 'duration' },
     { name: 'description' },
     { name: 'is_billable' },
+    { name: 'is_billable_combined' }, // ts & ta is_billable
     { name: 'is_cleared' },
     { name: 'billed_in' },
     // tine 2.0 notes + tags
@@ -84,6 +85,7 @@ Tine.Timetracker.Model.TimeaccountArray = Tine.Tinebase.Model.genericFields.conc
     { name: 'price_unit' },
     { name: 'is_open' },
     { name: 'is_billable' },
+    { name: 'status' },
     { name: 'account_grants'},
     { name: 'grants'},
     // tine 2.0 notes + tags
@@ -100,9 +102,9 @@ Tine.Timetracker.Model.Timeaccount = Tine.Tinebase.Record.create(Tine.Timetracke
     modelName: 'Timeaccount',
     idProperty: 'id',
     titleProperty: 'title',
-    // ngettext('Timeaccount', 'Timeaccounts', n);
-    recordName: 'Timeaccount',
-    recordsName: 'Timeaccounts',
+    // ngettext('Time Account', 'Time Accounts', n);
+    recordName: 'Time Account',
+    recordsName: 'Time Accounts',
     containerProperty: 'container_id',
     // ngettext('timeaccount list', 'timeaccount lists', n);
     containerName: 'timeaccount list',

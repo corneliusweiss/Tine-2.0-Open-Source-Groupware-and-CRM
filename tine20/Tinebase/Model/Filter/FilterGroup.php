@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Cornelius Weiss <c.weiss@metaways.de>
  * @version     $Id$
+ * 
+ * @todo        finish implementation of to/from json functions
  */
 
 /**
@@ -110,7 +112,6 @@ class Tinebase_Model_Filter_FilterGroup
      */
     protected $_concatenationCondition = NULL;
     
-    
     /******************************** functions ********************************/
     
     /**
@@ -127,6 +128,18 @@ class Tinebase_Model_Filter_FilterGroup
         
         $this->_concatenationCondition = $_condition == 'OR' ? 'OR' : 'AND';
         
+        $this->setFromArray($_data);
+    }
+    
+    /**
+     * sets this filter group from filter data in array representation
+     *
+     * @param array $_data
+     */
+    public function setFromArray($_data)
+    {
+        $this->_filterObjects = array();
+        
         // legacy container handling
         Tinebase_Model_Filter_Container::_transformLegacyData($_data);
         
@@ -134,7 +147,7 @@ class Tinebase_Model_Filter_FilterGroup
             
             // if a condition is given, we create a new filtergroup from this class
             if (isset($filterData['condition'])) {
-                $this->addFilterGroup(new $this->_className($filterData['filters'], $filterData['condition']));
+                $this->addFilterGroup(new $this->_className($filterData['filters'], $filterData['condition'], $this->_options));
             
             } else {
                 $fieldModel = (isset($this->_filterModel[$filterData['field']])) ? $this->_filterModel[$filterData['field']] : '';
@@ -155,7 +168,6 @@ class Tinebase_Model_Filter_FilterGroup
                 }
             }
         }
-        
     }
     
     /**
@@ -190,6 +202,7 @@ class Tinebase_Model_Filter_FilterGroup
         }
         
         $this->_filterObjects[] = $_filter;
+        
         return $this;
     }
     
@@ -207,6 +220,7 @@ class Tinebase_Model_Filter_FilterGroup
         }
         
         $this->_filterObjects[] = $_filtergroup;
+        
         return $this;
     }
     
@@ -220,7 +234,7 @@ class Tinebase_Model_Filter_FilterGroup
      */
     public function createFilter($_field, $_operator, $_value)
     {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " creating filter: $_field $_operator " . print_r($_value, true));
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " creating filter: $_field $_operator " . print_r($_value, true));
         
         if (empty($this->_filterModel[$_field])) {
             throw new Tinebase_Exception_NotFound('no such field in this filter model');
@@ -236,7 +250,8 @@ class Tinebase_Model_Filter_FilterGroup
             );
             $filter = NULL;
         } else {
-            $filter = new $definition['filter']($_field, $_operator, $_value, (isset($definition['options']) ? (array)$definition['options'] : array()));
+            $options = array_merge($this->_options, isset($definition['options']) ? (array)$definition['options'] : array());
+            $filter = new $definition['filter']($_field, $_operator, $_value, $options);
         }
             
         return $filter;
@@ -298,20 +313,23 @@ class Tinebase_Model_Filter_FilterGroup
     /**
      * returns array with the filter settings of this filter group 
      *
+     * @param  bool $_valueToJson resolve value for json api?
      * @return array
      */
-    public function toArray()
+    public function toArray($_valueToJson = false)
     {
         $result = array();
         foreach ($this->_filterObjects as $filter) {
-            $result[] = $filter->toArray();
-            /*
-            if ($filter instanceof Tinebase_Model_Filter_FilterGroup) {                
-                $result[''] = $filter->toArray();
+            if ($filter instanceof Tinebase_Model_Filter_FilterGroup) {
+                $result[] = array(
+                    'condition' => $filter->getCondition(),
+                    'filters'   => $filter->toArray($_valueToJson)
+                );
+                
             } else {
-                $result[''] = '';
+                $result[] = $filter->toArray($_valueToJson);
             }
-            */
+            
         }
         
         // add custom fields
@@ -322,6 +340,18 @@ class Tinebase_Model_Filter_FilterGroup
         return $result;
     }
 
+    /**
+     * wrapper for setFromJson which expects datetimes in array to be in
+     * users timezone and converts them to UTC
+     *
+     * @param array $_data 
+     */
+    public function setFromArrayInUsersTimezone($_data)
+    {
+        $this->_options['timezone'] = Tinebase_Core::get('userTimeZone');
+        $this->setFromArray($_data);
+    }
+    
     /**
      * return filter object
      *
@@ -337,5 +367,19 @@ class Tinebase_Model_Filter_FilterGroup
         }
         
         return NULL;
+    }
+
+    /**
+     * remove filter object
+     *
+     * @param string $_field
+     */
+    protected function _removeFilter($_field)
+    {
+        foreach ($this->_filterObjects as $key => $object) {
+            if ($object->getField() == $_field) {
+                unset($this->_filterObjects[$key]);
+            }
+        }
     }
 }

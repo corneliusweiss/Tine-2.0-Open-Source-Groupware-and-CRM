@@ -9,6 +9,7 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  * 
+ * @todo        add page layout (orientation landscape to styles
  */
 
 /**
@@ -78,7 +79,14 @@ class Timetracker_Export_Ods extends OpenDocument_Document
                 xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
             <style:table-cell-properties fo:background-color="#ccccff"/>
             <style:paragraph-properties fo:text-align="right"/>
-        </style:style>'
+        </style:style>',
+    /*
+        '<style:style style:name="pm1"
+                xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+            <style:page-layout-properties fo:page-width="11in" fo:page-height="8.5in" style:num-format="1" style:print-orientation="landscape" style:writing-mode="lr-tb"/>
+        </style:style>',
+    */
         );
     
     /**
@@ -399,8 +407,8 @@ class Timetracker_Export_Ods extends OpenDocument_Document
         
         $exportConfig = (isset($config->timesheetExport)) ? $config->timesheetExport->toArray() : array(
             'customFields' => FALSE,
-            'sumColumn' => 'E',
-            'billableColumn' => 'F',
+            'sumColumn' => 'F',
+            'billableColumn' => 'G',
             'overviewTable' => TRUE,
             'fields' => array(
                 'start_date' => array(
@@ -413,6 +421,12 @@ class Timetracker_Export_Ods extends OpenDocument_Document
                     'type'      => 'string', 
                     'width'     => '10cm'
                 ),
+                'timeaccount_number' => array(
+                    'header'    => $this->_translate->_('Timeaccount Number'),
+                    'type'      => 'timeaccount', 
+                    'field'     => 'number', 
+                    'width'     => '5cm',
+                ),                
                 'timeaccount_id' => array(
                     'header'    => $this->_translate->_('Timeaccount'),
                     'type'      => 'timeaccount', 
@@ -433,7 +447,7 @@ class Timetracker_Export_Ods extends OpenDocument_Document
                     'divisor'   => 60,
                     'number'    => TRUE,
                 ),
-                'is_billable' => array(
+                'is_billable_combined' => array(
                     'header'    => $this->_translate->_('Billable'),
                     'type'      => 'float', 
                     'width'     => '3cm'

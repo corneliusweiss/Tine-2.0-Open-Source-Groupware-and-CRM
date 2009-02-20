@@ -107,6 +107,8 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         // init some translations
         this.i18nRecordName = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), 1);
         this.i18nRecordsName = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), 50);
+        this.i18nContainerName = this.app.i18n.n_hidden(this.recordClass.getMeta('containerName'), this.recordClass.getMeta('containersName'), 1);
+        this.i18nContainersName = this.app.i18n.n_hidden(this.recordClass.getMeta('containerName'), this.recordClass.getMeta('containersName'), 50);
         
         // init actions with actionToolbar and contextMenu
         this.initActions();
@@ -120,6 +122,13 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         Tine.Tinebase.widgets.app.GridPanel.superclass.initComponent.call(this);
     },
     
+    /**
+     * @private
+     * 
+     * NOTE: Order of items matters! Ext.Layout.Border.SplitRegion.layout() does not
+     *       fence the rendering correctly, as such it's impotant, so have the ftb
+     *       defined after all other layout items
+     */
     initLayout: function() {
         this.items = [{
             region: 'center',
@@ -130,21 +139,33 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
             items: this.grid
         }];
         
+        // add detail panel
+        if (this.detailsPanel) {
+            this.items.push({
+                region: 'south',
+                border: false,
+                collapsible: true,
+                collapseMode: 'mini',
+                split: true,
+                layout: 'fit',
+                height: 125,
+                items: this.detailsPanel
+                
+            });
+            this.detailsPanel.doBind(this.grid);
+        }
+        
         // add filter toolbar
         if (this.filterToolbar) {
             this.items.push(this.filterToolbar);
             this.filterToolbar.on('bodyresize', function(ftb, w, h) {
-                if (this.filterToolbar.rendered) {
+                if (this.filterToolbar.rendered && this.layout.rendered) {
                     this.layout.layout();
                 }
             }, this);
         }
         
-        // add detail panel
-        if (this.detailsPanel) {
-            this.items.push(this.detailsPanel);
-            this.detailsPanel.doBind(this.grid);
-        }
+        
     },
     /**
      * init actions with actionToolbar, contextMenu and actionUpdater
@@ -270,7 +291,7 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
             autoFill: true,
             forceFit:true,
             ignoreAdd: true,
-            emptyText: String.format(Tine.Tinebase.tranlation._("No {0} to display"), this.i18nRecordsName),
+            emptyText: String.format(Tine.Tinebase.tranlation._("No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."), this.i18nRecordsName, this.i18nContainersName),
             onLoad: Ext.emptyFn,
             listeners: {
                 beforerefresh: function(v) {
@@ -292,6 +313,12 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         var Grid = this.gridConfig.quickaddMandatory ? Ext.ux.grid.QuickaddGridPanel : Ext.grid.GridPanel;
         
         this.gridConfig.store = this.store;
+        
+        // activate grid header menu for column selection
+        this.gridConfig.plugins = this.gridConfig.plugins ? this.gridConfig.plugins : [];
+        this.gridConfig.plugins.push(new Ext.ux.grid.GridViewMenuPlugin({}));
+        this.gridConfig.enableHdMenu = false;
+        
         this.grid = new Grid(Ext.applyIf(this.gridConfig, {
             border: false,
             store: this.store,
@@ -369,7 +396,7 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         }
         
         // save used filter
-        this.store.lastFilter = options.params.filter;
+        this.store.lastFilter = this.store.reader.jsonData.filter;
     },
     
     /**

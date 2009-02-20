@@ -29,70 +29,73 @@ msgstr ""
 msgid "There are no custom fields yet"
 msgstr ""
 
-#: js/widgets/ActivitiesPanel.js:146
+#: js/widgets/ActivitiesPanel.js:138
 msgid "Add a Note..."
 msgstr "Přidat poznámku..."
 
-#: js/widgets/ActivitiesPanel.js:161 js/widgets/ActivitiesPanel.js:173
+#: js/widgets/ActivitiesPanel.js:153 js/widgets/ActivitiesPanel.js:165
 #: js/widgets/container/ContainerGrants.js:87
 msgid "Add"
 msgstr "Přidat"
 
-#: js/widgets/ActivitiesPanel.js:161 js/widgets/ActivitiesPanel.js:404
-#: js/widgets/ActivitiesPanel.js:532
+#: js/widgets/ActivitiesPanel.js:153 js/widgets/ActivitiesPanel.js:396
+#: js/widgets/ActivitiesPanel.js:525
 msgid "Note"
 msgstr "Poznámka"
 
-#: js/widgets/ActivitiesPanel.js:174 js/widgets/ActivitiesPanel.js:331
+#: js/widgets/ActivitiesPanel.js:166 js/widgets/ActivitiesPanel.js:323
 msgid "Add new note"
 msgstr "Přidat novou poznámku"
 
-#: js/widgets/ActivitiesPanel.js:205
-msgid "Recent Activities"
-msgstr "Poslední činnosti"
+#: js/widgets/ActivitiesPanel.js:197
+#, fuzzy
+msgid "Notes"
+msgstr "Poznámka"
 
-#: js/widgets/ActivitiesPanel.js:269 js/widgets/ActivitiesPanel.js:330
+#: js/widgets/ActivitiesPanel.js:261 js/widgets/ActivitiesPanel.js:322
 msgid "Add Note"
 msgstr "Přidat poznámku"
 
-#: js/widgets/ActivitiesPanel.js:270
+#: js/widgets/ActivitiesPanel.js:262
 msgid "Enter new note:"
 msgstr "Zadejte novou poznámku:"
 
-#: js/widgets/ActivitiesPanel.js:317
+#: js/widgets/ActivitiesPanel.js:309
 #, fuzzy
 msgid "Add a {0} Note"
 msgstr "Přidat {0} poznámku..."
 
-#: js/widgets/ActivitiesPanel.js:402 js/widgets/ActivitiesPanel.js:537
+#: js/widgets/ActivitiesPanel.js:394 js/widgets/ActivitiesPanel.js:530
 msgid "Type"
 msgstr "Typ"
 
-#: js/widgets/ActivitiesPanel.js:405
+#: js/widgets/ActivitiesPanel.js:397
 msgid "Created By"
 msgstr "Vytvořil(a)"
 
-#: js/widgets/ActivitiesPanel.js:406
+#: js/widgets/ActivitiesPanel.js:398
 msgid "Timestamp"
 msgstr "Časové razítko"
 
-#: js/widgets/ActivitiesPanel.js:420
-msgid "Displaying notes {0} - {1} of {2}"
+#: js/widgets/ActivitiesPanel.js:412
+#, fuzzy
+msgid "Displaying history records {0} - {1} of {2}"
 msgstr "Zobrazuji poznámky {0} - {1} z {2}"
 
-#: js/widgets/ActivitiesPanel.js:421
-msgid "No notes to display"
+#: js/widgets/ActivitiesPanel.js:413
+#, fuzzy
+msgid "No history to display"
 msgstr "Žádné poznámky ke zobrazení"
 
-#: js/widgets/ActivitiesPanel.js:520 Export/Pdf.php:462
-msgid "Activities"
-msgstr "Činnosti"
+#: js/widgets/ActivitiesPanel.js:511
+msgid "History"
+msgstr ""
 
-#: js/widgets/ActivitiesPanel.js:533
+#: js/widgets/ActivitiesPanel.js:526
 msgid "Time"
 msgstr "Čas"
 
-#: js/widgets/ActivitiesPanel.js:535
+#: js/widgets/ActivitiesPanel.js:528
 msgid "User"
 msgstr "Uživatel"
 
@@ -134,42 +137,43 @@ msgstr "Uloženo v"
 msgid "Transfering {0}..."
 msgstr "Vytvářím {0}..."
 
-#: js/widgets/EditDialog.js:363 js/widgets/EditDialog.js:399
-#: js/widgets/app/GridPanel.js:470 js/widgets/tags/TagsPanel.js:254
+#: js/widgets/EditDialog.js:366 js/widgets/EditDialog.js:402
+#: js/widgets/app/GridPanel.js:509 js/widgets/tags/TagsPanel.js:254
 #: js/widgets/tags/TagsPanel.js:363 js/widgets/tags/TagsPanel.js:396
 msgid "Failed"
 msgstr "Nepodařilo se"
 
-#: js/widgets/EditDialog.js:363
+#: js/widgets/EditDialog.js:366
 #, fuzzy
 msgid "Could not save {0}."
 msgstr "Nepodařilo se vytvořit štítek."
 
-#: js/widgets/EditDialog.js:378
+#: js/widgets/EditDialog.js:381
 msgid "Errors"
 msgstr ""
 
-#: js/widgets/EditDialog.js:378
+#: js/widgets/EditDialog.js:381
 #, fuzzy
 msgid "Please fix the errors noted."
 msgstr "Zadejte prosím nový název pro"
 
-#: js/widgets/EditDialog.js:386 js/widgets/container/ContainerTree.js:303
-#: js/widgets/app/GridPanel.js:455 js/MainScreen.js:433
+#: js/widgets/EditDialog.js:389 js/widgets/container/ContainerTree.js:379
+#: js/widgets/app/GridPanel.js:494
+#: js/widgets/grid/PersistentFilterPicker.js:123 js/MainScreen.js:433
 msgid "Confirm"
 msgstr "Potvrdit"
 
-#: js/widgets/EditDialog.js:386
+#: js/widgets/EditDialog.js:389
 #, fuzzy
 msgid "Do you really want to delete this {0}?"
 msgstr "Opravdu chcete smazat"
 
-#: js/widgets/EditDialog.js:388 js/widgets/app/GridPanel.js:458
+#: js/widgets/EditDialog.js:391 js/widgets/app/GridPanel.js:497
 #, fuzzy
 msgid "Deleting {0}"
 msgstr "Mažu štítek"
 
-#: js/widgets/EditDialog.js:399 js/widgets/app/GridPanel.js:470
+#: js/widgets/EditDialog.js:402 js/widgets/app/GridPanel.js:509
 #, fuzzy
 msgid "Could not delete {0}."
 msgstr "Nepodařilo se smazat štítek/štítky."
@@ -183,7 +187,7 @@ msgid "setting new language..."
 msgstr "nastavuji nový jazyk..."
 
 #: js/widgets/LangChooser.js:72 js/widgets/LangChooser.js:94
-#: js/widgets/TimezoneChooser.js:74
+#: js/widgets/TimezoneChooser.js:74 js/widgets/grid/FilterToolbar.js:574
 msgid "Please Wait"
 msgstr "Čekejte prosím"
 
@@ -259,65 +263,80 @@ msgstr "Moje {0}"
 msgid "Shared {0}"
 msgstr "Sdílené {0}"
 
-#: js/widgets/container/ContainerTree.js:149
+#: js/widgets/container/ContainerTree.js:150
 #, fuzzy
 msgid "Other Users {0}"
 msgstr "{0} ostatních uživatelů"
 
-#: js/widgets/container/ContainerTree.js:275
+#: js/widgets/container/ContainerTree.js:347
 #, fuzzy
 msgid "New {0}"
 msgstr "Nový {0}"
 
-#: js/widgets/container/ContainerTree.js:275
+#: js/widgets/container/ContainerTree.js:347
 #, fuzzy
 msgid "Please enter the name of the new {0}:"
 msgstr "Zadejte prosím název pro nový(ou/é) {0}:"
 
-#: js/widgets/container/ContainerTree.js:277
-#: js/widgets/container/ContainerTree.js:305
-#: js/widgets/container/ContainerTree.js:337
-#: js/widgets/container/ContainerGrants.js:34 js/Login.js:120
+#: js/widgets/container/ContainerTree.js:350
+msgid "No {0} added"
+msgstr ""
+
+#: js/widgets/container/ContainerTree.js:350
+#: js/widgets/container/ContainerTree.js:414
+msgid "You have to supply a {0} name!"
+msgstr ""
+
+#: js/widgets/container/ContainerTree.js:353
+#: js/widgets/container/ContainerTree.js:381
+#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerGrants.js:34
+#: js/widgets/grid/PersistentFilterPicker.js:125 js/Login.js:120
 msgid "Please wait"
 msgstr "Čekejte prosím"
 
-#: js/widgets/container/ContainerTree.js:277
+#: js/widgets/container/ContainerTree.js:353
 #, fuzzy
 msgid "Creating {0}..."
 msgstr "Vytvářím {0}..."
 
-#: js/widgets/container/ContainerTree.js:303
+#: js/widgets/container/ContainerTree.js:379
 #, fuzzy
 msgid "Do you really want to delete the {0} \"{1}\"?"
 msgstr "Opravdu chcete smazat {0} \"{0}\"?"
 
-#: js/widgets/container/ContainerTree.js:305
+#: js/widgets/container/ContainerTree.js:381
 #, fuzzy
 msgid "Deleting {0} \"{1}\""
 msgstr "Mažu {0} \"{0}\""
 
-#: js/widgets/container/ContainerTree.js:332
+#: js/widgets/container/ContainerTree.js:408
 #, fuzzy
 msgid "Please enter the new name of the {0}:"
 msgstr "Zadejte prosím nový název pro {0}:"
 
-#: js/widgets/container/ContainerTree.js:337
+#: js/widgets/container/ContainerTree.js:414
+#, fuzzy
+msgid "Not renamed {0}"
+msgstr "Přejmenovat {0}"
+
+#: js/widgets/container/ContainerTree.js:417
 #, fuzzy
 msgid "Updating {0} \"{1}\""
 msgstr "Aktualizuji {0} \"{0}\""
 
-#: js/widgets/container/ContainerTree.js:371
+#: js/widgets/container/ContainerTree.js:451
 #, fuzzy
-msgid "Manage Permissions for {0} :\"{1}\""
+msgid "Manage Permissions for {0} \"{1}\""
 msgstr "Spravovat oprávnění pro {0} :\"{0}\""
 
-#: js/widgets/container/ContainerTree.js:384 js/widgets/app/GridPanel.js:168
+#: js/widgets/container/ContainerTree.js:464 js/widgets/app/GridPanel.js:189
 #, fuzzy
 msgid "Add {0}"
 msgstr "Přidat {0}"
 
-#: js/widgets/container/ContainerTree.js:390 js/widgets/app/GridPanel.js:178
-#: js/widgets/app/GridPanel.js:179 js/widgets/app/GridPanel.js:181
+#: js/widgets/container/ContainerTree.js:470 js/widgets/app/GridPanel.js:199
+#: js/widgets/app/GridPanel.js:200 js/widgets/app/GridPanel.js:202
 #, fuzzy
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
@@ -325,12 +344,12 @@ msgstr[0] "Smazat {0}"
 msgstr[1] "Smazat {0}"
 msgstr[2] "Smazat {0}"
 
-#: js/widgets/container/ContainerTree.js:396
+#: js/widgets/container/ContainerTree.js:476
 #, fuzzy
 msgid "Rename {0}"
 msgstr "Přejmenovat {0}"
 
-#: js/widgets/container/ContainerTree.js:402
+#: js/widgets/container/ContainerTree.js:482
 msgid "Manage permissions"
 msgstr "Spravovat oprávnění"
 
@@ -387,22 +406,33 @@ msgstr "Administrace"
 msgid "Permissions"
 msgstr "Oprávnění"
 
-#: js/widgets/app/GridPanel.js:157
+#: js/widgets/app/MainScreen.js:101
+#, fuzzy
+msgid "Saved filter"
+msgstr "uložit filtr"
+
+#: js/widgets/app/GridPanel.js:178
 #, fuzzy
 msgid "Edit {0}"
 msgstr "Editovat"
 
-#: js/widgets/app/GridPanel.js:252
+#: js/widgets/app/GridPanel.js:273
 #, fuzzy
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "Zobrazuji poznámky {0} - {1} z {2}"
 
-#: js/widgets/app/GridPanel.js:253 js/widgets/app/GridPanel.js:273
+#: js/widgets/app/GridPanel.js:274
 #, fuzzy
 msgid "No {0} to display"
 msgstr "Žádné štítky ke zobrazení"
 
-#: js/widgets/app/GridPanel.js:453
+#: js/widgets/app/GridPanel.js:294
+msgid ""
+"No {0} where found. Please try to change your filter-criteria, view-options "
+"or the {1} you search in."
+msgstr ""
+
+#: js/widgets/app/GridPanel.js:492
 #, fuzzy
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
@@ -415,13 +445,32 @@ msgid "Please Select a Group"
 msgstr "Vyberte prosím skupinu"
 
 #: js/widgets/AccountpickerPanel.js:55
-#, fuzzy
-msgid "none"
-msgstr "poznámka"
+msgid "nobody"
+msgstr ""
 
 #: js/widgets/AccountpickerPanel.js:135
 msgid "please select an account"
 msgstr "vyberte prosím účet"
+
+#: js/widgets/grid/PersistentFilterPicker.js:78
+#, fuzzy
+msgid "My saved filters"
+msgstr "uložit filtr"
+
+#: js/widgets/grid/PersistentFilterPicker.js:119
+#, fuzzy
+msgid "Delete Filter"
+msgstr "Smazat všechny filtry"
+
+#: js/widgets/grid/PersistentFilterPicker.js:123
+#, fuzzy
+msgid "Do you really want to delete the Filter \"{0}\"?"
+msgstr "Opravdu chcete smazat"
+
+#: js/widgets/grid/PersistentFilterPicker.js:125
+#, fuzzy
+msgid "Deleting Filter \"{0}\""
+msgstr "Mažu štítek"
 
 #: js/widgets/grid/FilterModel.js:129
 msgid "contains"
@@ -546,37 +595,56 @@ msgstr "je roven"
 msgid "next year"
 msgstr "Hledat"
 
-#: js/widgets/grid/FilterToolbar.js:115
+#: js/widgets/grid/FilterToolbar.js:120
 msgid "add new filter"
 msgstr "zadat nový filtr"
 
-#: js/widgets/grid/FilterToolbar.js:121
-msgid "Delete all filters"
+#: js/widgets/grid/FilterToolbar.js:126
+#, fuzzy
+msgid "reset all filters"
 msgstr "Smazat všechny filtry"
 
-#: js/widgets/grid/FilterToolbar.js:127
+#: js/widgets/grid/FilterToolbar.js:132
 msgid "start search"
 msgstr "zahájit hledání"
 
-#: js/widgets/grid/FilterToolbar.js:136
+#: js/widgets/grid/FilterToolbar.js:140 js/widgets/grid/FilterToolbar.js:568
 msgid "save filter"
 msgstr "uložit filtr"
 
-#: js/widgets/grid/FilterToolbar.js:206
+#: js/widgets/grid/FilterToolbar.js:223
 msgid "select a field"
 msgstr "vybrat pole"
 
-#: js/widgets/grid/FilterToolbar.js:230
+#: js/widgets/grid/FilterToolbar.js:248
 msgid "Delete this filter"
 msgstr "Smazat filtr"
 
-#: js/widgets/grid/FilterToolbar.js:253
+#: js/widgets/grid/FilterToolbar.js:279
 msgid "and"
 msgstr "a"
 
-#: js/widgets/grid/FilterToolbar.js:272
+#: js/widgets/grid/FilterToolbar.js:298
 msgid "Show"
 msgstr "Zobrazit"
+
+#: js/widgets/grid/FilterToolbar.js:568
+#, fuzzy
+msgid "Please enter a name for the filter"
+msgstr "Zadejte prosím název pro nový(ou/é) {0}:"
+
+#: js/widgets/grid/FilterToolbar.js:571
+msgid "Filter not Saved"
+msgstr ""
+
+#: js/widgets/grid/FilterToolbar.js:571
+msgid "You have to supply a name for the filter!"
+msgstr ""
+
+#: js/widgets/grid/FilterToolbar.js:574
+#, fuzzy
+msgid "Saving filter"
+msgstr "uložit filtr"
 
 #: js/widgets/tags/TagCombo.js:38
 msgid "tag name"
@@ -880,6 +948,10 @@ msgstr "Obrázek se nezdařil"
 msgid "Could not load image. Please notify your Administrator"
 msgstr "Nemohu načíst obrázek. Upozorněte prosím svého administrátora"
 
+#: js/ux/form/RecordsComboBox.js:27
+msgid "Software Version"
+msgstr ""
+
 #: js/ux/ConnectionStatus.js:52
 msgid "online"
 msgstr "online"
@@ -925,7 +997,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: js/ExceptionDialog.js:26 Frontend/Http.php:290
+#: js/ExceptionDialog.js:26 Frontend/Http.php:294
 msgid "Abnormal End"
 msgstr "Abnormální ukončení"
 
@@ -933,7 +1005,7 @@ msgstr "Abnormální ukončení"
 msgid "Send Report"
 msgstr "Odeslat hlášení"
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:291
+#: js/ExceptionDialog.js:51 Frontend/Http.php:295
 msgid "An error occurred, the program ended abnormal."
 msgstr "Došlo k chybě, program se neukončil korektně."
 
@@ -971,31 +1043,37 @@ msgstr "Přenos dokončen"
 msgid "Your report has been sent. Thanks for your contribution"
 msgstr "Vaše hlášení bylo odesláno. Děkujeme za Vaši spolupráci."
 
-#: js/tineInit.js:208
+#: js/tineInit.js:218
 msgid "Connection lost, please check your network!"
 msgstr "Spojení přerušeno, zkontrolujte prosím Vaší síť."
 
-#: js/tineInit.js:218 Frontend/Http.php:263
+#: js/tineInit.js:226
+msgid ""
+"The server did not respond to your request. Please check your network or "
+"contact your administrator."
+msgstr ""
+
+#: js/tineInit.js:235 Frontend/Http.php:267
 msgid "Authorisation Required"
 msgstr "Je vyžadována autorizace"
 
-#: js/tineInit.js:219
+#: js/tineInit.js:236
 msgid "Your session timed out. You need to login again."
 msgstr "Vaše relace vypršela. Musíte se přihlásit znovu."
 
-#: js/tineInit.js:232
+#: js/tineInit.js:249
 msgid "Insufficient Rights"
 msgstr ""
 
-#: js/tineInit.js:233
+#: js/tineInit.js:250
 msgid "Sorry, you are not permitted to perform this action"
 msgstr ""
 
-#: js/tineInit.js:242
+#: js/tineInit.js:259
 msgid "Concurrent Updates"
 msgstr "Kolidující aktualizace"
 
-#: js/tineInit.js:243
+#: js/tineInit.js:260
 msgid ""
 "Someone else saved this record while you where editing the data. You need to "
 "reload and make your changes again."
@@ -1060,48 +1138,48 @@ msgstr "Chybné přihlášení"
 msgid "Your username and/or your password are wrong!!!"
 msgstr "Vaše uživatelské jméno a/nebo heslo je chybné!!!"
 
-#: Frontend/Http.php:264
+#: Frontend/Http.php:268
 #, fuzzy
 msgid "Your session is not valid. You need to login again."
 msgstr "Vaše relace vypršela. Musíte se přihlásit znovu."
 
-#: Setup/setup.xml:1830
+#: Setup/setup.xml:1941
 msgid "note"
 msgstr "poznámka"
 
-#: Setup/setup.xml:1835
+#: Setup/setup.xml:1946
 msgid "default note type"
 msgstr "výchozí typ poznámky"
 
-#: Setup/setup.xml:1861
+#: Setup/setup.xml:1972
 msgid "telephone"
 msgstr "telefon"
 
-#: Setup/setup.xml:1866
+#: Setup/setup.xml:1977
 msgid "telephone call"
 msgstr "telefonní hovor"
 
-#: Setup/setup.xml:1892
+#: Setup/setup.xml:2003
 msgid "email"
 msgstr "email"
 
-#: Setup/setup.xml:1897
+#: Setup/setup.xml:2008
 msgid "email contact"
 msgstr "emailový kontakt"
 
-#: Setup/setup.xml:1923
+#: Setup/setup.xml:2034
 msgid "created"
 msgstr "vytvořeno"
 
-#: Setup/setup.xml:1928
+#: Setup/setup.xml:2039
 msgid "record created"
 msgstr "záznam byl vytvořen"
 
-#: Setup/setup.xml:1954
+#: Setup/setup.xml:2065
 msgid "changed"
 msgstr "změněno"
 
-#: Setup/setup.xml:1959
+#: Setup/setup.xml:2070
 msgid "record changed"
 msgstr "záznam byl změněn"
 
@@ -1129,6 +1207,18 @@ msgstr "Datum exportu"
 msgid "Created by"
 msgstr "Vytvořil(a)"
 
+#: Export/Pdf.php:462
+msgid "Activities"
+msgstr "Činnosti"
+
+#: Notes.php:295
+msgid "by"
+msgstr ""
+
+#: Notes.php:301
+msgid "Changed fields:"
+msgstr ""
+
 #: Acl/Rights.php:116
 msgid "Report bugs"
 msgstr "Hlásit chyby"
@@ -1144,6 +1234,19 @@ msgstr "Zkontrolovat verzi"
 #: Acl/Rights.php:121
 msgid "Check tine20.org for new versions"
 msgstr "Ověřit dostupnost nových verzí na tine20.org"
+
+#, fuzzy
+#~ msgid "none"
+#~ msgstr "poznámka"
+
+#~ msgid "Recent Activities"
+#~ msgstr "Poslední činnosti"
+
+#~ msgid "Displaying notes {0} - {1} of {2}"
+#~ msgstr "Zobrazuji poznámky {0} - {1} z {2}"
+
+#~ msgid "No notes to display"
+#~ msgstr "Žádné poznámky ke zobrazení"
 
 #, fuzzy
 #~ msgid "Loading {0}..."
@@ -1707,10 +1810,6 @@ msgstr "Ověřit dostupnost nových verzí na tine20.org"
 #~ msgstr "Zadejte název štítku"
 
 #, fuzzy
-#~ msgid "Notes"
-#~ msgstr "Poznámka"
-
-#, fuzzy
 #~ msgid "Enter description..."
 #~ msgstr "Editovat popis"
 
@@ -1729,10 +1828,6 @@ msgstr "Ověřit dostupnost nových verzí na tine20.org"
 #, fuzzy
 #~ msgid "Displaying software {0} - {1} of {2}"
 #~ msgstr "Zobrazuji poznámky {0} - {1} z {2}"
-
-#, fuzzy
-#~ msgid "No software to display"
-#~ msgstr "Žádné poznámky ke zobrazení"
 
 #, fuzzy
 #~ msgid "add template"

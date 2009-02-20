@@ -43,13 +43,14 @@ class Phone_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstract
      * get user phones
      *
      * @return string json encoded array with user phones
+     * @todo add account id filter again
      */
     public function getUserPhones($accountId)
     {        
         $voipController = Voipmanager_Controller_MyPhone::getInstance();
         
         $filter = new Voipmanager_Model_Snom_PhoneFilter(array(
-            'accountId' => $accountId
+            array('field' => 'account_id', 'operator' => 'equals', 'value' => Tinebase_Core::getUser()->getId())
         ));
         $phones = $voipController->search($filter);
         
@@ -138,8 +139,14 @@ class Phone_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstract
     {
         $accountId = Tinebase_Core::getUser()->getId();
         
+        try {
+            $phones = $this->getUserPhones($accountId);
+        } catch (Voipmanager_Exception_AccessDenied $vead) {
+            $phones = array();
+        }
+        
         $registryData = array(
-            'Phones' => $this->getUserPhones($accountId)
+            'Phones' => $phones
         );
         
         return $registryData;

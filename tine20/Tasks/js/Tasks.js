@@ -8,7 +8,8 @@
  * @version     $Id$
  *
  */
- 
+
+//tranlate appName:  _('Tasks') 
 Ext.namespace('Tine', 'Tine.Tasks');
 
 // default mainscreen
@@ -22,6 +23,8 @@ Tine.Tasks.TreePanel = function(config) {
     Tine.Tasks.TreePanel.superclass.constructor.call(this);
 }
 Ext.extend(Tine.Tasks.TreePanel , Tine.widgets.container.TreePanel);
+
+Tine.Tasks.FilterPanel = Tine.widgets.grid.PersistentFilterPicker;
 
 // Task model
 Tine.Tasks.TaskArray = Tine.Tinebase.Model.genericFields.concat([

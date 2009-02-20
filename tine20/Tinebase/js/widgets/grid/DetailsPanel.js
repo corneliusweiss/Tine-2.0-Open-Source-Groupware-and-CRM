@@ -17,29 +17,9 @@ Ext.namespace('Tine.widgets', 'Tine.widgets.grid');
  * @extends Ext.Panel
  */
 Tine.widgets.grid.DetailsPanel = Ext.extend(Ext.Panel, {
-    region: 'south',
     border: false,
-    collapsible:true,
-    collapseMode: 'mini',
-    split: true,
+    autoScroll: true,
     layout: 'fit',
-    height: 125,
-    
-    /*
-    initComponent: function() {
-        this.items = [{
-            tpl: this.tplMarkup
-        }];
-        Tine.widgets.grid.DetailsPanel.superclass.initComponent.call(this);
-    }
-    */
-    /*
-    onRender: function(ct, position) {
-        Tine.widgets.grid.DetailsPanel.superclass.onRender.call(this, ct, position);
-        this.showDefault(this.body);
-    },
-    */
-    
     
     updateDetails: function(record, body) {
         this.tpl.overwrite(body, record.data);
@@ -57,6 +37,10 @@ Tine.widgets.grid.DetailsPanel = Ext.extend(Ext.Panel, {
         }
     },
     
+    /**
+     * 
+     * @param grid
+     */
     doBind: function(grid) {
         grid.getSelectionModel().on('selectionchange', function(sm) {
             this.onDetailsUpdate(sm);
@@ -67,9 +51,13 @@ Tine.widgets.grid.DetailsPanel = Ext.extend(Ext.Panel, {
         }, this);
     },
     
+    /**
+     * 
+     * @param sm selection model
+     */
     onDetailsUpdate: function(sm) {
         var count = sm.getCount();
-        if (count === 0) {
+        if (count === 0 || sm.isFilterSelect) {
             this.showDefault(this.body);
         } else if (count === 1) {
             var record = sm.getSelected();
