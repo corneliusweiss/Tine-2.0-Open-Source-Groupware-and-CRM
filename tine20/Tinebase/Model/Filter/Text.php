@@ -7,7 +7,7 @@
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @version     $Id:Text.php 6299 2009-01-22 10:00:31Z p.schuele@metaways.de $
+ * @version     $Id$
  */
 
 /**
