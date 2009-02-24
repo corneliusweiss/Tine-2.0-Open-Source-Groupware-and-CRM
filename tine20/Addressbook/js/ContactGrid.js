@@ -56,6 +56,7 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
                 {label: this.app.i18n._('First Name'), field: 'n_given' },
                 {label: this.app.i18n._('Last Name'),  field: 'n_family'},
                 {label: this.app.i18n._('Company'),    field: 'org_name'},
+                {label: this.app.i18n._('Phone'), field: 'telephone', operators: ['contains']},
                 {label: this.app.i18n._('Job Title'),    field: 'title'},
                 {label: this.app.i18n._('Job Role'),    field: 'role'},
                 new Tine.widgets.tags.TagFilter({app: this.app}),
@@ -361,7 +362,7 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
                         '<div class="bordercorner_2"></div>',
                         '<div class="bordercorner_3"></div>',
                         '<div class="bordercorner_4"></div>',
-                        '<img src="{jpegphoto}"/>',
+                        '<img src="{[this.getImageUrl(values.jpegphoto, 90, 113)]}"/>',
                     '</div>',
                 
                     '<!-- Preview office -->',
@@ -475,6 +476,15 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
                         result += value[i].name + ' ';
                     }
                     return result;
+                },
+                getImageUrl: function(url, width, height) {
+                    if (url.match(/&/)) {
+                        url = Ext.ux.util.ImageURL.prototype.parseURL(url);
+                        url.width = width;
+                        url.height = height;
+                        url.ratiomode = 0;
+                    }
+                    return url;
                 }
             })
         });

@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-Language: Czech\n"
@@ -188,7 +188,7 @@ msgstr "Žádné záznamy přístupového logu ke zobrazení"
 msgid "Session ID"
 msgstr "ID relace"
 
-#: js/Admin.js:527 js/Users.js:544
+#: js/Admin.js:527 js/Users.js:555
 msgid "Login Name"
 msgstr "Přihlašovací jméno"
 
@@ -238,7 +238,6 @@ msgid "enabled"
 msgstr "povoleno"
 
 #: js/Admin.js:823
-#, fuzzy
 msgid "unknown status ({0})"
 msgstr "neznámý stav ({0})"
 
@@ -276,7 +275,7 @@ msgstr "Mažu skupinu(y)..."
 
 #: js/Groups.js:69 js/Groups.js:378 js/Groups.js:406 js/Roles.js:70
 #: js/Roles.js:439 js/Roles.js:467 js/Tags.js:341 js/Users.js:186
-#: js/Users.js:468 js/Users.js:511
+#: js/Users.js:468 js/Users.js:479 js/Users.js:504 js/Users.js:521
 msgid "Failed"
 msgstr "Nepodařilo se"
 
@@ -325,11 +324,11 @@ msgstr "Aktualizuji členství"
 msgid "Could not save group."
 msgstr "Nepodařilo se uložit skupinu."
 
-#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:516
+#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:527
 msgid "Errors"
 msgstr "Chyby"
 
-#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:516
+#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:527
 msgid "Please fix the errors noted."
 msgstr "Opravte prosím vyznačené chyby."
 
@@ -358,7 +357,6 @@ msgid "Add new group"
 msgstr "Přídat novou skupinu"
 
 #: js/Groups.js:621
-#, fuzzy
 msgid "Edit Group \"{0}\""
 msgstr "Editovat skupinu \"{0}\""
 
@@ -422,7 +420,7 @@ msgstr "Název role"
 msgid "Loading Role..."
 msgstr "Načítám roli..."
 
-#: js/Roles.js:686 js/Tags.js:584 js/Users.js:477
+#: js/Roles.js:686 js/Tags.js:584 js/Users.js:484
 msgid "Please Wait"
 msgstr "Čekejte prosím"
 
@@ -431,7 +429,6 @@ msgid "Add New Role"
 msgstr "Přidat novou roli"
 
 #: js/Roles.js:728
-#, fuzzy
 msgid "Edit Role \"{0}\""
 msgstr "Editovat roli \"{0}\""
 
@@ -508,7 +505,6 @@ msgid "Add New Tag"
 msgstr "Přidat nový štítek"
 
 #: js/Tags.js:617
-#, fuzzy
 msgid "Edit Tag \"{0}\""
 msgstr "Editovat štítek \"{0}\""
 
@@ -540,7 +536,7 @@ msgstr "Zobrazuji účty {0} - {1} z {2}"
 msgid "No accounts to display"
 msgstr "Žádné účty ke zobrazení"
 
-#: js/Users.js:271 js/Users.js:582
+#: js/Users.js:271 js/Users.js:593
 msgid "Status"
 msgstr "Stav"
 
@@ -564,11 +560,11 @@ msgstr "Křestní jméno"
 msgid "Email"
 msgstr "Email"
 
-#: js/Users.js:277 js/Users.js:606
+#: js/Users.js:277 js/Users.js:617
 msgid "Last login at"
 msgstr "Poslední přihlášení v"
 
-#: js/Users.js:278 js/Users.js:613
+#: js/Users.js:278 js/Users.js:624
 msgid "Last login from"
 msgstr "Poslední přihlášení z"
 
@@ -576,7 +572,7 @@ msgstr "Poslední přihlášení z"
 msgid "Password changed"
 msgstr "Heslo změněno"
 
-#: js/Users.js:280 js/Users.js:601
+#: js/Users.js:280 js/Users.js:612
 msgid "Expires"
 msgstr "Vyprší"
 
@@ -608,59 +604,62 @@ msgstr "Mažu účet..."
 msgid "Some error occurred while trying to delete the account."
 msgstr "Během mazání účtu došlo k chybě."
 
-#: js/Users.js:477
+#: js/Users.js:479 js/Users.js:480 js/Users.js:481
+msgid "Passwords do not match!"
+msgstr ""
+
+#: js/Users.js:484
 msgid "Saving User Account"
 msgstr "Ukládám uživatelský účet"
 
-#: js/Users.js:511
+#: js/Users.js:521
 msgid "Could not save user account."
 msgstr "Nepodařilo se uložit uživatelský účet."
 
-#: js/Users.js:535
+#: js/Users.js:546
 msgid "First Name"
 msgstr "Křestní jméno"
 
-#: js/Users.js:539
+#: js/Users.js:550
 msgid "Last Name"
 msgstr "Příjmení"
 
-#: js/Users.js:549
+#: js/Users.js:560
 msgid "Password"
 msgstr "Heslo"
 
-#: js/Users.js:552 js/Users.js:558
+#: js/Users.js:563 js/Users.js:569
 msgid "no password set"
 msgstr "heslo nebylo nastaveno"
 
-#: js/Users.js:555
+#: js/Users.js:566
 msgid "Password again"
 msgstr "Zopakovat heslo"
 
-#: js/Users.js:560
+#: js/Users.js:571
 msgid "Primary group"
 msgstr "Primární skupina"
 
-#: js/Users.js:568
+#: js/Users.js:579
 msgid "Emailaddress"
 msgstr "Emailová adresa"
 
-#: js/Users.js:603 js/Users.js:621
+#: js/Users.js:614 js/Users.js:632
 msgid "never"
 msgstr "nikdy"
 
-#: js/Users.js:608 js/Users.js:615
+#: js/Users.js:619 js/Users.js:626
 msgid "never logged in"
 msgstr "nikdy nepřihlášen"
 
-#: js/Users.js:619
+#: js/Users.js:630
 msgid "Password set"
 msgstr "Heslo nastaveno"
 
-#: js/Users.js:661
+#: js/Users.js:672
 msgid "Add New User Account"
 msgstr "Přidat nový uživatelský účet"
 
-#: js/Users.js:663
-#, fuzzy
+#: js/Users.js:674
 msgid "Edit User Account \"{0}\""
 msgstr "Editovat uživatelský účet \"{0}\""

@@ -28,8 +28,8 @@ Tine.Tasks.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     },
     
     // spechialised translations
-    // ngettext('Do you realy want to delte the selected task?', 'Do you relay want to delete the selected tasks?', n);
-    i18nDeleteQuestion: ['Do you realy want to delte the selected task?', 'Do you relay want to delete the selected tasks?'],
+    // ngettext('Do you really want to delete the selected task?', 'Do you really want to delete the selected tasks?', n);
+    i18nDeleteQuestion: ['Do you really want to delete the selected task?', 'Do you really want to delete the selected tasks?'],
     
     initComponent: function() {
         this.recordProxy = Tine.Tasks.JsonBackend;
@@ -52,7 +52,7 @@ Tine.Tasks.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
-                {label: this.app.i18n._('Task'),    field: 'query',    operators: ['contains']},
+                {label: this.app.i18n.n_('Task', 'Tasks', 1),    field: 'query',    operators: ['contains']},
                 {label: this.app.i18n._('Summary'), field: 'summary' },
                 {label: this.app.i18n._('Due Date'), field: 'due', valueType: 'date', operators: ['within', 'before', 'after']},
                 {label: this.app.i18n._('Responsible'), field: 'organizer', valueType: 'user'},

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Admin\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2008-10-15 15:26+0100\n"
+"PO-Revision-Date: 2009-02-16 05:57+0100\n"
 "Last-Translator: Dimitrina Mileva <dimitrina@gmx.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -185,7 +185,7 @@ msgstr "Няма регистрирани усрешни влизания"
 msgid "Session ID"
 msgstr "ID на сесия"
 
-#: js/Admin.js:527 js/Users.js:544
+#: js/Admin.js:527 js/Users.js:555
 msgid "Login Name"
 msgstr "Потребителско име"
 
@@ -235,9 +235,8 @@ msgid "enabled"
 msgstr "активиран"
 
 #: js/Admin.js:823
-#, fuzzy
 msgid "unknown status ({0})"
-msgstr "непознат статус"
+msgstr "непознат статус ({0})"
 
 #: js/Admin.js:852
 msgid "Displaying application {0} - {1} of {2}"
@@ -273,7 +272,7 @@ msgstr "Изтрива група(и)..."
 
 #: js/Groups.js:69 js/Groups.js:378 js/Groups.js:406 js/Roles.js:70
 #: js/Roles.js:439 js/Roles.js:467 js/Tags.js:341 js/Users.js:186
-#: js/Users.js:468 js/Users.js:511
+#: js/Users.js:468 js/Users.js:479 js/Users.js:504 js/Users.js:521
 msgid "Failed"
 msgstr "Неуспех"
 
@@ -322,11 +321,11 @@ msgstr "Актуализира членство "
 msgid "Could not save group."
 msgstr "Групата не можа да бъде съхранена"
 
-#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:516
+#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:527
 msgid "Errors"
 msgstr "Грешки"
 
-#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:516
+#: js/Groups.js:385 js/Roles.js:446 js/Tags.js:346 js/Users.js:527
 msgid "Please fix the errors noted."
 msgstr "Моля коригирайте грешките."
 
@@ -420,13 +419,13 @@ msgstr "Име на роля"
 msgid "Loading Role..."
 msgstr "Зарежда роля..."
 
-#: js/Roles.js:686 js/Tags.js:584 js/Users.js:477
+#: js/Roles.js:686 js/Tags.js:584 js/Users.js:484
 msgid "Please Wait"
 msgstr "Моля изчакайте"
 
 #: js/Roles.js:726
 msgid "Add New Role"
-msgstr "Добави ново право (роля)"
+msgstr "Добави нова роля"
 
 #: js/Roles.js:728
 #, fuzzy
@@ -506,9 +505,8 @@ msgid "Add New Tag"
 msgstr "Добавя нов таг"
 
 #: js/Tags.js:617
-#, fuzzy
 msgid "Edit Tag \"{0}\""
-msgstr "Задава таг \"{0}\""
+msgstr "Обработи таг \"{0}\""
 
 #: js/Users.js:141
 msgid "Set new password"
@@ -516,7 +514,7 @@ msgstr "Създаване на нова рарола"
 
 #: js/Users.js:141
 msgid "Please enter the new password:"
-msgstr "Моля вкарайте новата рарола:"
+msgstr "Моля вкарайте новата парола:"
 
 #: js/Users.js:166
 msgid "Do you really want to delete the selected account(s)?"
@@ -538,7 +536,7 @@ msgstr "Намерени конта {0} - {1} от {2}"
 msgid "No accounts to display"
 msgstr "Няма намерени конта"
 
-#: js/Users.js:271 js/Users.js:582
+#: js/Users.js:271 js/Users.js:593
 msgid "Status"
 msgstr "Статус"
 
@@ -562,11 +560,11 @@ msgstr "Име"
 msgid "Email"
 msgstr "Имейл"
 
-#: js/Users.js:277 js/Users.js:606
+#: js/Users.js:277 js/Users.js:617
 msgid "Last login at"
 msgstr "Последно регистрирано влизане"
 
-#: js/Users.js:278 js/Users.js:613
+#: js/Users.js:278 js/Users.js:624
 msgid "Last login from"
 msgstr "Последното регистрирано влизане е от"
 
@@ -574,7 +572,7 @@ msgstr "Последното регистрирано влизане е от"
 msgid "Password changed"
 msgstr "Паролата е сменена"
 
-#: js/Users.js:280 js/Users.js:601
+#: js/Users.js:280 js/Users.js:612
 msgid "Expires"
 msgstr "Краен срок"
 
@@ -606,59 +604,63 @@ msgstr "Изтрива конто..."
 msgid "Some error occurred while trying to delete the account."
 msgstr "Настъпила е грешка при опит за изтриване на контото."
 
-#: js/Users.js:477
+#: js/Users.js:479 js/Users.js:480 js/Users.js:481
+msgid "Passwords do not match!"
+msgstr ""
+
+#: js/Users.js:484
 msgid "Saving User Account"
 msgstr "Съхранява потребителско конто"
 
-#: js/Users.js:511
+#: js/Users.js:521
 msgid "Could not save user account."
 msgstr "Потребителското конто не можа да бъде съхранено."
 
-#: js/Users.js:535
+#: js/Users.js:546
 msgid "First Name"
 msgstr "Име"
 
-#: js/Users.js:539
+#: js/Users.js:550
 msgid "Last Name"
 msgstr "Фамилия"
 
-#: js/Users.js:549
+#: js/Users.js:560
 msgid "Password"
 msgstr "Парола"
 
-#: js/Users.js:552 js/Users.js:558
+#: js/Users.js:563 js/Users.js:569
 msgid "no password set"
 msgstr "Няма зададена парола"
 
-#: js/Users.js:555
+#: js/Users.js:566
 msgid "Password again"
 msgstr "Задай отново парола"
 
-#: js/Users.js:560
+#: js/Users.js:571
 msgid "Primary group"
 msgstr "Основна група"
 
-#: js/Users.js:568
+#: js/Users.js:579
 msgid "Emailaddress"
 msgstr "Имейл адрес"
 
-#: js/Users.js:603 js/Users.js:621
+#: js/Users.js:614 js/Users.js:632
 msgid "never"
 msgstr "няма"
 
-#: js/Users.js:608 js/Users.js:615
+#: js/Users.js:619 js/Users.js:626
 msgid "never logged in"
 msgstr "До този момент няма регистрирано влизане."
 
-#: js/Users.js:619
+#: js/Users.js:630
 msgid "Password set"
 msgstr "Задава парола"
 
-#: js/Users.js:661
+#: js/Users.js:672
 msgid "Add New User Account"
 msgstr "Добави ново потребителско конто"
 
-#: js/Users.js:663
+#: js/Users.js:674
 #, fuzzy
 msgid "Edit User Account \"{0}\""
 msgstr "Редактирайрай ново потребителско конто \"{0}\""

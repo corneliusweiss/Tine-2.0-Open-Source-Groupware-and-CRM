@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2008-11-24 22:02-0800\n"
+"PO-Revision-Date: 2009-02-20 21:49-0800\n"
 "Last-Translator: \n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,7 @@ msgstr ""
 msgid "%s's personal tasks"
 msgstr "%s 的个人任务"
 
-#: js/EditDialog.js:96 js/GridPanel.js:55 js/Tasks.js:73
-#, fuzzy
+#: js/EditDialog.js:96 js/Tasks.js:74
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "任务"
@@ -62,8 +61,8 @@ msgstr "完成的"
 
 #: js/GridPanel.js:31
 #, fuzzy
-msgid "Do you realy want to delte the selected task?"
-msgid_plural "Do you relay want to delete the selected tasks?"
+msgid "Do you really want to delete the selected task?"
+msgid_plural "Do you really want to delete the selected tasks?"
 msgstr[0] "确实想删除选中的任务？"
 
 #: js/GridPanel.js:57 js/GridPanel.js:127
@@ -98,15 +97,18 @@ msgstr "显示关闭的"
 msgid "IN-PROCESS"
 msgstr "正在处理"
 
-#: js/Tasks.js:12
-#, fuzzy
+#: js/Tasks.js:74
 msgid "Tasks"
 msgstr "任务"
 
-#: js/Tasks.js:77
+#: js/Tasks.js:78
 msgid "to do list"
 msgid_plural "to do lists"
 msgstr[0] "要做的事项列表"
+
+#: js/Tasks.js:78
+msgid "to do lists"
+msgstr "to do 列表"
 
 #: Setup/setup.xml:390
 msgid "NEEDS-ACTION"
@@ -119,6 +121,10 @@ msgstr "完成"
 #: Setup/setup.xml:456
 msgid "CANCELLED"
 msgstr "取消了"
+
+#, fuzzy
+#~ msgid "to to list"
+#~ msgstr "要做的事项列表"
 
 #, fuzzy
 #~ msgid "Tasks) "
@@ -136,9 +142,6 @@ msgstr "取消了"
 #~ msgid "Delete task"
 #~ msgid_plural "Delete tasks"
 #~ msgstr[0] "删除任务"
-
-#~ msgid "to do lists"
-#~ msgstr "to do 列表"
 
 #~ msgid "Enter searchfilter"
 #~ msgstr "输入搜索过滤器"

@@ -45,7 +45,11 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
      * @var ActiveSync_Backend_StandAlone_Abstract
      */
     protected $_dataBackend;
-        
+
+    protected $_defaultNameSpace = 'uri:Ping';
+    protected $_documentElement = 'Ping';
+    
+    
     /**
      * process the XML file and add, change, delete or fetches data 
      *
@@ -135,10 +139,15 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
                     #Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " " . print_r($folder, true));
                     try {
                         $syncState = $controller->getSyncState($this->_device, $folder['folderType'] . '-' . $folder['serverEntryId']);
-                        #Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " " . print_r($syncState->toArray(), true));
-                        #$syncState = $syncStateClass->getSyncState($this->_deviceId, $folder['folderType'] . '-' . $folder['serverEntryId']);
-                        #$count = $dataBackend->getItemEstimate($syncState->lastsync);
                         $count = $dataController->getItemEstimate($syncState->lastsync);
+                        
+                        // get the count of deleted entries or entries available becuase of change permissions
+                        $contentStateBackend  = new ActiveSync_Backend_ContentState();
+                        $allClientEntries = $contentStateBackend->getClientState($this->_device, $folder['folderType']);
+                        $allServerEntries = $dataController->getServerEntries();
+
+                        $count += abs(count($allClientEntries) - count($allServerEntries));
+                        
                         if($count > 0) {
                             $folderWithChanges[] = array(
                                 'serverEntryId' => $folder['serverEntryId'],
@@ -164,7 +173,7 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
         
         Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " DeviceId: " . $this->_device->deviceid . " Lifetime: $lifeTime SecondsLeft: $secondsLeft  Status: $status)");
         
-        $ping = $this->_outputDom->appendChild($this->_outputDom->createElementNS('uri:Ping', 'Ping'));
+        $ping = $this->_outputDom->documentElement;
         $ping->appendChild($this->_outputDom->createElementNS('uri:Ping', 'Status', $status));
         if($status === self::STATUS_CHANGES_FOUND) {
             $folders = $ping->appendChild($this->_outputDom->createElementNS('uri:Ping', 'Folders'));

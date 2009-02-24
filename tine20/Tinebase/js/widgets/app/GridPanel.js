@@ -106,9 +106,9 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
         // init some translations
         this.i18nRecordName = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), 1);
-        this.i18nRecordsName = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), 50);
+        this.i18nRecordsName = this.app.i18n._hidden(this.recordClass.getMeta('recordsName'));
         this.i18nContainerName = this.app.i18n.n_hidden(this.recordClass.getMeta('containerName'), this.recordClass.getMeta('containersName'), 1);
-        this.i18nContainersName = this.app.i18n.n_hidden(this.recordClass.getMeta('containerName'), this.recordClass.getMeta('containersName'), 50);
+        this.i18nContainersName = this.app.i18n._hidden(this.recordClass.getMeta('containersName'));
         
         // init actions with actionToolbar and contextMenu
         this.initActions();
@@ -398,9 +398,6 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
         if (this.store.getCount() > 0) {
             this.grid.getView().focusRow(0);
         }
-        
-        // save used filter
-        this.store.lastFilter = this.store.reader.jsonData.filter;
     },
     
     /**
@@ -488,6 +485,16 @@ Tine.Tinebase.widgets.app.GridPanel = Ext.extend(Ext.Panel, {
      * generic delete handler
      */
     onDeleteRecords: function(btn, e) {
+        if (this.grid.getSelectionModel().isFilterSelect) {
+            Ext.MessageBox.show({
+                title: _('Not Allowed'), 
+                msg: _('You are not allowed to delete all pages at once'),
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.INFO
+            });
+            
+            return;
+        }
         var records = this.grid.getSelectionModel().getSelections();
         
         var i18nItems    = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), records.length);

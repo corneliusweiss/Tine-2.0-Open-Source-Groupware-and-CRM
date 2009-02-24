@@ -35,7 +35,7 @@ class Tinebase_Translation
      * @var array
      */
     private static $SUPPORTED_LANGS = array(
-        'bg',      // Bulgarian            Dimitrina Mileva <dimitrina@gmx.de>
+        'bg',      // Bulgarian            Dimitrina Mileva <d.mileva@metaways.de>
         'cs',      // Czech                Michael Sladek <msladek@brotel.cz>
         'de',      // German               Cornelius Weiss <c.weiss@metaways.de>
         'en',      // English              Cornelius Weiss <c.weiss@metaways.de>
@@ -259,6 +259,9 @@ class Tinebase_Translation
     
     /**
      * convertes po file to js object
+     * 
+     * @todo rewrite this in a way that we can automatically add singulars
+     *       seperatly into the js output
      *
      * @param  string $filePath
      * @return string

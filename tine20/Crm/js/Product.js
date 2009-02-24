@@ -80,7 +80,10 @@ Tine.Crm.Product.EditDialog = function() {
               width: 170, 
               hideable: false, 
               sortable: false, 
-              editor: new Ext.form.TextField({allowBlank: false}) 
+              editor: new Ext.form.TextField({
+                allowBlank: false,
+                maxLength: 60
+            }) 
             }, 
             {
               id: 'price',  
@@ -101,7 +104,7 @@ Tine.Crm.Product.EditDialog = function() {
         var p = new Tine.Crm.Product.Model({
             'id': 'NULL',
             productsource: '',
-            price: '0,00'
+            price: '0.00'
         });
         productsourceGridPanel.stopEditing();
         Tine.Crm.Product.getStore().insert(0, p);
