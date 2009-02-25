@@ -4,7 +4,10 @@
  *
  * @package     ActiveSync
  * @subpackage  ActiveSync
- * @license     http://www.gnu.org/licenses/agpl.html AGPL3
+ * @license     http://www.tine20.org/licenses/agpl-nonus.html AGPL Version 1 (Non-US)
+ *              NOTE: According to sec. 8 of the AFFERO GENERAL PUBLIC LICENSE (AGPL), 
+ *              Version 1, the distribution of the Tine 2.0 ActiveSync module in or to the 
+ *              United States of America is excluded from the scope of this license.
  * @copyright   Copyright (c) 2008-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Lars Kneschke <l.kneschke@metaways.de>
  * @version     $Id$
@@ -63,9 +66,9 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
         
         $intervalStart = mktime();
         $status = self::STATUS_NO_CHANGES_FOUND;
-        
+
+        // the client does not send a wbxml document, if the Ping parameters did not change compared with the last request
         if($this->_inputDom instanceof DOMDocument) {
-            #$syncStateClass = new ActiveSync_SyncState();
             #$xml = simplexml_load_string($this->_inputDom->saveXML());
             $xml = new SimpleXMLElement($this->_inputDom->saveXML(), LIBXML_NOWARNING);
             $xml->registerXPathNamespace('Ping', 'Ping');    
@@ -114,23 +117,7 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
         Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " Folders to monitor($lifeTime / $intervalStart / $intervalEnd / $status): " . print_r($folders, true));
         
         if($status === self::STATUS_NO_CHANGES_FOUND) {
-            #if(empty($folders)) {
-            #    // the client did not sent a list of folders to monitor
-            #    // let's monitor all root folders of all applications
-            #    foreach($this->_backend->getSupportedClasses() as $className) {
-            #                            
-            #        $folderClass = $this->_backend->factory($className);
-            #        foreach($folderClass->getFolders() as $folder) {
-            #            $folder = array(
-            #                'serverEntryId' => $folder['serverId'],
-            #                'folderType'    => $className
-            #            );
-            #            $folders[] = $folder;                
-            #        }
-            #    }
-            #}
-                
-            #$syncStateClass = new ActiveSync_SyncState();
+
             $folderWithChanges = array();
             
             do {
@@ -182,14 +169,14 @@ class ActiveSync_Command_Ping extends ActiveSync_Command_Wbxml
                 #$folder->appendChild($this->_outputDom->createElementNS('uri:Ping', 'Id', $changedFolder['serverEntryId']));
                 Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " DeviceId: " . $this->_deviceId . " changes in folder: " . $changedFolder['serverEntryId']);
             }
-        }
-                
-        #Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " " . $this->_outputDom->saveXML());
-        
-        #$outputStream = fopen("php://temp", 'r+');
-        #$encoder = new Wbxml_Encoder($outputStream, 'UTF-8', 3);
-        #$encoder->encode($this->_outputDom);
-        
-        #return $outputStream;
+        }                
     }    
+    
+    /**
+     * this function generates the response for the client
+     */
+    public function getResponse()
+    {
+        parent::getResponse();
+    }
 }

@@ -3,10 +3,13 @@
  * Tine 2.0
  *
  * @package     ActiveSync
- * @license     http://www.gnu.org/licenses/agpl.html AGPL3
+ * @license     http://www.tine20.org/licenses/agpl-nonus.html AGPL Version 1 (Non-US)
+ *              NOTE: According to sec. 8 of the AFFERO GENERAL PUBLIC LICENSE (AGPL), 
+ *              Version 1, the distribution of the Tine 2.0 ActiveSync module in or to the 
+ *              United States of America is excluded from the scope of this license.
  * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Lars Kneschke <l.kneschke@metaways.de>
- * @version     $Id$
+ * @version     $Id:Release0.php 6978 2009-02-24 12:40:40Z p.schuele@metaways.de $
  */
 
 class ActiveSync_Setup_Update_Release0 extends Setup_Update_Abstract
