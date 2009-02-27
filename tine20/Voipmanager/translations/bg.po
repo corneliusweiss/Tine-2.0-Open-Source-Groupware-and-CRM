@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Voipmanager\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2008-10-21 17:42+0100\n"
+"PO-Revision-Date: 2009-02-25 13:22+0100\n"
 "Last-Translator: Dimitrina Mileva <dimitrina@gmx.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -30,11 +30,10 @@ msgstr "Описание"
 
 #: js/Asterisk/ContextGridPanel.js:51 js/Asterisk/SipPeerEditDialog.js:56
 #: js/Asterisk/VoicemailEditDialog.js:55 js/Models.js:496 js/Voipmanager.js:53
-#, fuzzy
 msgid "Context"
 msgid_plural "Contexts"
 msgstr[0] "Контекст"
-msgstr[1] "Контекст"
+msgstr[1] "Контекста"
 
 #: js/Asterisk/ContextGridPanel.js:66 js/Asterisk/MeetmeGridPanel.js:66
 #: js/Asterisk/VoicemailGridPanel.js:72 js/Snom/LocationGridPanel.js:113
@@ -55,11 +54,10 @@ msgid "adminpin"
 msgstr "администраторски пин"
 
 #: js/Asterisk/MeetmeGridPanel.js:51 js/Models.js:586 js/Voipmanager.js:73
-#, fuzzy
 msgid "Meetme"
 msgid_plural "Meetmes"
-msgstr[0] "изтрий"
-msgstr[1] "изтрий"
+msgstr[0] "Meetme"
+msgstr[1] "Meetmes"
 
 #: js/Asterisk/SipPeerEditDialog.js:41 js/Asterisk/VoicemailEditDialog.js:42
 msgid "General"
@@ -71,17 +69,15 @@ msgstr "Тип"
 
 #: js/Asterisk/SipPeerEditDialog.js:77
 msgid "friend"
-msgstr ""
+msgstr "приятел"
 
 #: js/Asterisk/SipPeerEditDialog.js:78
-#, fuzzy
 msgid "user"
-msgstr "име на потребител"
+msgstr "потребител"
 
 #: js/Asterisk/SipPeerEditDialog.js:79
-#, fuzzy
 msgid "peer"
-msgstr "пейджер"
+msgstr "peer"
 
 #: js/Asterisk/SipPeerEditDialog.js:83
 msgid "Secret"
@@ -148,9 +144,8 @@ msgid "Qualify"
 msgstr "Упълномощение"
 
 #: js/Asterisk/SipPeerGridPanel.js:50
-#, fuzzy
 msgid "Sip Peer"
-msgstr "добави sipPeer"
+msgstr "Sip Peer"
 
 #: js/Asterisk/SipPeerGridPanel.js:66 js/MyPhones.js:146
 #: js/Snom/PhoneGridPanel.js:66 js/Snom/SettingGridPanel.js:66
@@ -348,9 +343,8 @@ msgid "pager"
 msgstr "пейджер"
 
 #: js/Asterisk/VoicemailEditDialog.js:98
-#, fuzzy
 msgid "Additional"
-msgstr "допълнителна информация"
+msgstr "Допълнително"
 
 #: js/Asterisk/VoicemailEditDialog.js:122
 #: js/Asterisk/VoicemailGridPanel.js:103
@@ -433,160 +427,143 @@ msgid "hidefromdir"
 msgstr "Скрит от директория"
 
 #: js/Asterisk/VoicemailGridPanel.js:51 js/Models.js:551 js/Voipmanager.js:63
-#, fuzzy
 msgid "Voicemail"
 msgid_plural "Voicemails"
-msgstr[0] "добави гласова поща"
-msgstr[1] "добави гласова поща"
+msgstr[0] "Гласова поща"
+msgstr[1] "Гласови пощи"
 
 #: js/Asterisk/VoicemailGridPanel.js:88
 msgid "fullname"
 msgstr "Пълно име"
 
 #: js/Models.js:82 js/Snom/PhoneEditDialog.js:270 js/Snom/PhoneGridPanel.js:51
-#, fuzzy
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "номера не отговаря"
-msgstr[1] "номера не отговаря"
+msgstr[0] "Телефон"
+msgstr[1] "Телефона"
 
 #: js/Models.js:86
 msgid "phones list"
 msgid_plural "phones lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "списък на телефони"
+msgstr[1] "списъка на телефони"
 
 #: js/Models.js:133 js/MyPhones.js:152 js/Snom/LocationGridPanel.js:50
 #: js/Snom/PhoneGridPanel.js:81 js/Voipmanager.js:116
-#, fuzzy
 msgid "Location"
 msgid_plural "Locations"
 msgstr[0] "Локация"
-msgstr[1] "Локация"
+msgstr[1] "Локации"
 
 #: js/Models.js:137
-#, fuzzy
 msgid "locations list"
 msgid_plural "locations lists"
-msgstr[0] "Локация"
-msgstr[1] "Локация"
+msgstr[0] "Списък на локации"
+msgstr[1] "Списъка на локации"
 
 #: js/Models.js:170 js/MyPhones.js:162 js/Snom/PhoneGridPanel.js:89
 #: js/Snom/TemplateGridPanel.js:51
-#, fuzzy
 msgid "Template"
 msgid_plural "Templates"
 msgstr[0] "Темплейт"
-msgstr[1] "Темплейт"
+msgstr[1] "Темплейтс"
 
 #: js/Models.js:174
-#, fuzzy
 msgid "templates list"
 msgid_plural "templates lists"
-msgstr[0] "Темплейт"
-msgstr[1] "Темплейт"
+msgstr[0] "Списък на темплейтс"
+msgstr[1] "Списъка на темплейтс"
 
 #: js/Models.js:208 js/MyPhones.js:170 js/Snom/PhoneGridPanel.js:102
 #: js/Snom/SoftwareGridPanel.js:51 js/Voipmanager.js:157
-#, fuzzy
 msgid "Software"
 msgid_plural "Softwares"
-msgstr[0] "Програма (Software)"
-msgstr[1] "Програма (Software)"
+msgstr[0] "Програма"
+msgstr[1] "Програми"
 
 #: js/Models.js:212
-#, fuzzy
 msgid "softwares list"
 msgid_plural "softwares lists"
-msgstr[0] "Програмен идентификационен номер (Id)"
-msgstr[1] "Програмен идентификационен номер (Id)"
+msgstr[0] "Списък на програми"
+msgstr[1] "Списъка на програми"
 
 #: js/Models.js:241
-#, fuzzy
 msgid "SoftwareImage"
 msgid_plural "SoftwareImages"
-msgstr[0] "Програма (Software)"
-msgstr[1] "Програма (Software)"
+msgstr[0] "SoftwareImage"
+msgstr[1] "SoftwareImages"
 
 #: js/Models.js:245
 msgid "softwareImages list"
 msgid_plural "softwareImages lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "списък на softwareImages"
+msgstr[1] "списъка на softwareImages"
 
 #: js/Models.js:279
-#, fuzzy
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] "тон (звуков сигнал)"
+msgstr[0] "Линия"
 msgstr[1] "тон (звуков сигнал)"
 
 #: js/Models.js:283
 msgid "lines list"
 msgid_plural "lines lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "списък на линии"
+msgstr[1] "списъка на линии"
 
 #: js/Models.js:336 js/Snom/SettingGridPanel.js:51 js/Voipmanager.js:147
-#, fuzzy
 msgid "Setting"
 msgid_plural "Settings"
-msgstr[0] "Настройки"
+msgstr[0] "Настройка"
 msgstr[1] "Настройки"
 
 #: js/Models.js:340
-#, fuzzy
 msgid "setting list"
 msgid_plural "settings lists"
-msgstr[0] "Настройки"
-msgstr[1] "Настройки"
+msgstr[0] "Списък на настройки"
+msgstr[1] "Списъка на настройки"
 
 #: js/Models.js:381
-#, fuzzy
 msgid "Owner"
 msgid_plural "Owners"
 msgstr[0] "Собственик"
-msgstr[1] "Собственик"
+msgstr[1] "Собственика"
 
 #: js/Models.js:385
 msgid "owners list"
 msgid_plural "owners lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "списък на собственици"
+msgstr[1] "списъка на собственици"
 
 #: js/Models.js:462 js/Voipmanager.js:32
-#, fuzzy
 msgid "SipPeer"
 msgid_plural "SipPeers"
-msgstr[0] "добави sipPeer"
-msgstr[1] "добави sipPeer"
+msgstr[0] "SipPeer"
+msgstr[1] "SipPeers"
 
 #: js/Models.js:466
-#, fuzzy
 msgid "sipPeers list"
 msgid_plural "sipPeers lists"
-msgstr[0] "Няма намерени sipPeers"
-msgstr[1] "Няма намерени sipPeers"
+msgstr[0] "Списък на sipPeers"
+msgstr[1] "Списъка на sipPeers"
 
 #: js/Models.js:500
-#, fuzzy
 msgid "contexts list"
 msgid_plural "contexts lists"
-msgstr[0] "контекст"
-msgstr[1] "контекст"
+msgstr[0] "Списък на контексти"
+msgstr[1] "Списъка на контексти"
 
 #: js/Models.js:555
-#, fuzzy
 msgid "voicemails list"
 msgid_plural "voicemails lists"
-msgstr[0] "добави гласова поща"
-msgstr[1] "добави гласова поща"
+msgstr[0] "Списък на  гласови пощи"
+msgstr[1] "Списъка на  гласови пощи"
 
 #: js/Models.js:590
 msgid "meetmes list"
 msgid_plural "meetmes lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "списък на meetmes"
+msgstr[1] "списъка на meetmes"
 
 #: js/MyPhones.js:50
 msgid "edit myphone"
@@ -813,9 +790,8 @@ msgid "show_call_status"
 msgstr "показва статус на позвъняванията"
 
 #: js/Snom/LocationEditDialog.js:55 js/Snom/LocationGridPanel.js:77
-#, fuzzy
 msgid "Registrar"
-msgstr "Регистрация на филтъра"
+msgstr "Регистрация"
 
 #: js/Snom/LocationEditDialog.js:62
 msgid "Base Download URL"
@@ -950,9 +926,8 @@ msgid "Idle Text"
 msgstr "Свободен текст"
 
 #: js/Snom/PhoneEditDialog.js:700
-#, fuzzy
 msgid "Lines"
-msgstr "информации"
+msgstr "Линии"
 
 #: js/Snom/PhoneEditDialog.js:715
 msgid "Users"
@@ -960,7 +935,7 @@ msgstr "Потребители"
 
 #: js/Snom/PhoneEditDialog.js:719
 msgid "Rights"
-msgstr ""
+msgstr "Права"
 
 #: js/Snom/TemplateEditDialog.js:56
 msgid "Software Version"
@@ -983,33 +958,28 @@ msgid "Software Id"
 msgstr "Програмен идентификационен номер (Id)"
 
 #: js/Voipmanager.js:25
-#, fuzzy
 msgid "Asterisk"
-msgstr "Потребители"
+msgstr "Asterisk"
 
 #: js/Voipmanager.js:42
-#, fuzzy
 msgid "Dialplan"
-msgstr "Непозволен"
+msgstr "Dialplan"
 
 #: js/Voipmanager.js:83
 msgid "Queues"
-msgstr ""
+msgstr "Поредица"
 
 #: js/Voipmanager.js:99
-#, fuzzy
 msgid "Snom"
-msgstr "нормален"
+msgstr "Snom"
 
 #: js/Voipmanager.js:106
-#, fuzzy
 msgid "Phones"
-msgstr "ност"
+msgstr "Phones"
 
 #: js/Voipmanager.js:126
-#, fuzzy
 msgid "Templates"
-msgstr "Темплейт"
+msgstr "Темплейтс"
 
 #~ msgid "add context"
 #~ msgstr "добави контекст"

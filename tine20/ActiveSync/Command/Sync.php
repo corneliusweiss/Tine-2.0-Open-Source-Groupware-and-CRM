@@ -3,7 +3,7 @@
  * Tine 2.0
  *
  * @package     ActiveSync
- * @license     http://www.tine20.org/licenses/agpl-nonus.html AGPL Version 1 (Non-US)
+ * @license     http://www.tine20.org/licenses/agpl-nonus.txt AGPL Version 1 (Non-US)
  *              NOTE: According to sec. 8 of the AFFERO GENERAL PUBLIC LICENSE (AGPL), 
  *              Version 1, the distribution of the Tine 2.0 ActiveSync module in or to the 
  *              United States of America is excluded from the scope of this license.
@@ -122,7 +122,7 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                 'class'         => $class,
                 'collectionId'  => $collectionId,
                 'windowSize'    => isset($xmlCollection->WindowSize) ? (int)$xmlCollection->WindowSize : 100,
-                'getChanges'    => isset($xmlCollection->GetChanges) && (int)$xmlCollection->GetChanges === 0 ? false : true,
+                'getChanges'    => isset($xmlCollection->GetChanges) && (string)$xmlCollection->GetChanges === '0' ? false : true,
                 'added'         => array(),
                 'changed'       => array(),
                 'deleted'       => array(),

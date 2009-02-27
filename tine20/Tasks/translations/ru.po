@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: 2008-08-05 17:49+0100\n"
-"PO-Revision-Date: 2008-10-01 16:53+0100\n"
+"PO-Revision-Date: 2009-02-27 15:24+0100\n"
 "Last-Translator: iyurkovetskiy <i.yurkovetskiy@metaways.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,17 +18,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: Tasks\n"
 
 #: Controller.php:97
-#, fuzzy, python-format
+#, python-format
 msgid "%s's personal tasks"
-msgstr "{0}'s личные задания"
-
-#: js/EditDialog.js:96 js/Tasks.js:74
-#, fuzzy
-msgid "Task"
-msgid_plural "Tasks"
-msgstr[0] "Задания"
-msgstr[1] "Задания"
-msgstr[2] "Задания"
+msgstr "%s's личные задания"
 
 #: js/EditDialog.js:113 js/GridPanel.js:56 js/GridPanel.js:115
 msgid "Summary"
@@ -44,7 +36,7 @@ msgstr "Приоритет"
 
 #: js/EditDialog.js:124 js/GridPanel.js:58 js/GridPanel.js:188
 msgid "Responsible"
-msgstr ""
+msgstr "Ответственный"
 
 #: js/EditDialog.js:128
 msgid "Notes"
@@ -64,7 +56,7 @@ msgstr "Статус"
 
 #: js/EditDialog.js:142
 msgid "Completed"
-msgstr ""
+msgstr "Закончено"
 
 #: js/GridPanel.js:31
 #, fuzzy
@@ -96,7 +88,7 @@ msgstr "Процент"
 
 #: js/GridPanel.js:180
 msgid "Creation Time"
-msgstr ""
+msgstr "Время Создания"
 
 #: js/GridPanel.js:208
 msgid "Show closed"
@@ -105,6 +97,14 @@ msgstr "Показ закрылся"
 #: js/Status.js:45 Setup/setup.xml:434
 msgid "IN-PROCESS"
 msgstr "НЕЗАВЕРШЕННЫЙ"
+
+#: js/Tasks.js:74
+#, fuzzy
+msgid "Task"
+msgid_plural "Tasks"
+msgstr[0] "Задания"
+msgstr[1] "Задания"
+msgstr[2] "Задания"
 
 #: js/Tasks.js:74
 #, fuzzy
@@ -218,3 +218,10 @@ msgstr "ОТСТАВЛЕНО"
 
 #~ msgid "Delete tasks"
 #~ msgstr "Удолить задания"
+
+#, fuzzy
+#~ msgid "Do you realy want to delte the selected task?"
+#~ msgid_plural "Do you relay want to delete the selected tasks?"
+#~ msgstr[0] "Вы уверены что хотите удалить выбранное задание"
+#~ msgstr[1] "Вы уверены что хотите удалить выбранные задания"
+#~ msgstr[2] "Вы уверены что хотите удалить выбранных заданий"

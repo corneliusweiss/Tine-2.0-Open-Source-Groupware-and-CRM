@@ -462,19 +462,66 @@ class Setup_ExtCheck
         return $data;
     }
 
+    /**
+     * get output
+     *
+     * @return string
+     */
     public function getOutput()
     {
         return $this->output = $this->list->showTable($this->_check());
     }
+    
+    /**
+     * get check result data
+     *
+     * @return array
+     * 
+     * @todo    add message
+     */
+    public function getData()
+    {
+        $helperLink = ' <a href="http://www.tine20.org/wiki/index.php/Admins/Install_Howto" target="_blank">Check the Tine 2.0 wiki for support.</a>';
+        
+        $result = array(
+            'success'   => TRUE,
+            'result'    => array(),
+        );
+        
+        $data = $this->_check();
+        
+        foreach ($data as $check) {
+            list($key, $value) = $check;
+            if ($value != 'SUCCESS') {
+                $result['success'] = FALSE;
+                $result['result'][] = array(
+                    'key'       => $key,
+                    'value'     => FALSE,
+                    'message'   => 'Extension ' . $key . ' not found.' . $helperLink
+                );
+            } else {
+                $result['result'][] = array(
+                    'key'   => $key,
+                    'value' => TRUE,
+                    'message'   => ''
+                );
+            }
+        }
+        
+        return $result;
+    }
 
+    /**
+     * the constructor
+     *
+     * @param string $_file
+     */
     public function __construct($_file = NULL)
     {
-        if (isset($_SERVER['SHELL']) || isset($_SERVER['ProgramFiles']))  // Unix-Shell; Windows-Kommandozeile
-        {
+        if (isset($_SERVER['SHELL']) || isset($_SERVER['ProgramFiles'])) {
+            // Unix-Shell; Windows-Kommandozeile
             $this->list = new ExtensionList(new TextTableFactory());
-        }
-        else
-        {
+        } else {
             $this->list = new ExtensionList(new HTMLTableFactory());
         }
 

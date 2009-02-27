@@ -184,7 +184,7 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
     public function login()
     {
         // check if setup/update required
-        $setupController = new Setup_Controller();
+        $setupController = Setup_Controller::getInstance();
         $applications = Tinebase_Application::getInstance()->getApplications();
         foreach ($applications as $application) {
             if ($application->status == 'enabled' && $setupController->updateNeeded($application)) {
@@ -498,6 +498,8 @@ class Tinebase_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
         
         $_exclude[]  = '.';
         $_exclude[]  = 'Tinebase';
+        $_exclude[]  = 'Setup';
+        
         	    
         $d = dir($tine20path);
 	    while (false !== ($appName = $d->read())) {

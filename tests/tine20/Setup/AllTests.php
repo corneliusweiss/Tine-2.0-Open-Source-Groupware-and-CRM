@@ -7,6 +7,9 @@
  * @copyright   Copyright (c) 2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Lars Kneschke <l.kneschke@metaways.de>
  * @version     $Id: AllTests.php 1536 2008-03-28 19:13:57Z lkneschke $
+ * 
+ * @todo        move setup tests to separate test suite with special Setup_TestServer
+ * @todo        repair Setup_Backend_AllTests and add them again
  */
 
 /**
@@ -28,8 +31,8 @@ class Setup_AllTests
     public static function suite ()
     {
         $suite = new PHPUnit_Framework_TestSuite('Tine 2.0 Setup All Tests');
-        $suite->addTest(Setup_Backend_AllTests::suite());
-        //$suite->addTestSuite('Setup_ControllerTest');
+        //$suite->addTest(Setup_Backend_AllTests::suite());
+        $suite->addTestSuite('Setup_JsonTest');
         return $suite;
     }
 }

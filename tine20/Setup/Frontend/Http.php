@@ -15,15 +15,67 @@
  *
  * @package     Tinebase
  */
-class Setup_Frontend_Http
+class Setup_Frontend_Http extends Tinebase_Application_Frontend_Http_Abstract
 {
     /**
      * the internal name of the application
      *
      * @var string
      */
-    protected $_appname = 'Setup';
-
+    protected $_applicationName = 'Setup';
+    
+    
+    /**
+     * Returns all JS files which must be included for Setup
+     *
+     * @return array Array of filenames
+     */
+    public function getJsFilesToInclude()
+    {
+        return array(
+            'Setup/js/init.js',
+            'Setup/js/Setup.js',
+            'Setup/js/MainScreen.js',
+            'Setup/js/ApplicationGridPanel.js',
+            'Setup/js/EnvCheckGridPanel.js',
+            'Setup/js/ConfigManagerGridPanel.js',
+        );
+    }
+    
+    
+    /**
+     * renders the tine main screen 
+     */
+    public function mainScreen()
+    {
+        //$this->checkAuth();
+        
+        $view = new Zend_View();
+        $view->setScriptPath('Setup/views');
+        
+        header('Content-Type: text/html; charset=utf-8');
+        echo $view->render('mainscreen.php');
+    }
+    
+    
+    /**
+     * returns an array with all css and js files which needs to be included
+     * 
+     * @return array 
+     */
+    public static function getAllIncludeFiles() {
+        // we start with all Tinebase include files ...
+        $tinebase = new Tinebase_Frontend_Http();
+        $jsFiles  = $tinebase->getJsFilesToInclude();
+        $cssFiles = $tinebase->getCssFilesToInclude();
+        
+        // ... and add only the setup files
+        $setup = new Setup_Frontend_Http();
+        return array(
+            'js'  => array_merge($jsFiles, $setup->getJsFilesToInclude()),
+            'css' => array_merge($cssFiles, $setup->getCssFilesToInclude())
+        );
+    }
     /**
      * authentication
      *
@@ -42,6 +94,17 @@ class Setup_Frontend_Http
      */
     public function handle()
     {
+        if ($_GET['mode'] == 'beta') {
+            return $this->mainScreen();
+        }
+        
+        if ($_REQUEST['method'] == 'Tinebase.getJsTranslations') {
+            $locale = Setup_Core::get('locale');
+            $translations = Tinebase_Translation::getJsTranslations($locale);
+            header('Content-Type: application/javascript');
+            die($translations);
+        }
+        
         $updateDone = $this->_update();
         $this->_install($updateDone);
     }
@@ -53,7 +116,7 @@ class Setup_Frontend_Http
      */
     protected function _install($_updated = FALSE)
     {
-        $controller = new Setup_Controller();
+        $controller = Setup_Controller::getInstance();
         
         if ($_updated || $this->_check()) {
             $applications = $controller->getInstallableApplications();
@@ -93,7 +156,7 @@ class Setup_Frontend_Http
      */
     protected function _update()
     {
-        $controller = new Setup_Controller();
+        $controller = Setup_Controller::getInstance();
         
         try {
             $applications = Tinebase_Application::getInstance()->getApplications(NULL, 'id');
@@ -122,41 +185,21 @@ class Setup_Frontend_Http
      *
      * @return boolean if check is successful
      * 
-     * @todo use this in cli as well (move to controller?)
-     * @todo move ini requirements elsewhere
+     * @todo use this in cli as well
      */
     protected function _check()
     {
-        $success = TRUE;
+        $controller = Setup_Controller::getInstance();
+        $envCheck = $controller->environmentCheck();
+        $success = $envCheck['success'];
         
-        // check php environment
-        $requiredIniSettings = array(
-            'magic_quotes_sybase'  => 0,
-            'magic_quotes_gpc'     => 0,
-            'magic_quotes_runtime' => 0,
-            'mbstring.func_overload' => 0,
-            'eaccelerator.enable' => 0,
-            'memory_limit' => '48M'
-        );
-        
-        foreach ($requiredIniSettings as $variable => $newValue) {
-            $oldValue = ini_get($variable);
-            
-            if ($variable == 'memory_limit') {
-                $required = convertToBytes($newValue);
-                $set = convertToBytes($oldValue);
-                
-                if ( $set < $required) {
-                    echo "Sorry, your environment is not supported. You need to set $variable equal or greater than $required (now: $set).";
-                    $success = FALSE;
-                }
-
-            } elseif ($oldValue != $newValue) {
-                if (ini_set($variable, $newValue) === false) {
-                    echo "Sorry, your environment is not supported. You need to set $variable from $oldValue to $newValue.";
-                    $success = FALSE;
+        if (!$success) {
+            foreach ($envCheck['result'] as $result) {
+                if (!empty($result['message'])) {
+                    echo $result['message'] . '<br/>';
                 }
             }
+            return $success;
         }
         
         $extCheck = new Setup_ExtCheck('Setup/essentials.xml');
