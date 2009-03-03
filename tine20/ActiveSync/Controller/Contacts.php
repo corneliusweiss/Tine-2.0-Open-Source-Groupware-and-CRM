@@ -93,102 +93,10 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
         'type'          => ActiveSync_Command_FolderSync::FOLDERTYPE_CONTACT
     ));
     
-    /**
-     * get estimate of add,changed or deleted contacts
-     *
-     * @todo improve filter usage. Filter need to support OR and need to return count only
-     * @param Zend_Date $_startTimeStamp
-     * @param Zend_Date $_endTimeStamp
-     * @return int total count of changed items
-     */
-    public function getItemEstimate($_startTimeStamp = NULL, $_endTimeStamp = NULL)
-    {
-        $count = 0;
-        $startTimeStamp = ($_startTimeStamp instanceof Zend_Date) ? $_startTimeStamp->get(Tinebase_Record_Abstract::ISO8601LONG) : $_startTimeStamp;
-        
-        if($_startTimeStamp === NULL && $_endTimeStamp === NULL) {
-            $filter = new Addressbook_Model_ContactFilter(array()); 
-            $count = Addressbook_Controller_Contact::getInstance()->searchCount($filter);
-        } elseif($_endTimeStamp === NULL) {
-            foreach(array('creation_time', 'last_modified_time') as $fieldName) {
-                $filter = new Addressbook_Model_ContactFilter(array(
-                    array(
-                        'field'     => $fieldName,
-                        'operator'  => 'after',
-                        'value'     => $startTimeStamp
-                    ),
-                )); 
-                $count += Addressbook_Controller_Contact::getInstance()->searchCount($filter);
-            }
-        } else {
-            $endTimeStamp = ($_endTimeStamp instanceof Zend_Date) ? $_endTimeStamp->get(Tinebase_Record_Abstract::ISO8601LONG) : $_endTimeStamp;
-            
-            foreach(array('creation_time', 'last_modified_time') as $fieldName) {
-                $filter = new Addressbook_Model_ContactFilter(array(
-                    array(
-                        'field'     => $fieldName,
-                        'operator'  => 'after',
-                        'value'     => $startTimeStamp
-                    ),
-                    array(
-                        'field'     => $fieldName,
-                        'operator'  => 'before',
-                        'value'     => $endTimeStamp
-                    ),
-                )); 
-                $count += Addressbook_Controller_Contact::getInstance()->searchCount($filter);
-            }
-        }
-        
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " Count: $count Timestamps: ($startTimeStamp / $endTimeStamp)");
-                    
-        return $count;
-    }
+    protected $_applicationName     = 'Addressbook';
     
-    /**
-     * get all entries changed between to dates
-     *
-     * @param unknown_type $_field
-     * @param unknown_type $_startTimeStamp
-     * @param unknown_type $_endTimeStamp
-     * @return array
-     */
-    public function getSince($_field, $_startTimeStamp, $_endTimeStamp)
-    {
-        switch($_field) {
-            case 'added':
-                $fieldName = 'creation_time';
-                break;
-            case 'changed':
-                $fieldName = 'last_modified_time';
-                break;
-            case 'deleted':
-                $fieldName = 'deleted_time';
-                break;
-            default:
-                throw new Exception("$_field must be either added, changed or deleted");                
-        }
+    protected $_modelName           = 'Contact';
         
-        $startTimeStamp = ($_startTimeStamp instanceof Zend_Date) ? $_startTimeStamp->get(Tinebase_Record_Abstract::ISO8601LONG) : $_startTimeStamp;
-        $endTimeStamp = ($_endTimeStamp instanceof Zend_Date) ? $_endTimeStamp->get(Tinebase_Record_Abstract::ISO8601LONG) : $_endTimeStamp;
-        
-        $filter = new Addressbook_Model_ContactFilter(array(
-            array(
-                'field'     => $fieldName,
-                'operator'  => 'after',
-                'value'     => $startTimeStamp
-            ),
-            array(
-                'field'     => $fieldName,
-                'operator'  => 'before',
-                'value'     => $endTimeStamp
-            ),
-        ));
-        $result = Addressbook_Controller_Contact::getInstance()->search($filter, NULL, false, true);
-        
-        return $result;
-    }    
-    
     /**
      * append contact to xml parent node
      *
@@ -198,11 +106,10 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
      */
     public function appendXML(DOMDocument $_xmlDocument, DOMElement $_xmlNode, $_serverId)
     {
-        $data = Addressbook_Controller_Contact::getInstance()->get($_serverId);
+        $data = $this->_contentController->get($_serverId);
         
         foreach($this->_mapping as $key => $value) {
-            // change to !empty only after release
-            if(isset($data->$value) && !empty($data->$value)) {
+            if(!empty($data->$value)) {
                 switch($value) {
                     case 'bday':
                         # 2008-12-18T23:00:00.000Z
@@ -219,111 +126,7 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
             }
         }        
     }
-    
-    /**
-     * add contact from xml
-     *
-     * @param unknown_type $_collectionId
-     * @param SimpleXMLElement $_data
-     * @return unknown
-     */
-    public function add($_collectionId, SimpleXMLElement $_data)
-    {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " CollectionId: $_collectionId");
         
-        $contact = $this->_toTine20Contact($_data);
-        $contact->creation_time = $this->_syncTimeStamp;
-        
-        $contact = Addressbook_Controller_Contact::getInstance()->create($contact);
-        
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " added contact id " . $contact->getId());
-
-        return $contact;
-    }
-    
-    /**
-     * search for existing contact
-     *
-     * @param unknown_type $_collectionId
-     * @param SimpleXMLElement $_data
-     * @return unknown
-     */
-    public function search($_collectionId, SimpleXMLElement $_data)
-    {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " CollectionId: $_collectionId");
-        
-        $filter = $this->_toTine20ContactFilter($_data);
-        
-        $foundContacts = Addressbook_Controller_Contact::getInstance()->search($filter);
-
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " found " . count($foundContacts));
-            
-        return $foundContacts;
-    }
-    
-    /**
-     * get id's of all contacts available on the server
-     *
-     * @return array
-     */
-    public function getServerEntries()
-    {
-        $contactFilter = new Addressbook_Model_ContactFilter(array(
-            array(
-                'field'     => 'containerType',
-                'operator'  => 'equals',
-                'value'     => 'all'
-            )
-        ));
-        
-        $foundContacts = Addressbook_Controller_Contact::getInstance()->search($contactFilter, NULL, false, true);
-        
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " found " . count($foundContacts) . ' entries');
-            
-        return $foundContacts;
-    }
-    
-    /**
-     * update existing contact
-     *
-     * @param unknown_type $_collectionId
-     * @param unknown_type $_id
-     * @param SimpleXMLElement $_data
-     * @return unknown
-     */
-    public function change($_collectionId, $_id, SimpleXMLElement $_data)
-    {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " CollectionId: $_collectionId Id: $_id");
-        
-        $contactsController = Addressbook_Controller_Contact::getInstance();
-        
-        $oldContact = $contactsController->get($_id); 
-        
-        $contact = $this->_toTine20Contact($_data, $oldContact);
-        $contact->last_modified_time = $this->_syncTimeStamp;
-        
-        $contact = $contactsController->update($contact);
-        
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " updated contact id " . $contact->getId());
-
-        return $contact;
-    }
-    
-    /**
-     * delete contact
-     *
-     * @param unknown_type $_collectionId
-     * @param unknown_type $_id
-     */
-    public function delete($_collectionId, $_id)
-    {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " ColectionId: $_collectionId Id: $_id");
-        
-        Addressbook_Controller_Contact::getInstance()->delete($_id);
-        
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " deleted contact id " . $_id);
-    }
-    
     /**
      * convert contact from xml to Addressbook_Model_Contact
      *
@@ -331,10 +134,10 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
      * @param SimpleXMLElement $_data
      * @return Addressbook_Model_Contact
      */
-    protected function _toTine20Contact(SimpleXMLElement $_data, $_contact = null)
+    protected function _toTineModel(SimpleXMLElement $_data, $_entry = null)
     {
-        if($_contact instanceof Addressbook_Model_Contact) {
-            $contact = $_contact;
+        if($_entry instanceof Addressbook_Model_Contact) {
+            $contact = $_entry;
         } else {
             $contact = new Addressbook_Model_Contact(null, true);
         }
@@ -347,6 +150,14 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
                     // do not change if not set
                     if(isset($xmlData->$fieldName)) {
                         $contact->$value = base64_decode((string)$xmlData->$fieldName);
+                    }
+                    break;
+                case 'bday':
+                    if(isset($xmlData->$fieldName)) {
+                        $timeStamp = $this->_convertISOToTs((string)$xmlData->$fieldName);
+                        $contact->$value = new Zend_Date($timeStamp, NULL);
+                    } else {
+                        $contact->$value = null;
                     }
                     break;
                 default:
@@ -379,11 +190,11 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
      * @param SimpleXMLElement $_data
      * @return Addressbook_Model_ContactFilter
      */
-    protected function _toTine20ContactFilter(SimpleXMLElement $_data)
+    protected function _toTineFilter(SimpleXMLElement $_data)
     {
         $xmlData = $_data->children('Contacts');
         
-        $contactFilter = new Addressbook_Model_ContactFilter(array(
+        $filter = new Addressbook_Model_ContactFilter(array(
             array(
                 'field'     => 'containerType',
                 'operator'  => 'equals',
@@ -392,15 +203,33 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
         )); 
     
         foreach($this->_mapping as $fieldName => $value) {
-            if($contactFilter->has($value)) {
-                $contactFilter->$value = array(
+            if($filter->has($value)) {
+                $filter->$value = array(
                     'operator'  => 'equals',
                     'value'     => (string)$xmlData->$fieldName
                 );
             }
         }
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " contactData " . print_r($contactFilter, true));
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " filterData " . print_r($filter, true));
         
-        return $contactFilter;
+        return $filter;
     }
+    
+    /**
+     * converts an iso formated date into a timestamp
+     *
+     * @param  string Zend_Date::ISO8601 representation of a datetime filed
+     * @return int    UNIX Timestamp
+     */
+    protected function _convertISOToTs($_ISO)
+    {
+        $matches = array();
+        preg_match("/^(\d{4})-(\d{2})-(\d{2})[T ]{1}(\d{2}):(\d{2}):(\d{2})/", $_ISO, $matches);
+
+        if (count($matches) == 7) {
+            list($match, $year, $month, $day, $hour, $minute, $second) = $matches;
+            return  mktime($hour, $minute, $second, $month, $day, $year);
+        }
+    }
+    
 }
