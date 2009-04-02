@@ -155,6 +155,18 @@ class Voipmanager_Frontend_Json extends Tinebase_Application_Frontend_Json_Abstr
             unset($phoneData['id']);
         }
         
+        // unset some (readonly-)fields 
+        $unsetFields = array(
+            'settings_loaded_at',
+            'firmware_checked_at',
+            'last_modified_time',
+            'ipaddress',
+            'current_software',
+        ); 
+        foreach ($unsetFields as $field) {
+            unset($phoneData[$field]);
+        }
+        
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($phoneData, true));
         
         $phone = new Voipmanager_Model_Snom_Phone($phoneData);
