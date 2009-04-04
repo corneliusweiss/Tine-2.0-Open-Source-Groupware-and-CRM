@@ -48,6 +48,11 @@ msgstr "spustit"
 msgid "run right description"
 msgstr "popis práva na spuštění"
 
+#: Export/Ods.php:197
+#, fuzzy
+msgid "Filter"
+msgstr "Nepodařilo se"
+
 #: Export/Pdf.php:206 js/widgets/tags/TagsPanel.js:53
 msgid "Tags"
 msgstr "Štítky"
@@ -101,7 +106,7 @@ msgstr[0] "{0} pracovní den"
 msgstr[1] "{0} pracovní dny"
 msgstr[2] "{0} pracovních dní"
 
-#: js/ExceptionDialog.js:34 js/MainScreen.js:358
+#: js/ExceptionDialog.js:34 js/MainScreen.js:362
 #: js/widgets/AccountpickerPanel.js:149
 #: js/widgets/container/ContainerSelect.js:251 js/widgets/EditDialog.js:161
 #: js/widgets/EditRecord.js:136
@@ -185,7 +190,7 @@ msgstr "Čekejte prosím"
 msgid "Login successful. Loading Tine 2.0..."
 msgstr "Přihlášení bylo úspěšné. Načítám Tine 2.0..."
 
-#: js/Login.js:135 js/MainScreen.js:436
+#: js/Login.js:135 js/MainScreen.js:440
 msgid "Please wait!"
 msgstr "Čekejte prosím!"
 
@@ -221,69 +226,69 @@ msgstr "Časové pásmo"
 msgid "Language"
 msgstr "Jazyk"
 
-#: js/MainScreen.js:172
+#: js/MainScreen.js:176
 msgid "Change password"
 msgstr "Změnit heslo"
 
-#: js/MainScreen.js:178
+#: js/MainScreen.js:182
 msgid "Install Google Gears"
 msgstr "Instalovat Google Gears"
 
-#: js/MainScreen.js:184
+#: js/MainScreen.js:188
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: js/MainScreen.js:185
+#: js/MainScreen.js:189
 msgid "Logout from Tine 2.0"
 msgstr "Odhlásit z Tine 2.0"
 
-#: js/MainScreen.js:322
+#: js/MainScreen.js:326
 msgid "Change Password For \"{0}\""
 msgstr "Změnit heslo pro \"{0}\""
 
-#: js/MainScreen.js:346
+#: js/MainScreen.js:350
 msgid "Old Password"
 msgstr "Staré heslo"
 
-#: js/MainScreen.js:350
+#: js/MainScreen.js:354
 msgid "New Password"
 msgstr "Nové heslo"
 
-#: js/MainScreen.js:354
+#: js/MainScreen.js:358
 msgid "Repeat new Password"
 msgstr "Zopakujte nové heslo"
 
-#: js/MainScreen.js:364 js/widgets/AccountpickerPanel.js:141
+#: js/MainScreen.js:368 js/widgets/AccountpickerPanel.js:141
 #: js/widgets/container/ContainerSelect.js:260 js/widgets/EditDialog.js:144
 #: js/widgets/EditRecord.js:115
 msgid "Ok"
 msgstr "OK"
 
-#: js/MainScreen.js:373
+#: js/MainScreen.js:377
 msgid "Please Wait!"
 msgstr "Čekejte prosím!"
 
-#: js/MainScreen.js:374
+#: js/MainScreen.js:378
 msgid "changing password..."
 msgstr "měním heslo..."
 
-#: js/MainScreen.js:385
+#: js/MainScreen.js:389
 msgid "Success"
 msgstr "Podařilo se"
 
-#: js/MainScreen.js:386
+#: js/MainScreen.js:390
 msgid "Your password has been changed."
 msgstr "Vaše heslo bylo změněno."
 
-#: js/MainScreen.js:392 js/MainScreen.js:402
+#: js/MainScreen.js:396 js/MainScreen.js:406
 msgid "Failure"
 msgstr "Došlo k chybě"
 
-#: js/MainScreen.js:403
+#: js/MainScreen.js:407
 msgid "The new passwords mismatch, please correct them."
 msgstr "Nová hesla se neshodují, opravte je prosím."
 
-#: js/MainScreen.js:421
+#: js/MainScreen.js:425
 msgid ""
 "Installing Gears will improve the performance of Tine 2.0 by caching all "
 "needed files locally on this computer."
@@ -291,17 +296,17 @@ msgstr ""
 "Instalace Google Gears zvýší výkon Tine 2.0 diky lokálnímu kešování všech "
 "potřebných souborů na tomto počítači."
 
-#: js/MainScreen.js:434 js/widgets/app/GridPanel.js:506
+#: js/MainScreen.js:438 js/widgets/app/GridPanel.js:506
 #: js/widgets/container/ContainerTree.js:379 js/widgets/EditDialog.js:390
 #: js/widgets/grid/PersistentFilterPicker.js:123
 msgid "Confirm"
 msgstr "Potvrdit"
 
-#: js/MainScreen.js:434
+#: js/MainScreen.js:438
 msgid "Are you sure you want to logout?"
 msgstr "Určitě se chcete odhlásit?"
 
-#: js/MainScreen.js:436
+#: js/MainScreen.js:440
 msgid "Logging you out..."
 msgstr "Odhlašuji Vás..."
 

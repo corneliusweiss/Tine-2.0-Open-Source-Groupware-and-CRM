@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Tine 2.0 - Setup\n"
+"POT-Creation-Date: 2008-05-17 22:12+0100\n"
+"PO-Revision-Date: 2009-03-31 09:17+0800\n"
+"Last-Translator: Frank <frank.cchuang@gmail.com>\n"
+"Language-Team: Tine 2.0 Translators\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: TAIWAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: js/ApplicationGridPanel.js:37
+msgid "Name"
+msgstr "姓名"
+
+#: js/ApplicationGridPanel.js:38
+msgid "Enabled"
+msgstr "啟用"
+
+#: js/ApplicationGridPanel.js:39
+msgid "Order"
+msgstr ""
+
+#: js/ApplicationGridPanel.js:40
+msgid "Current Version"
+msgstr "目前版本"
+
+#: js/ApplicationGridPanel.js:41
+msgid "Version"
+msgstr "版本"
+
+#: js/ApplicationGridPanel.js:42
+msgid "Status"
+msgstr "狀態"
+
+#: js/ApplicationGridPanel.js:48
+#: js/EnvCheckGridPanel.js:163
+msgid "Install application"
+msgstr "安裝應用程式"
+
+#: js/ApplicationGridPanel.js:57
+msgid "Uninstall application"
+msgstr "移除應用程式"
+
+#: js/ApplicationGridPanel.js:66
+msgid "Update application"
+msgstr "更新應用程式"
+
+#: js/ApplicationGridPanel.js:136
+msgid "Shit"
+msgstr ""
+
+#: js/ApplicationGridPanel.js:136
+msgid "Where are the backup tapes"
+msgstr "磁帶備份位置"
+
+#: js/EnvCheckGridPanel.js:104
+msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
+msgstr ""
+
+#: js/EnvCheckGridPanel.js:134
+msgid "Check"
+msgstr "檢查"
+
+#: js/EnvCheckGridPanel.js:135
+msgid "Result"
+msgstr ""
+
+#: js/EnvCheckGridPanel.js:136
+msgid "Error"
+msgstr ""
+
+#: js/EnvCheckGridPanel.js:154
+msgid "Check again"
+msgstr "再次檢查"
+
+#: js/Setup.js:29
+msgid "Setup Checks"
+msgstr "檢查設定"
+
+#: js/Setup.js:34
+msgid "Config Manager"
+msgstr ""
+
+#: js/Setup.js:40
+msgid "Application Manager"
+msgstr ""
+
+#: js/Setup.js:126
+msgid "Application"
+msgid_plural "Applications"
+msgstr[0] "應用程式"
+

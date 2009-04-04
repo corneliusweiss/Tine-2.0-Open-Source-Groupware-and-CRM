@@ -30,6 +30,10 @@ msgstr "run"
 msgid "run right description"
 msgstr "run right description"
 
+#: Export/Ods.php:197
+msgid "Filter"
+msgstr "Filter"
+
 #: Export/Pdf.php:206 js/widgets/tags/TagsPanel.js:53
 msgid "Tags"
 msgstr "Tags"
@@ -80,7 +84,7 @@ msgid_plural "{0} workdays"
 msgstr[0] "{0} workday"
 msgstr[1] "{0} workdays"
 
-#: js/ExceptionDialog.js:34 js/MainScreen.js:358
+#: js/ExceptionDialog.js:34 js/MainScreen.js:362
 #: js/widgets/AccountpickerPanel.js:149
 #: js/widgets/container/ContainerSelect.js:251 js/widgets/EditDialog.js:161
 #: js/widgets/EditRecord.js:136
@@ -163,7 +167,7 @@ msgstr "Please wait"
 msgid "Login successful. Loading Tine 2.0..."
 msgstr "Login successful. Loading Tine 2.0..."
 
-#: js/Login.js:135 js/MainScreen.js:436
+#: js/Login.js:135 js/MainScreen.js:440
 msgid "Please wait!"
 msgstr "Please wait!"
 
@@ -199,69 +203,69 @@ msgstr "Timezone"
 msgid "Language"
 msgstr "Language"
 
-#: js/MainScreen.js:172
+#: js/MainScreen.js:176
 msgid "Change password"
 msgstr "Change password"
 
-#: js/MainScreen.js:178
+#: js/MainScreen.js:182
 msgid "Install Google Gears"
 msgstr "Install Google Gears"
 
-#: js/MainScreen.js:184
+#: js/MainScreen.js:188
 msgid "Logout"
 msgstr "Logout"
 
-#: js/MainScreen.js:185
+#: js/MainScreen.js:189
 msgid "Logout from Tine 2.0"
 msgstr "Logout from Tine 2.0"
 
-#: js/MainScreen.js:322
+#: js/MainScreen.js:326
 msgid "Change Password For \"{0}\""
 msgstr "Change Password For \"{0}\""
 
-#: js/MainScreen.js:346
+#: js/MainScreen.js:350
 msgid "Old Password"
 msgstr "Old Password"
 
-#: js/MainScreen.js:350
+#: js/MainScreen.js:354
 msgid "New Password"
 msgstr "New Password"
 
-#: js/MainScreen.js:354
+#: js/MainScreen.js:358
 msgid "Repeat new Password"
 msgstr "Repeat new Password"
 
-#: js/MainScreen.js:364 js/widgets/AccountpickerPanel.js:141
+#: js/MainScreen.js:368 js/widgets/AccountpickerPanel.js:141
 #: js/widgets/container/ContainerSelect.js:260 js/widgets/EditDialog.js:144
 #: js/widgets/EditRecord.js:115
 msgid "Ok"
 msgstr "Ok"
 
-#: js/MainScreen.js:373
+#: js/MainScreen.js:377
 msgid "Please Wait!"
 msgstr "Please Wait!"
 
-#: js/MainScreen.js:374
+#: js/MainScreen.js:378
 msgid "changing password..."
 msgstr "changing password..."
 
-#: js/MainScreen.js:385
+#: js/MainScreen.js:389
 msgid "Success"
 msgstr "Success"
 
-#: js/MainScreen.js:386
+#: js/MainScreen.js:390
 msgid "Your password has been changed."
 msgstr "Your password has been changed."
 
-#: js/MainScreen.js:392 js/MainScreen.js:402
+#: js/MainScreen.js:396 js/MainScreen.js:406
 msgid "Failure"
 msgstr "Failure"
 
-#: js/MainScreen.js:403
+#: js/MainScreen.js:407
 msgid "The new passwords mismatch, please correct them."
 msgstr "The new passwords mismatch, please correct them."
 
-#: js/MainScreen.js:421
+#: js/MainScreen.js:425
 msgid ""
 "Installing Gears will improve the performance of Tine 2.0 by caching all "
 "needed files locally on this computer."
@@ -269,17 +273,17 @@ msgstr ""
 "Installing Gears will improve the performance of Tine 2.0 by caching all "
 "needed files locally on this computer."
 
-#: js/MainScreen.js:434 js/widgets/app/GridPanel.js:506
+#: js/MainScreen.js:438 js/widgets/app/GridPanel.js:506
 #: js/widgets/container/ContainerTree.js:379 js/widgets/EditDialog.js:390
 #: js/widgets/grid/PersistentFilterPicker.js:123
 msgid "Confirm"
 msgstr "Confirm"
 
-#: js/MainScreen.js:434
+#: js/MainScreen.js:438
 msgid "Are you sure you want to logout?"
 msgstr "Are you sure you want to logout?"
 
-#: js/MainScreen.js:436
+#: js/MainScreen.js:440
 msgid "Logging you out..."
 msgstr "Logging you out..."
 
