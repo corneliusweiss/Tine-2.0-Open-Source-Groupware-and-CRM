@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2008-07-29 21:14+0100\n"
-"Last-Translator: Cornelius Weiss <c.weiss@metaways.de>\n"
+"PO-Revision-Date: 2009-04-11 21:12-0300\n"
+"Last-Translator: Holger <holger@rothemund.org>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,110 +16,119 @@ msgstr ""
 #: Controller.php:97
 #, python-format
 msgid "%s's personal tasks"
-msgstr ""
+msgstr "Tarefas pessoais de %"
 
-#: js/EditDialog.js:113 js/GridPanel.js:56 js/GridPanel.js:115
+#: js/EditDialog.js:113
+#: js/GridPanel.js:56
+#: js/GridPanel.js:115
 msgid "Summary"
-msgstr ""
+msgstr "Resumo"
 
 #: js/EditDialog.js:118
 msgid "Due date"
-msgstr ""
+msgstr "Vencimento"
 
-#: js/EditDialog.js:121 js/GridPanel.js:136
+#: js/EditDialog.js:121
+#: js/GridPanel.js:136
 msgid "Priority"
-msgstr ""
+msgstr "Prioridade"
 
-#: js/EditDialog.js:124 js/GridPanel.js:58 js/GridPanel.js:188
+#: js/EditDialog.js:124
+#: js/GridPanel.js:58
+#: js/GridPanel.js:188
 msgid "Responsible"
-msgstr ""
+msgstr "Responsável"
 
 #: js/EditDialog.js:128
 msgid "Notes"
-msgstr ""
+msgstr "Anotações"
 
 #: js/EditDialog.js:129
 msgid "Enter description..."
-msgstr ""
+msgstr "Inserir descrição"
 
 #: js/EditDialog.js:134
 msgid "Percentage"
-msgstr ""
+msgstr "Porcentagem"
 
-#: js/EditDialog.js:138 js/GridPanel.js:165
+#: js/EditDialog.js:138
+#: js/GridPanel.js:165
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: js/EditDialog.js:142
 msgid "Completed"
-msgstr ""
+msgstr "Concluído"
 
 #: js/GridPanel.js:31
 msgid "Do you really want to delete the selected task?"
 msgid_plural "Do you really want to delete the selected tasks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Você realmente quer apagar a tarefa selecionada?"
+msgstr[1] "Você realmente quer apagar as tarefas selecionadas?"
 
-#: js/GridPanel.js:57 js/GridPanel.js:127
+#: js/GridPanel.js:57
+#: js/GridPanel.js:127
 msgid "Due Date"
-msgstr ""
+msgstr "Vencimento"
 
 #: js/GridPanel.js:79
 msgid "Failed"
-msgstr ""
+msgstr "Falhado"
 
 #: js/GridPanel.js:79
 msgid "Could not save task."
-msgstr ""
+msgstr "Não foi possível salvar a tarefa."
 
 #: js/GridPanel.js:123
 msgid "Add a task..."
-msgstr ""
+msgstr "Adicionar uma tarefa"
 
 #: js/GridPanel.js:151
 msgid "Percent"
-msgstr ""
+msgstr "Porcentagem"
 
 #: js/GridPanel.js:180
 msgid "Creation Time"
-msgstr ""
+msgstr "Horário da criação"
 
 #: js/GridPanel.js:208
 msgid "Show closed"
-msgstr ""
+msgstr "Mostrar fechados"
 
-#: js/Status.js:45 Setup/setup.xml:434
+#: js/Status.js:45
+#: Setup/setup.xml:434
 msgid "IN-PROCESS"
-msgstr ""
+msgstr "Em Processo"
 
 #: js/Tasks.js:74
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tarefa"
+msgstr[1] "Tarefas"
 
 #: js/Tasks.js:74
 msgid "Tasks"
-msgstr ""
+msgstr "Tarefas"
 
 #: js/Tasks.js:78
 msgid "to do list"
 msgid_plural "to do lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "lista de tarefas"
+msgstr[1] "listas de tarefas"
 
 #: js/Tasks.js:78
 msgid "to do lists"
-msgstr ""
+msgstr "listas de tarefas"
 
 #: Setup/setup.xml:390
 msgid "NEEDS-ACTION"
-msgstr ""
+msgstr "Precisa de uma ação"
 
 #: Setup/setup.xml:412
 msgid "COMPLETED"
-msgstr ""
+msgstr "Concluído"
 
 #: Setup/setup.xml:456
 msgid "CANCELLED"
-msgstr ""
+msgstr "Cancelado"
+
