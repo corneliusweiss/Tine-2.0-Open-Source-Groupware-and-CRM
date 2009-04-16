@@ -25,8 +25,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: Controller/Lead.php:231
-#: js/Crm.js:1044
+#: Controller/Lead.php:231 js/Crm.js:1044
 msgid "Type"
 msgstr ""
 
@@ -34,9 +33,7 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: Controller/Lead.php:233
-#: Export/Pdf.php:92
-#: js/LeadEditDialog.js:112
+#: Controller/Lead.php:233 Export/Pdf.php:92 js/LeadEditDialog.js:112
 msgid "Start"
 msgstr ""
 
@@ -44,23 +41,15 @@ msgstr ""
 msgid "Scheduled end"
 msgstr ""
 
-#: Controller/Lead.php:235
-#: Export/Pdf.php:95
-#: js/LeadEditDialog.js:125
+#: Controller/Lead.php:235 Export/Pdf.php:95 js/LeadEditDialog.js:125
 msgid "End"
 msgstr ""
 
-#: Controller/Lead.php:236
-#: Export/Pdf.php:86
-#: js/Crm.js:299
-#: js/Crm.js:347
+#: Controller/Lead.php:236 Export/Pdf.php:86 js/Crm.js:299 js/Crm.js:347
 msgid "Turnover"
 msgstr ""
 
-#: Controller/Lead.php:237
-#: Export/Pdf.php:89
-#: js/Crm.js:298
-#: js/Crm.js:346
+#: Controller/Lead.php:237 Export/Pdf.php:89 js/Crm.js:298 js/Crm.js:346
 #: js/LeadEditDialog.js:104
 msgid "Probability"
 msgstr ""
@@ -101,20 +90,15 @@ msgstr ""
 msgid "Lead Data"
 msgstr ""
 
-#: Export/Pdf.php:77
-#: js/Crm.js:345
-#: js/LeadEditDialog.js:41
-#: js/LeadState.js:220
+#: Export/Pdf.php:77 js/Crm.js:345 js/LeadEditDialog.js:41 js/LeadState.js:220
 msgid "Leadstate"
 msgstr ""
 
-#: Export/Pdf.php:80
-#: js/LeadEditDialog.js:70
+#: Export/Pdf.php:80 js/LeadEditDialog.js:70
 msgid "Leadtype"
 msgstr ""
 
-#: Export/Pdf.php:83
-#: js/LeadEditDialog.js:87
+#: Export/Pdf.php:83 js/LeadEditDialog.js:87
 msgid "Leadsource"
 msgstr ""
 
@@ -122,13 +106,11 @@ msgstr ""
 msgid "End Scheduled"
 msgstr ""
 
-#: Export/Pdf.php:176
-#: js/Crm.js:1075
+#: Export/Pdf.php:176 js/Crm.js:1075
 msgid "Contacts"
 msgstr ""
 
-#: Export/Pdf.php:203
-#: js/Crm.js:1022
+#: Export/Pdf.php:203 js/Crm.js:1022
 msgid "Address"
 msgstr ""
 
@@ -140,24 +122,19 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: Export/Pdf.php:224
-#: js/Crm.js:1209
+#: Export/Pdf.php:224 js/Crm.js:1209
 msgid "Tasks"
 msgstr ""
 
-#: Export/Pdf.php:243
-#: js/Crm.js:1133
+#: Export/Pdf.php:243 js/Crm.js:1133
 msgid "Due Date"
 msgstr ""
 
-#: Export/Pdf.php:248
-#: js/Crm.js:1147
+#: Export/Pdf.php:248 js/Crm.js:1147
 msgid "Priority"
 msgstr ""
 
-#: Export/Pdf.php:262
-#: js/Crm.js:618
-#: js/Crm.js:1349
+#: Export/Pdf.php:262 js/Crm.js:618 js/Crm.js:1349
 msgid "Products"
 msgstr ""
 
@@ -201,8 +178,7 @@ msgstr ""
 msgid "Lead"
 msgstr ""
 
-#: js/Crm.js:296
-#: js/Crm.js:342
+#: js/Crm.js:296 js/Crm.js:342
 msgid "Lead name"
 msgstr ""
 
@@ -210,8 +186,7 @@ msgstr ""
 msgid "Displaying leads {0} - {1} of {2}"
 msgstr ""
 
-#: js/Crm.js:315
-#: js/Crm.js:379
+#: js/Crm.js:315 js/Crm.js:379
 msgid "No leads found."
 msgstr ""
 
@@ -219,16 +194,12 @@ msgstr ""
 msgid "Lead id"
 msgstr ""
 
-#: js/Crm.js:343
-#: js/Crm.js:1652
-#: js/LeadEditDialog.js:322
+#: js/Crm.js:343 js/Crm.js:1652 js/LeadEditDialog.js:322
 #: js/LeadEditDialog.js:365
 msgid "Partner"
 msgstr ""
 
-#: js/Crm.js:344
-#: js/Crm.js:1632
-#: js/LeadEditDialog.js:321
+#: js/Crm.js:344 js/Crm.js:1632 js/LeadEditDialog.js:321
 #: js/LeadEditDialog.js:361
 msgid "Customer"
 msgstr ""
@@ -258,9 +229,7 @@ msgstr[0] ""
 msgid "Delete selected leads"
 msgstr ""
 
-#: js/Crm.js:485
-#: js/Crm.js:1739
-#: js/Crm.js:1740
+#: js/Crm.js:485 js/Crm.js:1739 js/Crm.js:1740
 msgid "Export as PDF"
 msgstr ""
 
@@ -268,9 +237,7 @@ msgstr ""
 msgid "Export selected lead as PDF"
 msgstr ""
 
-#: js/Crm.js:495
-#: js/Crm.js:1684
-#: js/Crm.js:1703
+#: js/Crm.js:495 js/Crm.js:1684 js/Crm.js:1703
 msgid "Add task"
 msgstr ""
 
@@ -290,13 +257,11 @@ msgstr ""
 msgid "Lead types"
 msgstr ""
 
-#: js/Crm.js:677
-#: js/Crm.js:1036
+#: js/Crm.js:677 js/Crm.js:1036
 msgid "Phone"
 msgstr ""
 
-#: js/Crm.js:678
-#: js/Crm.js:1037
+#: js/Crm.js:678 js/Crm.js:1037
 msgid "Cellphone"
 msgstr ""
 
@@ -360,8 +325,7 @@ msgstr "產品"
 msgid "Add a product..."
 msgstr "新增產品"
 
-#: js/Crm.js:1296
-#: js/LeadEditDialog.js:152
+#: js/Crm.js:1296 js/LeadEditDialog.js:152
 msgid "Description"
 msgstr "說明"
 
@@ -385,9 +349,7 @@ msgstr ""
 msgid "Change type to Customer"
 msgstr ""
 
-#: js/Crm.js:1642
-#: js/LeadEditDialog.js:320
-#: js/LeadEditDialog.js:357
+#: js/Crm.js:1642 js/LeadEditDialog.js:320 js/LeadEditDialog.js:357
 msgid "Responsible"
 msgstr ""
 
@@ -447,24 +409,23 @@ msgstr "移除產品"
 msgid "Remove selected products"
 msgstr "移除已選的產品"
 
-#: js/Crm.js:1768
-#: js/Crm.js:1769
+#: js/Crm.js:1768 js/Crm.js:1769
 msgid "Leads"
 msgstr ""
 
-#: js/Crm.js:1815
+#: js/Crm.js:1814
 msgid "Loading Lead..."
 msgstr ""
 
-#: js/Crm.js:1815
+#: js/Crm.js:1814
 msgid "Please Wait"
 msgstr "請稍後"
 
-#: js/Crm.js:1846
+#: js/Crm.js:1845
 msgid "Add New Lead"
 msgstr ""
 
-#: js/Crm.js:1848
+#: js/Crm.js:1847
 msgid "Edit Lead \"{0}\""
 msgstr ""
 
@@ -539,4 +500,3 @@ msgstr "已接受"
 #: Setup/setup.xml:557
 msgid "lost"
 msgstr "損失"
-
