@@ -169,9 +169,9 @@ msgid "Logging you in..."
 msgstr "正在登录 ..."
 
 #: js/Login.js:123 js/widgets/container/ContainerGrants.js:34
-#: js/widgets/container/ContainerTree.js:353
-#: js/widgets/container/ContainerTree.js:381
-#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerTree.js:354
+#: js/widgets/container/ContainerTree.js:382
+#: js/widgets/container/ContainerTree.js:418
 #: js/widgets/grid/PersistentFilterPicker.js:125
 msgid "Please wait"
 msgstr "请等待"
@@ -285,7 +285,7 @@ msgid ""
 msgstr "安装 Gears 可以通过缓存所有需要的文件到本地电脑来提高 Tine 2.0 的性能"
 
 #: js/MainScreen.js:438 js/widgets/app/GridPanel.js:506
-#: js/widgets/container/ContainerTree.js:379 js/widgets/EditDialog.js:390
+#: js/widgets/container/ContainerTree.js:380 js/widgets/EditDialog.js:390
 #: js/widgets/grid/PersistentFilterPicker.js:123
 msgid "Confirm"
 msgstr "确认"
@@ -554,12 +554,12 @@ msgstr "用户"
 msgid "Edit {0}"
 msgstr "编辑{0}"
 
-#: js/widgets/app/GridPanel.js:189 js/widgets/container/ContainerTree.js:464
+#: js/widgets/app/GridPanel.js:189 js/widgets/container/ContainerTree.js:465
 msgid "Add {0}"
 msgstr "添加{0}"
 
 #: js/widgets/app/GridPanel.js:199 js/widgets/app/GridPanel.js:200
-#: js/widgets/app/GridPanel.js:202 js/widgets/container/ContainerTree.js:470
+#: js/widgets/app/GridPanel.js:202 js/widgets/container/ContainerTree.js:471
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "删除"
@@ -671,56 +671,56 @@ msgstr "共享的{0}"
 msgid "Other Users {0}"
 msgstr "其它用户{0}"
 
-#: js/widgets/container/ContainerTree.js:347
+#: js/widgets/container/ContainerTree.js:348
 msgid "New {0}"
 msgstr "新的{0}"
 
-#: js/widgets/container/ContainerTree.js:347
+#: js/widgets/container/ContainerTree.js:348
 msgid "Please enter the name of the new {0}:"
 msgstr "请输入新的{0}的名字："
 
-#: js/widgets/container/ContainerTree.js:350
+#: js/widgets/container/ContainerTree.js:351
 msgid "No {0} added"
 msgstr "没有添加 {0}"
 
-#: js/widgets/container/ContainerTree.js:350
-#: js/widgets/container/ContainerTree.js:414
+#: js/widgets/container/ContainerTree.js:351
+#: js/widgets/container/ContainerTree.js:415
 msgid "You have to supply a {0} name!"
 msgstr "你需要提供一个 {0}  名！"
 
-#: js/widgets/container/ContainerTree.js:353
+#: js/widgets/container/ContainerTree.js:354
 msgid "Creating {0}..."
 msgstr "正生成{0}..."
 
-#: js/widgets/container/ContainerTree.js:379
+#: js/widgets/container/ContainerTree.js:380
 msgid "Do you really want to delete the {0} \"{1}\"?"
 msgstr "真的想删除 {0} \"{1}\" ？"
 
-#: js/widgets/container/ContainerTree.js:381
+#: js/widgets/container/ContainerTree.js:382
 msgid "Deleting {0} \"{1}\""
 msgstr "正删除{0} \"{1}\""
 
-#: js/widgets/container/ContainerTree.js:408
+#: js/widgets/container/ContainerTree.js:409
 msgid "Please enter the new name of the {0}:"
 msgstr "请输入{0}的新名字："
 
-#: js/widgets/container/ContainerTree.js:414
+#: js/widgets/container/ContainerTree.js:415
 msgid "Not renamed {0}"
 msgstr "没有改{0}的名字"
 
-#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerTree.js:418
 msgid "Updating {0} \"{1}\""
 msgstr "正在更新{0} \"{1}\""
 
-#: js/widgets/container/ContainerTree.js:451
+#: js/widgets/container/ContainerTree.js:452
 msgid "Manage Permissions for {0} \"{1}\""
 msgstr "管理 {0} :\"{1}\" 的权限"
 
-#: js/widgets/container/ContainerTree.js:476
+#: js/widgets/container/ContainerTree.js:477
 msgid "Rename {0}"
 msgstr "修改{0}的名字"
 
-#: js/widgets/container/ContainerTree.js:482
+#: js/widgets/container/ContainerTree.js:483
 msgid "Manage permissions"
 msgstr "管理许可"
 

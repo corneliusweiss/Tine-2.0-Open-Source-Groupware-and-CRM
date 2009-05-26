@@ -1,0 +1,716 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Tine2.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: kitamura yuuki <ykitamura@clasi-co.jp>\n"
+"Language-Team: Yuuki ’Taisa’ Kitamura <ykitamura@clasi-co.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-Language: Japanese\n"
+"X-Poedit-Country: JAPAN\n"
+
+#: Acl/Rights.php:162
+msgid "manage access log"
+msgstr "アクセスログの管理"
+
+#: Acl/Rights.php:163
+msgid "delete access log entries"
+msgstr "アクセスログエントリの削除"
+
+#: Acl/Rights.php:166
+msgid "manage accounts"
+msgstr "アカウントの管理"
+
+#: Acl/Rights.php:167
+msgid "add and edit users and groups, add group members, change user passwords"
+msgstr "グループとユーザの追加と編集、グループにメンバーの追加、ユーザパスワードの変更"
+
+#: Acl/Rights.php:170
+msgid "manage applications"
+msgstr "アプリケーションの管理"
+
+#: Acl/Rights.php:171
+msgid "enable and disable applications, edit application settings"
+msgstr "アプリケーションの有効無効、アプリケーション設定の編集"
+
+#: Acl/Rights.php:174
+msgid "manage roles"
+msgstr "役割の管理"
+
+#: Acl/Rights.php:175
+msgid "add and edit roles, add new members to roles, add application rights to roles"
+msgstr "ロールの追加と編集、メンバーにロールの新規追加、アプリケーション権限のロールへの付与"
+
+#: Acl/Rights.php:178
+msgid "manage shared tags"
+msgstr "共有タグの管理"
+
+#: Acl/Rights.php:179
+msgid "add, delete and edit shared tags"
+msgstr "共有タグの追加、削除と編集"
+
+#: Acl/Rights.php:182
+msgid "view access log"
+msgstr "アクセスログの閲覧"
+
+#: Acl/Rights.php:183
+msgid "view access log list"
+msgstr "アクセスログ一覧の閲覧"
+
+#: Acl/Rights.php:186
+msgid "view accounts"
+msgstr "アカウントの閲覧"
+
+#: Acl/Rights.php:187
+msgid "view accounts list and details"
+msgstr "アカウント一覧と詳細の閲覧"
+
+#: Acl/Rights.php:190
+msgid "view applications"
+msgstr "アプリケーションの閲覧"
+
+#: Acl/Rights.php:191
+msgid "view applications list and details"
+msgstr "アプリケーションの一覧と詳細の閲覧"
+
+#: Acl/Rights.php:194
+msgid "view roles"
+msgstr "役割の閲覧"
+
+#: Acl/Rights.php:195
+msgid "view roles list and details"
+msgstr "役割の一覧と詳細の閲覧"
+
+#: js/Admin.js:19
+msgid "User"
+msgstr "ユーザ"
+
+#: js/Admin.js:31
+msgid "Groups"
+msgstr "グループ"
+
+#: js/Admin.js:43
+msgid "Applications"
+msgstr "アプリケーション"
+
+#: js/Admin.js:55
+msgid "Access Log"
+msgstr "アクセスログ"
+
+#: js/Admin.js:67
+msgid "Shared Tags"
+msgstr "共有タグ"
+
+#: js/Admin.js:79
+msgid "Roles"
+msgstr "役割"
+
+#: js/Admin.js:114
+msgid "Admin"
+msgstr "管理者"
+
+#: js/Admin.js:251
+#: js/Groups.js:47
+#: js/Roles.js:48
+#: js/Tags.js:41
+#: js/Users.js:166
+msgid "Confirm"
+msgstr "確認"
+
+#: js/Admin.js:251
+msgid "Do you really want to delete the selected access log entries?"
+msgstr "本当に選択したアクセスログエントリを削除しますか？"
+
+#: js/Admin.js:366
+msgid "delete entry"
+msgstr "エントリの削除"
+
+#: js/Admin.js:367
+msgid "select all"
+msgstr "全て選択"
+
+#: js/Admin.js:372
+#: js/Admin.js:770
+#: js/Groups.js:111
+#: js/Roles.js:112
+#: js/Tags.js:103
+#: js/Users.js:204
+msgid "enter searchfilter"
+msgstr "サーチフィルタの入力"
+
+#: js/Admin.js:402
+msgid "Display from:"
+msgstr "表示："
+
+#: js/Admin.js:406
+msgid "to:"
+msgstr "ＴＯ："
+
+#: js/Admin.js:411
+#: js/Admin.js:787
+#: js/Groups.js:131
+#: js/Roles.js:132
+#: js/Tags.js:123
+#: js/Users.js:220
+msgid "Search:"
+msgstr "検索："
+
+#: js/Admin.js:484
+msgid "invalid password"
+msgstr "パスワードが違います"
+
+#: js/Admin.js:488
+msgid "ambiguous username"
+msgstr "あいまいなユーザ名"
+
+#: js/Admin.js:492
+msgid "user not found"
+msgstr "ユーザが見つかりません"
+
+#: js/Admin.js:496
+msgid "failure"
+msgstr "失敗"
+
+#: js/Admin.js:500
+msgid "success"
+msgstr "性向"
+
+#: js/Admin.js:521
+msgid "Displaying access log entries {0} - {1} of {2}"
+msgstr "アクセスログエントリの表示 {0} - {1} 件中 {2}"
+
+#: js/Admin.js:522
+msgid "No access log entries to display"
+msgstr "表示するアクセスログエントリがありません"
+
+#: js/Admin.js:526
+msgid "Session ID"
+msgstr "セッションＩＤ"
+
+#: js/Admin.js:527
+#: js/Users.js:555
+msgid "Login Name"
+msgstr "ログイン名"
+
+#: js/Admin.js:528
+#: js/Groups.js:176
+#: js/Groups.js:488
+#: js/Roles.js:177
+#: js/Tags.js:165
+msgid "Name"
+msgstr "名前"
+
+#: js/Admin.js:529
+msgid "IP Address"
+msgstr "ＩＰアドレス"
+
+#: js/Admin.js:530
+msgid "Login Time"
+msgstr "ログイン時間"
+
+#: js/Admin.js:531
+msgid "Logout Time"
+msgstr "ログアウト時間"
+
+#: js/Admin.js:532
+msgid "Account ID"
+msgstr "アカウントＩＤ"
+
+#: js/Admin.js:533
+msgid "Result"
+msgstr "結果"
+
+#: js/Admin.js:763
+msgid "enable application"
+msgstr "有効なアプリケーション"
+
+#: js/Admin.js:764
+msgid "disable application"
+msgstr "無効なアプリケーション"
+
+#: js/Admin.js:765
+msgid "settings"
+msgstr "設定"
+
+#: js/Admin.js:816
+msgid "disabled"
+msgstr "無効"
+
+#: js/Admin.js:819
+msgid "enabled"
+msgstr "有効"
+
+#: js/Admin.js:823
+msgid "unknown status ({0})"
+msgstr "不明なステータス ({0})"
+
+#: js/Admin.js:852
+msgid "Displaying application {0} - {1} of {2}"
+msgstr "アプリケーションの表示 {0} - {1} 件中 {2}"
+
+#: js/Admin.js:853
+msgid "No applications to display"
+msgstr "表示するアプリケーションがありません"
+
+#: js/Admin.js:857
+msgid "order"
+msgstr "オーダー"
+
+#: js/Admin.js:858
+msgid "name"
+msgstr "名前"
+
+#: js/Admin.js:859
+msgid "status"
+msgstr "状態"
+
+#: js/Admin.js:860
+msgid "version"
+msgstr "バージョン"
+
+#: js/Groups.js:47
+msgid "Do you really want to delete the selected groups?"
+msgstr "本当に選択したグループを削除しますか？"
+
+#: js/Groups.js:64
+msgid "Deleting group(s)..."
+msgstr "グループを削除しています..."
+
+#: js/Groups.js:69
+#: js/Groups.js:378
+#: js/Groups.js:406
+#: js/Roles.js:70
+#: js/Roles.js:439
+#: js/Roles.js:467
+#: js/Tags.js:341
+#: js/Users.js:186
+#: js/Users.js:468
+#: js/Users.js:479
+#: js/Users.js:504
+#: js/Users.js:521
+msgid "Failed"
+msgstr "失敗"
+
+#: js/Groups.js:69
+#: js/Groups.js:406
+msgid "Some error occurred while trying to delete the group."
+msgstr "グループの削除中にエラーが発生しました"
+
+#: js/Groups.js:82
+msgid "add group"
+msgstr "グループの追加"
+
+#: js/Groups.js:90
+msgid "edit group"
+msgstr "グループの編集"
+
+#: js/Groups.js:98
+msgid "delete group"
+msgstr "グループの削除"
+
+#: js/Groups.js:169
+msgid "Displaying groups {0} - {1} of {2}"
+msgstr "グループの表示 {0} - {1} 件中 {2}"
+
+#: js/Groups.js:170
+#: js/Groups.js:221
+msgid "No groups to display"
+msgstr "表示するグループがありません"
+
+#: js/Groups.js:175
+#: js/Roles.js:176
+#: js/Users.js:270
+msgid "ID"
+msgstr "ID"
+
+#: js/Groups.js:177
+#: js/Groups.js:558
+#: js/Roles.js:178
+#: js/Roles.js:653
+#: js/Tags.js:166
+#: js/Tags.js:547
+msgid "Description"
+msgstr "説明"
+
+#: js/Groups.js:343
+#: js/Roles.js:399
+#: js/Tags.js:297
+msgid "Please wait"
+msgstr "お待ちください"
+
+#: js/Groups.js:343
+#: js/Roles.js:399
+#: js/Tags.js:297
+msgid "Updating Memberships"
+msgstr "メンバーシップをアップデートしています"
+
+#: js/Groups.js:378
+msgid "Could not save group."
+msgstr "グループを保存できませんでした"
+
+#: js/Groups.js:385
+#: js/Roles.js:446
+#: js/Tags.js:346
+#: js/Users.js:527
+msgid "Errors"
+msgstr "エラー"
+
+#: js/Groups.js:385
+#: js/Roles.js:446
+#: js/Tags.js:346
+#: js/Users.js:527
+msgid "Please fix the errors noted."
+msgstr "表示されているエラーを修正してください"
+
+#: js/Groups.js:398
+msgid "Deleting group..."
+msgstr "グループを削除しています..."
+
+#: js/Groups.js:520
+msgid "Group Members"
+msgstr "グループメンバー"
+
+#: js/Groups.js:551
+msgid "Group Name"
+msgstr "グループ名"
+
+#: js/Groups.js:594
+#: js/Users.js:361
+msgid "add account"
+msgstr "アカウントの追加"
+
+#: js/Groups.js:601
+msgid "remove account"
+msgstr "アカウントの削除"
+
+#: js/Groups.js:619
+msgid "Add new group"
+msgstr "新規グループの追加"
+
+#: js/Groups.js:621
+msgid "Edit Group \"{0}\""
+msgstr "グループの編集 \"{0}\""
+
+#: js/Roles.js:48
+msgid "Do you really want to delete the selected roles?"
+msgstr "選択されたロールを本当に削除しますか？"
+
+#: js/Roles.js:65
+msgid "Deleting role(s)..."
+msgstr "ロールを削除しています..."
+
+#: js/Roles.js:70
+#: js/Roles.js:467
+msgid "Some error occurred while trying to delete the role."
+msgstr "ロールの削除中にエラーが発生しました"
+
+#: js/Roles.js:83
+msgid "add role"
+msgstr "ロールの追加"
+
+#: js/Roles.js:91
+msgid "edit role"
+msgstr "ロールの編集"
+
+#: js/Roles.js:99
+msgid "delete role"
+msgstr "ロールの削除"
+
+#: js/Roles.js:170
+msgid "Displaying roles {0} - {1} of {2}"
+msgstr "ロールの表示 {0} - {1} 件中 {2}"
+
+#: js/Roles.js:171
+#: js/Roles.js:222
+msgid "No roles to display"
+msgstr "表示するロールがありません"
+
+#: js/Roles.js:439
+msgid "Could not save role."
+msgstr "ロールを保存できませんでした"
+
+#: js/Roles.js:459
+msgid "Deleting role..."
+msgstr "ロールを削除しています..."
+
+#: js/Roles.js:594
+msgid "Role members"
+msgstr "ロールメンバー"
+
+#: js/Roles.js:604
+msgid "Members"
+msgstr "メンバー"
+
+#: js/Roles.js:616
+#: js/Tags.js:563
+msgid "Rights"
+msgstr "権限"
+
+#: js/Roles.js:646
+msgid "Role Name"
+msgstr "ロール名"
+
+#: js/Roles.js:686
+msgid "Loading Role..."
+msgstr "ロールをロードしています..."
+
+#: js/Roles.js:686
+#: js/Tags.js:584
+#: js/Users.js:484
+msgid "Please Wait"
+msgstr "お待ちください"
+
+#: js/Roles.js:726
+msgid "Add New Role"
+msgstr "新規ロールの追加"
+
+#: js/Roles.js:728
+msgid "Edit Role \"{0}\""
+msgstr "ロールの編集 \"{0}\""
+
+#: js/Tags.js:41
+msgid "Do you really want to delete the selected tags?"
+msgstr "選択されたタグを本当に削除しますか？"
+
+#: js/Tags.js:58
+msgid "Deleting tag(s)..."
+msgstr "タグを削除しています..."
+
+#: js/Tags.js:73
+msgid "add tag"
+msgstr "タグの追加"
+
+#: js/Tags.js:81
+msgid "edit tag"
+msgstr "タグの編集"
+
+#: js/Tags.js:89
+msgid "delete tag"
+msgstr "タグの削除"
+
+#: js/Tags.js:158
+msgid "Displaying tags {0} - {1} of {2}"
+msgstr "タグの表示 {0} - {1} 件中 {2}"
+
+#: js/Tags.js:159
+#: js/Tags.js:210
+msgid "No tags to display"
+msgstr "表示するタグがありません"
+
+#: js/Tags.js:164
+#: js/Tags.js:489
+msgid "Color"
+msgstr "色"
+
+#: js/Tags.js:341
+msgid "Could not save tag."
+msgstr "タグを保存できませんでした"
+
+#: js/Tags.js:359
+msgid "Deleting tag..."
+msgstr "タグを削除しています..."
+
+#: js/Tags.js:449
+msgid "Allowed Contexts"
+msgstr "許可されたコンテキスト"
+
+#: js/Tags.js:464
+msgid "Account Rights"
+msgstr "アカウントの権限"
+
+#: js/Tags.js:469
+msgid "View"
+msgstr "表示"
+
+#: js/Tags.js:474
+msgid "Use"
+msgstr "使用"
+
+#: js/Tags.js:541
+msgid "Tag Name"
+msgstr "タグ名"
+
+#: js/Tags.js:566
+msgid "Context"
+msgstr "コンテキスト"
+
+#: js/Tags.js:584
+msgid "Loading Tag..."
+msgstr "タグをロードしています..."
+
+#: js/Tags.js:615
+msgid "Add New Tag"
+msgstr "タグの新規追加"
+
+#: js/Tags.js:617
+msgid "Edit Tag \"{0}\""
+msgstr "タグの編集 \"{0}\""
+
+#: js/Users.js:141
+msgid "Set new password"
+msgstr "新しいパスワードの設定"
+
+#: js/Users.js:141
+msgid "Please enter the new password:"
+msgstr "新しいパスワードを入力してください"
+
+#: js/Users.js:166
+msgid "Do you really want to delete the selected account(s)?"
+msgstr "選択されたアカウントを本当に削除しますか？"
+
+#: js/Users.js:181
+msgid "Deleting account(s)..."
+msgstr "アカウントを削除しています..."
+
+#: js/Users.js:186
+msgid "Some error occurred while trying to delete the account(s)."
+msgstr "アカウントの削除中にエラーが発生しました"
+
+#: js/Users.js:265
+msgid "Displaying accounts {0} - {1} of {2}"
+msgstr "アカウントの表示 {0} - {1} 件中 {2}"
+
+#: js/Users.js:266
+msgid "No accounts to display"
+msgstr "表示するアカウントがありません"
+
+#: js/Users.js:271
+#: js/Users.js:593
+msgid "Status"
+msgstr "ステータス"
+
+#: js/Users.js:272
+msgid "Displayname"
+msgstr "表示名"
+
+#: js/Users.js:273
+msgid "Loginname"
+msgstr "ログイン名"
+
+#: js/Users.js:274
+msgid "Last name"
+msgstr "姓"
+
+#: js/Users.js:275
+msgid "First name"
+msgstr "名"
+
+#: js/Users.js:276
+msgid "Email"
+msgstr "Eメール"
+
+#: js/Users.js:277
+#: js/Users.js:617
+msgid "Last login at"
+msgstr "前回のログイン"
+
+#: js/Users.js:278
+#: js/Users.js:624
+msgid "Last login from"
+msgstr "前回のログイン（From)"
+
+#: js/Users.js:279
+msgid "Password changed"
+msgstr "パスワード変更"
+
+#: js/Users.js:280
+#: js/Users.js:612
+msgid "Expires"
+msgstr "期間"
+
+#: js/Users.js:369
+msgid "edit account"
+msgstr "アカウントの編集"
+
+#: js/Users.js:377
+msgid "delete account"
+msgstr "アカウントの削除"
+
+#: js/Users.js:385
+msgid "enable account"
+msgstr "アカウント有効"
+
+#: js/Users.js:394
+msgid "disable account"
+msgstr "アカウント無効"
+
+#: js/Users.js:403
+msgid "reset password"
+msgstr "パスワードリセット"
+
+#: js/Users.js:462
+msgid "Deleting account..."
+msgstr "アカウントを削除しています..."
+
+#: js/Users.js:468
+msgid "Some error occurred while trying to delete the account."
+msgstr "アカウントの削除中にエラーが発生しました。"
+
+#: js/Users.js:479
+#: js/Users.js:480
+#: js/Users.js:481
+msgid "Passwords do not match!"
+msgstr "パスワードが一致していません"
+
+#: js/Users.js:484
+msgid "Saving User Account"
+msgstr "アカウントを保存しています"
+
+#: js/Users.js:521
+msgid "Could not save user account."
+msgstr "アカウントを保存できません"
+
+#: js/Users.js:546
+msgid "First Name"
+msgstr "名"
+
+#: js/Users.js:550
+msgid "Last Name"
+msgstr "姓"
+
+#: js/Users.js:560
+msgid "Password"
+msgstr "パスワード"
+
+#: js/Users.js:563
+#: js/Users.js:569
+msgid "no password set"
+msgstr "パスワードが設定されていません"
+
+#: js/Users.js:566
+msgid "Password again"
+msgstr "もう一度パスワードを入力してください"
+
+#: js/Users.js:571
+msgid "Primary group"
+msgstr "プライマリーグループ"
+
+#: js/Users.js:579
+msgid "Emailaddress"
+msgstr "Eメールアドレス"
+
+#: js/Users.js:614
+#: js/Users.js:632
+msgid "never"
+msgstr "未"
+
+#: js/Users.js:619
+#: js/Users.js:626
+msgid "never logged in"
+msgstr "ログインしていません"
+
+#: js/Users.js:630
+msgid "Password set"
+msgstr "パスワード設定"
+
+#: js/Users.js:672
+msgid "Add New User Account"
+msgstr "新規ユーザアカウントの追加"
+
+#: js/Users.js:674
+msgid "Edit User Account \"{0}\""
+msgstr "ユーザアカウントの編集 \"{0}\""
+

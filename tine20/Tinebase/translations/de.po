@@ -175,9 +175,9 @@ msgid "Logging you in..."
 msgstr "Sie werden angemeldet..."
 
 #: js/Login.js:123 js/widgets/container/ContainerGrants.js:34
-#: js/widgets/container/ContainerTree.js:353
-#: js/widgets/container/ContainerTree.js:381
-#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerTree.js:354
+#: js/widgets/container/ContainerTree.js:382
+#: js/widgets/container/ContainerTree.js:418
 #: js/widgets/grid/PersistentFilterPicker.js:125
 msgid "Please wait"
 msgstr "Bitte warten"
@@ -295,7 +295,7 @@ msgstr ""
 "indem alle benötigten Dateien local auf dem Computer gespeichert werden."
 
 #: js/MainScreen.js:438 js/widgets/app/GridPanel.js:506
-#: js/widgets/container/ContainerTree.js:379 js/widgets/EditDialog.js:390
+#: js/widgets/container/ContainerTree.js:380 js/widgets/EditDialog.js:390
 #: js/widgets/grid/PersistentFilterPicker.js:123
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -576,12 +576,12 @@ msgstr "Benutzer"
 msgid "Edit {0}"
 msgstr "{0} bearbeiten"
 
-#: js/widgets/app/GridPanel.js:189 js/widgets/container/ContainerTree.js:464
+#: js/widgets/app/GridPanel.js:189 js/widgets/container/ContainerTree.js:465
 msgid "Add {0}"
 msgstr "{0} hinzufügen"
 
 #: js/widgets/app/GridPanel.js:199 js/widgets/app/GridPanel.js:200
-#: js/widgets/app/GridPanel.js:202 js/widgets/container/ContainerTree.js:470
+#: js/widgets/app/GridPanel.js:202 js/widgets/container/ContainerTree.js:471
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "{0} löschen"
@@ -697,56 +697,56 @@ msgstr "Gemeinsame {0}"
 msgid "Other Users {0}"
 msgstr "{0} anderer Benutzer"
 
-#: js/widgets/container/ContainerTree.js:347
+#: js/widgets/container/ContainerTree.js:348
 msgid "New {0}"
 msgstr "Neue {0}"
 
-#: js/widgets/container/ContainerTree.js:347
+#: js/widgets/container/ContainerTree.js:348
 msgid "Please enter the name of the new {0}:"
 msgstr "Bitte den Namen für neue {0} eingeben:"
 
-#: js/widgets/container/ContainerTree.js:350
+#: js/widgets/container/ContainerTree.js:351
 msgid "No {0} added"
 msgstr "Kein {0} hinzugefügt"
 
-#: js/widgets/container/ContainerTree.js:350
-#: js/widgets/container/ContainerTree.js:414
+#: js/widgets/container/ContainerTree.js:351
+#: js/widgets/container/ContainerTree.js:415
 msgid "You have to supply a {0} name!"
 msgstr "Sie sollten einen Namen für {0} angeben!"
 
-#: js/widgets/container/ContainerTree.js:353
+#: js/widgets/container/ContainerTree.js:354
 msgid "Creating {0}..."
 msgstr "Einrichten {0}..."
 
-#: js/widgets/container/ContainerTree.js:379
+#: js/widgets/container/ContainerTree.js:380
 msgid "Do you really want to delete the {0} \"{1}\"?"
 msgstr "Möchten Sie {0} \"{0}\" wirklich löschen?"
 
-#: js/widgets/container/ContainerTree.js:381
+#: js/widgets/container/ContainerTree.js:382
 msgid "Deleting {0} \"{1}\""
 msgstr "{0} \"{0}\" löschen"
 
-#: js/widgets/container/ContainerTree.js:408
+#: js/widgets/container/ContainerTree.js:409
 msgid "Please enter the new name of the {0}:"
 msgstr "Bitte den Namen für {0}: eingeben: "
 
-#: js/widgets/container/ContainerTree.js:414
+#: js/widgets/container/ContainerTree.js:415
 msgid "Not renamed {0}"
 msgstr "{0} nicht umbenannt"
 
-#: js/widgets/container/ContainerTree.js:417
+#: js/widgets/container/ContainerTree.js:418
 msgid "Updating {0} \"{1}\""
 msgstr "{0} \"{0}\" aktualisieren"
 
-#: js/widgets/container/ContainerTree.js:451
+#: js/widgets/container/ContainerTree.js:452
 msgid "Manage Permissions for {0} \"{1}\""
 msgstr "Rechte für {0} :\"{1}\" verwalten"
 
-#: js/widgets/container/ContainerTree.js:476
+#: js/widgets/container/ContainerTree.js:477
 msgid "Rename {0}"
 msgstr "{0} umbenennen"
 
-#: js/widgets/container/ContainerTree.js:482
+#: js/widgets/container/ContainerTree.js:483
 msgid "Manage permissions"
 msgstr "Zugriffsrechte bearbeiten"
 
