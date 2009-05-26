@@ -71,7 +71,13 @@ class Timetracker_Backend_Timesheet extends Tinebase_Application_Backend_Sql_Abs
             );
             
         } else {
-            $cols = array_merge((array)$_cols, array('is_billable_combined' => '(ts.is_billable*ta.is_billable)'));            
+            $cols = array_merge(
+                (array)$_cols, 
+                array('is_billable_combined' => '(ts.is_billable*ta.is_billable)'),
+                // ts it is cleared if ts is_cleared or ta status is 'billed'
+                array('is_cleared_combined'     => 
+                    '(' . $this->_tableName . ".is_cleared|(IF(STRCMP(ta.status, 'billed'),0,1)))")                
+            );            
         }
 
         $select->from(array('ts' => $this->_tableName), $cols);
