@@ -120,7 +120,7 @@ Tine.Felamimail.TreePanel = Ext.extend(Ext.tree.TreePanel, {
                 load: function(node) {
                     
                     // add 'intelligent' folders
-                    if (node.attributes.show_intelligent_folders == 1/* || node.attributes.show_intelligent_folders == '1'*/) {
+                    if (node.attributes.show_intelligent_folders == 1) {
                         var markedNode = new Ext.tree.TreeNode({
                             id: record.data.id + '/marked',
                             localname: 'marked', //this.app.i18n._('Marked'),
@@ -445,15 +445,12 @@ Tine.Felamimail.TreePanel = Ext.extend(Ext.tree.TreePanel, {
     onClick: function(node) {
         
         if (node.expandable) {
-            //console.log('expandable');
             node.expand();
         }
         node.select();
         
         if (node.id && node.id != '/') {
             this.filterPlugin.onFilterChange();
-            
-            //this.loader.load(node.parentNode, null);
         }
     },
     
@@ -693,14 +690,6 @@ Tine.Felamimail.TreeLoader = Ext.extend(Tine.widgets.tree.Loader, {
                 });
                 Tine.Tinebase.exceptionDlg.show();
             }
-            
-            /*
-            Ext.MessageBox.alert(
-                this.app.i18n._('Failed to connect'), 
-                this.app.i18n._('Could not connect to account.') 
-                    + ' (' + this.app.i18n._('Error:') + ' ' + responseText.msg + ')'
-            );
-            */ 
         }
     }
 });
