@@ -1,8 +1,8 @@
-#: js/ExampleApplication.js:27
+#: js/ExampleApplication.js:29
 msgid "ExampleRecords"
 msgstr ""
 
-#: js/ExampleApplication.js:32
+#: js/ExampleApplication.js:34
 msgid "All ExampleRecords"
 msgstr ""
 

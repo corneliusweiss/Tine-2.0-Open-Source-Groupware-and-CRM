@@ -15,8 +15,9 @@ msgstr ""
 "|| n%100>=20) ? 1 : 2;\n"
 
 #: Acl/Rights.php:98
-msgid "manage shared folders"
-msgstr ""
+#, fuzzy
+msgid "manage shared addressbooks"
+msgstr "Książki adresowe"
 
 #: Acl/Rights.php:99
 msgid "Create new shared addressbook folders"
@@ -135,11 +136,11 @@ msgstr "Książka adresowa"
 msgid "Internal Contacts"
 msgstr "Kontakty wewnętrzne"
 
-#: js/Addressbook.js:139 js/Addressbook.js:141
+#: js/Addressbook.js:142 js/Addressbook.js:144
 msgid "contacts"
 msgstr "Kontakty"
 
-#: js/Addressbook.js:140 js/Addressbook.js:468
+#: js/Addressbook.js:143 js/Addressbook.js:471
 #, fuzzy
 msgid "addressbook"
 msgid_plural "addressbooks"
@@ -147,63 +148,63 @@ msgstr[0] "Książka adresowa"
 msgstr[1] "Książka adresowa"
 msgstr[2] "Książka adresowa"
 
-#: js/Addressbook.js:146 js/ContactGrid.js:155
+#: js/Addressbook.js:149 js/ContactGrid.js:155
 msgid "export as pdf"
 msgstr "Export jako PDF"
 
 # Großes el fehlt
-#: js/Addressbook.js:171
+#: js/Addressbook.js:174
 msgid "Loading Contact..."
 msgstr "Ładowanie kontaktu"
 
-#: js/Addressbook.js:171
+#: js/Addressbook.js:174
 msgid "Please Wait"
 msgstr "Prosze czekać"
 
-#: js/Addressbook.js:185
+#: js/Addressbook.js:188
 msgid "Add new contact"
 msgstr "Dodaj nowy kontakt"
 
-#: js/Addressbook.js:187
+#: js/Addressbook.js:190
 #, fuzzy
 msgid "Edit Contact \"{0}\""
 msgstr "Edytuj konkakt \"{0}\""
 
-#: js/Addressbook.js:212
+#: js/Addressbook.js:215
 msgid "Please wait a moment..."
 msgstr "Proszę chwileczkę poczekać"
 
-#: js/Addressbook.js:212
+#: js/Addressbook.js:215
 msgid "Saving Contact"
 msgstr "Zapisywanie kontaktu"
 
-#: js/Addressbook.js:237 js/Addressbook.js:262
+#: js/Addressbook.js:240 js/Addressbook.js:265
 msgid "Failed"
 msgstr "Bez powodzenia"
 
-#: js/Addressbook.js:237
+#: js/Addressbook.js:240
 msgid "Could not save contact."
 msgstr "Zapisanie kontaktu nie jest możliwe"
 
-#: js/Addressbook.js:243
+#: js/Addressbook.js:246
 msgid "Errors"
 msgstr "Błędy"
 
-#: js/Addressbook.js:243
+#: js/Addressbook.js:246
 msgid "Please fix the errors noted."
 msgstr "Proszę zlikwidowć podane błędy. "
 
-#: js/Addressbook.js:256
+#: js/Addressbook.js:259
 #, fuzzy
 msgid "Deleting contact..."
 msgstr "Wymazywanie kontaktu …"
 
-#: js/Addressbook.js:262
+#: js/Addressbook.js:265
 #, fuzzy
 msgid "Some error occured while trying to delete the contact."
 msgstr "Wystąpiły pewne błędy z powodu próby wmazania kontaktu."
 
-#: js/Addressbook.js:464
+#: js/Addressbook.js:467
 #, fuzzy
 msgid "Contact"
 msgid_plural "Contacts"
@@ -211,12 +212,12 @@ msgstr[0] "Kontakt"
 msgstr[1] "Kontakt"
 msgstr[2] "Kontakt"
 
-#: js/Addressbook.js:464
+#: js/Addressbook.js:467
 #, fuzzy
 msgid "Contacts"
 msgstr "Kontakt"
 
-#: js/Addressbook.js:468
+#: js/Addressbook.js:471
 msgid "addressbooks"
 msgstr "Książki adresowe"
 

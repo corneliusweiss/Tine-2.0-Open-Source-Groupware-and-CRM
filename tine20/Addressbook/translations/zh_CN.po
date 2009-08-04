@@ -14,8 +14,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: Acl/Rights.php:98
-msgid "manage shared folders"
-msgstr ""
+#, fuzzy
+msgid "manage shared addressbooks"
+msgstr "地址本"
 
 #: Acl/Rights.php:99
 msgid "Create new shared addressbook folders"
@@ -133,77 +134,77 @@ msgstr "地址本"
 msgid "Internal Contacts"
 msgstr "内部联系人"
 
-#: js/Addressbook.js:139 js/Addressbook.js:141
+#: js/Addressbook.js:142 js/Addressbook.js:144
 msgid "contacts"
 msgstr "联系人"
 
-#: js/Addressbook.js:140 js/Addressbook.js:468
+#: js/Addressbook.js:143 js/Addressbook.js:471
 msgid "addressbook"
 msgid_plural "addressbooks"
 msgstr[0] "地址本"
 
-#: js/Addressbook.js:146 js/ContactGrid.js:155
+#: js/Addressbook.js:149 js/ContactGrid.js:155
 msgid "export as pdf"
 msgstr "输入 pdf 文件"
 
-#: js/Addressbook.js:171
+#: js/Addressbook.js:174
 msgid "Loading Contact..."
 msgstr "加载联系人..."
 
-#: js/Addressbook.js:171
+#: js/Addressbook.js:174
 msgid "Please Wait"
 msgstr "请稍等"
 
-#: js/Addressbook.js:185
+#: js/Addressbook.js:188
 msgid "Add new contact"
 msgstr "添加新联系人"
 
-#: js/Addressbook.js:187
+#: js/Addressbook.js:190
 msgid "Edit Contact \"{0}\""
 msgstr "编辑联系人\"{0}\""
 
-#: js/Addressbook.js:212
+#: js/Addressbook.js:215
 msgid "Please wait a moment..."
 msgstr "请稍等..."
 
-#: js/Addressbook.js:212
+#: js/Addressbook.js:215
 msgid "Saving Contact"
 msgstr "保存联系人"
 
-#: js/Addressbook.js:237 js/Addressbook.js:262
+#: js/Addressbook.js:240 js/Addressbook.js:265
 msgid "Failed"
 msgstr "失败"
 
-#: js/Addressbook.js:237
+#: js/Addressbook.js:240
 msgid "Could not save contact."
 msgstr "不能保存联系人"
 
-#: js/Addressbook.js:243
+#: js/Addressbook.js:246
 msgid "Errors"
 msgstr "错误"
 
-#: js/Addressbook.js:243
+#: js/Addressbook.js:246
 msgid "Please fix the errors noted."
 msgstr "请修复注明的错误"
 
-#: js/Addressbook.js:256
+#: js/Addressbook.js:259
 msgid "Deleting contact..."
 msgstr "正删除联系人..."
 
-#: js/Addressbook.js:262
+#: js/Addressbook.js:265
 msgid "Some error occured while trying to delete the contact."
 msgstr "当试图删除联系人的时候有错误发生"
 
-#: js/Addressbook.js:464
+#: js/Addressbook.js:467
 msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] "联系人"
 
-#: js/Addressbook.js:464
+#: js/Addressbook.js:467
 msgid "Contacts"
 msgstr "联系人"
 
-#: js/Addressbook.js:468
+#: js/Addressbook.js:471
 msgid "addressbooks"
 msgstr "地址本"
 
