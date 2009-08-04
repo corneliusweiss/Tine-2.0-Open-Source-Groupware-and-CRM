@@ -217,7 +217,13 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
      */
     public function appendXML(DOMDocument $_xmlDocument, DOMElement $_xmlNode, $_folderId, $_serverId)
     {
-        $data = $this->_contentController->get($_serverId);
+        try {
+            $data = $this->_contentController->get($_serverId);
+        } catch (Exception $e) {
+        	// event may be gone or out of scope or just freebusy info which could not be get() per definition
+        	Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " skipping event $_serverId : " . $e->getMessage());
+        	return;
+        }
         
         Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " calendar data " . print_r($data->toArray(), true));
         
@@ -314,7 +320,13 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
             $attendees = null;
             
             foreach($data->attendee as $attenderObject) {
-                $contact = $addressbook->get($attenderObject->user_id);
+            	try {
+                    $contact = $addressbook->get($attenderObject->user_id);
+            	} catch (Exception $e) {
+            		// contact may be gone or out of scope
+                    Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " skipping attender {$attenderObject->user_id} : " . $e->getMessage());
+            		continue;
+            	}
                 
                 if (!empty($contact->email) || !empty($contact->email_home)) {
                     if($attendees === null) {
