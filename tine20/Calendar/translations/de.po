@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Calendar\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-07-14 15:09+0100\n"
+"PO-Revision-Date: 2009-08-06 10:12+0100\n"
 "Last-Translator: Cornelius Weiss <c.weiss@metaways.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: Acl/Rights.php:89
 msgid "manage shared calendars"
-msgstr ""
+msgstr "Gemeinsame Kalender Verwalten"
 
 #: Acl/Rights.php:90
 msgid "Create new shared calendars"
-msgstr ""
+msgstr "Neuen gemeinsamen Kalender anlegen"
 
 #: Controller/Event.php:762
 msgid "Notification for Event "
@@ -385,7 +385,7 @@ msgstr " "
 #: Model/Attender.php:242
 msgid ""
 "This contact has been automatically added by the system as an event attender"
-msgstr ""
+msgstr "Dieser Kontakt wurde automatisch bei der Syncronisation angelegt"
 
 #: Preference.php:66
 msgid "Publish Free/Busy Information"

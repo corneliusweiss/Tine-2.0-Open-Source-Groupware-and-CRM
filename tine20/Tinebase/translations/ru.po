@@ -370,8 +370,9 @@ msgid "Not Found"
 msgstr "Не найден"
 
 #: js/tineInit.js:308
+#, fuzzy
 msgid ""
-"Sorry, your requested could not be completed because the required data could "
+"Sorry, your request could not be completed because the required data could "
 "not be found. In most cases this means that someone already deleted the "
 "data. Please refresh your current view."
 msgstr ""

@@ -355,7 +355,7 @@ msgstr "不允许"
 
 #: js/tineInit.js:308
 msgid ""
-"Sorry, your requested could not be completed because the required data could "
+"Sorry, your request could not be completed because the required data could "
 "not be found. In most cases this means that someone already deleted the "
 "data. Please refresh your current view."
 msgstr ""
