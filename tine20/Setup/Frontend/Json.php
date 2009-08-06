@@ -280,12 +280,9 @@ class Setup_Frontend_Json extends Tinebase_Frontend_Abstract
      */
     public function getRegistryData()
     {
+    // anonymous registry
         $registryData =  array(
             'configExists'     => Setup_Core::configFileExists(),
-            'configWritable'   => Setup_Core::configFileWritable(),
-            'checkDB'          => Setup_Core::get(Setup_Core::CHECKDB),
-            'setupChecks'      => $this->envCheck(),
-            'configData'       => $this->loadConfig(),
             'version'          => array(
                 'buildType'     => TINE20SETUP_BUILDTYPE,
                 'codeName'      => TINE20SETUP_CODENAME,
@@ -294,6 +291,17 @@ class Setup_Frontend_Json extends Tinebase_Frontend_Abstract
             ),
         );
         
+        // authenticated or non existent config
+        if (! Setup_Core::configFileExists() || Setup_Core::isRegistered(Setup_Core::USER)) {
+            $registryData = array_merge($registryData, array(
+                'configWritable'     => Setup_Core::configFileWritable(),
+                'checkDB'            => Setup_Core::get(Setup_Core::CHECKDB),
+                'setupChecks'        => $this->envCheck(),
+                'configData'         => $this->loadConfig(),
+            ));
+        }
+        
+        // if setup user is logged in
         if (Setup_Core::isRegistered(Setup_Core::USER)) {
             $registryData += array(
                 'currentAccount'   => Setup_Core::getUser(),
