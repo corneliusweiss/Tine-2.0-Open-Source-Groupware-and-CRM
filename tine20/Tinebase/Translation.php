@@ -51,7 +51,7 @@ class Tinebase_Translation
         //'it',      // Italian              Lidia Panio <lidiapanio@hotmail.com>
         'ja',      // Japanese             Yuuki Kitamura <ykitamura@clasi-co.jp>
         //'nl',      // Dutch                Joost Venema <post@joostvenema.nl>
-        //'pl',      // Polish               Chrisopf Gacki <c.gacki@metaways.de>
+        'pl',      // Polish               Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl> 
         //'pt',      // Portuguese           Holger Rothemund <holger@rothemund.org>
         'ru',      // Russian              Ilia Yurkovetskiy <i.yurkovetskiy@metaways.de>
         'zh_CN',   // Chinese Simplified   Jason Qi <qry@yahoo.com>
