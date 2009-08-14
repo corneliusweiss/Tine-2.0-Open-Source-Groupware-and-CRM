@@ -203,11 +203,11 @@ msgid_plural "Applications"
 msgstr[0] "Application"
 msgstr[1] "Applications"
 
-msgid "Current Version"
-msgstr "Version actuelle"
+#~ msgid "Current Version"
+#~ msgstr "Version actuelle"
 
-msgid "Version"
-msgstr "Version"
+#~ msgid "Version"
+#~ msgstr "Version"
 
-msgid "Check again"
-msgstr "Nouvelle vérification"
+#~ msgid "Check again"
+#~ msgstr "Nouvelle vérification"

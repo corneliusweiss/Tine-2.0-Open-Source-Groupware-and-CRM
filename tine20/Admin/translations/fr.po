@@ -739,29 +739,29 @@ msgid_plural "Samba Users"
 msgstr[0] "Utilisateur Samba"
 msgstr[1] "Utilisateurs Samba"
 
-msgid "Deleting tag..."
-msgstr "Suppression..."
+#~ msgid "Deleting tag..."
+#~ msgstr "Suppression..."
 
-msgid "name"
-msgstr "nom"
+#~ msgid "name"
+#~ msgstr "nom"
 
-msgid "status"
-msgstr "statut"
+#~ msgid "status"
+#~ msgstr "statut"
 
-msgid "Deleting account..."
-msgstr "Suppression..."
+#~ msgid "Deleting account..."
+#~ msgstr "Suppression..."
 
-msgid "Some error occurred while trying to delete the account."
-msgstr "Une erreur des survenue lors de la suppression du compte."
+#~ msgid "Some error occurred while trying to delete the account."
+#~ msgstr "Une erreur des survenue lors de la suppression du compte."
 
-msgid "Saving User Account"
-msgstr "Enregistrement du compte utilisateur"
+#~ msgid "Saving User Account"
+#~ msgstr "Enregistrement du compte utilisateur"
 
-msgid "Could not save user account."
-msgstr "Erreur d'enregistrement."
+#~ msgid "Could not save user account."
+#~ msgstr "Erreur d'enregistrement."
 
-msgid "Add New User Account"
-msgstr "Créer un compte utilisateur"
+#~ msgid "Add New User Account"
+#~ msgstr "Créer un compte utilisateur"
 
-msgid "Edit User Account \"{0}\""
-msgstr "Editer le compte utilisateur  \"{0}\""
+#~ msgid "Edit User Account \"{0}\""
+#~ msgstr "Editer le compte utilisateur  \"{0}\""
