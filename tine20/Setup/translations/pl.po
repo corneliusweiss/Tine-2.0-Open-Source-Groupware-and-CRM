@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Setup\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-13 18:48+0100\n"
+"PO-Revision-Date: 2009-08-16 16:26+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: js/ApplicationGridPanel.js:40
 msgid "Name"
-msgstr "Imię i nazwisko"
+msgstr "Aplikacja"
 
 #: js/ApplicationGridPanel.js:41
 msgid "Enabled"
-msgstr "Włączony"
+msgstr "Włączona"
 
 #: js/ApplicationGridPanel.js:42
 msgid "Order"
@@ -95,7 +95,7 @@ msgstr "Konfiguruj uwierzytelnianie"
 
 #: js/ConfigManagerGridPanel.js:137
 msgid "Username"
-msgstr "Nazwa użytkownika"
+msgstr "Użytkownik"
 
 #: js/ConfigManagerGridPanel.js:141
 #: js/ConfigManagerGridPanel.js:167
@@ -113,7 +113,7 @@ msgstr "Adapter"
 
 #: js/ConfigManagerGridPanel.js:155
 msgid "Hostname"
-msgstr "Nazwa komputera"
+msgstr "Komputer"
 
 #: js/ConfigManagerGridPanel.js:163
 msgid "User"
@@ -125,11 +125,11 @@ msgstr "Przedrostek"
 
 #: js/ConfigManagerGridPanel.js:174
 msgid "Logging"
-msgstr "Logowanie"
+msgstr "Logi"
 
 #: js/ConfigManagerGridPanel.js:180
 msgid "Filename"
-msgstr "Nazwa pliku"
+msgstr "Plik"
 
 #: js/ConfigManagerGridPanel.js:192
 msgid "Priority"
@@ -145,7 +145,7 @@ msgstr "Ścieżka"
 
 #: js/ConfigManagerGridPanel.js:205
 msgid "Lifetime (seconds)"
-msgstr "Długość życia (sekundy)"
+msgstr "Czas życia (sekundy)"
 
 #: js/ConfigManagerGridPanel.js:298
 msgid "Check config"
@@ -171,7 +171,7 @@ msgstr "{0} nie zostały znalezione. Proszę spróbować zmienić kryteria wyszu
 
 #: js/EnvCheckGridPanel.js:140
 msgid "Check"
-msgstr "Sprawdź"
+msgstr "Sprawdzam składniki"
 
 #: js/EnvCheckGridPanel.js:141
 msgid "Result"

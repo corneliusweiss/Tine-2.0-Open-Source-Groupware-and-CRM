@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Calendar\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-13 19:30+0100\n"
+"PO-Revision-Date: 2009-08-16 16:32+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgstr "Typ"
 
 #: js/AttendeeGridPanel.js:125
 msgid "Name"
-msgstr "Imię i nazwisko"
+msgstr "Nazwa uczestnika"
 
 #: js/AttendeeGridPanel.js:155
 msgid "Status"
@@ -191,7 +191,7 @@ msgstr "Koniec"
 
 #: js/EventEditDialog.js:126
 msgid "whole day"
-msgstr "całodniowy"
+msgstr "cały dzień"
 
 #: js/EventEditDialog.js:159
 msgid "Description"
@@ -215,7 +215,7 @@ msgstr "Nieprawidłowa data rozpoczęcia"
 
 #: js/MainScreenCenterPanel.js:74
 msgid "Day"
-msgstr "Dzień"
+msgstr "dzień"
 
 #: js/MainScreenCenterPanel.js:83
 #: js/PagingToolbar.js:276
@@ -304,7 +304,7 @@ msgstr "{0} następne..."
 
 #: js/RrulePanel.js:29
 msgid "Recurrances"
-msgstr "Powtórzenia"
+msgstr "Powtarzalność"
 
 #: js/RrulePanel.js:37
 msgid "No recuring rule defined"
@@ -312,7 +312,7 @@ msgstr "Bez powtarzania"
 
 #: js/RrulePanel.js:74
 msgid "None"
-msgstr "Unikalny"
+msgstr "Brak"
 
 #: js/RrulePanel.js:81
 msgid "Daily"
@@ -320,23 +320,23 @@ msgstr "Codziennie"
 
 #: js/RrulePanel.js:88
 msgid "Weekly"
-msgstr "Co tydzień"
+msgstr "Tygodniowo"
 
 #: js/RrulePanel.js:95
 msgid "Monthly"
-msgstr "Co miesiąc"
+msgstr "Miesięcznie"
 
 #: js/RrulePanel.js:102
 msgid "Yearly"
-msgstr "Co rok"
+msgstr "Rocznie"
 
 #: js/RrulePanel.js:221
 msgid "forever"
-msgstr "zawsze"
+msgstr "odwołania"
 
 #: js/RrulePanel.js:233
 msgid "Forever"
-msgstr "Zawsze"
+msgstr "Na zawsze"
 
 #: js/RrulePanel.js:234
 msgid "at"
@@ -344,7 +344,7 @@ msgstr "dnia"
 
 #: js/RrulePanel.js:240
 msgid "Every"
-msgstr "Każdego"
+msgstr "Co"
 
 #: js/RrulePanel.js:275
 msgid "Until"
@@ -352,11 +352,11 @@ msgstr "Do"
 
 #: js/RrulePanel.js:310
 msgid ". Day"
-msgstr ". Dzień"
+msgstr " dzień"
 
 #: js/RrulePanel.js:340
 msgid ". Week at"
-msgstr ". Tydzień w"
+msgstr " tydzień w"
 
 #: js/RrulePanel.js:399
 msgid ". Month"
@@ -367,32 +367,32 @@ msgstr ". Miesiąc"
 #: js/RrulePanel.js:585
 #: js/RrulePanel.js:635
 msgid "at the"
-msgstr "dnia"
+msgstr "o / w"
 
 #: js/RrulePanel.js:424
 #: js/RrulePanel.js:604
 msgid "first"
-msgstr "pierwszego"
+msgstr "pierwszy"
 
 #: js/RrulePanel.js:425
 #: js/RrulePanel.js:605
 msgid "second"
-msgstr "drugiego"
+msgstr "drugi"
 
 #: js/RrulePanel.js:426
 #: js/RrulePanel.js:606
 msgid "third"
-msgstr "trzeciego"
+msgstr "trzeci"
 
 #: js/RrulePanel.js:427
 #: js/RrulePanel.js:607
 msgid "fourth"
-msgstr "czwartego"
+msgstr "czwarty"
 
 #: js/RrulePanel.js:428
 #: js/RrulePanel.js:608
 msgid "last"
-msgstr "ostatniego"
+msgstr "ostatni"
 
 #: js/RrulePanel.js:578
 msgid ". Year"
