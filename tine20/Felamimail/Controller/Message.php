@@ -230,13 +230,13 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
     /**
      * get complete message by id
      *
-     * @param string|Felamimail_ModelMessage $_id
+     * @param string|Felamimail_Model_Message $_id
      * @param int $_containerId
      * @return Tinebase_Record_Interface
      */
     public function getCompleteMessage($_id, $_withAttachments = FALSE, $_setSeen = FALSE)
     {
-        if ($_id instanceof Felamimail_ModelMessage) {
+        if ($_id instanceof Felamimail_Model_Message) {
             $message = $_id;
         } else {
             $message = parent::get($_id);
