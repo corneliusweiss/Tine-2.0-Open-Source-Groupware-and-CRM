@@ -578,6 +578,7 @@ function getPluralForm($_languageName)
         case 'Italian' :
         case 'Portuguese' :
         case 'Spanish' :
+        case 'Catalan' :
         // Artificial
         case 'Esperanto' :
         // Finno-Ugric family
