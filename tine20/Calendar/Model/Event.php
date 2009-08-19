@@ -125,6 +125,13 @@ class Calendar_Model_Event extends Tinebase_Record_Abstract
     );
     
     /**
+     * alarm datetime field
+     *
+     * @var string
+     */
+    protected $_alarmDateTimeField = 'dtstart'; 
+    
+    /**
      * sets record related properties
      * 
      * @param string _name of property
@@ -213,5 +220,26 @@ class Calendar_Model_Event extends Tinebase_Record_Abstract
         }
         
         parent::setFromArray($_data);
+    }
+
+    /**
+     * create notification message for event alarm
+     *
+     * @return string
+     * 
+     * @todo add attendee
+     */
+    public function getNotificationMessage()
+    {
+        $translate = Tinebase_Translation::getTranslation($this->_application);
+        
+        $text = $this->summary . "\n\n" 
+            . $translate->_('Start')        . ': ' . $this->dtstart     . "\n" 
+            . $translate->_('End')          . ': ' . $this->dtend       . "\n"
+            . $translate->_('Organizer')    . ': ' . $this->organizer   . "\n" 
+            . $translate->_('Location')     . ': ' . $this->location    . "\n"
+            . $translate->_('Description')  . ': ' . $this->description . "\n";
+            
+        return $text;
     }
 }

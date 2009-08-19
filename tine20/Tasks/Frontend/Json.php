@@ -115,23 +115,19 @@ class Tasks_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     }
     
     /**
-     * returns task prepared for json transport
+     * returns record prepared for json transport
      *
-     * @param Tasks_Model_Task $_task
-     * @return array task data
+     * @param Tinebase_Record_Interface $_record
+     * @return array record data
      */
-    protected function _recordToJson($_task)
+    protected function _recordToJson($_record)
     {
-        $_task->setTimezone($this->_userTimezone);
-        Tinebase_User::getInstance()->resolveUsers($_task, 'organizer', true);
-        $_task->bypassFilters = true;
-        $taskArray = $_task->toArray();
+        if ($_record instanceof Tasks_Model_Task) {
+            Tinebase_User::getInstance()->resolveUsers($_record, 'organizer', true); 
+        }
         
-        $taskArray['container_id'] = Tinebase_Container::getInstance()->getContainerById($_task->container_id)->toArray();
-        $taskArray['container_id']['account_grants'] = Tinebase_Container::getInstance()->getGrantsOfAccount(Tinebase_Core::getUser(), $_task->container_id)->toArray();
-        
-        return $taskArray;
-    }
+        return parent::_recordToJson($_record);
+    }    
     
     /**
      * returns multiple tasks prepared for json transport
