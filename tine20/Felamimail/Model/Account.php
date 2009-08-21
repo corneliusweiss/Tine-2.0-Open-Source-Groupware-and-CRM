@@ -151,7 +151,9 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
      */
     public function getImapConfig()
     {
-        $this->resolveCredentials(FALSE);
+        if ($this->getId() !== self::DEFAULT_ACCOUNT_ID) {        
+            $this->resolveCredentials(FALSE);
+        }
         
         $imapConfigFields = array('host', 'port', 'user', 'password');
         $result = array();
@@ -173,7 +175,9 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
      */
     public function getSmtpConfig()
     {
-        $this->resolveCredentials(FALSE, TRUE, TRUE);
+        if ($this->getId() !== self::DEFAULT_ACCOUNT_ID) {        
+            $this->resolveCredentials(FALSE, TRUE, TRUE);
+        }
         
         // add values from config to empty fields
         if (isset(Tinebase_Core::getConfig()->smtp)) {
