@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Calendar\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-16 16:32+0100\n"
+"PO-Revision-Date: 2009-08-22 18:29+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: Acl/Rights.php:89
 msgid "manage shared calendars"
-msgstr "zarządzaj wspólnymi kalendarzami"
+msgstr "edytuj wspólne kalendarze"
 
 #: Acl/Rights.php:90
 msgid "Create new shared calendars"
@@ -111,8 +111,8 @@ msgstr "Dobrowolny"
 msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] "Kalendarz"
-msgstr[1] "Kalendarze"
-msgstr[2] "Kalendarzy"
+msgstr[1] "kalendarze"
+msgstr[2] "kalendarzy"
 
 #: js/Calendar.js:114
 #: js/MonthView.js:80
@@ -171,11 +171,11 @@ msgstr "Nowy termin"
 
 #: js/DaysView.js:85
 msgid "{0}, the {1}. of {2}"
-msgstr "{0}, {1}. z {2}"
+msgstr "{0}, {1}. {2}"
 
 #: js/EventEditDialog.js:91
 msgid "Summary"
-msgstr "Temat"
+msgstr "Streszczenie"
 
 #: js/EventEditDialog.js:98
 msgid "Location"
@@ -215,7 +215,7 @@ msgstr "Nieprawidłowa data rozpoczęcia"
 
 #: js/MainScreenCenterPanel.js:74
 msgid "Day"
-msgstr "dzień"
+msgstr "Dzień"
 
 #: js/MainScreenCenterPanel.js:83
 #: js/PagingToolbar.js:276
@@ -278,9 +278,9 @@ msgstr[2] "Czy na pewno chcesz usunąć tych {0} zaznaczonych terminów?"
 #: js/Model.js:223
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] "Termin"
-msgstr[1] "Terminy"
-msgstr[2] "Terminów"
+msgstr[0] "termin"
+msgstr[1] "terminy"
+msgstr[2] "terminów"
 
 #: js/Model.js:65
 #: js/Model.js:223
@@ -289,7 +289,7 @@ msgstr "Terminy"
 
 #: js/Model.js:69
 msgid "Calendars"
-msgstr "Kalendarze"
+msgstr "kalendarze"
 
 #: js/Model.js:219
 msgid "Attender"
@@ -300,7 +300,7 @@ msgstr[2] "Uczestników"
 
 #: js/MonthView.js:85
 msgid "{0} more..."
-msgstr "{0} następne..."
+msgstr "Jeszcze {0} ..."
 
 #: js/RrulePanel.js:29
 msgid "Recurrances"
@@ -308,7 +308,7 @@ msgstr "Powtarzalność"
 
 #: js/RrulePanel.js:37
 msgid "No recuring rule defined"
-msgstr "Bez powtarzania"
+msgstr "Termin się nie powtarza"
 
 #: js/RrulePanel.js:74
 msgid "None"
@@ -320,23 +320,23 @@ msgstr "Codziennie"
 
 #: js/RrulePanel.js:88
 msgid "Weekly"
-msgstr "Tygodniowo"
+msgstr "Co tydzień"
 
 #: js/RrulePanel.js:95
 msgid "Monthly"
-msgstr "Miesięcznie"
+msgstr "Co miesiąc"
 
 #: js/RrulePanel.js:102
 msgid "Yearly"
-msgstr "Rocznie"
+msgstr "Co rok"
 
 #: js/RrulePanel.js:221
 msgid "forever"
-msgstr "odwołania"
+msgstr "zawsze"
 
 #: js/RrulePanel.js:233
 msgid "Forever"
-msgstr "Na zawsze"
+msgstr "Zawsze"
 
 #: js/RrulePanel.js:234
 msgid "at"
@@ -352,15 +352,15 @@ msgstr "Do"
 
 #: js/RrulePanel.js:310
 msgid ". Day"
-msgstr " dzień"
+msgstr "  dzień"
 
 #: js/RrulePanel.js:340
 msgid ". Week at"
-msgstr " tydzień w"
+msgstr "  tydzień (proszę zaznaczyć dzień tygodnia)"
 
 #: js/RrulePanel.js:399
 msgid ". Month"
-msgstr ". Miesiąc"
+msgstr "  miesiąc(e)"
 
 #: js/RrulePanel.js:405
 #: js/RrulePanel.js:454
@@ -372,7 +372,7 @@ msgstr "o / w"
 #: js/RrulePanel.js:424
 #: js/RrulePanel.js:604
 msgid "first"
-msgstr "pierwszy"
+msgstr "pierwsza(y)"
 
 #: js/RrulePanel.js:425
 #: js/RrulePanel.js:605

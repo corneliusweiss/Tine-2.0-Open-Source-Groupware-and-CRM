@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-16 16:13+0100\n"
+"PO-Revision-Date: 2009-08-22 19:17+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "%s's zadania własne"
 
 #: js/EditDialog.js:113 js/GridPanel.js:64 js/GridPanel.js:123
 msgid "Summary"
-msgstr "Podsumowanie"
+msgstr "Streszczenie"
 
 #: js/EditDialog.js:118
 msgid "Due date"
@@ -38,11 +38,11 @@ msgstr "Data ukończenia"
 
 #: js/EditDialog.js:121 js/GridPanel.js:144
 msgid "Priority"
-msgstr "Ważność"
+msgstr "Priorytet"
 
 #: js/EditDialog.js:124 js/GridPanel.js:66 js/GridPanel.js:196
 msgid "Responsible"
-msgstr "Odpowiedzialny"
+msgstr "Osoba odpowiedzialna"
 
 #: js/EditDialog.js:128
 msgid "Notes"
@@ -73,7 +73,7 @@ msgstr[2] "Czy na pewno chcesz usunąć zaznaczonych zadań?"
 
 #: js/GridPanel.js:65 js/GridPanel.js:135
 msgid "Due Date"
-msgstr "Data ukończenia"
+msgstr "Data zakończenia"
 
 #: js/GridPanel.js:87
 msgid "Failed"
@@ -89,7 +89,7 @@ msgstr "Dodaj zadanie..."
 
 #: js/GridPanel.js:159
 msgid "Percent"
-msgstr "Procent"
+msgstr "W procentach"
 
 #: js/GridPanel.js:188
 msgid "Creation Time"
@@ -101,7 +101,7 @@ msgstr "Pokaż zakończone"
 
 #: js/Status.js:45 Setup/setup.xml:443
 msgid "IN-PROCESS"
-msgstr "W PRZETWARZANIU"
+msgstr "W OPRACOWANIU"
 
 #: js/Tasks.js:82
 msgid "Task"
@@ -117,25 +117,25 @@ msgstr "Zadania"
 #: js/Tasks.js:86
 msgid "to do list"
 msgid_plural "to do lists"
-msgstr[0] "Lista do wykonania"
-msgstr[1] "Listy do wykonania"
-msgstr[2] "List do wykonania"
+msgstr[0] "lista zadań do wykonania"
+msgstr[1] "listy zadań do wykonania"
+msgstr[2] "list zadań do wykonania"
 
 #: js/Tasks.js:86
 msgid "to do lists"
-msgstr "Listy do wykonania"
+msgstr "listy zadań do wykonania"
 
 #: Setup/setup.xml:399
 msgid "NEEDS-ACTION"
-msgstr "KONIECZNA EDYCJA"
+msgstr "WYMAGA DZIAŁANIA"
 
 #: Setup/setup.xml:421
 msgid "COMPLETED"
-msgstr "ZAKOŃCZONY"
+msgstr "ZAKOŃCZONE"
 
 #: Setup/setup.xml:465
 msgid "CANCELLED"
-msgstr "ODWOŁANY "
+msgstr "ODWOŁANE"
 
 #, fuzzy
 msgid "to to list"

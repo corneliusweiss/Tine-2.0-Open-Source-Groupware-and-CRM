@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-16 16:35+0100\n"
+"PO-Revision-Date: 2009-08-19 21:47+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 # Wenn der uebersetzte Text zu lang ist, wir koennen den gesamten Satz einfach ohne das Wort 'shared' ueberschreiben: "Zarządzaj książkami adresowymi".
 #: Acl/Rights.php:98
 msgid "manage shared addressbooks"
-msgstr "Edytuj wspólne książki adresowe"
+msgstr "edytuj wspólne książki adresowe"
 
 # It is also possible to use "wspólne" instead of "współdzielone".
 # Es is auch moeglich, "wspólne" statt "współdzielone" zu verwenden.
@@ -224,7 +224,7 @@ msgstr "Kontakty"
 
 #: js/Addressbook.js:471
 msgid "addressbooks"
-msgstr "Książki adresowe"
+msgstr "książki adresowe"
 
 #: js/ContactGrid.js:56 js/ContactGrid.js:84 js/EditDialog.js:106
 #: js/EditDialog.js:167

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tinebase\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-16 16:24+0100\n"
+"PO-Revision-Date: 2009-08-22 20:32+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -80,7 +80,7 @@ msgstr "Twoja sesja wygasła. Musisz się ponownie zalogować."
 #: Frontend/Http.php:315
 #: js/ExceptionDialog.js:46
 msgid "Abnormal End"
-msgstr "Nietypowe zakończenie"
+msgstr "Zakończenie awaryjne"
 
 #: Frontend/Http.php:316
 #: js/ExceptionDialog.js:71
@@ -215,7 +215,7 @@ msgstr "Proszę czekać"
 
 #: js/Login.js:138
 msgid "Login successful. Loading Tine 2.0..."
-msgstr "Logowanie udane. Ładowanie Tine 2.0 …"
+msgstr "Logowanie udane. Trwa ładowanie Tine 2.0 …"
 
 #: js/Login.js:138
 #: js/MainScreen.js:527
@@ -310,7 +310,7 @@ msgstr "zmiana hasła…"
 
 #: js/MainScreen.js:469
 msgid "Success"
-msgstr "Sukces"
+msgstr "Zakończone sukcesem"
 
 #: js/MainScreen.js:470
 msgid "Your password has been changed."
@@ -335,7 +335,7 @@ msgstr "Instalacja (Google) Gears przyczyni się do poprawy wydajności Tine 2.0
 #: js/widgets/grid/PersistentFilterPicker.js:124
 #: js/widgets/tree/ContextMenu.js:84
 msgid "Confirm"
-msgstr "Potwierdź"
+msgstr "Proszę o odpowiedź"
 
 #: js/MainScreen.js:525
 msgid "Are you sure you want to logout?"
@@ -505,7 +505,7 @@ msgstr "Odwróć zaznaczenie"
 
 #: js/widgets/account/ConfigGrid.js:61
 msgid "Remove account"
-msgstr "Usuń konto"
+msgstr "usuń konto"
 
 #: js/widgets/account/ConfigGrid.js:85
 #: js/widgets/account/PickerPanel.js:166
@@ -531,7 +531,7 @@ msgstr "Znajdź"
 #: js/widgets/GridPicker.js:448
 #: js/widgets/GridPicker.js:449
 msgid "Browse"
-msgstr "Przewiń"
+msgstr "Przeszukaj"
 
 #: js/widgets/AccountpickerPanel.js:55
 msgid "nobody"
@@ -577,7 +577,7 @@ msgstr "Wprowadź nową notatkę:"
 
 #: js/widgets/ActivitiesPanel.js:305
 msgid "Add a {0} Note"
-msgstr "Dodaj {0} notatkę"
+msgstr "Dodaj notatkę ({0})"
 
 #: js/widgets/ActivitiesPanel.js:391
 #: js/widgets/ActivitiesPanel.js:526
@@ -715,7 +715,7 @@ msgstr "Wszystkie {0}"
 
 #: js/widgets/container/ContainerTree.js:139
 msgid "My {0}"
-msgstr "Moja(e) {0}"
+msgstr "Moje {0}"
 
 #: js/widgets/container/ContainerTree.js:146
 msgid "Shared {0}"
@@ -825,7 +825,7 @@ msgstr "Edytuj {0} \"{1}\""
 #: js/widgets/dialog/EditDialog.js:298
 #: js/widgets/EditRecord.js:185
 msgid "Saved in"
-msgstr "Zapisany w"
+msgstr "Zapisz w"
 
 #: js/widgets/dialog/EditDialog.js:317
 msgid "Transfering {0}..."
@@ -901,7 +901,7 @@ msgstr "następuje po"
 
 #: js/widgets/grid/FilterModel.js:137
 msgid "is within"
-msgstr "jest pomiędzy"
+msgstr "przypada na"
 
 #: js/widgets/grid/FilterModel.js:138
 msgid "starts with"
@@ -1342,11 +1342,11 @@ msgstr "Możesz wybrać styl okien ExtJs albo zwykłe okna wyskakujące w przegl
 
 #: Setup/setup.xml:2344
 msgid "note"
-msgstr "notatka"
+msgstr " "
 
 #: Setup/setup.xml:2349
 msgid "default note type"
-msgstr "domyślny typ notatki"
+msgstr "domyślny typ: notatka"
 
 #: Setup/setup.xml:2375
 msgid "telephone"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Admin\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-16 16:34+0100\n"
+"PO-Revision-Date: 2009-08-19 22:00+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -205,7 +205,7 @@ msgstr "błąd"
 
 #: js/Admin.js:532
 msgid "success"
-msgstr "sukces"
+msgstr "zakończone sukcesem"
 
 #: js/Admin.js:553
 msgid "Displaying access log entries {0} - {1} of {2}"
@@ -226,7 +226,7 @@ msgstr "Login"
 #: js/Admin.js:560 js/Applications.js:237 js/Groups.js:196 js/Groups.js:513
 #: js/Roles.js:196 js/SambaMachineGrid.js:87 js/Tags.js:180
 msgid "Name"
-msgstr "Imię i nazwisko"
+msgstr "Nazwa"
 
 #: js/Admin.js:561
 msgid "IP Address"
@@ -371,7 +371,7 @@ msgstr "Uczestnicy przypisani do grupy"
 
 #: js/Groups.js:576
 msgid "Group Name"
-msgstr "Nazwa grupy"
+msgstr "Nazwę grupy"
 
 #: js/Groups.js:619 js/Users.js:390
 msgid "add account"
@@ -447,7 +447,7 @@ msgstr "Uprawnienia"
 
 #: js/Roles.js:663
 msgid "Role Name"
-msgstr "Nazwa funkcji"
+msgstr "Nazwę funkcji"
 
 #: js/Roles.js:704
 msgid "Loading Role..."
@@ -467,7 +467,7 @@ msgstr "Edytuj funkcję \"{0}\""
 
 #: js/SambaMachineEditDialog.js:38 js/SambaMachineGrid.js:65
 msgid "Computer Name"
-msgstr "Nazwa komputera"
+msgstr "Nazwę komputera"
 
 #: js/SambaMachineModel.js:40
 msgid "Computer"
@@ -534,7 +534,7 @@ msgstr "Użyj"
 
 #: js/Tags.js:542
 msgid "Tag Name"
-msgstr "Nazwa znacznika"
+msgstr "Nazwę znacznika"
 
 #: js/Tags.js:569
 msgid "Context"
@@ -576,11 +576,9 @@ msgstr "nigdy"
 msgid "Last login at"
 msgstr "Ostatnie logowanie o"
 
-# The other possibility would be: "nie znam". It depends on the context.
-# Die andere Moeglichkeit waere "nie znam". Das haengt vom Kontext ab.
 #: js/UserEditDialog.js:113 js/UserEditDialog.js:128
 msgid "don't know"
-msgstr "nieznany"
+msgstr "nie znam"
 
 #: js/UserEditDialog.js:113 js/UserEditDialog.js:128 js/UserEditDialog.js:193
 msgid "never logged in"
