@@ -759,7 +759,7 @@ msgstr ""
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Errors"
 msgstr ""
 
@@ -816,7 +816,7 @@ msgstr ""
 msgid "Loading ..."
 msgstr ""
 
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
 msgstr ""
 

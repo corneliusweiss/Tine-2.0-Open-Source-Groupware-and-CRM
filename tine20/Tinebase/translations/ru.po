@@ -795,7 +795,7 @@ msgstr "1 день до"
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -852,7 +852,7 @@ msgstr "Изменить параметры"
 msgid "Loading ..."
 msgstr "Загрузка..."
 
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
 msgstr "Сбой сохранения параметров."
 

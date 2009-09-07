@@ -219,8 +219,8 @@ msgstr "First Name"
 msgid "Last Name"
 msgstr "Last Name"
 
-#: js/ContactGrid.js:58 js/ContactGrid.js:87 js/EditDialog.js:128
-#: js/EditDialog.js:197 Setup/setup.xml:600
+#: js/ContactGrid.js:58 js/ContactGrid.js:87 js/ContactGridDetailsPanel.js:136
+#: js/EditDialog.js:128 js/EditDialog.js:197 Setup/setup.xml:600
 msgid "Company"
 msgstr "Company"
 
@@ -398,6 +398,14 @@ msgstr "Select contact"
 #: js/EditDialog.js:261
 msgid "E-Mail"
 msgstr "E-Mail"
+
+#: js/ContactGridDetailsPanel.js:160
+msgid "Private"
+msgstr "Private"
+
+#: js/ContactGridDetailsPanel.js:183
+msgid "Info"
+msgstr "Info"
 
 #: js/EditDialog.js:30
 msgid "Suffix"

@@ -770,7 +770,7 @@ msgstr "是以前"
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Errors"
 msgstr "错误"
 
@@ -831,7 +831,7 @@ msgstr "参考"
 msgid "Loading ..."
 msgstr "正加载"
 
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
 msgstr ""
 

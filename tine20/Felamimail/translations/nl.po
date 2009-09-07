@@ -264,31 +264,31 @@ msgstr ""
 msgid "No Account configured"
 msgstr ""
 
-#: js/FelamimailGridPanel.js:478
+#: js/FelamimailGridPanel.js:484
 msgid "wrote"
 msgstr ""
 
-#: js/FelamimailGridPanel.js:480
+#: js/FelamimailGridPanel.js:486
 msgid "Re: "
 msgstr ""
 
-#: js/FelamimailGridPanel.js:489
+#: js/FelamimailGridPanel.js:495
 msgid "Original Message"
 msgstr ""
 
-#: js/FelamimailGridPanel.js:497
+#: js/FelamimailGridPanel.js:503
 msgid "Original message"
 msgstr ""
 
-#: js/FelamimailGridPanel.js:501
+#: js/FelamimailGridPanel.js:507
 msgid "Fwd: "
 msgstr ""
 
-#: js/FelamimailGridPanel.js:608 js/FelamimailMessageEditDialog.js:117
+#: js/FelamimailGridPanel.js:614 js/FelamimailMessageEditDialog.js:117
 msgid "Failed"
 msgstr ""
 
-#: js/FelamimailGridPanel.js:609
+#: js/FelamimailGridPanel.js:615
 msgid "Some error occured while trying to update the messages."
 msgstr ""
 

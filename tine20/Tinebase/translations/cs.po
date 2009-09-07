@@ -788,7 +788,7 @@ msgstr "1 den před"
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Errors"
 msgstr "Chyby"
 
@@ -845,7 +845,7 @@ msgstr "Editovat předvolby"
 msgid "Loading ..."
 msgstr "Nahrávám ..."
 
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
 msgstr "Uložení předvoleb se nezdařilo."
 

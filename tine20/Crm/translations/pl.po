@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Crm\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-22 19:06+0100\n"
+"PO-Revision-Date: 2009-09-05 14:14+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgstr "wysoki"
 
 #: Export/Pdf.php:303
 msgid "urgent"
-msgstr "pilne"
+msgstr "pilny"
 
 #: js/Crm.js:145
 msgid "Are you sure you want to delete this lead?"
@@ -236,7 +236,7 @@ msgid "Delete lead"
 msgid_plural "Delete leads"
 msgstr[0] "Usuń zapytanie"
 msgstr[1] "Usuń zapytania"
-msgstr[2] "Usuń zapytań"
+msgstr[2] "Usuń zapytania"
 
 #: js/Crm.js:475
 msgid "Delete selected leads"
@@ -446,11 +446,11 @@ msgstr "Edytuj zapytanie \"{0}\""
 
 #: js/LeadEditDialog.js:32
 msgid "Enter short name"
-msgstr "Wprowadź skróconą nazwę"
+msgstr "wpisz skróconą nazwę"
 
 #: js/LeadEditDialog.js:119
 msgid "Estimated end"
-msgstr "Szacowany koniec"
+msgstr "Szacowane zakończenie"
 
 #: js/LeadEditDialog.js:133
 msgid "Overview"
@@ -477,6 +477,7 @@ msgid "website"
 msgstr "strona WWW"
 
 #: Setup/setup.xml:412
+#, fuzzy
 msgid "fair"
 msgstr "rynek"
 
@@ -517,42 +518,40 @@ msgid "lost"
 msgstr "stracone"
 
 msgid "folder"
-msgstr "folder"
+msgstr "katalog"
 
 msgid "Enter searchfilter"
-msgstr "Wprowadzenie filtra szukania"
+msgstr "wpisz szukaną frazę"
 
 msgid "Search Contacts"
-msgstr "Szukanie Kontaktów"
+msgstr "Znajdź kontakty"
 
 msgid "Add existing contact"
 msgstr "Utwórz istniejący kontakt"
 
 msgid "Add existing contact to lead"
-msgstr "Dodaj istniejący kontakt do wprowadzenia"
+msgstr "Dodaj istniejący kontakt do zapytania"
 
 msgid "Organisation"
 msgstr "Organizacja"
 
-#, fuzzy
 msgid "Lead updated"
-msgstr "Realizacjia zaktualizwana"
+msgstr "Zapytanie zaktualizowane"
 
-#, fuzzy
 msgid "Lead added"
-msgstr "Realizacjia utworzona"
+msgstr "Zapytanie dodane"
 
 msgid "Add responsible"
-msgstr "Utwórz odpowiedzialnego"
+msgstr "Dodaj osobę odpowiedzialną"
 
 msgid "Add new responsible contact"
-msgstr "Utwórz nowy kontakt odpowiedzialnego"
+msgstr "Dodaj nowy kontakt jako osobę odpowiedzialną"
 
 msgid "Add customer"
-msgstr "Utwórz klienta"
+msgstr "Dodaj klienta"
 
 msgid "Add partner"
-msgstr "Utwórz partnera"
+msgstr "Dodaj wspólnika"
 
 msgid "Add new partner contact"
-msgstr "Utwórz nowy kontakt partnera"
+msgstr "Dodaj nowy kontakt jako wspólnika"

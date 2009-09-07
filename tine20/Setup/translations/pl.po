@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Setup\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-19 20:52+0100\n"
+"PO-Revision-Date: 2009-09-05 18:19+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
 
 #: js/ApplicationGridPanel.js:40
 msgid "Name"
@@ -40,8 +41,7 @@ msgstr "Status"
 msgid "Depends on"
 msgstr "Zależy od"
 
-#: js/ApplicationGridPanel.js:52
-#: js/EnvCheckGridPanel.js:169
+#: js/ApplicationGridPanel.js:52 js/EnvCheckGridPanel.js:169
 msgid "Install application"
 msgstr "Zainstaluj aplikację"
 
@@ -55,7 +55,7 @@ msgstr "Aktualizuj aplikację"
 
 #: js/ApplicationGridPanel.js:138
 msgid "uninstall"
-msgstr "odinstaluj"
+msgstr "Odinstaluj"
 
 #: js/ApplicationGridPanel.js:138
 msgid "Do you really want to uninstall the application(s)?"
@@ -79,7 +79,8 @@ msgstr "Nieprawidłowa konfiguracja"
 
 #: js/ConfigManagerGridPanel.js:71
 msgid "You need to correct the red marked fields before config could be saved"
-msgstr "Zanim zapiszesz konfigurację, musisz poprawić pola zaznaczone na czerwono"
+msgstr ""
+"Przed zapisaniem konfiguracji, musisz poprawić pola zaznaczone na czerwono"
 
 #: js/ConfigManagerGridPanel.js:118
 msgid "Transfering Configuration..."
@@ -97,13 +98,11 @@ msgstr "Konfiguruj uwierzytelnianie"
 msgid "Username"
 msgstr "Użytkownik"
 
-#: js/ConfigManagerGridPanel.js:141
-#: js/ConfigManagerGridPanel.js:167
+#: js/ConfigManagerGridPanel.js:141 js/ConfigManagerGridPanel.js:167
 msgid "Password"
 msgstr "Hasło"
 
-#: js/ConfigManagerGridPanel.js:146
-#: js/ConfigManagerGridPanel.js:159
+#: js/ConfigManagerGridPanel.js:146 js/ConfigManagerGridPanel.js:159
 msgid "Database"
 msgstr "Baza danych"
 
@@ -166,12 +165,16 @@ msgstr "Przygotowywanie testów środowiska..."
 # Instead of "widoku" it could stand the word "wyświetlania" here.
 # Anstatt "widoku" koennte es hier das Wort "wyświetlania" stehen.
 #: js/EnvCheckGridPanel.js:110
-msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
-msgstr "{0} nie zostały znalezione. Proszę spróbować zmienić kryteria wyszukiwania, opcje wyświetlania albo {1}, w których szukasz."
+msgid ""
+"No {0} where found. Please try to change your filter-criteria, view-options "
+"or the {1} you search in."
+msgstr ""
+"{0} nie zostały znalezione. Proszę spróbować zmienić kryteria wyszukiwania, "
+"opcje wyświetlania albo {1}, w których szukasz."
 
 #: js/EnvCheckGridPanel.js:140
 msgid "Check"
-msgstr "Sprawdzam składniki"
+msgstr "Sprawdzane składniki"
 
 #: js/EnvCheckGridPanel.js:141
 msgid "Result"
@@ -200,7 +203,90 @@ msgstr "Konfigurator aplikacji"
 #: js/Setup.js:129
 msgid "Application"
 msgid_plural "Applications"
-msgstr[0] "Aplikacja"
-msgstr[1] "Aplikacje"
-msgstr[2] "Aplikacji"
+msgstr[0] "Aplikacje"
+msgstr[1] "aplikacje"
+msgstr[2] "aplikacji"
 
+#~ msgid "Dependency Violation"
+#~ msgstr "Niespełnione zależności"
+
+#~ msgid "Backend"
+#~ msgstr "W tle"
+
+#~ msgid "Authentication provider"
+#~ msgstr "Uwierzytelnienie"
+
+#~ msgid "Initial admin login name"
+#~ msgstr "Początkowy login administratora"
+
+#~ msgid "Initial admin Password"
+#~ msgstr "Początkowe hasło administratora"
+
+#~ msgid "Password confirmation"
+#~ msgstr "Potwierdzenie hasła"
+
+#~ msgid "Host"
+#~ msgstr "Komputer"
+
+#~ msgid "Login name"
+#~ msgstr "Login"
+
+#~ msgid "Bind requires DN"
+#~ msgstr "Bind wymaga nazwy domeny"
+
+#~ msgid "Base DN"
+#~ msgstr "Podstawowa domena"
+
+#~ msgid "Account canonical form"
+#~ msgstr "Konto standardowe"
+
+#~ msgid "Accounts storage"
+#~ msgstr "Konta"
+
+#~ msgid "Default user group name"
+#~ msgstr "Domyślna nazwa grupy użytkownika"
+
+#~ msgid "Default admin group name"
+#~ msgstr "Domyślna nazwa grupy administratora"
+
+#~ msgid "Allow user to change her password?"
+#~ msgstr "Czy zezwolić użytkownikowi na zmianę hasła?"
+
+#~ msgid "User DN"
+#~ msgstr "Domena użytkownika"
+
+#~ msgid "Groups DN"
+#~ msgstr "Domena grupy"
+
+#~ msgid "Password encoding"
+#~ msgstr "Metoda kodowania hasła"
+
+#~ msgid "Use Rfc 2307 bis"
+#~ msgstr "Stosuj RFC 2307 aż do"
+
+#~ msgid "Min User Id"
+#~ msgstr "Min. id użytkownika"
+
+#~ msgid "Max User Id"
+#~ msgstr "Maks. id użytkownika"
+
+#~ msgid "Min Group Id"
+#~ msgstr "Min. id grupy"
+
+#~ msgid "Max Group Id"
+#~ msgstr "Maks. id grupy"
+
+#~ msgid "Group UUID Attribute name"
+#~ msgstr "Unikalny atrybut grupy"
+
+#~ msgid "User UUID Attribute name"
+#~ msgstr "Unikalny atrybut użytkownika"
+
+#~ msgid "Apply changes"
+#~ msgstr "Akceptuj zmiany"
+
+#~ msgid "Passwords don't match"
+#~ msgstr "Hasła nie są takie same"
+
+#~ msgid "Authentication/Accounts"
+#~ msgstr "Uwierzytelnienie / Konta"

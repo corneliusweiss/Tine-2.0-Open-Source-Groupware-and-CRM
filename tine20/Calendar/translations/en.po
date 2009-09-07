@@ -21,13 +21,9 @@ msgstr "manage shared calendars"
 msgid "Create new shared calendars"
 msgstr "Create new shared calendars"
 
-#: Controller/Event.php:762
+#: Controller/Event.php:764
 msgid "Notification for Event "
 msgstr "Notification for Event "
-
-#: Controller/Event.php:763
-msgid "Event description:<br/>"
-msgstr "Event description:<br/>"
 
 #: Controller.php:85
 #, python-format
@@ -164,7 +160,7 @@ msgstr "{0}, the {1}. of {2}"
 msgid "Summary"
 msgstr "Summary"
 
-#: js/EventEditDialog.js:98
+#: js/EventEditDialog.js:98 Model/Event.php:254
 msgid "Location"
 msgstr "Location"
 
@@ -180,7 +176,7 @@ msgstr "End Time"
 msgid "whole day"
 msgstr "whole day"
 
-#: js/EventEditDialog.js:159
+#: js/EventEditDialog.js:159 Model/Event.php:255
 msgid "Description"
 msgstr "Description"
 
@@ -260,7 +256,7 @@ msgstr "Delete this and all future events"
 msgid "Delete this event only"
 msgstr "Delete this event only"
 
-#: js/MainScreenCenterPanel.js:374
+#: js/MainScreenCenterPanel.js:375
 msgid "Do you really want to delete this event?"
 msgid_plural "Do you really want to delete the {0} selected events?"
 msgstr[0] "Do you really want to delete this event?"
@@ -388,6 +384,18 @@ msgid ""
 "This contact has been automatically added by the system as an event attender"
 msgstr ""
 "This contact has been automatically added by the system as an event attender"
+
+#: Model/Event.php:251
+msgid "Start"
+msgstr "Start"
+
+#: Model/Event.php:252
+msgid "End"
+msgstr "End"
+
+#: Model/Event.php:253
+msgid "Organizer"
+msgstr "Organizer"
 
 #: Preference.php:66
 msgid "Publish Free/Busy Information"

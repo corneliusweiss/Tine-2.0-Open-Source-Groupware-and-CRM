@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-19 21:47+0100\n"
+"PO-Revision-Date: 2009-09-05 14:06+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -152,8 +152,8 @@ msgstr "kontakty"
 msgid "addressbook"
 msgid_plural "addressbooks"
 msgstr[0] "Książka adresowa"
-msgstr[1] "Książki adresowe"
-msgstr[2] "Książek adresowych"
+msgstr[1] "książki adresowe"
+msgstr[2] "książki adresowe"
 
 #: js/Addressbook.js:149 js/ContactGrid.js:155
 msgid "export as pdf"
@@ -215,8 +215,8 @@ msgstr "Podczas próby usunięcia kontaktu wystąpił błąd"
 msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] "Kontakt"
-msgstr[1] "Kontakty"
-msgstr[2] "Kontaktów"
+msgstr[1] "kontakty"
+msgstr[2] "kontaktów"
 
 #: js/Addressbook.js:467
 msgid "Contacts"
@@ -236,8 +236,8 @@ msgstr "Imię"
 msgid "Last Name"
 msgstr "Nazwisko"
 
-#: js/ContactGrid.js:58 js/ContactGrid.js:87 js/EditDialog.js:128
-#: js/EditDialog.js:197 Setup/setup.xml:600
+#: js/ContactGrid.js:58 js/ContactGrid.js:87 js/ContactGridDetailsPanel.js:136
+#: js/EditDialog.js:128 js/EditDialog.js:197 Setup/setup.xml:600
 msgid "Company"
 msgstr "Firma"
 
@@ -424,6 +424,14 @@ msgstr "Wybierz kontakt"
 msgid "E-Mail"
 msgstr "E-mail"
 
+#: js/ContactGridDetailsPanel.js:160
+msgid "Private"
+msgstr "Prywatny"
+
+#: js/ContactGridDetailsPanel.js:183
+msgid "Info"
+msgstr "Informacja"
+
 #: js/EditDialog.js:30
 msgid "Suffix"
 msgstr "Dopełnienie nazwiska (Sufix)"
@@ -497,31 +505,30 @@ msgstr "Jesteś pewien?"
 
 msgid "Do you really want to delete the selected contact?"
 msgid_plural "Do you really want to delete the selected contacts?"
-msgstr[0] "Rzeczywiście chcesz wymazać wybrany kontakt?"
-msgstr[1] "Rzeczywiście chcesz wymazać wybrane kontakty?"
-msgstr[2] "Rzeczywiście chcesz wymazać wybranych kontaktów?"
+msgstr[0] "Czy na pewno chcesz usunąć zaznaczony kontakt?"
+msgstr[1] "Czy na pewno chcesz usunąć zaznaczone kontakty?"
+msgstr[2] "Czy na pewno chcesz usunąć zaznaczone kontakty?"
 
 msgid "add contact"
 msgstr "Dodaj kontakt"
 
 msgid "edit contact"
-msgstr "Edycja kontaktu"
+msgstr "Edytuj kontakt"
 
 msgid "delete contact"
 msgid_plural "delete contacts"
-msgstr[0] "Wymaż kontakt"
-msgstr[1] "Wymaż kontakty"
-msgstr[2] "Wymaż kontaków"
+msgstr[0] "Usuń kontakt"
+msgstr[1] "Usuń kontakty"
+msgstr[2] "Usuń kontakty"
 
 msgid "Displaying contacts {0} - {1} of {2}"
-msgstr "Prezentacja kontaków {0} - {1} z {2}"
+msgstr "Wyświetlanie kontaków {0} - {1} z {2}"
 
 msgid "No contacts to display"
-msgstr "Nie znaleziono kontaktów"
+msgstr "Brak kontaktów"
 
 msgid "Tags"
-msgstr "Tagi"
+msgstr "Znaczniki"
 
-#, fuzzy
 msgid "Some error occured while trying to delete the conctact."
-msgstr "Wystąpiły pewne błędy z powodu próby wmazania kontaktu."
+msgstr "Podczas próby usunięcia kontaktu wystąpił błąd."

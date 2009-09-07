@@ -788,7 +788,7 @@ msgstr "1 Tag davor"
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Errors"
 msgstr "Fehler"
 
@@ -845,7 +845,7 @@ msgstr "Einstellungen bearbeiten"
 msgid "Loading ..."
 msgstr "Lade ..."
 
-#: js/widgets/dialog/PreferencesDialog.js:278
+#: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
 msgstr "Speichern der Einstellungen fehlgeschlagen."
 

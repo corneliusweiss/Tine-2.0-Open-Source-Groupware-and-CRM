@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Admin\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-19 22:00+0100\n"
+"PO-Revision-Date: 2009-09-05 14:56+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr "edytuj aplikacje"
 
 #: Acl/Rights.php:183
 msgid "enable and disable applications, edit application settings"
-msgstr "włącz i wyłącz aplikacje, edytuj ustawienia aplikacji"
+msgstr "włącz lub wyłącz aplikacje, edytuj ustawienia aplikacji"
 
 # The word "roles" could not be clearly understood. The word "funkcjami" is a better choice.
 # Das Wort "roles" koennte missverstanden werden. Das Wort "funkcje" passt besser.
@@ -119,8 +119,8 @@ msgstr "wyświetl listę komputerów i szczegóły"
 msgid "User"
 msgid_plural "Users"
 msgstr[0] "Użytkownik"
-msgstr[1] "Użytkowników"
-msgstr[2] "Użytkowników"
+msgstr[1] "użytkowników"
+msgstr[2] "użytkowników"
 
 #: js/Admin.js:33
 msgid "Groups"
@@ -172,7 +172,7 @@ msgstr "zaznacz wszystko"
 #: js/Admin.js:404 js/Applications.js:149 js/Groups.js:131 js/Roles.js:131
 #: js/Tags.js:118 js/Users.js:222
 msgid "enter searchfilter"
-msgstr "wprowadź szukaną frazę"
+msgstr "wpisz szukaną frazę"
 
 #: js/Admin.js:434
 msgid "Display from:"
@@ -250,11 +250,11 @@ msgstr "Wynik"
 
 #: js/Applications.js:142
 msgid "enable application"
-msgstr "włącz aplikację"
+msgstr "Włącz aplikację"
 
 #: js/Applications.js:143
 msgid "disable application"
-msgstr "wyłącz aplikację"
+msgstr "Wyłącz aplikację"
 
 #: js/Applications.js:144
 msgid "settings"
@@ -262,11 +262,11 @@ msgstr "ustawienia"
 
 #: js/Applications.js:195 js/UserEditDialog.js:91
 msgid "disabled"
-msgstr "wyłączone"
+msgstr "wyłączona"
 
 #: js/Applications.js:198 js/UserEditDialog.js:91
 msgid "enabled"
-msgstr "włączone"
+msgstr "włączona"
 
 #: js/Applications.js:202
 msgid "unknown status ({0})"
@@ -313,15 +313,15 @@ msgstr "Podczas próby usunięcia grupy wystąpił błąd."
 
 #: js/Groups.js:102
 msgid "add group"
-msgstr "dodaj grupę"
+msgstr "Dodaj grupę"
 
 #: js/Groups.js:110
 msgid "edit group"
-msgstr "edytuj grupę"
+msgstr "Edytuj grupę"
 
 #: js/Groups.js:118
 msgid "delete group"
-msgstr "usuń grupę"
+msgstr "Usuń grupę"
 
 #: js/Groups.js:189
 msgid "Displaying groups {0} - {1} of {2}"
@@ -375,11 +375,11 @@ msgstr "Nazwę grupy"
 
 #: js/Groups.js:619 js/Users.js:390
 msgid "add account"
-msgstr "dodaj konto"
+msgstr "Dodaj konto"
 
 #: js/Groups.js:626
 msgid "remove account"
-msgstr "usuń konto"
+msgstr "Usuń konto"
 
 #: js/Groups.js:644
 msgid "Add new group"
@@ -405,15 +405,15 @@ msgstr "Podczas próby usunięcia funkcji wystąpił błąd."
 
 #: js/Roles.js:102
 msgid "add role"
-msgstr "dodaj funkcję"
+msgstr "Dodaj funkcję"
 
 #: js/Roles.js:110
 msgid "edit role"
-msgstr "edytuj funkcję"
+msgstr "Edytuj funkcję"
 
 #: js/Roles.js:118
 msgid "delete role"
-msgstr "usuń funkcję"
+msgstr "Usuń funkcję"
 
 # The word "Role" could not be clearly understood. The word "Funkcji" is a better choice.
 # Das Wort "Role" koennte missverstanden werden. Das Wort "Funkcji" passt besser.
@@ -467,14 +467,14 @@ msgstr "Edytuj funkcję \"{0}\""
 
 #: js/SambaMachineEditDialog.js:38 js/SambaMachineGrid.js:65
 msgid "Computer Name"
-msgstr "Nazwę komputera"
+msgstr "Nazwa komputera"
 
 #: js/SambaMachineModel.js:40
 msgid "Computer"
 msgid_plural "Computers"
 msgstr[0] "Komputer"
-msgstr[1] "Komputery"
-msgstr[2] "Komputerów"
+msgstr[1] "komputery"
+msgstr[2] "komputerów"
 
 #: js/Tags.js:56
 msgid "Do you really want to delete the selected tags?"
@@ -486,15 +486,15 @@ msgstr "Usuwanie znacznika / znaczników…"
 
 #: js/Tags.js:88
 msgid "add tag"
-msgstr "dodaj znacznik"
+msgstr "Dodaj znacznik"
 
 #: js/Tags.js:96
 msgid "edit tag"
-msgstr "edytuj znacznik"
+msgstr "Edytuj znacznik"
 
 #: js/Tags.js:104
 msgid "delete tag"
-msgstr "usuń znacznik"
+msgstr "Usuń znacznik"
 
 #: js/Tags.js:173
 msgid "Displaying tags {0} - {1} of {2}"
@@ -530,7 +530,7 @@ msgstr "Podgląd"
 
 #: js/Tags.js:475
 msgid "Use"
-msgstr "Użyj"
+msgstr "Zastosuj"
 
 #: js/Tags.js:542
 msgid "Tag Name"
@@ -550,7 +550,7 @@ msgstr "Dodaj nowy znacznik"
 
 #: js/Tags.js:620
 msgid "Edit Tag \"{0}\""
-msgstr "Edycja znacznika \"{0}\""
+msgstr "Edytuj znacznik \"{0}\""
 
 #: js/UserEditDialog.js:62
 msgid "Account"
@@ -574,7 +574,7 @@ msgstr "nigdy"
 
 #: js/UserEditDialog.js:111 js/Users.js:298
 msgid "Last login at"
-msgstr "Ostatnie logowanie o"
+msgstr "Czas ostatniego logowania"
 
 #: js/UserEditDialog.js:113 js/UserEditDialog.js:128
 msgid "don't know"
@@ -730,33 +730,33 @@ msgstr "Hasło zostało zmienione"
 
 #: js/Users.js:398
 msgid "edit account"
-msgstr "edytuj konto"
+msgstr "Edytuj konto"
 
 #: js/Users.js:406
 msgid "delete account"
-msgstr "usuń konto"
+msgstr "Usuń konto"
 
 #: js/Users.js:414
 msgid "enable account"
-msgstr "włącz konto"
+msgstr "Włącz konto"
 
 #: js/Users.js:423
 msgid "disable account"
-msgstr "wyłącz konto"
+msgstr "Wyłącz konto"
 
 #: js/Users.js:432
 msgid "reset password"
-msgstr "zresetuj hasło"
+msgstr "Zresetuj hasło"
 
 #: js/Users.js:509
 msgid "Samba User"
 msgid_plural "Samba Users"
 msgstr[0] "Użytkownik Samby"
-msgstr[1] "Użytkowników Samby"
-msgstr[2] "Użytkowników Samby"
+msgstr[1] "użytkowników Samby"
+msgstr[2] "użytkowników Samby"
 
 msgid "Deleting tag..."
-msgstr "Wymazywanie tagu …"
+msgstr "Usuwanie znacznika..."
 
 msgid "name"
 msgstr "nazwa"
@@ -765,21 +765,40 @@ msgid "status"
 msgstr "status"
 
 msgid "Deleting account..."
-msgstr "Wymazywanie konta …"
+msgstr "Usuwanie konta …"
 
-#, fuzzy
 msgid "Some error occurred while trying to delete the account."
-msgstr "Wystąpiły pewne błędy z powodu próby wymazania konta."
+msgstr "Podczas próby usunięcia konta wystąpił błąd."
 
 msgid "Saving User Account"
 msgstr "Zapisywanie konta użytkownika"
 
 msgid "Could not save user account."
-msgstr "Konto użytkownika nie może zostać zapisane."
+msgstr "Zapisanie konta użytkownika było niemożliwe."
 
 msgid "Add New User Account"
-msgstr "Utwórz nowe konto użytkownika"
+msgstr "Utwórz nowego użytkownika"
 
-#, fuzzy
 msgid "Edit User Account \"{0}\""
-msgstr "Edycja konta użytkownika \"{0}\""
+msgstr "Edytuj konto użytkownika \"{0}\""
+
+#~ msgid "Email UID"
+#~ msgstr "E-mail UID"
+
+#~ msgid "Email GID"
+#~ msgstr "E-mail GID"
+
+#~ msgid "Forward"
+#~ msgstr "Prześlij dalej"
+
+#~ msgid "Aliases"
+#~ msgstr "Aliasy"
+
+#~ msgid "Quota"
+#~ msgstr "Kwota"
+
+#~ msgid "Email User"
+#~ msgid_plural "Email Users"
+#~ msgstr[0] "E-mail użytkownika"
+#~ msgstr[1] "E-maile użytkowników"
+#~ msgstr[2] "E-maile użytkowników"
