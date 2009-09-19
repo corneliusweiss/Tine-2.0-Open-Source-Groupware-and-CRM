@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Admin\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:56+0100\n"
+"PO-Revision-Date: 2009-09-12 22:24+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -782,23 +782,44 @@ msgstr "Utwórz nowego użytkownika"
 msgid "Edit User Account \"{0}\""
 msgstr "Edytuj konto użytkownika \"{0}\""
 
-#~ msgid "Email UID"
-#~ msgstr "E-mail UID"
+msgid "Email UID"
+msgstr "E-mail UID"
 
-#~ msgid "Email GID"
-#~ msgstr "E-mail GID"
+msgid "Email GID"
+msgstr "E-mail GID"
 
-#~ msgid "Forward"
-#~ msgstr "Prześlij dalej"
+msgid "Forward"
+msgstr "Prześlij dalej"
 
-#~ msgid "Aliases"
-#~ msgstr "Aliasy"
+msgid "Aliases"
+msgstr "Aliasy"
 
-#~ msgid "Quota"
-#~ msgstr "Kwota"
+msgid "Quota"
+msgstr "Kwota"
 
-#~ msgid "Email User"
-#~ msgid_plural "Email Users"
-#~ msgstr[0] "E-mail użytkownika"
-#~ msgstr[1] "E-maile użytkowników"
-#~ msgstr[2] "E-maile użytkowników"
+msgid "Email User"
+msgid_plural "Email Users"
+msgstr[0] "E-mail użytkownika"
+msgstr[1] "E-maile użytkowników"
+msgstr[2] "E-maile użytkowników"
+
+#~ msgid "IMAP"
+#~ msgstr "IMAP"
+
+#~ msgid "Email Username"
+#~ msgstr "E-mail Użytkownik"
+
+#~ msgid "Current Mail Size"
+#~ msgstr "Rozmiar wiadomości"
+
+#~ msgid "Last Login"
+#~ msgstr "Ostatnie logowanie o"
+
+#~ msgid "SMTP"
+#~ msgstr "SMTP"
+
+#~ msgid "Forwards"
+#~ msgstr "Przesłane dalej"
+
+#~ msgid "Forward Only"
+#~ msgstr "Tylko prześlij dalej"

@@ -446,23 +446,23 @@ msgstr "Domyślne konto e-mail"
 msgid "The default email account to use when sending mails."
 msgstr "Domyślne konto e-mail dla wysyłanych wiadomości"
 
-#~ msgid "manage email accounts"
-#~ msgstr "edytuj konta e-mail"
+msgid "manage email accounts"
+msgstr "edytuj konta e-mail"
 
-#~ msgid "Create and edit email accounts"
-#~ msgstr "Utwórz i edytuj konta e-mail"
+msgid "Create and edit email accounts"
+msgstr "Utwórz i edytuj konta e-mail"
 
-#~ msgid "Display Format"
-#~ msgstr "Format edycji"
+msgid "Display Format"
+msgstr "Format edycji"
 
-#~ msgid "HTML"
-#~ msgstr "HTML"
+msgid "HTML"
+msgstr "HTML"
 
-#~ msgid "Plain Text"
-#~ msgstr "Czysty tekst"
+msgid "Plain Text"
+msgstr "Czysty tekst"
 
-#~ msgid "Mark read/unread"
-#~ msgstr "Oznacz jako (nie)przeczytane"
+msgid "Mark read/unread"
+msgstr "Oznacz jako (nie)przeczytane"
 
-#~ msgid "Save contact note"
-#~ msgstr "Zapisz"
+msgid "Save contact note"
+msgstr "Zapisz"

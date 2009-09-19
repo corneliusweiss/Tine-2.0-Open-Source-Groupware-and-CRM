@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tinebase\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 18:00+0100\n"
+"PO-Revision-Date: 2009-09-13 11:44+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -85,7 +85,7 @@ msgstr "Zakończenie awaryjne"
 
 #: Frontend/Http.php:316 js/ExceptionDialog.js:71
 msgid "An error occurred, the program ended abnormal."
-msgstr "Wystąpił błąd, praca programu została zakończona awaryjnie."
+msgstr "Wystąpił błąd. Praca programu została zakończona awaryjnie."
 
 #: js/common.js:100
 msgid "{0} minute"
@@ -143,8 +143,8 @@ msgid ""
 "Please help improving this software and notify the vendor. Include a brief "
 "description of what you where doing when the error occurred."
 msgstr ""
-"Prosimy o pomoc w ulepszaniu niniejszego oprogramowania. Prosimy o "
-"załączenie krótkiego opisu czynności wykonywanych zanim wystąpił błąd."
+"Prosimy o pomoc w ulepszaniu niniejszego oprogramowania i załączenie "
+"krótkiego opisu czynności wykonywanych zanim wystąpił błąd."
 
 #: js/ExceptionDialog.js:79 js/widgets/tags/TagsPanel.js:561
 msgid "Description"
@@ -508,7 +508,7 @@ msgstr "Odznacz wszystko"
 
 #: js/ux/grid/PagingToolbar.js:49
 msgid "Select all visible ({0} records)"
-msgstr "Zaznacz wszystkie, widoczne ({0} wierszy)"
+msgstr "Zaznacz wszystkie widoczne ({0} wierszy)"
 
 #: js/ux/grid/PagingToolbar.js:50
 msgid "Select all pages ({0} records)"
@@ -1373,23 +1373,42 @@ msgstr "zmieniony"
 msgid "record changed"
 msgstr "wiersz zmieniony"
 
-#~ msgid "Debug Console (Ctrl + F11)"
-#~ msgstr "Konsola debuggera (Ctrl + F11)"
+msgid "Debug Console (Ctrl + F11)"
+msgstr "Konsola debuggera (Ctrl + F11)"
 
-#~ msgid "Group"
-#~ msgid_plural "Groups"
-#~ msgstr[0] "Grupa"
-#~ msgstr[1] "grupy"
-#~ msgstr[2] "grup"
+msgid "Group"
+msgid_plural "Groups"
+msgstr[0] "Grupa"
+msgstr[1] "grupy"
+msgstr[2] "grup"
 
-#~ msgid "Groups"
-#~ msgstr "Grupy"
+msgid "Groups"
+msgstr "Grupy"
 
-#~ msgid "Permission Denied"
-#~ msgstr "Brak uprawnień"
+msgid "Permission Denied"
+msgstr "Brak uprawnień"
 
-#~ msgid "You don't have the required grant to select this {0}"
-#~ msgstr "Nie masz wymaganych uprawnień, aby usunąć {0}"
+msgid "You don't have the required grant to select this {0}"
+msgstr "Nie masz wymaganych uprawnień, aby usunąć {0}"
 
-#~ msgid "General"
-#~ msgstr "Uwagi ogólne"
+msgid "General"
+msgstr "Uwagi ogólne"
+
+#~ msgid "Credentials"
+#~ msgid_plural "Credentials"
+#~ msgstr[0] "Dane uwierzytelniające"
+#~ msgstr[1] "dane uwierzytelniające"
+#~ msgstr[2] "dane uwierzytelniające"
+
+#~ msgid "Invalid configuration"
+#~ msgstr "Nieprawidłowa konfiguracja"
+
+#~ msgid ""
+#~ "You need to correct the red marked fields before config could be saved"
+#~ msgstr "Przed zapisaniem konfiguracji należy poprawić wskazane pola"
+
+#~ msgid "Transfering Configuration..."
+#~ msgstr "Przesyłanie konfiguracji..."
+
+#~ msgid "Save config"
+#~ msgstr "Zapisz konfigurację"

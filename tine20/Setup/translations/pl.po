@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Setup\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 18:19+0100\n"
+"PO-Revision-Date: 2009-09-13 13:54+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -128,15 +128,15 @@ msgstr "Logi"
 
 #: js/ConfigManagerGridPanel.js:180
 msgid "Filename"
-msgstr "Plik"
+msgstr "Zapisuj do pliku"
 
 #: js/ConfigManagerGridPanel.js:192
 msgid "Priority"
-msgstr "Priorytet"
+msgstr "Tryb zapisu"
 
 #: js/ConfigManagerGridPanel.js:196
 msgid "Caching"
-msgstr "Zapisywanie do pamięci podręcznej"
+msgstr "Włącz pamięć podręczną"
 
 #: js/ConfigManagerGridPanel.js:202
 msgid "Path"
@@ -207,86 +207,146 @@ msgstr[0] "Aplikacje"
 msgstr[1] "aplikacje"
 msgstr[2] "aplikacji"
 
-#~ msgid "Dependency Violation"
-#~ msgstr "Niespełnione zależności"
+msgid "Dependency Violation"
+msgstr "Niespełnione zależności"
 
-#~ msgid "Backend"
-#~ msgstr "W tle"
+msgid "Backend"
+msgstr "W tle"
 
-#~ msgid "Authentication provider"
+msgid "Authentication provider"
+msgstr "Uwierzytelnienie"
+
+msgid "Initial admin login name"
+msgstr "Początkowy login administratora"
+
+msgid "Initial admin Password"
+msgstr "Początkowe hasło administratora"
+
+msgid "Password confirmation"
+msgstr "Potwierdzenie hasła"
+
+msgid "Host"
+msgstr "Komputer"
+
+msgid "Login name"
+msgstr "Login"
+
+msgid "Bind requires DN"
+msgstr "Bind wymaga nazwy domeny"
+
+msgid "Base DN"
+msgstr "Podstawowa domena"
+
+msgid "Account canonical form"
+msgstr "Konto standardowe"
+
+msgid "Accounts storage"
+msgstr "Konta"
+
+msgid "Default user group name"
+msgstr "Domyślna nazwa grupy użytkownika"
+
+msgid "Default admin group name"
+msgstr "Domyślna nazwa grupy administratora"
+
+msgid "Allow user to change her password?"
+msgstr "Czy zezwolić użytkownikowi na zmianę hasła?"
+
+msgid "User DN"
+msgstr "Domena użytkownika"
+
+msgid "Groups DN"
+msgstr "Domena grupy"
+
+msgid "Password encoding"
+msgstr "Metoda kodowania hasła"
+
+msgid "Use Rfc 2307 bis"
+msgstr "Stosuj RFC 2307 aż do"
+
+msgid "Min User Id"
+msgstr "Min. id użytkownika"
+
+msgid "Max User Id"
+msgstr "Maks. id użytkownika"
+
+msgid "Min Group Id"
+msgstr "Min. id grupy"
+
+msgid "Max Group Id"
+msgstr "Maks. id grupy"
+
+msgid "Group UUID Attribute name"
+msgstr "Unikalny atrybut grupy"
+
+msgid "User UUID Attribute name"
+msgstr "Unikalny atrybut użytkownika"
+
+msgid "Apply changes"
+msgstr "Akceptuj zmiany"
+
+msgid "Passwords don't match"
+msgstr "Hasła nie są takie same"
+
+msgid "Authentication/Accounts"
+msgstr "Uwierzytelnienie / Konta"
+
+#~ msgid "Go to Tine 2.0 login"
+#~ msgstr "Przejdź do strony logowania"
+
+#~ msgid "Save config and install"
+#~ msgstr "Zapisz konfigurację i zainstaluj"
+
+#~ msgid "Standard IMAP"
+#~ msgstr "IMAP"
+
+#~ msgid "Standard SMTP"
+#~ msgstr "SMTP"
+
+#~ msgid "Imap"
+#~ msgstr "IMAP"
+
+#~ msgid "Port"
+#~ msgstr "Port"
+
+#~ msgid "Secure Connection"
+#~ msgstr "Bezpieczne połączenie"
+
+#~ msgid "None"
+#~ msgstr "Brak"
+
+#~ msgid "TLS"
+#~ msgstr "TLS"
+
+#~ msgid "SSL"
+#~ msgstr "SSL"
+
+#~ msgid "Domain"
+#~ msgstr "Domena"
+
+#~ msgid "No"
+#~ msgstr "Nie"
+
+#~ msgid "Yes"
+#~ msgstr "Tak"
+
+#~ msgid "Use as default account"
+#~ msgstr "Ustaw jako konto domyślne"
+
+#~ msgid "Default account name"
+#~ msgstr "Nazwa domyślnego konta"
+
+#~ msgid "Smtp"
+#~ msgstr "SMTP"
+
+#~ msgid "Authentication"
 #~ msgstr "Uwierzytelnienie"
 
-#~ msgid "Initial admin login name"
-#~ msgstr "Początkowy login administratora"
-
-#~ msgid "Initial admin Password"
-#~ msgstr "Początkowe hasło administratora"
-
-#~ msgid "Password confirmation"
-#~ msgstr "Potwierdzenie hasła"
-
-#~ msgid "Host"
-#~ msgstr "Komputer"
-
-#~ msgid "Login name"
+#~ msgid "Login"
 #~ msgstr "Login"
 
-#~ msgid "Bind requires DN"
-#~ msgstr "Bind wymaga nazwy domeny"
+#~ msgid "Plain"
+#~ msgstr "Czysty tekst"
 
-#~ msgid "Base DN"
-#~ msgstr "Podstawowa domena"
-
-#~ msgid "Account canonical form"
-#~ msgstr "Konto standardowe"
-
-#~ msgid "Accounts storage"
-#~ msgstr "Konta"
-
-#~ msgid "Default user group name"
-#~ msgstr "Domyślna nazwa grupy użytkownika"
-
-#~ msgid "Default admin group name"
-#~ msgstr "Domyślna nazwa grupy administratora"
-
-#~ msgid "Allow user to change her password?"
-#~ msgstr "Czy zezwolić użytkownikowi na zmianę hasła?"
-
-#~ msgid "User DN"
-#~ msgstr "Domena użytkownika"
-
-#~ msgid "Groups DN"
-#~ msgstr "Domena grupy"
-
-#~ msgid "Password encoding"
-#~ msgstr "Metoda kodowania hasła"
-
-#~ msgid "Use Rfc 2307 bis"
-#~ msgstr "Stosuj RFC 2307 aż do"
-
-#~ msgid "Min User Id"
-#~ msgstr "Min. id użytkownika"
-
-#~ msgid "Max User Id"
-#~ msgstr "Maks. id użytkownika"
-
-#~ msgid "Min Group Id"
-#~ msgstr "Min. id grupy"
-
-#~ msgid "Max Group Id"
-#~ msgstr "Maks. id grupy"
-
-#~ msgid "Group UUID Attribute name"
-#~ msgstr "Unikalny atrybut grupy"
-
-#~ msgid "User UUID Attribute name"
-#~ msgstr "Unikalny atrybut użytkownika"
-
-#~ msgid "Apply changes"
-#~ msgstr "Akceptuj zmiany"
-
-#~ msgid "Passwords don't match"
-#~ msgstr "Hasła nie są takie same"
-
-#~ msgid "Authentication/Accounts"
-#~ msgstr "Uwierzytelnienie / Konta"
+#~ msgid "Email"
+#~ msgstr "E-mail"

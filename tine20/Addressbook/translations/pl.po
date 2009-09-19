@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:06+0100\n"
+"PO-Revision-Date: 2009-09-12 21:44+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -290,7 +290,7 @@ msgstr "Jednostka"
 
 #: js/ContactGrid.js:94 js/EditDialog.js:352 js/EditDialog.js:395
 msgid "Region"
-msgstr "Region"
+msgstr "Województwo"
 
 #: js/ContactGrid.js:95
 msgid "Postalcode"
@@ -310,7 +310,7 @@ msgstr "Miasto (adres prywatny)"
 
 #: js/ContactGrid.js:99
 msgid "Region (private)"
-msgstr "Region (adres prywatny)"
+msgstr "Województwo (adres prywatny)"
 
 #: js/ContactGrid.js:100
 msgid "Postalcode (private)"
@@ -501,7 +501,7 @@ msgid "Ms"
 msgstr "Pani"
 
 msgid "Are you Sure?"
-msgstr "Jesteś pewien?"
+msgstr "Czy na pewno?"
 
 msgid "Do you really want to delete the selected contact?"
 msgid_plural "Do you really want to delete the selected contacts?"
@@ -532,3 +532,10 @@ msgstr "Znaczniki"
 
 msgid "Some error occured while trying to delete the conctact."
 msgstr "Podczas próby usunięcia kontaktu wystąpił błąd."
+
+#, fuzzy
+#~ msgid "Call contact"
+#~ msgstr "Wywołaj kontakt"
+
+#~ msgid "Compose email"
+#~ msgstr "Nowa wiadomość"
