@@ -127,7 +127,8 @@ class Setup_Core extends Tinebase_Core
                 $ext = new Setup_ExtCheck(dirname(__FILE__) . '/essentials.xml');
                 if ($mysqlRequired = $ext->getExtensionData('MySQL')) {
                     $dbConfig = Tinebase_Core::getConfig()->database;
-                    $link = @mysql_connect($dbConfig->host, $dbConfig->username, $dbConfig->password);
+                    $hostnameWithPort = (isset($dbConfig->port)) ? $dbConfig->host . ':' . $dbConfig->port : $dbConfig->host;
+                    $link = @mysql_connect($hostnameWithPort, $dbConfig->username, $dbConfig->password);
                     if ($link) {
                         $serverVersion = @mysql_get_server_info();
                         if (version_compare($mysqlRequired['VERSION'], $serverVersion, '<')) {
@@ -143,7 +144,7 @@ class Setup_Core extends Tinebase_Core
                     self::set(Setup_Core::CHECKDB, TRUE);
                 }
             } catch (Zend_Db_Adapter_Exception $zae) {
-                Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $zae->getMessage());
+                Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' ' . $zae->getMessage());
             }
         }
     }
