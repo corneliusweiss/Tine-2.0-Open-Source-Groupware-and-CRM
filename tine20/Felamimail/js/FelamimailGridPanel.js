@@ -483,6 +483,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         
         var recordData = this.recordClass.getDefaultData();
         var recordId = 0;
+        var selModel = this.grid.getSelectionModel();
         
         // set selected account as from
         recordData.from = this.app.getMainScreen().getTreePanel().getActiveAccount().data.id;
@@ -492,13 +493,16 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
             ||  button.actionType == 'forward'
         ) {
             // reply / forward
-            var selectedRows = this.grid.getSelectionModel().getSelections();
+            var selectedRows = selModel.getSelections();
+            if (selectedRows.length == 0) {
+                return;
+            }
             var selectedRecord = selectedRows[0];
             
             if (! selectedRecord.data.headers['content-type']) {
                 // record is not / not fully loaded -> defer
                 // TODO check if details panel is loading?
-                this.detailsPanel.onDetailsUpdate(this.grid.getSelectionModel());
+                this.detailsPanel.onDetailsUpdate(selModel);
                 this.onEditInNewWindow.defer(500, this, [button, event]);
                 return;
             }
@@ -554,7 +558,10 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         } else if (button.actionType == 'edit') {
             
             // show existing email
-            var selectedRows = this.grid.getSelectionModel().getSelections();
+            var selectedRows = selModel.getSelections();
+            if (selectedRows.length == 0) {
+                return;
+            }
             var selectedRecord = selectedRows[0];
             recordId = selectedRecord.id;
             recordData.id = recordId;
@@ -576,9 +583,18 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
                 scope: this,
                 'update': function(record) {
                     this.store.load({});
+                    // TODO it would be better to select the record after the store has been reloaded but somehow this doesn't work
+                    //if (selectedRecord) {
+                    //    this.grid.getSelectionModel().selectRecords.defer(200, this, [[selectedRecord]]);
+                    //}
                 }
             }
         });
+        
+        // workaround for the problem that the actions are not disabled even when the store has been reloaded 
+        //  and no record is selected
+        // @see TODO above
+        selModel.clearSelections();
     },
     
     /**
@@ -591,6 +607,11 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     onToggleFlag: function(button, event) {
         
         var messages = this.grid.getSelectionModel().getSelections();
+        
+        if (messages.length == 0) {
+            return;
+        }
+        
         var regexp = new RegExp('[ \,]*\\\\' + button.flag);
         var flagRegexp = new RegExp(button.flag);
         
