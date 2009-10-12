@@ -21,7 +21,7 @@ msgstr "Gemeinsame Aufgabenlisten verwalten"
 msgid "Create new shared tasks lists"
 msgstr "Neue gemeinse Aufgabenliste anlegen"
 
-#: Controller/Task.php:150
+#: Controller/Task.php:154
 msgid "Notification for Task "
 msgstr ""
 

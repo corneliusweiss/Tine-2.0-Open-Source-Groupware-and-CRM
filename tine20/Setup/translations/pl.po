@@ -291,62 +291,62 @@ msgstr "Hasła nie są takie same"
 msgid "Authentication/Accounts"
 msgstr "Uwierzytelnienie / Konta"
 
-#~ msgid "Go to Tine 2.0 login"
-#~ msgstr "Przejdź do strony logowania"
+msgid "Go to Tine 2.0 login"
+msgstr "Przejdź do strony logowania"
 
-#~ msgid "Save config and install"
-#~ msgstr "Zapisz konfigurację i zainstaluj"
+msgid "Save config and install"
+msgstr "Zapisz konfigurację i zainstaluj"
 
-#~ msgid "Standard IMAP"
-#~ msgstr "IMAP"
+msgid "Standard IMAP"
+msgstr "IMAP"
 
-#~ msgid "Standard SMTP"
-#~ msgstr "SMTP"
+msgid "Standard SMTP"
+msgstr "SMTP"
 
-#~ msgid "Imap"
-#~ msgstr "IMAP"
+msgid "Imap"
+msgstr "IMAP"
 
-#~ msgid "Port"
-#~ msgstr "Port"
+msgid "Port"
+msgstr "Port"
 
-#~ msgid "Secure Connection"
-#~ msgstr "Bezpieczne połączenie"
+msgid "Secure Connection"
+msgstr "Bezpieczne połączenie"
 
-#~ msgid "None"
-#~ msgstr "Brak"
+msgid "None"
+msgstr "Brak"
 
-#~ msgid "TLS"
-#~ msgstr "TLS"
+msgid "TLS"
+msgstr "TLS"
 
-#~ msgid "SSL"
-#~ msgstr "SSL"
+msgid "SSL"
+msgstr "SSL"
 
-#~ msgid "Domain"
-#~ msgstr "Domena"
+msgid "Domain"
+msgstr "Domena"
 
-#~ msgid "No"
-#~ msgstr "Nie"
+msgid "No"
+msgstr "Nie"
 
-#~ msgid "Yes"
-#~ msgstr "Tak"
+msgid "Yes"
+msgstr "Tak"
 
-#~ msgid "Use as default account"
-#~ msgstr "Ustaw jako konto domyślne"
+msgid "Use as default account"
+msgstr "Ustaw jako konto domyślne"
 
-#~ msgid "Default account name"
-#~ msgstr "Nazwa domyślnego konta"
+msgid "Default account name"
+msgstr "Nazwa domyślnego konta"
 
-#~ msgid "Smtp"
-#~ msgstr "SMTP"
+msgid "Smtp"
+msgstr "SMTP"
 
-#~ msgid "Authentication"
-#~ msgstr "Uwierzytelnienie"
+msgid "Authentication"
+msgstr "Uwierzytelnienie"
 
-#~ msgid "Login"
-#~ msgstr "Login"
+msgid "Login"
+msgstr "Login"
 
-#~ msgid "Plain"
-#~ msgstr "Czysty tekst"
+msgid "Plain"
+msgstr "Czysty tekst"
 
-#~ msgid "Email"
-#~ msgstr "E-mail"
+msgid "Email"
+msgstr "E-mail"

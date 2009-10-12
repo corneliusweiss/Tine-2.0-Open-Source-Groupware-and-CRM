@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-12 21:44+0100\n"
+"PO-Revision-Date: 2009-09-20 16:25+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -157,7 +157,7 @@ msgstr[2] "książki adresowe"
 
 #: js/Addressbook.js:149 js/ContactGrid.js:155
 msgid "export as pdf"
-msgstr "eksportuj jako PDF"
+msgstr "eksportuj jako pdf"
 
 # > Großes el fehlt
 # Nicht mehr :)
@@ -214,7 +214,7 @@ msgstr "Podczas próby usunięcia kontaktu wystąpił błąd"
 #: js/Addressbook.js:467
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] "Kontakt"
+msgstr[0] "kontakt"
 msgstr[1] "kontakty"
 msgstr[2] "kontaktów"
 
@@ -249,7 +249,7 @@ msgstr "Telefon"
 
 #: js/ContactGrid.js:61 js/ContactGrid.js:90 js/EditDialog.js:35
 msgid "Job Role"
-msgstr "Stanowisko"
+msgstr "Pełniona funkcja"
 
 #: js/ContactGrid.js:64 js/ContactGrid.js:67 js/ContactGrid.js:92
 #: js/EditDialog.js:344 js/EditDialog.js:387
@@ -273,7 +273,7 @@ msgstr "Miasto"
 
 #: js/ContactGrid.js:82
 msgid "Type"
-msgstr "Typ"
+msgstr "Ikona"
 
 #: js/ContactGrid.js:85
 msgid "Full Name"
@@ -522,7 +522,7 @@ msgstr[1] "Usuń kontakty"
 msgstr[2] "Usuń kontakty"
 
 msgid "Displaying contacts {0} - {1} of {2}"
-msgstr "Wyświetlanie kontaków {0} - {1} z {2}"
+msgstr "Wyświetlane kontaków {0} - {1} z {2}"
 
 msgid "No contacts to display"
 msgstr "Brak kontaktów"
@@ -533,9 +533,23 @@ msgstr "Znaczniki"
 msgid "Some error occured while trying to delete the conctact."
 msgstr "Podczas próby usunięcia kontaktu wystąpił błąd."
 
-#, fuzzy
-#~ msgid "Call contact"
-#~ msgstr "Wywołaj kontakt"
+msgid "Call contact"
+msgstr "Wywołaj kontakt"
 
-#~ msgid "Compose email"
-#~ msgstr "Nowa wiadomość"
+msgid "Compose email"
+msgstr "Nowa wiadomość"
+
+#~ msgid "Either {0} or {1} must be given"
+#~ msgstr "Należy wprowadzić {0} albo {1}"
+
+#~ msgid "Either "
+#~ msgstr "lub"
+
+#~ msgid "Start date is not valid"
+#~ msgstr "Data rozpoczęcia jest nieważna"
+
+#~ msgid "Default Addressbook"
+#~ msgstr "Domyślna książka adresowa"
+
+#~ msgid "The defualt addressbook for new contacts"
+#~ msgstr "Domyślna książka adresowa dla nowych kontaktów"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Crm\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:14+0100\n"
+"PO-Revision-Date: 2009-09-20 16:30+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr "Kraj"
 
 #: Controller/Lead.php:236 js/Crm.js:1042
 msgid "Type"
-msgstr "Typ"
+msgstr "Ikona"
 
 #: Controller/Lead.php:237
 msgid "Source"
@@ -191,11 +191,11 @@ msgstr "Zapytanie wstępne"
 
 #: js/Crm.js:296 js/Crm.js:342
 msgid "Lead name"
-msgstr "Zapytanie wstępne"
+msgstr "Nazwa zapytania"
 
 #: js/Crm.js:314
 msgid "Displaying leads {0} - {1} of {2}"
-msgstr "Wyświetlanie zapytania {0} - {1} z {2}"
+msgstr "Wyświetlane zapytania {0} - {1} z {2}"
 
 #: js/Crm.js:315 js/Crm.js:379
 msgid "No leads found."
@@ -244,7 +244,7 @@ msgstr "Usuń zaznaczone zapytania"
 
 #: js/Crm.js:485 js/Crm.js:1737 js/Crm.js:1738
 msgid "Export as PDF"
-msgstr "Exportuj jako PDF"
+msgstr "Eksportuj jako PDF"
 
 #: js/Crm.js:486
 msgid "Export selected lead as PDF"
@@ -264,7 +264,7 @@ msgstr "Status zapytania"
 
 #: js/Crm.js:616
 msgid "Lead sources"
-msgstr "Źródła zapytania"
+msgstr "Źródła zapytań"
 
 #: js/Crm.js:617
 msgid "Lead types"
@@ -426,7 +426,7 @@ msgstr "Usuń wybrane produkty"
 
 #: js/Crm.js:1766 js/Crm.js:1767
 msgid "Leads"
-msgstr "Wstępne zapytania"
+msgstr "Zapytania wstępne"
 
 #: js/Crm.js:1812
 msgid "Loading Lead..."

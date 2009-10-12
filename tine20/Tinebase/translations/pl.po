@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tinebase\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-13 11:44+0100\n"
+"PO-Revision-Date: 2009-09-20 16:12+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -549,7 +549,7 @@ msgstr "brak"
 
 #: js/widgets/AccountpickerPanel.js:150
 msgid "please select an account"
-msgstr "proszę zaznaczyć konto"
+msgstr "Proszę zaznaczyć konto"
 
 #: js/widgets/ActivitiesPanel.js:138
 msgid "Add a Note..."
@@ -587,7 +587,7 @@ msgstr "Dodaj notatkę ({0})"
 
 #: js/widgets/ActivitiesPanel.js:391 js/widgets/ActivitiesPanel.js:526
 msgid "Type"
-msgstr "Typ"
+msgstr "Ikona"
 
 #: js/widgets/ActivitiesPanel.js:394
 msgid "Created By"
@@ -635,7 +635,7 @@ msgstr[2] "Usuń {0}"
 
 #: js/widgets/app/GridPanel.js:296
 msgid "Displaying records {0} - {1} of {2}"
-msgstr "Wyświetlanie wierszy {0} - {1} z {2}"
+msgstr "Wyświetlane wiersze {0} - {1} z {2}"
 
 #: js/widgets/app/GridPanel.js:297
 msgid "No {0} to display"
@@ -684,7 +684,7 @@ msgstr "Usunięcie {0} było niemożliwe."
 
 #: js/widgets/app/MainScreen.js:105
 msgid "Saved filter"
-msgstr "Zapisane filtry"
+msgstr "filtry"
 
 #: js/widgets/container/ContainerSelect.js:119
 #: js/widgets/container/ContainerSelect.js:216
@@ -707,7 +707,7 @@ msgstr "wspólnych"
 
 #: js/widgets/container/ContainerSelect.js:360
 msgid "please select a {0}"
-msgstr "proszę wybrać {0}"
+msgstr "Proszę wybrać {0}"
 
 #: js/widgets/container/ContainerTree.js:134
 msgid "All {0}"
@@ -890,7 +890,7 @@ msgstr "jest w"
 
 #: js/widgets/grid/FilterModel.js:135
 msgid "is before"
-msgstr "poprzedza"
+msgstr "przed"
 
 #: js/widgets/grid/FilterModel.js:136
 msgid "is after"
@@ -1028,8 +1028,8 @@ msgstr ""
 "Musisz wprowadzić krótszą nazwę! Nazwy zapisanych filtrów nie mogą "
 "przekraczać 40 znaków."
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "Proszę czekać"
 
@@ -1061,17 +1061,13 @@ msgstr "usuń wiersz"
 msgid "Please Select a Group"
 msgstr "Proszę zaznaczyć grupę"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "Język"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "ustawianie nowego języka..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "ładowanie nowego języka..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1335,7 +1331,7 @@ msgstr ""
 
 #: Setup/setup.xml:2344
 msgid "note"
-msgstr " zwykła"
+msgstr "zwykła"
 
 #: Setup/setup.xml:2349
 msgid "default note type"
@@ -1373,6 +1369,9 @@ msgstr "zmieniony"
 msgid "record changed"
 msgstr "wiersz zmieniony"
 
+msgid "loading new language..."
+msgstr "ładowanie nowego języka..."
+
 msgid "Debug Console (Ctrl + F11)"
 msgstr "Konsola debuggera (Ctrl + F11)"
 
@@ -1394,21 +1393,32 @@ msgstr "Nie masz wymaganych uprawnień, aby usunąć {0}"
 msgid "General"
 msgstr "Uwagi ogólne"
 
-#~ msgid "Credentials"
-#~ msgid_plural "Credentials"
-#~ msgstr[0] "Dane uwierzytelniające"
-#~ msgstr[1] "dane uwierzytelniające"
-#~ msgstr[2] "dane uwierzytelniające"
+msgid "Credentials"
+msgid_plural "Credentials"
+msgstr[0] "Dane uwierzytelniające"
+msgstr[1] "dane uwierzytelniające"
+msgstr[2] "dane uwierzytelniające"
 
-#~ msgid "Invalid configuration"
-#~ msgstr "Nieprawidłowa konfiguracja"
+msgid "Invalid configuration"
+msgstr "Nieprawidłowa konfiguracja"
 
-#~ msgid ""
-#~ "You need to correct the red marked fields before config could be saved"
-#~ msgstr "Przed zapisaniem konfiguracji należy poprawić wskazane pola"
+msgid "You need to correct the red marked fields before config could be saved"
+msgstr "Przed zapisaniem konfiguracji należy poprawić wskazane pola"
 
-#~ msgid "Transfering Configuration..."
-#~ msgstr "Przesyłanie konfiguracji..."
+msgid "Transfering Configuration..."
+msgstr "Przesyłanie konfiguracji..."
 
-#~ msgid "Save config"
-#~ msgstr "Zapisz konfigurację"
+msgid "Save config"
+msgstr "Zapisz konfigurację"
+
+#~ msgid "Tagging"
+#~ msgstr "Przypisywanie znaczników"
+
+#~ msgid "Add Tag"
+#~ msgstr "Dodaj znacznik"
+
+#~ msgid "Attach the following tag to all selected items:"
+#~ msgstr "Przypisz następujący znacznik do wszystkich zaznaczonych pozycji"
+
+#~ msgid "Select Tag"
+#~ msgstr "Wybierz znacznik"

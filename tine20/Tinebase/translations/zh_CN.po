@@ -1007,8 +1007,8 @@ msgid ""
 "40 characters long."
 msgstr ""
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "请等待"
 
@@ -1040,17 +1040,13 @@ msgstr "删除记录"
 msgid "Please Select a Group"
 msgstr "请选择一个组"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "语言"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "设置新语言..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "正加载新语言..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1339,3 +1335,6 @@ msgstr "已修改"
 #: Setup/setup.xml:2473
 msgid "record changed"
 msgstr "记录已修改"
+
+#~ msgid "loading new language..."
+#~ msgstr "正加载新语言..."

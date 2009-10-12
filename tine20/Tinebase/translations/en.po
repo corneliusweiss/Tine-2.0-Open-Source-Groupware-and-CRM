@@ -1010,8 +1010,8 @@ msgstr ""
 "You have to supply a shorter name! Names of saved filters can only be up to "
 "40 characters long."
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "Please Wait"
 
@@ -1043,17 +1043,13 @@ msgstr "remove record"
 msgid "Please Select a Group"
 msgstr "Please Select a Group"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "Language"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "setting new language..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "loading new language..."
 
 #: js/widgets/Priority.js:23
 msgid "low"

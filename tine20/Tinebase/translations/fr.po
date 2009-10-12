@@ -1011,8 +1011,8 @@ msgstr ""
 "Veuillez saisir un nom plus court! Les noms des filtres sauvegardés ne "
 "peuvent dépasser 40 caractères."
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "Veuillez patienter"
 
@@ -1044,17 +1044,13 @@ msgstr "supprimer l'enregistrement "
 msgid "Please Select a Group"
 msgstr "Veuillez sélectionner un groupe"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "Langue"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "Application du choix de la langue..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "Chargement de la langue..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1349,6 +1345,9 @@ msgstr "mis à jour"
 #: Setup/setup.xml:2473
 msgid "record changed"
 msgstr "enregistrement mis à jour"
+
+#~ msgid "loading new language..."
+#~ msgstr "Chargement de la langue..."
 
 #~ msgid "Timezone: {0}"
 #~ msgstr "Fuseau horaire: {0}"

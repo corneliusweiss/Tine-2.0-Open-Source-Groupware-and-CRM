@@ -1021,8 +1021,8 @@ msgstr ""
 "Musíte zadat kratší název! Názvy uložených filtrů smí být nejvýše 40 znaků "
 "dlouhé."
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "Čekejte prosím"
 
@@ -1054,17 +1054,13 @@ msgstr "odstranit záznam"
 msgid "Please Select a Group"
 msgstr "Vyberte prosím skupinu"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "Jazyk"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "nastavuji nový jazyk..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "nahrávám nový jazyk..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1363,6 +1359,9 @@ msgstr "změněno"
 #: Setup/setup.xml:2473
 msgid "record changed"
 msgstr "záznam byl změněn"
+
+#~ msgid "loading new language..."
+#~ msgstr "nahrávám nový jazyk..."
 
 #, fuzzy
 #~ msgid "Preference description"

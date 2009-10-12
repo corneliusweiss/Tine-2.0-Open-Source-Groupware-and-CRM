@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:23+0100\n"
+"PO-Revision-Date: 2009-09-20 16:07+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Edytuj wspólną listę zadań"
 msgid "Create new shared tasks lists"
 msgstr "Utwórz nową, wspólną listę zadań"
 
-#: Controller/Task.php:150
+#: Controller/Task.php:154
 msgid "Notification for Task "
 msgstr "Powiadomienie o zadaniu"
 
@@ -110,7 +110,7 @@ msgstr "W OPRACOWANIU"
 #: js/Tasks.js:84
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] "Zadanie"
+msgstr[0] "zadanie"
 msgstr[1] "zadania"
 msgstr[2] "zadań"
 
@@ -181,7 +181,7 @@ msgid "Search:"
 msgstr "Znajdź:"
 
 msgid "Displaying tasks {0} - {1} of {2}"
-msgstr "Wyświetlanie zadań {0} - {1} z {2}"
+msgstr "Wyświetlane zadania {0} - {1} z {2}"
 
 msgid "No tasks to display"
 msgstr "Brak zadań"

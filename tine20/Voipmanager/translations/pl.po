@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Voipmanager\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:44+0100\n"
+"PO-Revision-Date: 2009-10-03 17:06+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr "Uwagi ogólne"
 
 #: js/Asterisk/SipPeerEditDialog.js:68
 msgid "Type"
-msgstr "Typ"
+msgstr "Ikona"
 
 #: js/Asterisk/SipPeerEditDialog.js:77
 msgid "friend"
@@ -103,7 +103,6 @@ msgid "peer"
 msgstr "komputer"
 
 #: js/Asterisk/SipPeerEditDialog.js:83
-#, fuzzy
 msgid "Secret"
 msgstr "Poufne"
 
@@ -216,7 +215,6 @@ msgid "call group"
 msgstr "grupa rozmówców"
 
 #: js/Asterisk/SipPeerGridPanel.js:100
-#, fuzzy
 msgid "caller id"
 msgstr "ID rozmówcy"
 
@@ -315,7 +313,6 @@ msgid "rtp hold timeout"
 msgstr "rtp hold timeout"
 
 #: js/Asterisk/SipPeerGridPanel.js:257
-#, fuzzy
 msgid "secret"
 msgstr "poufne"
 
@@ -403,7 +400,6 @@ msgstr "Dodatkowo"
 
 #: js/Asterisk/VoicemailEditDialog.js:122
 #: js/Asterisk/VoicemailGridPanel.js:109
-#, fuzzy
 msgid "tz"
 msgstr "strefa czasowa"
 

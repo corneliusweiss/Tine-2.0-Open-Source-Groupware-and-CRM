@@ -1021,8 +1021,8 @@ msgstr ""
 "Sie müssen einen kürzeren Namen eingeben! Der Name eines gespeicherten "
 "Filters darf maximal 40 Zeichen lang sein."
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "Bitte Warten"
 
@@ -1054,17 +1054,13 @@ msgstr "Eintrag löschen"
 msgid "Please Select a Group"
 msgstr "Bitte wählen sie eine Gruppe aus"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "Sprache"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "neue Sprache wird eingestellt..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "neue Sprache wird geladen..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1359,6 +1355,9 @@ msgstr "geändert"
 #: Setup/setup.xml:2473
 msgid "record changed"
 msgstr "Eintrag geändert"
+
+#~ msgid "loading new language..."
+#~ msgstr "neue Sprache wird geladen..."
 
 #~ msgid ""
 #~ "Sorry, your requested could not be completed because the required data "

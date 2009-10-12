@@ -1005,8 +1005,8 @@ msgid ""
 "40 characters long."
 msgstr ""
 
-#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:72
-#: js/widgets/LangChooser.js:94 js/widgets/TimezoneChooser.js:74
+#: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
+#: js/widgets/TimezoneChooser.js:74
 msgid "Please Wait"
 msgstr "お待ちください"
 
@@ -1038,17 +1038,13 @@ msgstr "レコードの削除"
 msgid "Please Select a Group"
 msgstr "グループを選択してください。"
 
-#: js/widgets/LangChooser.js:40 Preference.php:92
+#: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
 msgstr "言語"
 
-#: js/widgets/LangChooser.js:72
+#: js/widgets/LangChooser.js:64
 msgid "setting new language..."
 msgstr "新しい言語を設定しています..."
-
-#: js/widgets/LangChooser.js:94
-msgid "loading new language..."
-msgstr "新しい言語を読み込んでいます..."
 
 #: js/widgets/Priority.js:23
 msgid "low"
@@ -1336,3 +1332,6 @@ msgstr "変更されました"
 #: Setup/setup.xml:2473
 msgid "record changed"
 msgstr "レコードが変更されました"
+
+#~ msgid "loading new language..."
+#~ msgstr "新しい言語を読み込んでいます..."
