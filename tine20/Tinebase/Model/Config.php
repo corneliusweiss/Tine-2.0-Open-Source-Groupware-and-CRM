@@ -79,7 +79,7 @@ class Tinebase_Model_Config extends Tinebase_Record_Abstract
      * 
      * @var string
      */
-    const LOGOUTREDIRECTURL = 'logoutRedirectUrl';
+    const REDIRECTURL = 'redirectUrl';
     
     /**
      * identifier
