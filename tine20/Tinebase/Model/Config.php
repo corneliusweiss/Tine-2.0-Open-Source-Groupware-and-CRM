@@ -75,6 +75,13 @@ class Tinebase_Model_Config extends Tinebase_Record_Abstract
     const PAGETITLEPOSTFIX = 'pagetitlepostfix';
     
     /**
+     * logout redirect url
+     * 
+     * @var string
+     */
+    const LOGOUTREDIRECTURL = 'logoutRedirectUrl';
+    
+    /**
      * identifier
      * 
      * @var string
