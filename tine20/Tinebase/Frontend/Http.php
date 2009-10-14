@@ -264,6 +264,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
         } else {
             $view->userRegistration = 0;
         }        
+        $view->openIdBaseUrl = Zend_OpenId::selfUrl();
         
         echo $view->render('mainscreen.php');
     }
@@ -284,7 +285,59 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
         exit();        
     }
     
-	/**
+    /**
+     * login from HTTP post 
+     * 
+     * renders the tine main screen if authentication is successfull
+     * otherwise redirects back to login url 
+     */
+    public function loginFromPost($username, $password)
+    {
+        if (!empty($username)) {
+            // strip of everything after @ from username
+            list($username) = explode('@', $username);
+            
+            // try to login user
+            $success = (Tinebase_Controller::getInstance()->login($username, $password, $_SERVER['REMOTE_ADDR']) === TRUE); 
+        } else {
+            $success = FALSE;
+        }
+        
+        if ($success === TRUE) {
+            if (Tinebase_Core::isRegistered(Tinebase_Core::USERCREDENTIALCACHE)) {
+                $cacheId = Tinebase_Core::get(Tinebase_Core::USERCREDENTIALCACHE)->getCacheId();
+                setcookie('usercredentialcache', base64_encode(Zend_Json::encode($cacheId)));
+            } else {
+                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' Something went wrong with the CredentialCache / no CC registered.');
+                $success = FALSE;
+                // reset credentials cache
+                setcookie('usercredentialcache', '', time() - 3600);
+            }
+        
+        }
+
+        // authentication failed
+        // redirect back to loginurl
+        if ($success !== TRUE) {
+            $tinebase = Tinebase_Application::getInstance()->getApplicationByName('Tinebase');
+            
+            $redirectUrl = Tinebase_Config::getInstance()->getConfig('loginUrl', $tinebase, $_SERVER["HTTP_REFERER"]);
+
+            header('Location: ' . $redirectUrl['value']);
+            
+            return;
+        }
+
+        $view = new Zend_View();
+        $view->setScriptPath('Tinebase/views');
+        
+        $view->registryData = array();
+
+        header('Content-Type: text/html; charset=utf-8');
+        echo $view->render('mainscreen.php');
+    }
+    
+    /**
 	 * renders the tine main screen 
 	 */
     public function mainScreen()
@@ -295,6 +348,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
         $view->setScriptPath('Tinebase/views');
         
         $view->registryData = array();
+        $view->openIdBaseUrl = Zend_OpenId::selfUrl();
 
         header('Content-Type: text/html; charset=utf-8');
         echo $view->render('mainscreen.php');
