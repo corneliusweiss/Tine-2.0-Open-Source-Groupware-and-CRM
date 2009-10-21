@@ -195,7 +195,7 @@ class Setup_Controller
             unset($_applications[$_applications->getIndexById($tinebase->getId())]);
         
             list($major, $minor) = explode('.', $this->getSetupXml('Tinebase')->version[0]);
-            Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Updating Tinebase to version ' . $major . '.' . $minor);
+            Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Updating Tinebase to version ' . $major . '.' . $minor);
             
             for ($majorVersion = $tinebase->getMajorVersion(); $majorVersion <= $major; $majorVersion++) {
                 $messages += $this->updateApplication($tinebase, $majorVersion);
@@ -276,7 +276,7 @@ class Setup_Controller
                 $message = "Executing updates for " . $_application->name . " (starting at " . $_application->version . ")";
                 
                 $messages[] = $message;
-                Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $message);
+                Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' ' . $message);
 
                 list($fromMajorVersion, $fromMinorVersion) = explode('.', $_application->version);
         
@@ -297,7 +297,7 @@ class Setup_Controller
                             $db = Setup_Core::getDb();
                             $transactionId = Tinebase_TransactionManager::getInstance()->startTransaction($db);
                         
-                            Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ 
+                            Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ 
                                 . ' Updating ' . $_application->name . ' - ' . $functionName
                             );
                             
@@ -307,8 +307,8 @@ class Setup_Controller
                 
                         } catch (Exception $e) {
                             Tinebase_TransactionManager::getInstance()->rollBack();
-                            Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $e->getMessage());
-                            Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $e->getTraceAsString());
+                            Setup_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . $e->getMessage());
+                            Setup_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . $e->getTraceAsString());
                             throw $e;
                         }
                             
@@ -321,7 +321,7 @@ class Setup_Controller
                 // update app version 
                 $updatedApp = Tinebase_Application::getInstance()->getApplicationById($_application->getId());
                 $_application->version = $updatedApp->version;
-                Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Updated ' . $_application->name . " successfully to " .  $_application->version);
+                Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Updated ' . $_application->name . " successfully to " .  $_application->version);
                 
                 break; 
                 
@@ -553,6 +553,10 @@ class Setup_Controller
      */
     public function saveConfigData($_data, $_merge = TRUE)
     {
+        
+        if (!empty($_data['setupuser']['password']) && !Setup_Auth::isMd5($_data['setupuser']['password'])) {
+          $_data['setupuser']['password'] = md5($_data['setupuser']['password']);
+        }
         if (Setup_Core::configFileExists() && !Setup_Core::configFileWritable()) {
             throw new Setup_Exception('Config File is not writeable.');
         }
@@ -585,8 +589,9 @@ class Setup_Controller
     public function loadAuthenticationData()
     {
         return array(
-                'authentication' => $this->_getAuthProviderData(),
-                'accounts'       => $this->_getAccountsStorageData()
+                'authentication'    => $this->_getAuthProviderData(),
+                'accounts'          => $this->_getAccountsStorageData(),
+                'redirectSettings'  => $this->_getRedirectSettings()
             );
     }
     
@@ -619,15 +624,98 @@ class Setup_Controller
      */
     protected function _updateAuthentication($_authenticationData)
     {
-        $authenticationProviderData = $_authenticationData['authentication'];
-        Tinebase_Auth::setBackendType($authenticationProviderData['backend']);
-        Tinebase_Auth::setBackendConfiguration($authenticationProviderData[$authenticationProviderData['backend']]);
-        Tinebase_Auth::saveBackendConfiguration();
+        if (isset($_authenticationData['authentication'])) {
+            $this->_updateAuthenticationProvider($_authenticationData['authentication']);
+        }
         
-        $accountsStorageData = $_authenticationData['accounts'];       
-        Tinebase_User::setBackendType($accountsStorageData['backend']);
-        Tinebase_User::setBackendConfiguration($accountsStorageData[$accountsStorageData['backend']]);
+        if (isset($_authenticationData['accounts'])) {
+            $this->_updateAccountsStorage($_authenticationData['accounts']);
+        }
+        
+        if (isset($_authenticationData['redirectSettings'])) {
+          $this->_updateRedirectSettings($_authenticationData['redirectSettings']);
+        }        
+    }
+    
+    /**
+     * Update authentication provider
+     * 
+     * @param array $_data
+     * @return void
+     */
+    protected function _updateAuthenticationProvider($_data)
+    {
+        Tinebase_Auth::setBackendType($_data['backend']);
+        
+        $excludeKeys = array('adminLoginName', 'adminPassword', 'adminPasswordConfirmation');
+        foreach ($excludeKeys as $key) {
+          if (array_key_exists($key, $_data[$_data['backend']])) {
+              unset($_data[$_data['backend']][$key]);
+          }
+        }
+        
+        Tinebase_Auth::setBackendConfiguration($_data[$_data['backend']]);
+        Tinebase_Auth::saveBackendConfiguration();
+    }
+    
+    /**
+     * Update accountsStorage
+     * 
+     * @param array $_data
+     * @return void
+     */
+    protected function _updateAccountsStorage($_data)
+    {
+        $originalBackend = Tinebase_User::getConfiguredBackend();
+        $newBackend = $_data['backend'];
+        Tinebase_User::setBackendType($_data['backend']);
+        Tinebase_User::setBackendConfiguration($_data[$_data['backend']]);
         Tinebase_User::saveBackendConfiguration();
+       
+        if ($originalBackend != $newBackend && $this->isInstalled('Addressbook')) {
+            if ($originalBackend == Tinebase_User::SQL) {
+                Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Deleteing all user accounts, groups, roles and rights');
+                //delete all users, groups and roles because they will be imported from new accounts storage backend
+                Tinebase_User::factory(Tinebase_User::SQL)->deleteAllUsers();
+                Tinebase_Group::factory(Tinebase_Group::SQL)->deleteAllGroups();
+                
+                $roles = Tinebase_Acl_Roles::getInstance();
+                $roles->deleteAllRoles();
+                
+                Tinebase_Group::getInstance()->importGroups();
+                $roles->createInitialRoles();
+                $applications = Tinebase_Application::getInstance()->getApplications(NULL, 'id');
+                foreach ($applications as $application)
+                {
+                     Setup_Initialize::initializeApplicationRights($application);
+                }
+                
+                Tinebase_User::getInstance()->importUsers(); //import users(ldap)/create initial users(sql)
+                Tinebase_Group::getInstance()->importGroupMembers(); //import groups members(ldap)
+                
+            }
+        }
+    }
+    
+    /**
+     * Update redirect settings
+     * 
+     * @param array $_data
+     * @return void
+     */
+    protected function _updateRedirectSettings($_data)
+    {
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_data, 1));
+        $keys = array(Tinebase_Model_Config::REDIRECTURL, Tinebase_Model_Config::REDIRECTTOREFERRER);
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $_data)) {
+                if (strlen($_data[$key]) === 0) {
+                    Tinebase_Config::getInstance()->deleteConfigForApplication($key);
+                } else {
+                    Tinebase_Config::getInstance()->setConfigForApplication($key, $_data[$key]);
+                }
+            }
+        }
     }
     
     /**
@@ -652,6 +740,25 @@ class Setup_Controller
         $result['backend'] = Tinebase_User::getConfiguredBackend();
 
         return $result;
+    }
+    
+    /**
+     * Get redirect Settings from config table.
+     * If Tinebase is not installed, default values will be returned.
+     * 
+     * @return array
+     */
+    protected function _getRedirectSettings()
+    {
+      $return = array(
+              Tinebase_Model_Config::REDIRECTURL => '',
+              Tinebase_Model_Config::REDIRECTTOREFERRER => '0'
+        );       
+      if ($this->isInstalled('Tinebase')) {
+          $return[Tinebase_Model_Config::REDIRECTURL] = Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value;
+          $return[Tinebase_Model_Config::REDIRECTTOREFERRER] = Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTTOREFERRER, NULL, '')->value;      
+      }
+      return $return;
     }
 
     
@@ -685,6 +792,19 @@ class Setup_Controller
 
         Tinebase_Config::getInstance()->setConfigForApplication(Tinebase_Model_Config::IMAP, Zend_Json::encode($_data['imap']));
         Tinebase_Config::getInstance()->setConfigForApplication(Tinebase_Model_Config::SMTP, Zend_Json::encode($_data['smtp']));
+    }
+    
+    /**
+     * save config option in db using {@see Tinebase_Config::setConfigForApplication}
+     * 
+     * @param String $_key
+     * @param String || array $_value
+     * @return void
+     */
+    public function setConfigOption($_key, $_value)
+    {
+        $value = is_string($_value) ? $_value : Zend_Json::encode($_value);
+        Tinebase_Config::getInstance()->setConfigForApplication($_key, $value);
     }
     
     /**
@@ -831,7 +951,7 @@ class Setup_Controller
             'version'   => (string)$_xml->version
         ));
         
-        Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' installing application: ' . $_xml->name);
+        Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' installing application: ' . $_xml->name);
         
         $application = Tinebase_Application::getInstance()->addApplication($application);
         
@@ -882,7 +1002,7 @@ class Setup_Controller
                         );
                         $definitionBackend->create($definition);
                     } catch (Tinebase_Exception_Record_Validation $erv) {
-                        Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' not installing import/export definion: ' . $erv->getMessage());
+                        Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' not installing import/export definion: ' . $erv->getMessage());
                     }
                 }
             }
@@ -910,7 +1030,7 @@ class Setup_Controller
             }
 
             foreach ($applicationTables as $key => $table) {
-                Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . "Remove table: $table");
+                Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . "Remove table: $table");
                 
                 try {
                     $this->_backend->dropTable($table);
@@ -921,7 +1041,7 @@ class Setup_Controller
                 } catch(Zend_Db_Statement_Exception $e) {
                     // we need to catch exceptions here, as we don't want to break here, as a table
                     // might still have some foreign keys
-                    Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . "could not drop table $table - " . $e->getMessage());
+                    Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . "could not drop table $table - " . $e->getMessage());
                 }
                 
             }
@@ -944,7 +1064,7 @@ class Setup_Controller
                     
             Tinebase_Application::getInstance()->deleteApplication($_application);
         }
-        Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . "Removed app: " . $_application->name);
+        Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . "Removed app: " . $_application->name);
     }
 
     /**
