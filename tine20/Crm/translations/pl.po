@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Crm\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-20 16:30+0100\n"
+"PO-Revision-Date: 2009-10-16 05:28+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -186,8 +186,9 @@ msgid "Show closed leads"
 msgstr "Pokaż zrealizowane zapytania"
 
 #: js/Crm.js:295
+#, fuzzy
 msgid "Lead"
-msgstr "Zapytanie wstępne"
+msgstr "zapytanie wstępne"
 
 #: js/Crm.js:296 js/Crm.js:342
 msgid "Lead name"
@@ -333,8 +334,9 @@ msgid "No Tasks to display"
 msgstr "Brak zadań"
 
 #: js/Crm.js:1276
+#, fuzzy
 msgid "Product"
-msgstr "Produkt"
+msgstr "produkt"
 
 #: js/Crm.js:1285
 msgid "Add a product..."
@@ -555,3 +557,45 @@ msgstr "Dodaj wspólnika"
 
 msgid "Add new partner contact"
 msgstr "Dodaj nowy kontakt jako wspólnika"
+
+#~ msgid "Data"
+#~ msgstr "Dane dot. zapytania"
+
+#~ msgid "Contact"
+#~ msgstr "Kontakt"
+
+#~ msgid "Tags"
+#~ msgstr "Znaczniki"
+
+#~ msgid "Export Lead"
+#~ msgstr "Eksportuj zapytanie"
+
+#~ msgid "Export as CSV"
+#~ msgstr "Eksportuj jako CSV"
+
+#~ msgid "Export as ODS"
+#~ msgstr "Eksportuj jako ODS"
+
+#~ msgid "Show closed"
+#~ msgstr "Pokaż zrealizowane zapytania"
+
+#~ msgid "Add new {0}"
+#~ msgstr "Dodaj nowe {0}"
+
+#~ msgid "Unlink {0}"
+#~ msgstr "Odłącz {0}"
+
+#~ msgid "Unlink selected {0}"
+#~ msgstr "Usuń zaznaczone {0}"
+
+#~ msgid "Edit {0}"
+#~ msgstr "Edytuj \"{0}\""
+
+#~ msgid "Edit selected {0}"
+#~ msgstr "Edytuj zaznaczone {0}"
+
+#~ msgid "record list"
+#~ msgid_plural "record lists"
+#~ msgstr[0] "lista wierszy"
+#~ msgstr[1] "listy wierszy"
+#~ msgstr[2] "listy wierszy"

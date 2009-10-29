@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-20 16:25+0100\n"
+"PO-Revision-Date: 2009-10-16 05:19+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -43,8 +43,6 @@ msgstr "Organizacja / Jednostka"
 msgid "Business Address"
 msgstr "Adres frimowy"
 
-# Prüfen
-# Ist schon richtig ;)
 #: Export/Pdf.php:53 js/ContactGrid.js:102
 msgid "Email"
 msgstr "E-mail"
@@ -539,17 +537,20 @@ msgstr "Wywołaj kontakt"
 msgid "Compose email"
 msgstr "Nowa wiadomość"
 
-#~ msgid "Either {0} or {1} must be given"
-#~ msgstr "Należy wprowadzić {0} albo {1}"
+msgid "Either {0} or {1} must be given"
+msgstr "Należy wprowadzić {0} albo {1}"
 
-#~ msgid "Either "
-#~ msgstr "lub"
+msgid "Either "
+msgstr "lub"
 
-#~ msgid "Start date is not valid"
-#~ msgstr "Data rozpoczęcia jest nieważna"
+msgid "Start date is not valid"
+msgstr "Data rozpoczęcia jest nieważna"
 
-#~ msgid "Default Addressbook"
-#~ msgstr "Domyślna książka adresowa"
+msgid "Default Addressbook"
+msgstr "Domyślna książka adresowa"
 
-#~ msgid "The defualt addressbook for new contacts"
-#~ msgstr "Domyślna książka adresowa dla nowych kontaktów"
+msgid "The defualt addressbook for new contacts"
+msgstr "Domyślna książka adresowa dla nowych kontaktów"
+
+#~ msgid "Export Contact"
+#~ msgstr "Eksportuj kontakt"

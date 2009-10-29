@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Felamimail\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:18+0100\n"
+"PO-Revision-Date: 2009-10-16 05:31+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -466,3 +466,9 @@ msgstr "Oznacz jako (nie)przeczytane"
 
 msgid "Save contact note"
 msgstr "Zapisz"
+
+#~ msgid "Date"
+#~ msgstr "Data"
+
+#~ msgid "Remove"
+#~ msgstr "Usuń"

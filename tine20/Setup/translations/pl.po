@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Setup\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-13 13:54+0100\n"
+"PO-Revision-Date: 2009-10-16 05:37+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -350,3 +350,36 @@ msgstr "Czysty tekst"
 
 msgid "Email"
 msgstr "E-mail"
+
+#~ msgid "Go to {0} login"
+#~ msgstr "Przejdź do logowania {0}"
+
+#~ msgid "User can change password"
+#~ msgstr "Użytkownik może zmienić hasło"
+
+#~ msgid "Temporary files"
+#~ msgstr "Pliki tymczasowe"
+
+#~ msgid "Temporary Files Path"
+#~ msgstr "Ścieżka do plików tymczasowych"
+
+#~ msgid "Session files"
+#~ msgstr "Pliki sesji"
+
+#~ msgid "Session Files Path"
+#~ msgstr "Ścieżka do plików sesji"
+
+#~ msgid "MySql Hostname"
+#~ msgstr "Nazwa hosta dla MySQL"
+
+#~ msgid "MySql Database"
+#~ msgstr "Baza danych MySQL"
+
+#~ msgid "MySql User"
+#~ msgstr "Użytkownik MySQL"
+
+#~ msgid "MySql Password"
+#~ msgstr "Hasło dla MySQL"
+
+#~ msgid "MySql Port"
+#~ msgstr "Port MySQL"
