@@ -156,7 +156,7 @@ msgstr "Bericht wird gesendet..."
 
 #: js/ExceptionDialog.js:127
 msgid "Please wait a moment"
-msgstr "Bitte warten sie einen Moment"
+msgstr "Bitte warten Sie einen Moment"
 
 #: js/ExceptionDialog.js:171
 msgid "Transmission Completed"
@@ -180,7 +180,7 @@ msgstr "Registrieren"
 
 #: js/Login.js:61 js/Login.js:98
 msgid "Please enter your login data"
-msgstr "Bitte geben sie ihre Anmeldedaten ein"
+msgstr "Bitte geben Sie ihre Anmeldedaten ein"
 
 #: js/Login.js:79 js/widgets/dialog/CredentialsDialog.js:67
 msgid "Username"
@@ -307,7 +307,7 @@ msgstr "Fehler"
 #: js/MainScreen.js:487
 msgid "The new passwords mismatch, please correct them."
 msgstr ""
-"Die neuen Passwörter stimmen nicht überein. Bitte wiederholen sie die "
+"Die neuen Passwörter stimmen nicht überein. Bitte wiederholen Sie die "
 "Eingabe."
 
 #: js/MainScreen.js:505
@@ -327,7 +327,7 @@ msgstr "Bestätigen"
 
 #: js/MainScreen.js:525
 msgid "Are you sure you want to logout?"
-msgstr "Wollen sie sich wirklich Abmelden?"
+msgstr "Wollen Sie sich wirklich Abmelden?"
 
 #: js/MainScreen.js:527
 msgid "Logging you out..."
@@ -335,7 +335,7 @@ msgstr "Sie werden abgemeldet..."
 
 #: js/tineInit.js:266
 msgid "Connection lost, please check your network!"
-msgstr "Verbindungsabbruch, bitte überprüfen sie ihre Netzwerkeinstellungen!"
+msgstr "Verbindungsabbruch, bitte überprüfen Sie ihre Netzwerkeinstellungen!"
 
 #: js/tineInit.js:274
 msgid ""
@@ -447,7 +447,7 @@ msgstr "Keine Bild-Datei"
 
 #: js/ux/form/ImageField.js:122
 msgid "Plase select an image file (gif/png/jpeg)"
-msgstr "Bitte wählen sie eine gültige Bild-Datei (gif/png/jpeg)"
+msgstr "Bitte wählen Sie eine gültige Bild-Datei (gif/png/jpeg)"
 
 #: js/ux/form/ImageField.js:139
 msgid "Loading"
@@ -460,7 +460,7 @@ msgstr "Fehler beim Hochladen"
 #: js/ux/form/ImageField.js:150
 msgid "Could not upload image. Please notify your Administrator"
 msgstr ""
-"Das Bild konnte nicht Hochgeladen werden. Bitte informieren sie ihren "
+"Das Bild konnte nicht Hochgeladen werden. Bitte informieren Sie ihren "
 "Administrator"
 
 #: js/ux/form/ImageField.js:162
@@ -486,7 +486,7 @@ msgstr "Fehler bei Bildverarbeitung"
 #: js/ux/form/ImageField.js:257
 msgid "Could not load image. Please notify your Administrator"
 msgstr ""
-"Das Bild konnte nicht geladen werden. Bitte informieren sie ihren "
+"Das Bild konnte nicht geladen werden. Bitte informieren Sie ihren "
 "Administrator"
 
 #: js/ux/form/RecordsComboBox.js:27
@@ -654,7 +654,7 @@ msgstr "Es ist ihnen nicht erlaubt alle Seiten auf einmal zu löschen"
 #: js/widgets/app/GridPanel.js:550
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
-msgstr[0] "Möchten sie den ausgewählten Eintrag wirklich löschen?"
+msgstr[0] "Möchten Sie den ausgewählten Eintrag wirklich löschen?"
 msgstr[1] "Möchten Sie die ausgewählten Einträge wirklich löschen?"
 
 #: js/widgets/app/GridPanel.js:555 js/widgets/dialog/EditDialog.js:431
@@ -795,7 +795,7 @@ msgstr "Fehler"
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
 msgid "Please fix the errors noted."
-msgstr "Bitte beheben sie die gekennzeichneten Fehler"
+msgstr "Bitte beheben Sie die gekennzeichneten Fehler"
 
 #: js/widgets/dialog/EditDialog.js:165 js/widgets/EditRecord.js:126
 msgid "Apply"
@@ -903,7 +903,7 @@ msgstr "endet mit"
 
 #: js/widgets/grid/FilterModel.js:177
 msgid "select a operator"
-msgstr "Wählen sie einen Operator"
+msgstr "Wählen Sie einen Operator"
 
 #: js/widgets/grid/FilterModel.js:345
 msgid "today"
@@ -987,7 +987,7 @@ msgstr "Filter speichern"
 
 #: js/widgets/grid/FilterToolbar.js:223
 msgid "select a field"
-msgstr "Wählen sie ein Feld"
+msgstr "Wählen Sie ein Feld"
 
 #: js/widgets/grid/FilterToolbar.js:248
 msgid "Delete this filter"
@@ -1052,7 +1052,7 @@ msgstr "Eintrag löschen"
 
 #: js/widgets/GroupSelect.js:94
 msgid "Please Select a Group"
-msgstr "Bitte wählen sie eine Gruppe aus"
+msgstr "Bitte wählen Sie eine Gruppe aus"
 
 #: js/widgets/LangChooser.js:31 Preference.php:92
 msgid "Language"
@@ -1356,14 +1356,3 @@ msgstr "geändert"
 msgid "record changed"
 msgstr "Eintrag geändert"
 
-#~ msgid "loading new language..."
-#~ msgstr "neue Sprache wird geladen..."
-
-#~ msgid ""
-#~ "Sorry, your requested could not be completed because the required data "
-#~ "could not be found. In most cases this means that someone already deleted "
-#~ "the data. Please refresh your current view."
-#~ msgstr ""
-#~ "Ihre Anfrage konnte aufgrund von fehlenden Daten nicht beantwortet "
-#~ "werden. In den meisten Fällen wurden diese Daten von einem anderen "
-#~ "Benutzer gelöscht. Bitte aktualisieren Sie Ihre momentane Ansicht."
