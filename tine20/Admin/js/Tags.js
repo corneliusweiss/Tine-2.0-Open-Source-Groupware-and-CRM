@@ -6,6 +6,8 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
+ * TODO         split into two files (grid & edit dlg)
+ * TODO         fix autoheight in edit dlg (use border layout?)
  */
  
 Ext.namespace('Tine.Admin.Tags');
@@ -115,7 +117,7 @@ Tine.Admin.Tags.Main = {
         var TagsQuickSearchField = new Ext.ux.SearchField({
             id: 'TagsQuickSearchField',
             width:240,
-            emptyText: this.translation.gettext('enter searchfilter')
+            emptyText: Tine.Tinebase.translation._hidden('enter searchfilter')
         }); 
         TagsQuickSearchField.on('change', function(){
             Ext.getCmp('AdminTagsGrid').getStore().load({
@@ -309,7 +311,6 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      * var tag
      */
     tag: null,
-    
 
     windowNamePrefix: 'AdminTagEditDialog_',
     id : 'tagDialog',
@@ -433,7 +434,6 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             if (app.name == 'Tinebase' /*|| app.status == 'disabled'*/) {
                 continue;
             }
-            //console.log(app);
             
             this.rootNode.appendChild(new Ext.tree.TreeNode({
                 text: app.name,
@@ -449,7 +449,6 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
      */
     getFormContents: function() {
 
-        /******* THE contexts box ********/
         this.rootNode = new Ext.tree.TreeNode({
             text: this.translation.gettext('Allowed Contexts'),
             expanded: true,
@@ -457,18 +456,19 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
             allowDrop:false
         });
         var confinePanel = new Ext.tree.TreePanel({
+            title: this.translation.gettext('Context'),
             id: 'adminSharedTagsConfinePanel',
             rootVisible: true,
             border: false,
             root: this.rootNode
         });
-
-        var rightsPanel = new Tine.widgets.account.ConfigGrid({
-            //height: 300,
-            accountPickerType: 'both',
-            accountListTitle: this.translation.gettext('Account Rights'),
-            configStore: this.rightsStore,
+        
+        this.rightsPanel = new Tine.widgets.account.PickerGridPanel({
+            title: this.translation.gettext('Account Rights'),
+            store: this.rightsStore,
+            recordClass: Tine.Admin.Model.TagRight,
             hasAccountPrefix: true,
+            selectType: 'both',
             configColumns: [
                 new Ext.ux.grid.CheckColumn({
                     header: this.translation.gettext('View'),
@@ -482,8 +482,7 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
                 })
             ]
         });
-        
-        /******* THE edit dialog ********/
+
         var editTagDialog = {
             layout:'hfit',
             border:false,
@@ -523,13 +522,10 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
                     defaults:{autoScroll:true},
                     border: true,
                     plain: true,                    
-                    items: [{
-                        title: this.translation.gettext('Rights'),
-                        items: [rightsPanel]
-                    },{
-                        title: this.translation.gettext('Context'),
-                        items: [confinePanel]
-                    }]
+                    items: [
+                        this.rightsPanel, 
+                        confinePanel
+                    ]
                 }
             ]
         };
@@ -556,14 +552,10 @@ Tine.Admin.Tags.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
         });
         
         this.rightsStore = new Ext.data.JsonStore({
-            storeId: 'adminSharedTagsRights',
-            baseParams: {
-                method: 'Admin.getTagRights',
-                containerId: this.tag.id
-            },
             root: 'results',
             totalProperty: 'totalcount',
-            fields: [ 'account_name', 'account_id', 'account_type', 'view_right', 'use_right' ]
+            id: 'account_id',
+            fields: Tine.Admin.Model.TagRight
         });
         
         this.items = this.getFormContents();

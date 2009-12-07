@@ -78,11 +78,14 @@ Tine.Calendar.Model.Event = Tine.Tinebase.data.Record.create(Tine.Tinebase.Model
         var displayContainer = this.get('container_id');
         var currentAccountId = Tine.Tinebase.registry.get('currentAccount').accountId;
         
-        Ext.each(this.get('attendee'), function(attender) {
-            var user_id = attender.user_id ? attender.user_id.accountId ? attender.user_id.accountId : attender.user_id : null;
-            if (attender.user_type && attender.user_type == 'user' && user_id == currentAccountId) {
-                if (attender.displaycontainer_id) {
-                    displayContainer = attender.displaycontainer_id;
+        var attendeeStore = Tine.Calendar.Model.Attender.getAttendeeStore(this.get('attendee'));
+        
+        attendeeStore.each(function(attender) {
+            var userAccountId = attender.getUserAccountId();
+            if (userAccountId == currentAccountId) {
+                var container = attender.get('displaycontainer_id');
+                if (container) {
+                    displayContainer = container;
                 }
                 return false;
             }
@@ -148,6 +151,7 @@ Tine.Calendar.Model.Event.getDefaultData = function() {
         container_id: app.getMainScreen().getTreePanel().getAddCalendar(),
         transp: 'OPAQUE',
         editGrant: true,
+        organizer: Tine.Tinebase.registry.get('userContact'),
         attendee: [
             Ext.apply(Tine.Calendar.Model.Attender.getDefaultData(), {
                 user_type: 'user',
@@ -260,7 +264,15 @@ if (Tine.Tinebase.widgets) {
 Tine.Calendar.Model.Attender = Tine.Tinebase.data.Record.create([
     {name: 'id'},
     {name: 'cal_event_id'},
-    {name: 'user_id'},
+    {name: 'user_id', sortType:  function(user_id) {
+        if (user_id && user_id.n_fn) {
+            return user_id.n_fn;
+        } else if (user_id && user_id.name) {
+            return user_id.name;
+        } else {
+            return user_id;
+        }
+    }},
     {name: 'user_type'},
     {name: 'role'},
     {name: 'quantity'},
@@ -278,6 +290,21 @@ Tine.Calendar.Model.Attender = Tine.Tinebase.data.Record.create([
     // ngettext('Event', 'Events', n); gettext('Events');
     containerName: 'Event',
     containersName: 'Events',
+    
+    /**
+     * gets name of attender
+     * 
+     * @return {String}
+     *
+    getName: function() {
+        var user_id = this.get('user_id');
+        if (! user_id) {
+            return Tine.Tinebase.appMgr.get('Calendar').i18n._('No Information');
+        }
+        
+        var userData = (typeof user_id.get == 'function') ? user_id.data : user_id;
+    },
+    */
     
     /**
      * returns account_id if attender is/has a user account
@@ -371,9 +398,32 @@ Tine.Calendar.Model.Attender.getDefaultData = function() {
 
 /**
  * @namespace Tine.Calendar.Model
+ * 
+ * creates store of attender objects
+ * 
+ * @param  {Array} attendeeData
+ * @return {Ext.data.Store}
+ * @static
+ */ 
+Tine.Calendar.Model.Attender.getAttendeeStore = function(attendeeData) {
+    var attendeeStore = new Ext.data.SimpleStore({
+        fields: Tine.Calendar.Model.Attender.getFieldDefinitions(),
+        sortInfo: {field: 'user_id', direction: 'ASC'}
+    });
+    
+    Ext.each(attendeeData, function(attender) {
+        var record = new Tine.Calendar.Model.Attender(attender, attender.id);
+        attendeeStore.addSorted(record);
+    });
+    
+    return attendeeStore;
+};
+
+/**
+ * @namespace Tine.Calendar.Model
  * @class Tine.Calendar.Model.Resource
  * @extends Tine.Tinebase.data.Record
- * Resouce Record Definition
+ * Resource Record Definition
  */
 Tine.Calendar.Model.Resource = Tine.Tinebase.data.Record.create(Tine.Tinebase.Model.genericFields.concat([
     {name: 'id'},
@@ -397,7 +447,7 @@ Tine.Calendar.Model.Resource = Tine.Tinebase.data.Record.create(Tine.Tinebase.Mo
 /* lets try it with Ext.Direct
 Tine.Calendar.backend = new Tine.Calendar.Model.EventJsonBackend({
     appName: 'Calendar',
-    modelName: 'Resouce',
-    recordClass: Tine.Calendar.Model.Resouce
+    modelName: 'Resource',
+    recordClass: Tine.Calendar.Model.Resource
 });
 */

@@ -112,19 +112,58 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     }
     
     /**
-     * update folder status
+     * update folder status (unreadcount/totalcount/cache status?)
      *
      * @param string $accountId
      * @param string $folderId
      * @return array
      */
-    public function updateFolderStatus($accountId, $folderId)
+    public function updateFolderStatus($accountId, $folderIds)
     {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . $accountId . '/' . $folderId);
+        $decodedFolderIds = Zend_Json::decode($folderIds);
+
+        // close session to allow other requests
+        Zend_Session::writeClose(true);
         
-        $result = Felamimail_Controller_Folder::getInstance()->updateFolderStatus($accountId, NULL, $folderId);
+        $result = array();
+        if (empty($decodedFolderIds)) {
+            $result = Felamimail_Controller_Folder::getInstance()->updateFolderStatus($accountId)->toArray();
+        } else {
+            foreach ((array)$decodedFolderIds as $folderId) {
+                $result[] = Felamimail_Controller_Folder::getInstance()->updateFolderStatus($accountId, NULL, $folderId)->toArray();
+            }
+        }
         
-        return $result->toArray();
+        return $result;
+    }
+    
+    /**
+     * update folder cache
+     *
+     * @param string $accountId
+     * @param string $folderNames of parent folder(s)
+     * @return array
+     */
+    public function updateFolderCache($accountId, $folderNames)
+    {
+        $decodedFolderNames = Zend_Json::decode($folderNames);
+        
+        // close session to allow other requests
+        Zend_Session::writeClose(true);
+            
+        $result = array();
+        if (empty($decodedFolderNames)) {
+            $result = Felamimail_Controller_Cache::getInstance()->updateFolders('', $accountId);
+        } else {
+            foreach ((array)$decodedFolderNames as $folderName) {
+                $result[$folderName] = Felamimail_Controller_Cache::getInstance()->updateFolders($folderName, $accountId);
+            }
+        }
+        
+        return array(
+            'status'    => 'success',
+            'results'   => $result,
+        );
     }
     
     /***************************** messages funcs *******************************/
@@ -141,54 +180,44 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     {
         $result = $this->_search($filter, $paging, Felamimail_Controller_Message::getInstance(), 'Felamimail_Model_MessageFilter');
         
-        // no paging -> don't do initial cache import
-        if (empty($paging) || $result['totalcount'] == 0) {
-            return $result;
+        return $result;
+    }
+    
+    /**
+     * update cache
+     * - use output buffer mechanism to update incomplete cache
+     *
+     * @param string $folderId id of active folder
+     * @return array
+     * 
+     * @todo    rewrite initial import to allow partial imports / only import 1000? mails at once (and return the progress) / add progress bar in client?
+     * @todo    message caching should be resumable if it ended and wasn't finished 
+     * @todo    add counter to update only X folders at once?
+     */
+    public function updateMessageCache($folderId)
+    {
+        $cacheController = Felamimail_Controller_Cache::getInstance();
+        
+        // update message cache of active folder and reload store (without loadmask)
+        $folder = $cacheController->updateMessages($folderId);
+        
+        if ($folder->cache_status == Felamimail_Model_Folder::CACHE_STATUS_INCOMPLETE
+                || $folder->cache_status == Felamimail_Model_Folder::CACHE_STATUS_UPDATING
+        ) {
+            // close session to allow other requests
+            Zend_Session::writeClose(true);
+            
+            // update rest of cache here
+            Tinebase_Core::setExecutionLifeTime(600); // 10 minutes
+            Felamimail_Controller_Cache::getInstance()->initialImport($folderId);
+            
+            $folder->cache_status = Felamimail_Model_Folder::CACHE_STATUS_COMPLETE;
         }
         
-        // use output buffer
-        ignore_user_abort();
-        header("Connection: close");
+        // return folder data
+        $result = $folder->toArray();
         
-        ob_start();
-
-        // output here (kind of hack to get request id and build response)
-        $request = new Zend_Json_Server_Request_Http();
-        $response = new Zend_Json_Server_Response_Http();
-        if (null !== ($id = $request->getId())) {
-            $response->setId($id);
-        }
-        if (null !== ($version = $request->getVersion())) {
-            $response->setVersion($version);
-        }
-        $response->setResult($result);
-        echo $response;
-        //echo Zend_Json::encode($result);
-        
-        $size = ob_get_length();
-        header("Content-Length: $size");
-        ob_end_flush(); // Strange behaviour, will not work
-        flush();        
-        Zend_Session::writeClose(true);
-
-        // update rest of cache here
-        if ($result['totalcount'] > 0) {
-            // get folder id from filter
-            $folderId = '';
-            foreach ($result['filter'] as $filterSetting) {
-                if ($filterSetting['field'] == 'folder_id') {
-                    $folderId = $filterSetting['value'];
-                    break;
-                }
-            }
-            if (! empty($folderId)) {
-                Tinebase_Core::setExecutionLifeTime(300); // 5 minutes
-                Felamimail_Controller_Cache::getInstance()->initialImport($folderId);
-            }
-        }
-        
-        // don't output anything else ('null' or something like that)
-        die();
+        return $result;
     }
     
     /**
@@ -211,10 +240,16 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      * @param string $ids  message ids
      * @return string
      * @return array
+     * 
+     * @todo only add flag to messages that should be deleted and delete them on server when updating cache?
      */
     public function deleteMessages($ids)
     {
-        return $this->_delete($ids, Felamimail_Controller_Message::getInstance());
+        if (strpos($ids, '[') !== false) {
+            $ids = Zend_Json::decode($ids);
+        }
+        $deletedRecords = Felamimail_Controller_Message::getInstance()->delete($ids);
+        $this->_backgroundDelete($deletedRecords);
     }
 
     /**
@@ -225,7 +260,9 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      */
     public function deleteMessagesByFilter($filter)
     {
-        return $this->_deleteByFilter($filter, Felamimail_Controller_Message::getInstance(), 'Felamimail_Model_MessageFilter');
+        $filter = new Felamimail_Model_MessageFilter(Zend_Json::decode($filter));
+        $deletedRecords = Felamimail_Controller_Message::getInstance()->deleteByFilter($filter);
+        $this->_backgroundDelete($deletedRecords);
     }
 
     /**
@@ -340,6 +377,64 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         return parent::_recordToJson($_record);
     }
     
+    /**
+     * delete messages (as background process)
+     * 
+     * @param array $_result
+     * @param Tinebase_Record_RecordSet $_messagesToDelete
+     * @return void
+     * 
+     * @todo    generalize this?
+     */
+    protected function _backgroundDelete(Tinebase_Record_RecordSet $_messagesToDelete)
+    {
+        Tinebase_Core::setExecutionLifeTime(600); // 10 minutes
+        $result = array(
+            'status'    => 'success'
+        );
+        
+        if (headers_sent()) {
+            // don't do background processing if headers were already sent
+            Felamimail_Controller_Message::getInstance()->deleteMessagesFromImapServer($_messagesToDelete);
+            return $result;
+        } else {
+        
+            // use output buffer
+            ignore_user_abort();
+            header("Connection: close");
+            
+            ob_start();
+    
+            // output here (kind of hack to get request id and build response)
+            $request = new Zend_Json_Server_Request_Http();
+            $response = new Zend_Json_Server_Response_Http();
+            if (null !== ($id = $request->getId())) {
+                $response->setId($id);
+            }
+            if (null !== ($version = $request->getVersion())) {
+                $response->setVersion($version);
+            }
+            $response->setResult($result);
+            echo $response;
+            
+            $size = ob_get_length();
+            header("Content-Length: $size");
+            // need to set content type because the response should not be compressed by (apache) webserver
+            // -> there has been an issue with mod_deflate / content-type text/html here
+            header("Content-Type: application/json");
+            ob_end_flush(); // Strange behaviour, will not work
+            flush();
+            Zend_Session::writeClose(true);
+    
+            // update rest of cache here
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Starting background delete of ' . count($_messagesToDelete) . ' messages ...');
+            Felamimail_Controller_Message::getInstance()->deleteMessagesFromImapServer($_messagesToDelete);
+    
+            // don't output anything else ('null' or something like that)
+            die();
+        }
+    }
+    
     /***************************** accounts funcs *******************************/
     
     /**
@@ -414,7 +509,8 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     public function getRegistryData()
     {
         $result = array(
-            'accounts' => $this->searchAccounts(''),
+            'accounts'              => $this->searchAccounts(''),
+            'maxAttachmentSize'     => convertToBytes(ini_get('upload_max_filesize')) / 1048576 . ' MB'
         );
         
         $defaults = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::IMAP);

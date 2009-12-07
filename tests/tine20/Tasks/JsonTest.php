@@ -109,19 +109,55 @@ class Tasks_JsonTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('minutes_before', $loadedTaskData['alarms'][0]), 'minutes_before is missing');
         
         // try to send alarm
-        if (isset(Tinebase_Core::getConfig()->smtp)) {
-            $event = new Tinebase_Event_Async_Minutely();
-            Tinebase_Event::fireEvent($event);
-            
-            // check alarm status
-            $loadedTaskData = $this->_backend->getTask($persistentTaskData['id']);
-            $this->assertEquals(Tinebase_Model_Alarm::STATUS_SUCCESS, $loadedTaskData['alarms'][0]['sent_status']);
-        }
+        $event = new Tinebase_Event_Async_Minutely();
+        Tinebase_Event::fireEvent($event);
+        
+        // check alarm status
+        $loadedTaskData = $this->_backend->getTask($persistentTaskData['id']);
+        $this->assertEquals(Tinebase_Model_Alarm::STATUS_SUCCESS, $loadedTaskData['alarms'][0]['sent_status']);
 
         // try to save task without due (alarm should be removed)
         unset($task->due);
         $persistentTaskData = $this->_backend->saveTask(Zend_Json::encode($task->toArray()));
         $this->assertEquals(0, count($persistentTaskData['alarms']));
+    }
+
+    /**
+     * test create task with automatic alarm
+     *
+     */
+    public function testCreateTaskWithAutomaticAlarm()
+    {
+        $task = $this->_getTask();
+        
+        // set config for automatic alarms
+        Tinebase_Config::getInstance()->setConfigForApplication(
+            Tinebase_Model_Config::AUTOMATICALARM,
+            Zend_Json::encode(array(
+                2*24*60,    // 2 days before
+                //0           // 0 minutes before
+            )),
+            'Tasks'
+        );
+        
+        $persistentTaskData = $this->_backend->saveTask(Zend_Json::encode($task->toArray()));
+        $loadedTaskData = $this->_backend->getTask($persistentTaskData['id']);
+        
+        // check if alarms are created / returned
+        $this->assertGreaterThan(0, count($loadedTaskData['alarms']));
+        $this->assertEquals('Tasks_Model_Task', $loadedTaskData['alarms'][0]['model']);
+        $this->assertEquals(Tinebase_Model_Alarm::STATUS_PENDING, $loadedTaskData['alarms'][0]['sent_status']);
+        $this->assertTrue(array_key_exists('minutes_before', $loadedTaskData['alarms'][0]), 'minutes_before is missing');
+        $this->assertEquals(2*24*60, $loadedTaskData['alarms'][0]['minutes_before']);
+
+        // reset automatic alarms config
+        Tinebase_Config::getInstance()->setConfigForApplication(
+            Tinebase_Model_Config::AUTOMATICALARM,
+            Zend_Json::encode(array()),
+            'Tasks'
+        );
+        
+        $this->_backend->deleteTasks($persistentTaskData['id']);
     }
     
     /**
@@ -160,7 +196,6 @@ class Tasks_JsonTest extends PHPUnit_Framework_TestCase
         $this->assertGreaterThan(0, $count);
         
         // delete task
-        // Tasks_Controller_Task::getInstance()->delete($task->getId());
         $this->_backend->deleteTasks(Zend_Json::encode(array($task->getId())));
 
         // search and check again
@@ -203,25 +238,22 @@ class Tasks_JsonTest extends PHPUnit_Framework_TestCase
         $task->organizer = $organizer;      
         $returned = $this->_backend->saveTask(Zend_Json::encode($task->toArray()));
         $taskId = $returned['id'];
-        
                
         // check search tasks- organizer exists
         $tasks = $this->_backend->searchTasks(Zend_Json::encode($this->_getFilter()), Zend_Json::encode($this->_getPaging()));
-        $this->assertEquals(1, $tasks['totalcount']);
+        $this->assertEquals(1, $tasks['totalcount'], 'more (or less) than one tasks found');
         $this->assertEquals($tasks['results'][0]['organizer']['accountId'], $organizerId);
 
         // check get single task - organizer exists
         $task = $this->_backend->getTask($taskId);
         $this->assertEquals($task['organizer']['accountId'], $organizerId);
 
-
         // delete user
         Tinebase_User::getInstance()->deleteUser($organizerId);       
-        
 
         // test seach search tasks - organizer is deleted
         $tasks = $this->_backend->searchTasks(Zend_Json::encode($this->_getFilter()), Zend_Json::encode($this->_getPaging()));
-        $this->assertEquals(1, $tasks['totalcount']);
+        $this->assertEquals(1, $tasks['totalcount'], 'more (or less) than one tasks found');
 
         $this->assertEquals($tasks['results'][0]['organizer']['accountDisplayName'], Tinebase_User::getInstance()->getNonExistentUser()->accountDisplayName);
 

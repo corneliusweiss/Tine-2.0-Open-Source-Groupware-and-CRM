@@ -42,7 +42,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
     initActions: function() {
         this.action_editInNewWindow = new Ext.Action({
             requiredGrant: 'readGrant',
-            text: this.i18nEditActionText ? this.app.i18n._hidden(this.i18nEditActionText) : String.format(Tine.Tinebase.tranlation._hidden('Edit {0}'), this.i18nRecordName),
+            text: this.i18nEditActionText ? this.app.i18n._hidden(this.i18nEditActionText) : String.format(Tine.Tinebase.translation._hidden('Edit {0}'), this.i18nRecordName),
             disabled: true,
             handler: this.onEditInNewWindow.createDelegate(this, ["edit"]),
             iconCls: 'action_edit'
@@ -50,7 +50,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         
         this.action_addInNewWindow = new Ext.Action({
             requiredGrant: 'addGrant',
-            text: this.i18nAddActionText ? this.app.i18n._hidden(this.i18nAddActionText) : String.format(Tine.Tinebase.tranlation._hidden('Add {0}'), this.i18nRecordName),
+            text: this.i18nAddActionText ? this.app.i18n._hidden(this.i18nAddActionText) : String.format(Tine.Tinebase.translation._hidden('Add {0}'), this.i18nRecordName),
             handler: this.onEditInNewWindow.createDelegate(this, ["add"]),
             iconCls: 'action_add'
         });
@@ -59,14 +59,48 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         this.action_deleteRecord = new Ext.Action({
             requiredGrant: 'deleteGrant',
             allowMultiple: true,
-            singularText: this.i18nDeleteActionText ? i18nDeleteActionText[0] : String.format(Tine.Tinebase.tranlation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
-            pluralText: this.i18nDeleteActionText ? i18nDeleteActionText[1] : String.format(Tine.Tinebase.tranlation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordsName),
-            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.tranlation,
-            text: this.i18nDeleteActionText ? this.i18nDeleteActionText[0] : String.format(Tine.Tinebase.tranlation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
+            singularText: this.i18nDeleteActionText ? i18nDeleteActionText[0] : String.format(Tine.Tinebase.translation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
+            pluralText: this.i18nDeleteActionText ? i18nDeleteActionText[1] : String.format(Tine.Tinebase.translation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordsName),
+            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.translation,
+            text: this.i18nDeleteActionText ? this.i18nDeleteActionText[0] : String.format(Tine.Tinebase.translation.n_hidden('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
             handler: this.onDeleteRecords,
             disabled: true,
             iconCls: 'action_delete',
             scope: this
+        });
+        
+        this.filter_showDeclined = new Tine.widgets.grid.FilterButton({
+            text: this.app.i18n._('Show declined events'),
+            //iconCls: 'action_showArchived',
+            field: 'attender_status',
+            /**
+             * @private
+             */
+            getValue: function() {
+                if (this.pressed) {
+                    return null;
+                } else {
+                    return {field: this.field, operator: 'not', value: 'DECLINED'};
+                }
+            },
+            
+            /**
+             * @private
+             */
+            setValue: function(filters) {
+                for (var i=0; i<filters.length; i++) {
+                    if (filters[i].field == this.field) {
+                        this.toggle(true);
+                        break;
+                    }
+                }
+            },
+            
+            scope: this,
+            handler: function() {
+                var panel = this.getCalendarPanel(this.activeView);
+                panel.getStore().load({});
+            }
         });
         
         this.showDayView = new Ext.Toolbar.Button({
@@ -106,7 +140,9 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         this.actionToolbarActions = [
             this.action_addInNewWindow,
             this.action_editInNewWindow,
-            this.action_deleteRecord
+            this.action_deleteRecord,
+            '-',
+            this.filter_showDeclined
         ];
         
         this.recordActions = [
@@ -152,7 +188,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
                 items: this.detailsPanel
                 
             });
-            this.detailsPanel.doBind(this.grid);
+            //this.detailsPanel.doBind(this.activeView);
         }
         
         // add filter toolbar
@@ -215,7 +251,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
                 dtStart = dtStart.add(Date.HOUR, 9);
             }
             addAction = {
-                text: this.i18nAddActionText ? this.app.i18n._hidden(this.i18nAddActionText) : String.format(Tine.Tinebase.tranlation._hidden('Add {0}'), this.i18nRecordName),
+                text: this.i18nAddActionText ? this.app.i18n._hidden(this.i18nAddActionText) : String.format(Tine.Tinebase.translation._hidden('Add {0}'), this.i18nRecordName),
                 handler: this.onEditInNewWindow.createDelegate(this, ["add", dtStart]),
                 iconCls: 'action_add'
             };
@@ -313,7 +349,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
                                 },
                                 failure: function () {
                                     panel.getTopToolbar().onLoad();
-                                    Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
+                                    Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
                                 }
                             };
                             
@@ -334,7 +370,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
                                 },
                                 failure: function () {
                                     panel.getTopToolbar().onLoad();
-                                    Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
+                                    Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
                                 }
                             };
                             
@@ -357,7 +393,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
                                 },
                                 failure: function () {
                                     panel.getTopToolbar().onLoad();
-                                    Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
+                                    Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
                                 }
                             };
                             
@@ -373,7 +409,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         
         // else
         var i18nQuestion = String.format(this.app.i18n.ngettext('Do you really want to delete this event?', 'Do you really want to delete the {0} selected events?', selection.length), selection.length);
-        Ext.MessageBox.confirm(Tine.Tinebase.tranlation._hidden('Confirm'), i18nQuestion, function(btn) {
+        Ext.MessageBox.confirm(Tine.Tinebase.translation._hidden('Confirm'), i18nQuestion, function(btn) {
             if(btn == 'yes') {
                 this.onDeleteRecordsConfirmNonRecur(panel, selection);
             } else {
@@ -396,7 +432,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
             },
             failure: function () {
                 panel.getTopToolbar().onLoad();
-                Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
+                Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), String.format(this.app.i18n.n_('Failed not delete event', 'Failed to delete the {0} events', selection.length), selection.length)) 
             }
         };
         
@@ -433,6 +469,7 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         
         Tine.Calendar.EventEditDialog.openWindow({
             record: Ext.util.JSON.encode(event.data),
+            recordId: event.data.id,
             listeners: {
                 scope: this,
                 update: function(eventJson) {
@@ -498,9 +535,11 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         // this is important for paging and sort header!
         options.params.filter = [];
         
-        // note, we can't use ne 'normal' plugin approach here, cause we have to deal with n stores
+        // note, we can't use the 'normal' plugin approach here, cause we have to deal with n stores
         var calendarSelectionPlugin = this.app.getMainScreen().getTreePanel().getCalSelector().getFilterPlugin();
-        calendarSelectionPlugin.onBeforeLoad.call(calendarSelectionPlugin, store, options)
+        calendarSelectionPlugin.onBeforeLoad.call(calendarSelectionPlugin, store, options);
+        
+        this.filter_showDeclined.onBeforeLoad.call(this.filter_showDeclined, store, options);
     },
     
     refresh: function(refresh) {
@@ -515,6 +554,9 @@ Tine.Calendar.MainScreenCenterPanel = Ext.extend(Ext.Panel, {
         var selection = panel.getSelectionModel().getSelectedEvents();
         
         this.actionUpdater.updateActions(selection);
+        if (this.detailsPanel) {
+            this.detailsPanel.onDetailsUpdate(panel.getSelectionModel());
+        }
     },
     
     updateView: function(which) {

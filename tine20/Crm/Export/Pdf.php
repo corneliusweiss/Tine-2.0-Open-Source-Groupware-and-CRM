@@ -8,6 +8,7 @@
  * @author      Philipp Schuele <p.schuele@metaways.de>
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
+ * 
  */
 
 
@@ -25,9 +26,9 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
      *
      * @param	Crm_Model_Lead $_lead lead data
      * 
-     * @return	string	the contact pdf
+     * @return	string	the pdf
      */
-    public function generateLeadPdf(Crm_Model_Lead $_lead, $_pageNumber = 0)
+    public function generate(Crm_Model_Lead $_lead, $_pageNumber = 0)
     {
         $locale = Tinebase_Core::get('locale');
         $translate = Tinebase_Translation::getTranslation('Crm');    
@@ -53,7 +54,7 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
         
         /***************************** generate pdf now! ********************/
                     
-        $this->generatePdf($record, $title, $subtitle, $tags,
+        parent::generatePdf($record, $title, $subtitle, $tags,
             $description, $titleIcon, NULL, $linkedObjects, FALSE);
         
     }
@@ -64,12 +65,13 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
      * @param   Crm_Model_Lead $_lead lead data
      * @param   Zend_Locale $_locale the locale
      * @param   Zend_Translate $_translate
-     * 
      * @return  array  the record
-     *  
+     *
      */
     protected function getRecord(Crm_Model_Lead $_lead, Zend_Locale $_locale, Zend_Translate $_translate)
     {        
+        $settings = Crm_Controller::getInstance()->getSettings();
+        
         $leadFields = array (
             array(  'label' => /* $_translate->_('Lead Data') */ "", 
                     'type' => 'separator' 
@@ -115,21 +117,24 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
                     }
                     foreach ( $keys as $key ) {
                         if ( $_lead->$key instanceof Zend_Date ) {
-                            $content[] = $_lead->$key->toString(Zend_Locale_Format::getDateFormat(Tinebase_Core::get('locale')), Tinebase_Core::get('locale') );
+                            $content[] = $_lead->$key->toString(
+                                Zend_Locale_Format::getDateFormat(Tinebase_Core::get(Tinebase_Core::LOCALE)), 
+                                Tinebase_Core::get(Tinebase_Core::LOCALE)
+                            );
                         } elseif (!empty($_lead->$key) ) {
                             if ( $key === 'turnover' ) {
                                 $content[] = Zend_Locale_Format::toNumber($_lead->$key, array('locale' => $_locale)) . " €";
                             } elseif ( $key === 'probability' ) {
                                 $content[] = $_lead->$key . " %";
                             } elseif ( $key === 'leadstate_id' ) {
-                                $state = Crm_Controller_LeadStates::getInstance()->getLeadState($_lead->leadstate_id);
-                                $content[] = $state->leadstate;
+                                $state = $settings->getOptionById($_lead->leadstate_id, 'leadstates');
+                                $content[] = $state['leadstate'];
                             } elseif ( $key === 'leadtype_id' ) {
-                                $type = Crm_Controller_LeadTypes::getInstance()->getLeadType($_lead->leadtype_id);
-                                $content[] = $type->leadtype;
+                                $type = $settings->getOptionById($_lead->leadtype_id, 'leadtypes');
+                                $content[] = $type['leadtype'];
                             } elseif ( $key === 'leadsource_id' ) {
-                                $source = Crm_Controller_LeadSources::getInstance()->getLeadSource($_lead->leadsource_id);
-                                $content[] = $source->leadsource;
+                                $source = $settings->getOptionById($_lead->leadsource_id, 'leadsources');
+                                $content[] = $source['leadsource'];
                             } else {
                                 $content[] = $_lead->$key;
                             }
@@ -170,6 +175,8 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
 	
         // check relations
         if ($_lead->relations instanceof Tinebase_Record_RecordSet) {
+            
+            $_lead->relations->addIndices(array('type'));
 
             /********************** contacts ******************/
             
@@ -249,39 +256,43 @@ class Crm_Export_Pdf extends Tinebase_Export_Pdf
                         
                     } catch (Exception $e) {
                         // do nothing so far
-                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' exception caught: ' . $e->__toString());
+                        Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' exception caught: ' . $e->__toString());
                     }
                 }
             }
-        }
-
-        /********************** products ******************/
-
-        if (count($_lead->products) > 0) {
             
-            $linkedObjects[] = array ( $_translate->_('Products'), 'headline');
+            /********************** products ******************/
+
+            $productRelations = $_lead->relations->filter('type', strtoupper('product'));
             
-            foreach ($_lead->products as $product) {
-                try {
-                    $sourceProduct = Crm_Controller_LeadProducts::getInstance()->getProduct($product->product_id);
+            if (!empty($productRelations)) {
+            
+                $linkedObjects[] = array ( $_translate->_('Products'), 'headline');
+                
+                foreach ($productRelations as $relation) {
+                    try {
+                        $product = $relation->related_record;
+                        
+                        $quantity = (isset($relation['remark']['quantity'])) ? $relation['remark']['quantity'] : 1;
+                        $price = (isset($relation['remark']['price'])) ? $relation['remark']['price'] : $product->price;
+                        // @todo set precision for the price ?
+                        $price = Zend_Locale_Format::toNumber($price, array('locale' => $_locale)/*, array('precision' => 2)*/) . " €";
+                        $description = (isset($relation['remark']['description'])) ? $relation['remark']['description'] : $product->description;
+                        
+                        $linkedObjects[] = array (
+                            $product->name . ' - ' . $description . ' (' . $price . ') x ' . $quantity, 
+                            'separator'
+                        );
                     
-                    // @todo set precision for the price ?
-                    $price = Zend_Locale_Format::toNumber($product->product_price, array('locale' => $_locale)/*, array('precision' => 2)*/) . " €";
-                    
-                    $linkedObjects[] = array (
-                        $sourceProduct->productsource . ' - ' . $product->product_desc . ' (' . $price . ')', 
-                        'separator'
-                    );
-                    
-                } catch (Exception $e) {
-                    // do nothing so far
-                    Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' exception caught: ' . $e->__toString());
+                    } catch (Exception $e) {
+                        // do nothing so far
+                        Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' exception caught: ' . $e->__toString());
+                    }
                 }
-            }
+            }                        
         }
         
         return  $linkedObjects;
-       
     }
     
     /**

@@ -35,6 +35,7 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
     defaultImage: 'images/empty_photo.png',
     
     defaultAutoCreate : {tag:'input', type:'hidden'},
+    handleMouseEvents: true,
     
     initComponent: function() {
         this.plugins = this.plugins || [];
@@ -60,7 +61,8 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
             border: this.border === true ? '1px solid #B5B8C8' : '0'
         });
         this.buttonCt.setSize(this.width, this.height);
-        this.buttonCt.on('contextmenu', this.onContextMenu, this);
+        
+        this.loadMask = new Ext.LoadMask(this.buttonCt, {msg: _('Loading'), msgCls: 'x-mask-loading'});
         
         // the click to edit text container
         var clickToEditText = _('click to edit');
@@ -83,16 +85,6 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
             buttonCt: this.buttonCt,
             renderTo: this.buttonCt
         });
-        
-        /*
-        this.bb = new Ext.ux.form.BrowseButton({
-            //debug: true,
-            buttonCt: this.buttonCt,
-            renderTo: this.buttonCt,
-            scope: this,
-            handler: this.onFileSelect
-        });
-        */
     },
     getValue: function() {
         var value = Ext.ux.form.ImageField.superclass.getValue.call(this);
@@ -123,7 +115,6 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
             return;
         }
         uploader.on('uploadcomplete', function(uploader, record){
-            //var method = Ext.util.Format.htmlEncode('');
             this.imageSrc = new Ext.ux.util.ImageURL({
                 id: record.get('tempFile').id,
                 width: this.width,
@@ -136,7 +127,7 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
         }, this);
         uploader.on('uploadfailure', this.onUploadFail, this);
         
-        this.buttonCt.mask(_('Loading'), 'x-mask-loading');
+        this.loadMask.show();
         uploader.upload();
         
         if (this.ctxMenu) {
@@ -165,21 +156,6 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
             scope: this,
             plugins: [new Ext.ux.file.BrowsePlugin({})]
         });
-        /*
-        upload.on('render', function(){
-            var ct = upload.getEl();
-            var bb = new Ext.ux.form.BrowseButton({
-                buttonCt: ct,
-                renderTo: ct,
-                //debug: true,
-                scope: this,
-                handler: function(bb) {
-                    this.ctxMenu.hide();
-                    this.onFileSelect(bb);
-                }
-            });
-        }, this);
-        */
         
         this.ctxMenu = new Ext.menu.Menu({
             items: [
@@ -251,11 +227,11 @@ Ext.ux.form.ImageField = Ext.extend(Ext.form.Field, {
                 this.imageCt = img;
                 this.textCt.setVisible(this.imageSrc == this.defaultImage);
                 this.imageCt.setOpacity(this.imageSrc == this.defaultImage ? 0.2 : 1);
-                this.buttonCt.unmask();
+                this.loadMask.hide();
             }, this);
             img.on('error', function() {
                 Ext.MessageBox.alert(_('Image Failed'), _('Could not load image. Please notify your Administrator')).setIcon(Ext.MessageBox.ERROR);
-                this.buttonCt.unmask();
+                this.loadMask.hide();
             }, this);
         }
     }

@@ -21,13 +21,13 @@ msgstr "Compte Email utilisateur"
 msgid "Create and edit email accounts"
 msgstr ""
 
-#: Controller/Message.php:1030 js/FelamimailGridDetailsPanel.js:122
-#: js/FelamimailGridPanel.js:254 js/FelamimailGridPanel.js:306
-#: js/FelamimailMessageEditDialog.js:258
+#: Controller/Message.php:983 js/FelamimailGridDetailsPanel.js:123
+#: js/FelamimailGridPanel.js:258 js/FelamimailGridPanel.js:313
+#: js/FelamimailMessageEditDialog.js:280
 msgid "Subject"
 msgstr "sujet"
 
-#: Controller/Message.php:1030 js/FelamimailMessageEditDialog.js:175
+#: Controller/Message.php:983 js/FelamimailMessageEditDialog.js:197
 msgid "Body"
 msgstr "Corps"
 
@@ -35,7 +35,7 @@ msgstr "Corps"
 msgid "Email"
 msgstr "Email"
 
-#: js/FelamimailAccountEditDialog.js:64 js/FelamimailTreePanel.js:333
+#: js/FelamimailAccountEditDialog.js:64 js/FelamimailTreePanel.js:399
 #: js/Models.js:111
 msgid "Account"
 msgid_plural "Accounts"
@@ -70,9 +70,9 @@ msgstr "IMAP"
 msgid "Host"
 msgstr "Hôte"
 
-#: js/FelamimailAccountEditDialog.js:116 js/FelamimailAccountEditDialog.js:164
-msgid "Port"
-msgstr "Port"
+#: js/FelamimailAccountEditDialog.js:116
+msgid "Port (Default: 143 / SSL: 993)"
+msgstr ""
 
 #: js/FelamimailAccountEditDialog.js:122 js/FelamimailAccountEditDialog.js:170
 msgid "Secure Connection"
@@ -102,6 +102,10 @@ msgstr "Mot de passe"
 #: js/FelamimailAccountEditDialog.js:148
 msgid "SMTP"
 msgstr "SMTP"
+
+#: js/FelamimailAccountEditDialog.js:164
+msgid "Port (Default: 25)"
+msgstr ""
 
 #: js/FelamimailAccountEditDialog.js:185
 msgid "Authentication"
@@ -170,270 +174,317 @@ msgstr "Texte simple"
 msgid "Sort Folders (experimental)"
 msgstr "Tri des dossiers (expérimental)"
 
-#: js/FelamimailAttachmentGrid.js:127
+#: js/FelamimailAttachmentGrid.js:129
 msgid "Upload Failed"
 msgstr "Échec du téléchargement"
 
-#: js/FelamimailAttachmentGrid.js:128
+#: js/FelamimailAttachmentGrid.js:130
 msgid ""
 "Could not upload attachment. Filesize could be too big. Please notify your "
-"Administrator."
+"Administrator. Max upload size: "
 msgstr ""
-"Impossible d'ajouter la pièce jointe, le fichier est probablement trop gros. "
-"Veuillez contacter l'administrateur"
 
-#: js/FelamimailAttachmentGrid.js:139
+#: js/FelamimailAttachmentGrid.js:142
 msgid "Add Attachment"
 msgstr "ajouter une pièce jointe"
 
-#: js/FelamimailAttachmentGrid.js:147
+#: js/FelamimailAttachmentGrid.js:150
 msgid "Remove Attachment"
 msgstr "Supprimer la pièce jointe"
 
-#: js/FelamimailGridDetailsPanel.js:123 js/FelamimailGridPanel.js:255
-#: js/FelamimailGridPanel.js:312 js/FelamimailMessageEditDialog.js:226
+#: js/FelamimailGridDetailsPanel.js:124 js/FelamimailGridPanel.js:259
+#: js/FelamimailGridPanel.js:319 js/FelamimailMessageEditDialog.js:248
 msgid "From"
 msgstr "De"
 
-#: js/FelamimailGridDetailsPanel.js:124
+#: js/FelamimailGridDetailsPanel.js:125
 msgid "Add"
 msgstr "Ajouter"
 
-#: js/FelamimailGridDetailsPanel.js:125
+#: js/FelamimailGridDetailsPanel.js:126
 msgid "Add contact to addressbook"
 msgstr "Ajouter au carnet d'adresse"
 
-#: js/FelamimailGridDetailsPanel.js:127 js/FelamimailGridDetailsPanel.js:346
+#: js/FelamimailGridDetailsPanel.js:127
+#, fuzzy
+msgid "Date"
+msgstr "Supprimer"
+
+#: js/FelamimailGridDetailsPanel.js:129 js/FelamimailGridDetailsPanel.js:348
 msgid "Show or hide header information"
 msgstr "Afficher/Masquer l'entête de message"
 
-#: js/FelamimailGridDetailsPanel.js:130 js/FelamimailMessageEditDialog.js:167
+#: js/FelamimailGridDetailsPanel.js:132 js/FelamimailMessageEditDialog.js:189
 msgid "Attachments"
 msgstr "Pièces jointes"
 
-#: js/FelamimailGridPanel.js:129
+#: js/FelamimailGridPanel.js:131
 msgid "Write"
 msgstr "Écrire"
 
-#: js/FelamimailGridPanel.js:138
+#: js/FelamimailGridPanel.js:140
 msgid "Reply"
 msgstr "Répondre"
 
-#: js/FelamimailGridPanel.js:148
+#: js/FelamimailGridPanel.js:150
 msgid "Reply To All"
 msgstr "Répondre à tous"
 
-#: js/FelamimailGridPanel.js:158
+#: js/FelamimailGridPanel.js:160
 msgid "Forward"
 msgstr "Transférer"
 
-#: js/FelamimailGridPanel.js:167
+#: js/FelamimailGridPanel.js:169
 msgid "Toggle Flag"
 msgstr "Drapeau"
 
-#: js/FelamimailGridPanel.js:178
+#: js/FelamimailGridPanel.js:180
 #, fuzzy
 msgid "Mark read/unread"
 msgstr "Marquer comme non-lu"
 
-#: js/FelamimailGridPanel.js:190 js/FelamimailGridPanel.js:191
-#: js/FelamimailGridPanel.js:193
+#: js/FelamimailGridPanel.js:192 js/FelamimailGridPanel.js:193
+#: js/FelamimailGridPanel.js:195
 msgid "Delete"
 msgstr "Supprimer"
 
-#: js/FelamimailGridPanel.js:202
+#: js/FelamimailGridPanel.js:203
 msgid "Add Account"
 msgstr "ajouter un compte"
 
-#: js/FelamimailGridPanel.js:256 js/FelamimailGridPanel.js:318
+#: js/FelamimailGridPanel.js:257
+#, fuzzy
+msgid "Subject/From"
+msgstr "sujet"
+
+#: js/FelamimailGridPanel.js:260 js/FelamimailGridPanel.js:325
 msgid "To"
 msgstr "À"
 
-#: js/FelamimailGridPanel.js:257
+#: js/FelamimailGridPanel.js:261
 msgid "Cc"
 msgstr "Cc"
 
-#: js/FelamimailGridPanel.js:258
+#: js/FelamimailGridPanel.js:262
 msgid "Bcc"
 msgstr "Bcc"
 
-#: js/FelamimailGridPanel.js:259 js/FelamimailGridPanel.js:333
+#: js/FelamimailGridPanel.js:263 js/FelamimailGridPanel.js:340
 msgid "Received"
 msgstr "Reçus"
 
-#: js/FelamimailGridPanel.js:287
+#: js/FelamimailGridPanel.js:294
 msgid "Id"
 msgstr "Id"
 
-#: js/FelamimailGridPanel.js:325
+#: js/FelamimailGridPanel.js:332
 msgid "Sent"
 msgstr "Envoyés"
 
-#: js/FelamimailGridPanel.js:340
+#: js/FelamimailGridPanel.js:347
 msgid "Size"
 msgstr "Taille"
 
-#: js/FelamimailGridPanel.js:382
+#: js/FelamimailGridPanel.js:389
 msgid "Answered"
 msgstr "Répondu"
 
-#: js/FelamimailGridPanel.js:385
+#: js/FelamimailGridPanel.js:392
 msgid "Forwarded"
 msgstr "Transféré"
 
-#: js/FelamimailGridPanel.js:388
+#: js/FelamimailGridPanel.js:395
 msgid "Recent"
 msgstr "Récents "
 
-#: js/FelamimailGridPanel.js:481
+#: js/FelamimailGridPanel.js:488 js/FelamimailTreeLoader.js:179
 msgid "Error"
 msgstr "Erreur "
 
-#: js/FelamimailGridPanel.js:481
+#: js/FelamimailGridPanel.js:488
 msgid "No Account configured"
 msgstr "Aucun compte configuré"
 
-#: js/FelamimailGridPanel.js:527
+#: js/FelamimailGridPanel.js:540
 msgid "wrote"
 msgstr "a écrit"
 
-#: js/FelamimailGridPanel.js:529
+#: js/FelamimailGridPanel.js:542
 msgid "Re: "
 msgstr "Re: "
 
-#: js/FelamimailGridPanel.js:536
+#: js/FelamimailGridPanel.js:549
 msgid "Original Message"
 msgstr "Message Original"
 
-#: js/FelamimailGridPanel.js:544
+#: js/FelamimailGridPanel.js:557
 msgid "Original message"
 msgstr "message original"
 
-#: js/FelamimailGridPanel.js:548
+#: js/FelamimailGridPanel.js:561
 msgid "Fwd: "
 msgstr "Fwd: "
 
-#: js/FelamimailGridPanel.js:665 js/FelamimailMessageEditDialog.js:139
+#: js/FelamimailGridPanel.js:695 js/FelamimailMessageEditDialog.js:161
 msgid "Failed"
 msgstr "Échoué"
 
-#: js/FelamimailGridPanel.js:666
+#: js/FelamimailGridPanel.js:696
 msgid "Some error occured while trying to update the messages."
 msgstr "Erreur lors du chargement des messages"
 
-#: js/FelamimailMessageEditDialog.js:44
+#: js/FelamimailMessageEditDialog.js:47
 msgid "Send"
 msgstr "Envoyer"
 
-#: js/FelamimailMessageEditDialog.js:93 js/FelamimailMessageEditDialog.js:269
+#: js/FelamimailMessageEditDialog.js:96 js/FelamimailMessageEditDialog.js:291
 msgid "Compose email:"
 msgstr "Écrire mail:"
 
-#: js/FelamimailMessageEditDialog.js:140
+#: js/FelamimailMessageEditDialog.js:133
+#, fuzzy
+msgid "Add Note"
+msgstr "Créer un dossier"
+
+#: js/FelamimailMessageEditDialog.js:134
+msgid "Edit Email Note Text:"
+msgstr ""
+
+#: js/FelamimailMessageEditDialog.js:162
 msgid "Could not send {0}."
 msgstr "Impossible d'envoyer {0}."
 
-#: js/FelamimailMessageEditDialog.js:141
+#: js/FelamimailMessageEditDialog.js:163
 msgid "Error:"
 msgstr "Erreur:"
 
-#: js/FelamimailMessageEditDialog.js:159
+#: js/FelamimailMessageEditDialog.js:181
 msgid "Recipients"
 msgstr "Destinataires"
 
-#: js/FelamimailMessageEditDialog.js:292
+#: js/FelamimailMessageEditDialog.js:314
 msgid "Save contact note"
 msgstr ""
 
-#: js/FelamimailRecipientGrid.js:130 js/FelamimailRecipientGrid.js:151
+#: js/FelamimailRecipientGrid.js:151 js/FelamimailRecipientGrid.js:172
 msgid "To:"
 msgstr "À:"
 
-#: js/FelamimailRecipientGrid.js:133 js/FelamimailRecipientGrid.js:152
+#: js/FelamimailRecipientGrid.js:154 js/FelamimailRecipientGrid.js:173
 msgid "Cc:"
 msgstr "Cc:"
 
-#: js/FelamimailRecipientGrid.js:136 js/FelamimailRecipientGrid.js:153
+#: js/FelamimailRecipientGrid.js:157 js/FelamimailRecipientGrid.js:174
 msgid "Bcc:"
 msgstr "Bcc:"
 
-#: js/FelamimailTreePanel.js:148 js/FelamimailTreePanel.js:153
-#: js/FelamimailTreePanel.js:164
-msgid "Marked"
-msgstr "Marqué"
+#: js/FelamimailRecipientGrid.js:195
+msgid "Remove"
+msgstr ""
 
-#: js/FelamimailTreePanel.js:154
-msgid "Contains marked messages"
-msgstr "Contient des messages marqués"
-
-#: js/FelamimailTreePanel.js:169
-msgid "Unread"
-msgstr "Non-lu"
-
-#: js/FelamimailTreePanel.js:170
-msgid "Contains unread messages"
-msgstr "Contient des messages non lus"
-
-#: js/FelamimailTreePanel.js:195
-msgid "Update Cache"
-msgstr "Mettre à jour le cache"
-
-#: js/FelamimailTreePanel.js:214
-msgid "Empty Folder"
-msgstr "Dossier vide"
-
-#: js/FelamimailTreePanel.js:237
-msgid "Add Folder"
-msgstr "Créer un dossier"
-
-#: js/FelamimailTreePanel.js:242
-msgid "New {0}"
-msgstr "Nouveau {0}"
-
-#: js/FelamimailTreePanel.js:242 js/FelamimailTreePanel.js:245
-#: js/FelamimailTreePanel.js:248 js/FelamimailTreePanel.js:309
-msgid "Folder"
-msgstr "Dossier"
-
-#: js/FelamimailTreePanel.js:242
-msgid "Please enter the name of the new {0}:"
-msgstr "Veuillez saisir le nom du nouvau {0}:"
-
-#: js/FelamimailTreePanel.js:245
-msgid "No {0} added"
-msgstr "aucun(e) {0} ajouté(e)"
-
-#: js/FelamimailTreePanel.js:245
-msgid "You have to supply a {0} name!"
-msgstr "Vous devez mettre un nom de {0}!"
-
-#: js/FelamimailTreePanel.js:248
-msgid "Please wait"
-msgstr "Veuillez patienter"
-
-#: js/FelamimailTreePanel.js:248
-msgid "Creating {0}..."
-msgstr "Création de {0}..."
-
-#: js/FelamimailTreePanel.js:276
-msgid "Edit Account"
-msgstr "Éditer compte"
-
-#: js/FelamimailTreePanel.js:629
+#: js/FelamimailTreeLoader.js:70
 msgid "Totalcount"
 msgstr "Total"
 
-#: js/FelamimailTreePanel.js:630
+#: js/FelamimailTreeLoader.js:71
 msgid "Cache"
 msgstr "Cache"
 
-#: js/FelamimailTreePanel.js:716
+#: js/FelamimailTreeLoader.js:160
 msgid "IMAP Credentials for {0}"
 msgstr "Authentification IMAP de {0}"
 
-#: js/FelamimailTreePanel.js:719
+#: js/FelamimailTreeLoader.js:163
 msgid "Credentials"
 msgstr "Identifiants"
+
+#: js/FelamimailTreeLoader.js:180
+msgid "No connection to IMAP server."
+msgstr ""
+
+#: js/FelamimailTreePanel.js:187 js/FelamimailTreePanel.js:192
+#: js/FelamimailTreePanel.js:203
+msgid "Marked"
+msgstr "Marqué"
+
+#: js/FelamimailTreePanel.js:193
+msgid "Contains marked messages"
+msgstr "Contient des messages marqués"
+
+#: js/FelamimailTreePanel.js:208
+msgid "Unread"
+msgstr "Non-lu"
+
+#: js/FelamimailTreePanel.js:209
+msgid "Contains unread messages"
+msgstr "Contient des messages non lus"
+
+#: js/FelamimailTreePanel.js:235
+msgid "Update Cache"
+msgstr "Mettre à jour le cache"
+
+#: js/FelamimailTreePanel.js:260
+msgid "Empty Folder"
+msgstr "Dossier vide"
+
+#: js/FelamimailTreePanel.js:286
+msgid "Add Folder"
+msgstr "Créer un dossier"
+
+#: js/FelamimailTreePanel.js:291
+msgid "New {0}"
+msgstr "Nouveau {0}"
+
+#: js/FelamimailTreePanel.js:291 js/FelamimailTreePanel.js:294
+#: js/FelamimailTreePanel.js:297 js/FelamimailTreePanel.js:356
+#: js/FelamimailTreePanel.js:375
+msgid "Folder"
+msgstr "Dossier"
+
+#: js/FelamimailTreePanel.js:291
+msgid "Please enter the name of the new {0}:"
+msgstr "Veuillez saisir le nom du nouvau {0}:"
+
+#: js/FelamimailTreePanel.js:294
+msgid "No {0} added"
+msgstr "aucun(e) {0} ajouté(e)"
+
+#: js/FelamimailTreePanel.js:294
+msgid "You have to supply a {0} name!"
+msgstr "Vous devez mettre un nom de {0}!"
+
+#: js/FelamimailTreePanel.js:297
+msgid "Please wait"
+msgstr "Veuillez patienter"
+
+#: js/FelamimailTreePanel.js:297
+msgid "Creating {0}..."
+msgstr "Création de {0}..."
+
+#: js/FelamimailTreePanel.js:325
+msgid "Edit Account"
+msgstr "Éditer compte"
+
+#: js/FelamimailTreePanel.js:356
+msgid "Reload {0}"
+msgstr ""
+
+#: js/FelamimailTreePanel.js:698
+#, fuzzy
+msgid "New mails"
+msgstr "Email"
+
+#: js/FelamimailTreePanel.js:699
+msgid "You got {0} new mail(s) in Folder "
+msgstr ""
+
+#: js/FelamimailTreePanel.js:822
+msgid "Invalid drop target"
+msgstr ""
+
+#: js/FelamimailTreePanel.js:822
+msgid "Could not move message(s)."
+msgstr ""
 
 #: js/Models.js:43
 msgid "Message"
@@ -447,18 +498,38 @@ msgid_plural "record lists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: Preference.php:73
+#: Preference.php:81
 msgid "User Email Account"
 msgstr "Compte Email utilisateur"
 
-#: Preference.php:74
+#: Preference.php:82
 msgid "Use user credentials for IMAP email account."
 msgstr "Utiliser les Identifiants utilisateur pour l'authentification IMAP."
 
-#: Preference.php:77
+#: Preference.php:85
 msgid "Default Email Account"
 msgstr "Compte Email par défaut"
 
-#: Preference.php:78
+#: Preference.php:86
 msgid "The default email account to use when sending mails."
 msgstr "Compte par défaut pour l'envoi de mail."
+
+#: Preference.php:89
+msgid "Email Update Interval"
+msgstr ""
+
+#: Preference.php:90
+msgid ""
+"How often should Felamimail check for new Emails (in minutes). \"0\" means "
+"never."
+msgstr ""
+
+#~ msgid ""
+#~ "Could not upload attachment. Filesize could be too big. Please notify "
+#~ "your Administrator."
+#~ msgstr ""
+#~ "Impossible d'ajouter la pièce jointe, le fichier est probablement trop "
+#~ "gros. Veuillez contacter l'administrateur"
+
+#~ msgid "Port"
+#~ msgstr "Port"

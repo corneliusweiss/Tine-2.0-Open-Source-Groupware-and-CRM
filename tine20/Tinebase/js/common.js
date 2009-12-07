@@ -29,6 +29,7 @@ Tine.Tinebase.common = {
             _height = _height + 20;
         }
         
+        var windowName = Ext.isString(_windowName) ? _windowName.replace(/[^a-zA-Z0-9_]/g, '') : _windowName;
         var w,h,x,y,leftPos,topPos,popup;
 
         if (document.all) {
@@ -47,7 +48,7 @@ Tine.Tinebase.common = {
         leftPos = ((w - _width) / 2) + y;
         topPos = ((h - _height) / 2) + x;
         
-        popup = window.open(_url, _windowName, 'width=' + _width + ',height=' + _height + ',top=' + topPos + ',left=' + leftPos +
+        popup = window.open(_url, windowName, 'width=' + _width + ',height=' + _height + ',top=' + topPos + ',left=' + leftPos +
         ',directories=no,toolbar=no,location=no,menubar=no,scrollbars=no,status=no,resizable=yes,dependent=no');
         
         return popup;
@@ -55,12 +56,17 @@ Tine.Tinebase.common = {
     
     showDebugConsole: function() {
         if (! Ext.debug) {
-            var head = Ext.getDoc().first().first();
-            var scriptTag = head.insertFirst({tag: 'script', type: 'text/javascript', src: 'library/ExtJS/src/debug.js'});
-            scriptTag.on('load', function() {
+            var head = document.getElementsByTagName("head")[0];
+            var scriptTag = document.createElement("script");
+            scriptTag.setAttribute("src", 'library/ExtJS/src/debug.js');
+            scriptTag.setAttribute("type", "text/javascript");
+            head.appendChild(scriptTag);
+            
+            var scriptEl = Ext.get(scriptTag);
+            scriptEl.on('load', function() {
                 Ext.log('debug console initialised');
             });
-            scriptTag.on('fail', function() {
+            scriptEl.on('fail', function() {
                 Ext.msg.alert('could not activate debug console');
             });
         } else {
@@ -119,7 +125,7 @@ Tine.Tinebase.common = {
                 }
                 result += '<div ext:qtip="' + qtipText + '" style="width: 8px; height: 8px; background-color:' 
                     + tags[i].color 
-                    + '; border: 1px solid black; float: left; margin-right: 2px;">&#160;</div>';
+                    + '; border: 1px solid black; float: left; margin-right: 2px; margin-bottom: 1px;">&#160;</div>';
             }
         }
         return result;
@@ -136,9 +142,9 @@ Tine.Tinebase.common = {
         var H = Math.floor(minutes/60);//%(24);
         //var d = Math.floor(minutes/(60*24));
         
-        var s = String.format(Tine.Tinebase.tranlation.ngettext('{0} minute', '{0} minutes', i), i);
-        var Hs = String.format(Tine.Tinebase.tranlation.ngettext('{0} hour', '{0} hours', H), H);
-        //var ds = String.format(Tine.Tinebase.tranlation.ngettext('{0} workday', '{0} workdays', d), d);
+        var s = String.format(Tine.Tinebase.translation.ngettext('{0} minute', '{0} minutes', i), i);
+        var Hs = String.format(Tine.Tinebase.translation.ngettext('{0} hour', '{0} hours', H), H);
+        //var ds = String.format(Tine.Tinebase.translation.ngettext('{0} workday', '{0} workdays', d), d);
         
         if (i == 0) {
         	s = Hs;
@@ -182,6 +188,14 @@ Tine.Tinebase.common = {
         }
         iconCls = type == 'user' ? 'renderer renderer_accountUserIcon' : 'renderer renderer_accountGroupIcon';
         return '<div class="' + iconCls  + '">&#160;</div>' + Ext.util.Format.htmlEncode(displayName); 
+    },
+    
+    /**
+     * Returns account type icon
+     */
+    accountTypeRenderer: function(type) {
+        iconCls = (type) == 'user' ? 'renderer_accountUserIcon' : 'renderer_accountGroupIcon';
+        return '<div style="background-position: 0px" class="' + iconCls  + '">&#160;</div>'; 
     },
     
     /**
@@ -267,7 +281,9 @@ Tine.Tinebase.common = {
         var userRights = [];
         
         if (!(Tine && Tine[_application] && Tine[_application].registry && Tine[_application].registry.get('rights'))) {
-            if (Tine.Tinebase.appMgr.get(_application)) {
+            if (! Tine.Tinebase.appMgr) {
+                console.error('Tine.Tinebase.appMgr not yet available');
+            } else if (Tine.Tinebase.appMgr.get(_application)) {
                 console.error('Tine.' + _application + '.rights is not available, initialisation Error!');
             }
             return false;

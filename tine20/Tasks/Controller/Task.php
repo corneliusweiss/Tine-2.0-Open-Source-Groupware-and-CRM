@@ -85,10 +85,14 @@ class Tasks_Controller_Task extends Tinebase_Controller_Record_Abstract implemen
         if(empty($_task->class_id)) {
             $_task->class_id = NULL;
         }
-        $this->_handleCompletedDate($_task);
+        $this->_handleCompleted($_task);
         $_task->originator_tz = $_task->originator_tz ? $_task->originator_tz : Tinebase_Core::get(Tinebase_Core::USERTIMEZONE);
         
-        return parent::create($_task);
+        $task = parent::create($_task);
+        
+        $this->_addAutomaticAlarms($task);
+        
+        return $task;
     }
     
     /**
@@ -101,16 +105,16 @@ class Tasks_Controller_Task extends Tinebase_Controller_Record_Abstract implemen
      */
     public function update(Tinebase_Record_Interface $_task)
     {
-        $this->_handleCompletedDate($_task);
+        $this->_handleCompleted($_task);
         return parent::update($_task);
     }
     
     /**
-     * handles completed date
+     * handles completed date and sets task to 100%
      * 
      * @param Tasks_Model_Task $_task
      */
-    protected function _handleCompletedDate($_task)
+    protected function _handleCompleted($_task)
     {
         $allStatus = Tasks_Controller_Status::getInstance()->getAllStatus();
         
@@ -123,6 +127,7 @@ class Tasks_Controller_Task extends Tinebase_Controller_Record_Abstract implemen
                 $_task->completed = NULL;
             } elseif (! $_task->completed instanceof Zend_Date) {
                 $_task->completed = Zend_Date::now();
+                $_task->percent = 100;
             }
         }
     }
@@ -162,5 +167,39 @@ class Tasks_Controller_Task extends Tinebase_Controller_Record_Abstract implemen
         } else {
             Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Organizer has no email address.');
         }
+    }
+    
+    /**
+     * add automatic alarms to record (if configured)
+     * 
+     * @param Tinebase_Record_Abstract $_record
+     * @return void
+     * 
+     * @todo    move this to Tinebase_Controller_Record_Abstract
+     */
+    protected function _addAutomaticAlarms(Tinebase_Record_Abstract $_record)
+    {
+        $automaticAlarms = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::AUTOMATICALARM, 'Tasks');
+        if (count($automaticAlarms) == 0) {
+            return;
+        }
+        
+        if (! $_record->alarms instanceof Tinebase_Record_RecordSet) {
+            $_record->alarms = new Tinebase_Record_RecordSet('Tinebase_Model_Alarm');
+        }
+
+        if (count($_record->alarms) > 0) {
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Do not overwrite existing alarm.');
+            return;
+        }
+        
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Add automatic alarms / minutes before: ' . implode(',', $automaticAlarms));
+        foreach ($automaticAlarms as $minutesBefore) {
+            $_record->alarms->addRecord(new Tinebase_Model_Alarm(array(
+                'minutes_before' => $minutesBefore,
+            ), TRUE));
+        }
+        
+        $this->_saveAlarms($_record);
     }
 }

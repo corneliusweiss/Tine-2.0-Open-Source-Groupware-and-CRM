@@ -20,7 +20,12 @@ Ext.namespace('Tine.Addressbook');
  * @extends     Ext.form.ComboBox
  * 
  * <p>Contact Search Combobox</p>
- * <p><pre></pre></p>
+ * <p><pre>
+ * TODO         make this a twin trigger field with 'clear' button?
+ * TODO         replace internalContactsOnly with usersOnly (and update needed filter)
+ * TODO         add switch to filter for expired/enabled/disabled user accounts
+ * TODO         extend Tine.Tinebase.widgets.form.RecordPickerComboBox
+ * </pre></p>
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
@@ -37,9 +42,7 @@ Tine.Addressbook.SearchCombo = Ext.extend(Ext.form.ComboBox, {
      * combobox cfg
      * @private
      */
-	id: 'contactSearchCombo',
     typeAhead: false,
-    //hideTrigger: true, // IE7 doesn't like that!
     triggerAction: 'all',
     pageSize: 10,
     itemSelector: 'div.search-item',
@@ -68,6 +71,21 @@ Tine.Addressbook.SearchCombo = Ext.extend(Ext.form.ComboBox, {
      */
     selectedRecord: null,
     
+    /**
+     * @cfg {String} nameField
+     */
+    nameField: 'n_fn',
+
+    /**
+     * use account objects/records in get/setValue
+     * 
+     * @cfg {Boolean} legacy
+     * @legacy
+     * 
+     * TODO remove this later
+     */
+    useAccountRecord: false,
+    
     //private
     initComponent: function(){
         
@@ -92,9 +110,7 @@ Tine.Addressbook.SearchCombo = Ext.extend(Ext.form.ComboBox, {
         ];
         
         if (this.internalContactsOnly) {
-            filter.push({field: 'container_id', operator: 'specialNode', value: 'internal' });
-        } else {
-            filter.push({field: 'container_id', operator: 'specialNode', value: 'all' });
+            filter.push({field: 'type', operator: 'equals', value: 'user'});
         }
         
         if (this.additionalFilters !== null && this.additionalFilters.length > 0) {
@@ -114,7 +130,7 @@ Tine.Addressbook.SearchCombo = Ext.extend(Ext.form.ComboBox, {
      */
     onSelect: function(record){
         this.selectedRecord = record;
-        this.setValue(record.get('n_fn'));
+        this.setValue(record.get(this.nameField));
         this.collapse();
         
         this.fireEvent('select', this, record);
@@ -170,6 +186,38 @@ Tine.Addressbook.SearchCombo = Ext.extend(Ext.form.ComboBox, {
                 }
             );
         }
+    },
+    
+    getValue: function() {
+        if (this.useAccountRecord) {
+            if (this.selectedRecord) {
+                return this.selectedRecord.get('account_id');
+            } else {
+                return this.accountId;
+            }
+        } else {
+            return Tine.Addressbook.SearchCombo.superclass.getValue.call(this);
+        }
+    },
+
+    setValue: function (value) {
+    	
+        if (this.useAccountRecord) {
+            if (value) {
+                if(value.accountId) {
+                    // account object
+                    this.accountId = value.accountId;
+                    value = value.accountDisplayName;
+                } else if (typeof(value.get) == 'function') {
+                    // account record
+                    this.accountId = value.get('id');
+                    value = value.get('name');
+                }
+            } else {
+                this.accountId = null;
+            }
+        }
+        Tine.Addressbook.SearchCombo.superclass.setValue.call(this, value);
     },
     
     /**

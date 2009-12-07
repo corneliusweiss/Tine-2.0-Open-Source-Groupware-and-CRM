@@ -6,7 +6,7 @@
  * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
- * TODO         completely remove 'settings' button?
+ * TODO         refactor this
  */
  
 Ext.namespace('Tine.Admin');
@@ -18,35 +18,19 @@ Tine.Admin.Applications.Main = function() {
 
     /**
      * onclick handler for edit action
+     * 
+     * TODO     make that more generic?
      */
     var _editButtonHandler = function(_button, _event) {
         var selectedRows = Ext.getCmp('gridAdminApplications').getSelectionModel().getSelections();
-        var applicationId = selectedRows[0].id;
-        
-        Tine.Tinebase.common.openWindow('applicationWindow', 'index.php?method=Admin.editApplication&appId=' + applicationId, 600, 400);
+        var appName = selectedRows[0].data.name;
+        Tine[appName].AdminPanel.openWindow({
+            record: (Tine[selectedRows[0].data.name].Model.Settings) ? new Tine[selectedRows[0].data.name].Model.Settings(selectedRows[0].data.name) : null,
+            windowTitle: String.format(_('{0} Settings'), appName)
+        });
     };
-    
-    /**
-     * onclick handler for permissions action
-     * removed, is replaced by role management
-     */
-    /*
-    var _permissionsButtonHandler = function(_button, _event) {
-        var selectedRows = Ext.getCmp('gridAdminApplications').getSelectionModel().getSelections();
-        var applicationId = selectedRows[0].id;
-        
-        Tine.Tinebase.common.openWindow('applicationPermissionsWindow', 'index.php?method=Admin.editApplicationPermissions&appId=' + applicationId, 800, 350);
-    };
-    */
 
-    var _enableDisableButtonHandler = function(_button, _event) {
-    	//console.log(_button);
-    	
-    	var state = 'disabled';
-    	if(_button.id == 'Admin_Accesslog_Action_Enable') {
-    		state = 'enabled';
-    	}
-    	
+    var _enableDisableButtonHandler = function(state) {
         var applicationIds = new Array();
         var selectedRows = Ext.getCmp('gridAdminApplications').getSelectionModel().getSelections();
         for (var i = 0; i < selectedRows.length; ++i) {
@@ -76,19 +60,15 @@ Tine.Admin.Applications.Main = function() {
     var _action_enable = new Ext.Action({
         text: 'enable application',
         disabled: true,
-        handler: _enableDisableButtonHandler,
-        iconCls: 'action_enable',
-        id: 'Admin_Accesslog_Action_Enable',
-        scope: this
+        handler: _enableDisableButtonHandler.createDelegate(this, ['enabled']),
+        iconCls: 'action_enable'
     });
 
     var _action_disable = new Ext.Action({
         text: 'disable application',
         disabled: true,
-        handler: _enableDisableButtonHandler,
-        iconCls: 'action_disable',
-        id: 'Admin_Accesslog_Action_Disable',
-        scope: this
+        handler: _enableDisableButtonHandler.createDelegate(this, ['disabled']),
+        iconCls: 'action_disable'
     });
 
 	var _action_settings = new Ext.Action({
@@ -146,7 +126,7 @@ Tine.Admin.Applications.Main = function() {
         var ApplicationsAdminQuickSearchField = new Ext.ux.SearchField({
             id: 'ApplicationsAdminQuickSearchField',
             width:240,
-            emptyText: this.translation.gettext('enter searchfilter')
+            emptyText: Tine.Tinebase.translation._hidden('enter searchfilter')
         }); 
         ApplicationsAdminQuickSearchField.on('change', function() {
             Ext.getCmp('gridAdminApplications').getStore().load({params:{start:0, limit:50}});
@@ -159,9 +139,8 @@ Tine.Admin.Applications.Main = function() {
             items: [
                 _action_enable,
                 _action_disable,
-                //'-',
-                //_action_settings,
-                //_action_permissions,
+                '-',
+                _action_settings,
                 '->',
                 this.translation.gettext('Search:'), ' ',
 /*                new Ext.ux.SelectBox({
@@ -216,8 +195,7 @@ Tine.Admin.Applications.Main = function() {
             items: [
                 _action_enable,
                 _action_disable,
-                _action_disable
-                //_action_permissions
+                _action_settings
             ]
         });
 
@@ -255,18 +233,18 @@ Tine.Admin.Applications.Main = function() {
                 if (rowCount < 1) {
                     _action_enable.setDisabled(true);
                     _action_disable.setDisabled(true);
-                    //_action_settings.setDisabled(true);
-                    //_action_permissions.setDisabled(true);
+                    _action_settings.setDisabled(true);
                 } else if (rowCount > 1) {
                     _action_enable.setDisabled(false);
                     _action_disable.setDisabled(false);
-                    //_action_settings.setDisabled(true);
-                    //_action_permissions.setDisabled(true);
+                    _action_settings.setDisabled(true);
                 } else {
                     _action_enable.setDisabled(false);
                     _action_disable.setDisabled(false);
-                    //_action_settings.setDisabled(true);                
-                    //_action_permissions.setDisabled(false);
+                    // check if app has admin panel
+                    if (Tine[selected[0].data.name].AdminPanel) {
+                        _action_settings.setDisabled(false);
+                    }
                 }
                 
                 // don't allow to disable Admin, Tinebase or Addressbook as we can't deal with this yet
@@ -327,7 +305,6 @@ Tine.Admin.Applications.Main = function() {
                     _action_enable.setDisabled(false);
                     _action_disable.setDisabled(false);
                     //_action_settings.setDisabled(true);
-                    //_action_permissions.setDisabled(false);
                 }
             }
             //var record = _grid.getStore().getAt(rowIndex);
@@ -345,21 +322,9 @@ Tine.Admin.Applications.Main = function() {
             this.updateMainToolbar();        
         },
         
+        // @deprecated
         updateMainToolbar : function() 
         {
-            var menu = Ext.menu.MenuMgr.get('Tinebase_System_AdminMenu');
-            menu.removeAll();
-            /*menu.add(
-                {text: 'product', handler: Tine.Crm.Main.handlers.editProductSource}
-            );*/
-    
-            var adminButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_AdminButton');
-            adminButton.setIconClass('AdminTreePanel');
-            //if(Admin.Crm.rights.indexOf('admin') > -1) {
-            //    adminButton.setDisabled(false);
-            //} else {
-                adminButton.setDisabled(true);
-            //}
         }
     };
     

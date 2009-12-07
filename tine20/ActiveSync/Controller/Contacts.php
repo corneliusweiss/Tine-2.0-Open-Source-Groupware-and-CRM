@@ -127,7 +127,11 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
             if(!empty($data->$value)) {
                 switch($value) {
                     case 'bday':
-                    	$nodeContent = $data->bday->toString('yyyy-MM-ddTHH:mm:ss') . '.000Z';;                       
+                        if(strtolower($this->_device->devicetype) == 'iphone') {
+                            $data->bday->addHour(12);
+                        }
+                        
+                        $nodeContent = $data->bday->toString('yyyy-MM-ddTHH:mm:ss') . '.000Z';
                         break;
                         
                     case 'jpegphoto':
@@ -154,7 +158,10 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
                         $nodeContent = $data->$value;
                         break;
                 }
-                $_xmlNode->appendChild($_xmlDocument->createElementNS('uri:Contacts', $key, $nodeContent));
+                $node = $_xmlDocument->createElementNS('uri:Contacts', $key);
+                $node->appendChild(new DOMText($nodeContent));
+                
+                $_xmlNode->appendChild($node);
             }
         }        
     }
@@ -244,12 +251,28 @@ class ActiveSync_Controller_Contacts extends ActiveSync_Controller_Abstract
                         }
                     }
                     break;
+                    
                 case 'bday':
                     if(isset($xmlData->$fieldName)) {
                         $timeStamp = $this->_convertISOToTs((string)$xmlData->$fieldName);
-                        $contact->$value = new Zend_Date($timeStamp, NULL);
+                        $contact->bday = new Zend_Date($timeStamp, NULL);
+                        
+                        switch(strtolower($this->_device->devicetype)) {
+                            // the iphone sends the birthday based noon
+                            // Tine 2.0 stores the birthday at midnight
+                            case 'iphone':
+                                $contact->bday->subHour(12);
+                                break;
+                                
+                            // the palm sets the birthday to the time the birthday got entered on the device
+                            // thats something we can't work with 
+                            case 'palm':
+                                unset($contact->bday);
+                                break;
+                        }
+                        
                     } else {
-                        $contact->$value = null;
+                        $contact->bday = null;
                     }
                     break;
                     

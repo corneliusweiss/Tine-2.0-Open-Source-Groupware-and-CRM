@@ -153,8 +153,9 @@ Tine.Timetracker.TimeAccountSelect = Ext.extend(Ext.form.ComboBox, {
 });
 
 Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterModel, {
-    field: 'timeaccount_id',
-    valueType: 'timeaccount',    
+    isForeignFilter: true,
+    foreignField: 'id',
+    ownField: 'timeaccount_id',
     
     /**
      * @private
@@ -162,11 +163,24 @@ Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterMode
     initComponent: function() {
         Tine.widgets.tags.TagFilter.superclass.initComponent.call(this);
         
+        this.subFilterModels = [];
+        
         this.app = Tine.Tinebase.appMgr.get('Timetracker');
         this.label = this.app.i18n._("Time Account");
         this.operators = ['equals'];
     },
-   
+    
+    getSubFilters: function() {
+        var filterConfigs = Tine.Timetracker.Model.Timeaccount.getFilterModel();
+        Ext.each(filterConfigs, function(config) {
+            if (config.field != 'query') {
+                this.subFilterModels.push(Tine.widgets.grid.FilterToolbar.prototype.createFilterModel.call(this, config));
+            }
+        }, this);
+        
+        return this.subFilterModels;
+    },
+    
     /**
      * value renderer
      * 
@@ -196,6 +210,7 @@ Tine.Timetracker.TimeAccountGridFilter = Ext.extend(Tine.widgets.grid.FilterMode
         return value;
     }
 });
+Tine.widgets.grid.FilterToolbar.FILTERS['timetracker.timeaccount'] = Tine.Timetracker.TimeAccountGridFilter;
 
 Tine.Timetracker.TimeAccountStatusGridFilter = Ext.extend(Tine.widgets.grid.FilterModel, {
 	field: 'timeaccount_status',
@@ -209,7 +224,7 @@ Tine.Timetracker.TimeAccountStatusGridFilter = Ext.extend(Tine.widgets.grid.Filt
         Tine.widgets.tags.TagFilter.superclass.initComponent.call(this);
         
         this.app = Tine.Tinebase.appMgr.get('Timetracker');
-        this.label = this.app.i18n._("Time Account - Status");
+        this.label = this.label ? this.label : this.app.i18n._("Time Account - Status");
         this.operators = ['equals'];
     },
    
@@ -246,3 +261,4 @@ Tine.Timetracker.TimeAccountStatusGridFilter = Ext.extend(Tine.widgets.grid.Filt
         return value;
     }
 });
+Tine.widgets.grid.FilterToolbar.FILTERS['timetracker.timeaccountstatus'] = Tine.Timetracker.TimeAccountStatusGridFilter;

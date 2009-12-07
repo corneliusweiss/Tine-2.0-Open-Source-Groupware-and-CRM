@@ -258,6 +258,8 @@ class Tinebase_Container
     public function getContainerByACL($_accountId, $_application, $_grant, $_onlyIds = FALSE)
     {
         $accountId = Tinebase_Model_User::convertUserIdToInt($_accountId);
+        
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' app: ' . $_application . ' / account: ' . $_accountId);
 
         $cache = Tinebase_Core::get('cache');
         $cacheId = convertCacheId('getContainerByACL' . $accountId . $_application . $_grant . $_onlyIds);
@@ -510,15 +512,22 @@ class Tinebase_Container
     
     /**
      * gets default container of given user for given app
+     *  - returns personal first container at the moment
      *
-     * @todo implement !
+     * @param string $_accountId
+     * @param string $_applicationName
+     * @return Tinebase_Model_Container
      * 
-     * @param unknown_type $_accountId
-     * @param unknown_type $_applicationId
+     * @todo return default container from preferences if available 
      */
-    public function getDefaultContainer($_accountId, $_applicationId)
+    public function getDefaultContainer($_accountId, $_applicationName)
     {
-        
+        return $this->getPersonalContainer(
+            $_accountId, 
+            $_applicationName, 
+            $_accountId, 
+            Tinebase_Model_Container::GRANT_ADD
+        )->getFirstRecord();
     }
     
     /**
@@ -591,6 +600,7 @@ class Tinebase_Container
         $select = $this->_db->select()
             ->from(array('owner' => SQL_TABLE_PREFIX . 'container_acl'), array('account_id'))
             ->join(array('user' => SQL_TABLE_PREFIX . 'container_acl'),'owner.container_id = user.container_id', array())
+            ->join(array('contacts' => SQL_TABLE_PREFIX . 'addressbook'),'owner.account_id = contacts.account_id', array())
             ->join(SQL_TABLE_PREFIX . 'container', 'user.container_id = ' . SQL_TABLE_PREFIX . 'container.id', array())
             ->where('owner.account_id != ?', $accountId)
             ->where('owner.account_grant = ?', Tinebase_Model_Container::GRANT_ADMIN)
@@ -605,7 +615,7 @@ class Tinebase_Container
             ->where(SQL_TABLE_PREFIX . 'container.type = ?', Tinebase_Model_Container::TYPE_PERSONAL)
             ->where($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'container.is_deleted') . ' = 0')
             
-            ->order(SQL_TABLE_PREFIX . 'container.name')
+            ->order('contacts.n_fileas')
             ->group('owner.account_id');
             
         //error_log("getContainer:: " . $select->__toString());
@@ -958,7 +968,7 @@ class Tinebase_Container
                 ->where(SQL_TABLE_PREFIX . 'container.id = ?', $containerId)
                 ->group(SQL_TABLE_PREFIX . 'container_acl.account_grant');
     
-            //error_log("getContainer:: " . $select->__toString());
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
     
             $stmt = $this->_db->query($select);
     
@@ -1043,11 +1053,14 @@ class Tinebase_Container
      *
      * @param   int|Tinebase_Model_Container $_containerId
      * @param   Tinebase_Record_RecordSet $_grants
+     * @param   boolean $_ignoreAcl
+     * @param   boolean $_failSafe don't allow to remove all admin grants for container
      * @return  Tinebase_Record_RecordSet subtype Tinebase_Model_Grants
      * @throws  Tinebase_Exception_AccessDenied
      * @throws  Tinebase_Exception_Backend
+     * @throws  Tinebase_Exception_Record_NotAllowed
      */
-    public function setGrants($_containerId, Tinebase_Record_RecordSet $_grants, $_ignoreAcl = FALSE) 
+    public function setGrants($_containerId, Tinebase_Record_RecordSet $_grants, $_ignoreAcl = FALSE, $_failSafe = TRUE) 
     {
         $containerId = Tinebase_Model_Container::convertContainerIdToInt($_containerId);
         
@@ -1056,6 +1069,19 @@ class Tinebase_Container
             if(!$this->hasGrant(Tinebase_Core::getUser(), $containerId, Tinebase_Model_Container::GRANT_ADMIN)) {
                 throw new Tinebase_Exception_AccessDenied('Permission to set grants of container denied.');
             }            
+        }
+        
+        // do failsafe check
+        if ($_failSafe) {
+            $adminGrant = FALSE;
+            foreach ($_grants as $recordGrants) {
+                if ($recordGrants->{Tinebase_Model_Container::ADMINGRANT}) {
+                    $adminGrant = TRUE;
+                }
+            }
+            if (count($_grants) == 0 || ! $adminGrant) {
+                throw new Tinebase_Exception_UnexpectedValue('You are not allowed to remove all (admin) grants for this container.');
+            }
         }
         
         $container = $this->getContainerById($containerId);
@@ -1116,9 +1142,9 @@ class Tinebase_Container
                 $accountId          = Tinebase_Model_User::convertUserIdToInt(Tinebase_Core::getUser());
                 $cache->remove('getGrantsOfAccount' . $_containerId . $accountId . 0);                
                 $cache->remove('getGrantsOfAccount' . $_containerId . $accountId . 1);                
-            } catch (Zend_Exception $ze) {
+            } catch (Exception $e) {
                 // no user account set
-                Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . 'No user account set.');
+                Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . 'No user account set. Error: ' . $e->getMessage());
             }
             $cache->remove('getContainerById' . $_containerId);
             $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('container'));
@@ -1136,6 +1162,7 @@ class Tinebase_Container
      */
     protected function _getGrantsFromArray(array $_grantsArray, $_accountId)
     {
+        $grants = array();
         foreach($_grantsArray as $key => $value) {
             $grantValue = (is_array($value)) ? $value['account_grant'] : $value; 
             $grants[Tinebase_Model_Container::$GRANTNAMEMAP[$grantValue]] = TRUE;

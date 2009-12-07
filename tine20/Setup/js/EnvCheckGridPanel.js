@@ -130,7 +130,7 @@ Ext.ns('Tine', 'Tine.Setup');
             autoFill: true,
             forceFit:true,
             ignoreAdd: true
-            //emptyText: String.format(Tine.Tinebase.tranlation._("No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."), this.i18nRecordsName, this.i18nContainersName),
+            //emptyText: String.format(Tine.Tinebase.translation._("No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."), this.i18nRecordsName, this.i18nContainersName),
             /*
             onLoad: Ext.emptyFn,
             listeners: {
@@ -187,6 +187,21 @@ Ext.ns('Tine', 'Tine.Setup');
             iconCls: 'x-tbar-loading',
             scope: this
         });
+        
+        this.action_ignoreTests = new Ext.Action({
+            text: this.app.i18n._('Ignore setup tests'),
+            // we are not ready for this button yet:
+            //    setup only works with mysql version check ok
+            disabled: true,
+            iconCls: 'setup_checks_success',
+            scope: this,
+            handler: function() {
+                var checks = Tine.Setup.registry.get('setupChecks');
+                checks.success = true;
+                Tine.Setup.registry.replace('setupChecks', checks);
+                Tine.Setup.registry.replace('checkDB', true);
+            }
+        });
     	/*
         this.action_installApplications = new Ext.Action({
             text: this.app.i18n._('Install application'),
@@ -204,7 +219,8 @@ Ext.ns('Tine', 'Tine.Setup');
         
         this.actionToolbar = new Ext.Toolbar({
             items: [
-                this.action_reCheck
+                this.action_reCheck,
+                this.action_ignoreTests
             ]
         });
     },

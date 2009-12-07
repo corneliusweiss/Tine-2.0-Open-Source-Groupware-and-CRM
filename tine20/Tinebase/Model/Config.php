@@ -47,6 +47,13 @@ class Tinebase_Model_Config extends Tinebase_Record_Abstract
     const AUTHENTICATIONBACKENDTYPE = 'Tinebase_Authentication_BackendType';
     
     /**
+     * save automatic alarms when creating new record
+     * 
+     * @var string
+     */
+    const AUTOMATICALARM = 'automaticalarm';
+    
+    /**
      * user backend config
      * 
      * @var string
@@ -73,6 +80,47 @@ class Tinebase_Model_Config extends Tinebase_Record_Abstract
      * @var string
      */
     const PAGETITLEPOSTFIX = 'pagetitlepostfix';
+
+    /**
+     * ods export config
+     * 
+     * @var string
+     */
+    const ODSEXPORTCONFIG = 'odsexportconfig';
+    
+    /**
+     * xls export config
+     * 
+     * @var string
+     */
+    const XLSEXPORTCONFIG = 'xlsexportconfig';
+    
+    /**
+     * app defaults
+     * 
+     * @var string
+     */
+    const APPDEFAULTS = 'appdefaults';
+    
+    /**
+     * logout redirect url
+     * 
+     * @var string
+     */
+    const REDIRECTURL = 'redirectUrl';
+    
+    /**
+     * Config key for Setting "Redirect to referring site if exists?"
+     * 
+     * @var string
+     */
+    const REDIRECTTOREFERRER = 'redirectToReferrer';
+    
+    /**
+     * Config key for acceptedTermsVersion
+     * @var string
+     */
+    const ACCEPTEDTERMSVERSION = 'acceptedTermsVersion';
     
     /**
      * identifier

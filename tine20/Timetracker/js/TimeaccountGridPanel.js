@@ -66,17 +66,12 @@ Tine.Timetracker.TimeaccountGridPanel = Ext.extend(Tine.Tinebase.widgets.app.Gri
      */
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
-            filterModels: [
-                {label: this.app.i18n._('Time Account'),   field: 'query',       operators: ['contains']},
-                {label: this.app.i18n._('Description'),    field: 'description', operators: ['contains']},
-                {label: this.app.i18n._('Created By'),     field: 'created_by',  valueType: 'user'},
-                new Tine.Timetracker.TimeAccountStatusGridFilter({
-                    field: 'status'
-                }),
-                new Tine.widgets.tags.TagFilter({app: this.app})
-             ],
-             defaultFilter: 'query',
-             filters: []
+            filterModels: Tine.Timetracker.Model.Timeaccount.getFilterModel(),
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+            ]
         });
     },    
     

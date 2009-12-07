@@ -38,7 +38,7 @@ class Tinebase_Relations
      */
     private function __construct()
     {
-        $this->_backend = new Tinebase_Relation_Backend_Sql;
+        $this->_backend = new Tinebase_Relation_Backend_Sql();
     }
     /**
      * the singleton pattern
@@ -104,7 +104,24 @@ class Tinebase_Relations
             $current = $currentRelations[$currentRelations->getIndexById($relationId)];
             $update = $relations[$relations->getIndexById($relationId)];
             
-            if (! $current->related_record->isEqual($update->related_record, array('jpegphoto'))) {
+            // @todo do we need to ommit so many fields?
+            if (! $current->related_record->isEqual(
+                $update->related_record, 
+                array(
+                    'jpegphoto', 
+                    'creation_time', 
+                    'last_modified_time',
+                    'created_by',
+                    'last_modified_by',
+                    'is_deleted',
+                    'deleted_by',
+                    'deleted_time',
+                    'tags',
+                    'notes',
+                )
+            )) {
+                //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($current->related_record->toArray(), true));
+                //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($update->related_record->toArray(), true));
                 $this->_setAppRecord($update);
             }
             
@@ -135,7 +152,9 @@ class Tinebase_Relations
      */
     public function getRelations($_model, $_backend, $_id, $_degree = NULL, array $_type = array(), $_ignoreAcl=false)
     {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . "  model: '$_model' backend: '$_backend' ids:" . print_r((array)$_id, true));
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . "  model: '$_model' backend: '$_backend' " 
+            // . 'ids: ' . print_r((array)$_id, true)
+        );
     
         $result = $this->_backend->getAllRelations($_model, $_backend, $_id, $_degree, $_type);
         $this->resolveAppRecords($result);
@@ -210,6 +229,8 @@ class Tinebase_Relations
      * 
      * @param   Tinebase_Record_RecordSet of Tinebase_Model_Relation
      * @throws  Tinebase_Exception_UnexpectedValue
+     * 
+     * @todo    allowed related models should not be defined here
      */
     protected function _setAppRecord($_relation)
     {
@@ -221,6 +242,9 @@ class Tinebase_Relations
         } else {
             $method = 'update';
         }
+
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' ' . ucfirst($method) . ' ' . $_relation->related_model . ' record.');
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_relation->toArray(), TRUE));
         
         $record = $appController->$method($_relation->related_record);
         $_relation->related_id = $record->getId();
@@ -230,6 +254,9 @@ class Tinebase_Relations
                 $_relation->related_backend = Addressbook_Backend_Factory::SQL;
                 break;
             case 'Tasks_Model_Task':
+                $_relation->related_backend = Tasks_Backend_Factory::SQL;
+                break;
+            case 'Sales_Model_Product':
                 $_relation->related_backend = Tasks_Backend_Factory::SQL;
                 break;
             default:
@@ -287,6 +314,19 @@ class Tinebase_Relations
                 }
             }
         }
+    }
+    
+    /**
+     * get list of relations
+     *
+     * @param Tinebase_Model_Filter_FilterGroup|optional $_filter
+     * @param Tinebase_Model_Pagination|optional $_pagination
+     * @param boolean $_onlyIds
+     * @return Tinebase_Record_RecordSet|array
+     */
+    public function search(Tinebase_Model_Filter_FilterGroup $_filter = NULL, Tinebase_Record_Interface $_pagination = NULL, $_onlyIds = FALSE)
+    {
+        return $this->_backend->search($_filter, $_pagination, $_onlyIds);
     }
     
     /**

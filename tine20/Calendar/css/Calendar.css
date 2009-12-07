@@ -22,6 +22,10 @@
     background-image:url(../../images/oxygen/16x16/actions/view-calendar-month.png) !important;
 }
 
+.cal-resource {
+    background-image:url(../../images/oxygen/16x16/devices/video-projector.png) !important;
+}
+    
 .cal-attendee-type-resource {
     background-image:url(../../images/oxygen/16x16/devices/video-projector.png) !important;
     background-position:2px 2px;
@@ -92,4 +96,17 @@ span.tw-containerselect-trigger2 img.tw-containerselect-trigger2-bg {
     background-position: 8px;
 	background-repeat:no-repeat;
 	padding: 2px 0px 2px 26px;
+}
+
+/**** conflict window ****/
+.cal-conflict-heading {
+    height: 32px;
+}
+
+.cal-conflict-attendername {
+    font-weight: bold;
+}
+
+.cal-conflict-eventinfos {
+    margin-left: 15px;
 }

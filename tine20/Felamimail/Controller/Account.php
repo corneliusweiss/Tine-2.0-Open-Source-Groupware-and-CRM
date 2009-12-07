@@ -207,8 +207,9 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
         // check if default account got deleted and set new default account
         if (in_array(Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT}, (array) $_ids)) {
             $accounts = $this->search();
-            Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT} = 
-                (count($accounts) > 0) ? $accounts->getFirstRecord()->getId() : NULL;
+            $defaultAccountId = (count($accounts) > 0) ? $accounts->getFirstRecord()->getId() : Felamimail_Model_Account::DEFAULT_ACCOUNT_ID;
+            
+            Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT} = $defaultAccountId;
         }
     }
     
@@ -410,6 +411,12 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
                     . '(' . $zmpe->getMessage() . ')'
                 );
                 return $_account;
+            } catch (Felamimail_Exception_InvalidCredentials $zmpe) {
+                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ 
+                    . ' Wrong user credentials ... '
+                    . '(' . $zmpe->getMessage() . ')'
+                );
+                return $_account;
             }
         }
         
@@ -443,6 +450,9 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
             $result = $_account;
         } else {
             $this->_setRightChecks(FALSE);
+            if ($_account->delimiter) {
+                $_account->delimiter = substr($_account->delimiter, 0, 1);
+            }
             $result = $this->update($_account);
             $this->_setRightChecks(TRUE);
         }

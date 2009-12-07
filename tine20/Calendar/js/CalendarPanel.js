@@ -169,45 +169,67 @@ Tine.Calendar.CalendarPanel = Ext.extend(Ext.Panel, {
     },
     
     onProxyFail: function(error, event) {
+        this.setLoading(false);
+        
         if (error.code == 901) {
-            // get names of busy attendee
-            // TODO refactore name handling of attendee
-            //      -> attender model needs knowlege of how to get names!
-            var attendeeStore = new Ext.data.Store();
-            Ext.each(event.get('attendee'), function(attender) {
-                var record = new Tine.Calendar.Model.Attender(attender, attender.id);
-                attendeeStore.add(record);
-            });
             
+            // resort fbInfo to combine all events of a attender
             var busyAttendee = [];
-            var names = [];
+            var confictEvents = {};
+            var attendeeStore = Tine.Calendar.Model.Attender.getAttendeeStore(event.get('attendee'));
             Ext.each(error.freebusyinfo, function(fbinfo) {
-                var user_id = fbinfo.user_id;
-                var user_type = fbinfo.user_type;
-                
                 attendeeStore.each(function(a) {
-                    if (a.get('user_type') == user_type && a.getUserId() == user_id) {
+                    if (a.get('user_type') == fbinfo.user_type && a.getUserId() == fbinfo.user_id) {
                         if (busyAttendee.indexOf(a) < 0) {
                             busyAttendee.push(a);
-                            names.push(Tine.Calendar.AttendeeGridPanel.prototype.renderAttenderName.call(Tine.Calendar.AttendeeGridPanel.prototype, a.get('user_id'), false, a));
+                            confictEvents[a.id] = [];
                         }
+                        confictEvents[a.id].push(fbinfo);
                     }
-                })
+                });
             }, this);
+            
+            // generate html for each busy attender
+            var busyAttendeeHTML = '';
+            Ext.each(busyAttendee, function(busyAttender) {
+                // TODO refactore name handling of attendee
+                //      -> attender model needs knowlege of how to get names!
+                //var attenderName = a.getName();
+                var attenderName = Tine.Calendar.AttendeeGridPanel.prototype.renderAttenderName.call(Tine.Calendar.AttendeeGridPanel.prototype, busyAttender.get('user_id'), false, busyAttender);
+                busyAttendeeHTML += '<div class="cal-conflict-attendername">' + attenderName + '</div>';
+                
+                var eventInfos = [];
+                Ext.each(confictEvents[busyAttender.id], function(fbInfo) {
+                    var format = 'H:i';
+                    var dateFormat = Ext.form.DateField.prototype.format;
+                    if (event.get('dtstart').format(dateFormat) != event.get('dtend').format(dateFormat) ||
+                        Date.parseDate(fbInfo.dtstart, Date.patterns.ISO8601Long).format(dateFormat) != Date.parseDate(fbInfo.dtend, Date.patterns.ISO8601Long).format(dateFormat))
+                    {
+                        format = dateFormat + ' ' + format;
+                    }
+                    
+                    var eventInfo = Date.parseDate(fbInfo.dtstart, Date.patterns.ISO8601Long).format(format) + ' - ' + Date.parseDate(fbInfo.dtend, Date.patterns.ISO8601Long).format(format);
+                    if (fbInfo.event && fbInfo.event.summary) {
+                        eventInfo += ' : ' + fbInfo.event.summary;
+                    }
+                    eventInfos.push(eventInfo);
+                }, this);
+                busyAttendeeHTML += '<div class="cal-conflict-eventinfos">' + eventInfos.join(', <br />') + '</div>';
+                
+            });
             
             this.conflictConfirmWin = new Ext.Window({
                 modal: true,
+                width: Ext.isIE ? 350 : 'auto',
                 cls: 'x-window-dlg',
                 closable: false,
                 title: this.app.i18n._('Scheduling Conflict'),
                 html: '<div class="ext-mb-icon ext-mb-question"></div>' +
                       '<div class="ext-mb-content"><span class="ext-mb-text"></span>' +
-                          String.format(
-                            this.app.i18n.n_(
-                                '{0} is busy at the requested time', 
-                                'The follwing attendee are busy at the requested time: "{0}"',
-                                names.length) + "<br />", 
-                           names.join(', ')) +
+                            '<div class = "cal-conflict-heading">' +
+                                this.app.i18n._('The following attendee are busy at the requested time:') + 
+                            '</div>' +
+                            busyAttendeeHTML +
                       '<br /><div class="ext-mb-fix-cursor"></div></div>',
                 buttons: [{
                     text: this.app.i18n._('Ignore Conflict'),
@@ -227,23 +249,9 @@ Tine.Calendar.CalendarPanel = Ext.extend(Ext.Panel, {
                 }]
             });
             this.conflictConfirmWin.show();
-            /*
-            Ext.MessageBox.confirm(
-                this.app.i18n._('Scheduling Conflict'),
-                String.format(this.app.i18n.n_('{0} is busy at the requested time', 'The follwing attendee are busy at the requested time: "{0}"', names.length) + "<br />"  +
-                this.app.i18n._('Ignore Scheduling Conflict?'), names.join(', ')),
-                function(btn) {
-                    if(btn == 'yes') {
-                        this.onAddEvent(event, false)
-                    } else {
-                        this.setLoading(false);
-                        this.store.remove(event);
-                        //this.loadMask.show();
-                        //this.store.load({refresh: true});
-                    }
-                }, this
-            );
-            */
+            
+        } else {
+            Tine.Tinebase.ExceptionHandler.handleRequestException(error);
         }
     },
     
@@ -301,7 +309,7 @@ Tine.Calendar.CalendarPanel = Ext.extend(Ext.Panel, {
                             },
                             failure: this.onProxyFail.createDelegate(this, [event], true) /*function () {
                                 this.loadMask.hide();;
-                                Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), this.app.i18n._('Failed not update recurring event series')); 
+                                Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), this.app.i18n._('Failed not update recurring event series')); 
                             }*/
                         };
                         
@@ -323,7 +331,7 @@ Tine.Calendar.CalendarPanel = Ext.extend(Ext.Panel, {
                                 this.view.getSelectionModel().select(updatedEvent);
                             },
                             failure: this.onProxyFail.createDelegate(this, [event], true) /* function () {
-                                Ext.MessageBox.alert(Tine.Tinebase.tranlation._hidden('Failed'), this.app.i18n._('Failed not update event')); 
+                                Ext.MessageBox.alert(Tine.Tinebase.translation._hidden('Failed'), this.app.i18n._('Failed not update event')); 
                             }*/
                         };
                         

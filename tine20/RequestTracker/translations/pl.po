@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - RequestTracker\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-09-05 14:19+0100\n"
+"PO-Revision-Date: 2009-11-22 16:16+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: js/TicketGridPanel.js:43
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Upomnienie"
+msgstr[0] "upomnienie"
 msgstr[1] "upomnienia"
 msgstr[2] "upomnień"
 
@@ -46,7 +46,7 @@ msgstr "Wstrzymane"
 
 #: js/StatusCombo.js:31
 msgid "Resolved"
-msgstr "Załatwione"
+msgstr "Zrealizowane"
 
 #: js/StatusCombo.js:32
 msgid "Rejected"
@@ -57,32 +57,32 @@ msgid "Deleted"
 msgstr "Usunięte"
 
 #: js/StatusCombo.js:51
-#: js/TicketGridPanel.js:93
+#: js/TicketGridPanel.js:96
 msgid "Status"
 msgstr "Status"
 
 #: js/TicketGridPanel.js:44
-#: js/TicketGridPanel.js:66
+#: js/TicketGridPanel.js:69
 msgid "Ticket ID"
 msgstr "ID upomnienia"
 
 #: js/TicketGridPanel.js:45
-#: js/TicketGridPanel.js:69
+#: js/TicketGridPanel.js:72
 msgid "Queue"
 msgstr "Kolejka"
 
 #: js/TicketGridPanel.js:46
-#: js/TicketGridPanel.js:75
+#: js/TicketGridPanel.js:78
 msgid "Subject"
 msgstr "Temat"
 
 #: js/TicketGridPanel.js:47
-#: js/TicketGridPanel.js:81
+#: js/TicketGridPanel.js:84
 msgid "Requestors"
 msgstr "Zamawiający"
 
 #: js/TicketGridPanel.js:48
-#: js/TicketGridPanel.js:87
+#: js/TicketGridPanel.js:90
 msgid "Owner"
 msgstr "Właściciel"
 
@@ -90,11 +90,11 @@ msgstr "Właściciel"
 msgid "Description"
 msgstr "Opis"
 
-#: js/TicketGridPanel.js:99
+#: js/TicketGridPanel.js:102
 msgid "Final Priority"
 msgstr "Końcowy priorytet"
 
-#: js/TicketGridPanel.js:105
+#: js/TicketGridPanel.js:108
 msgid "Due"
 msgstr "Termin"
 

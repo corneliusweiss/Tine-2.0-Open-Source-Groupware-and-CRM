@@ -727,6 +727,7 @@ Ext.extend(Tine.Calendar.DaysView, Ext.util.Observable, {
         
         rz.event = event;
         rz.originalHeight = rz.el.getHeight();
+        rz.originalWidth  = rz.el.getWidth();
         
         rz.el.setStyle({'border-style': 'dashed'});
         rz.el.setOpacity(0.5);
@@ -755,11 +756,16 @@ Ext.extend(Tine.Calendar.DaysView, Ext.util.Observable, {
     onEventResize: function(rz, width, height) {
         var event = rz.event;
         
+        if (! event) {
+            //event already gone -> late event / busy brower?
+            return;
+        }
+        
         var originalDuration = (event.get('dtend').getTime() - event.get('dtstart').getTime()) / Date.msMINUTE;
         
         if(event.get('is_all_day_event')) {
             var dayWidth = Ext.fly(this.wholeDayArea).getWidth() / this.numOfDays;
-            var diff = Math.round((rz.el.getRight() - rz.startPoint[0]) / dayWidth);
+            var diff = Math.round((width - rz.originalWidth) / dayWidth);
             
             if (diff != 0) {
                 event.set('dtend', event.get('dtend').add(Date.DAY, diff));

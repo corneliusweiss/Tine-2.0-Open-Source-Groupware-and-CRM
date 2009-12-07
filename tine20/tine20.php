@@ -14,7 +14,7 @@ if (php_sapi_name() != 'cli') {
     die('not allowed!');
 }
 
-set_include_path('.' . PATH_SEPARATOR . dirname(__FILE__) . '/library' . PATH_SEPARATOR . get_include_path());
+set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . '/library' . PATH_SEPARATOR . get_include_path());
 
 require_once 'Zend/Loader/Autoloader.php';
 $autoloader = Zend_Loader_Autoloader::getInstance();
@@ -24,6 +24,11 @@ $autoloader->setFallbackAutoloader(true);
  * path to tine 2.0 checkout
  */
 $tine20path = dirname(__FILE__);
+
+/**
+ * anonymous methods (no pw/user required)
+ */
+$anonymousMethods = array('Tinebase.triggerAsyncEvents');
 
 /**
  * options
@@ -46,23 +51,24 @@ try {
    exit;
 }
 
-if (count($opts->toArray()) === 0 || $opts->h || empty($opts->method) || empty($opts->username) /*|| empty($opts->password)*/) {
+if (count($opts->toArray()) === 0 || $opts->h || empty($opts->method)) {
     echo $opts->getUsageMessage();
     exit;
 }
 
-if (empty($opts->password)) {
-    fwrite(STDOUT, PHP_EOL . 'password> ');
-    if (preg_match('/^win/i', PHP_OS)) {
-        $pwObj = new Com('ScriptPW.Password');
-        $passwordInput = $pwObj->getPassword();
-    } else {
-        system('stty -echo');
-        $passwordInput = fgets(STDIN);
-        system('stty echo');
+// get username / password if not already set
+if (! in_array($opts->method, $anonymousMethods)) {
+    if (empty($opts->username)) {
+        $opts->username = Tinebase_Server_Cli::promptInput('username');
+    }
+    if (empty($opts->username)) {
+        echo "error: username must be given! exiting \n";
+        exit (1);
     }
     
-    $opts->password = rtrim($passwordInput);
+    if (empty($opts->password)) {
+        $opts->password = Tinebase_Server_Cli::promptInput('password', TRUE);
+    }
 }
 
 Tinebase_Core::set('opts', $opts);

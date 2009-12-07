@@ -412,6 +412,7 @@ Tine.Voipmanager.Model.AsteriskSipPeerArray = Tine.Tinebase.Model.genericFields.
     {name: 'callgroup'},
     {name: 'callerid'},
     {name: 'canreinvite'},
+    {name: 'context_id'},
     {name: 'context'},
     {name: 'defaultip'},
     {name: 'dtmfmode'},
@@ -435,11 +436,11 @@ Tine.Voipmanager.Model.AsteriskSipPeerArray = Tine.Tinebase.Model.genericFields.
     {name: 'rtpholdtimeout'},
     {name: 'secret'},
     {name: 'type'},
-    {name: 'username'},
+    {name: 'defaultuser'},
     {name: 'disallow'},
     {name: 'allow'},
     {name: 'musiconhold'},
-    {name: 'regseconds'},
+    {name: 'regseconds', type: 'date', dateFormat: Date.patterns.ISO8601Long},
     {name: 'ipaddr'},
     {name: 'regexten'},
     {name: 'cancallforward'},
@@ -516,6 +517,7 @@ Tine.Voipmanager.Model.AsteriskContext.getDefaultData = function() {
 
 Tine.Voipmanager.Model.AsteriskVoicemailArray = Tine.Tinebase.Model.genericFields.concat([
     {name: 'id'},
+    {name: 'context_id'},
     {name: 'context'},
     {name: 'mailbox'},
     {name: 'password'},
@@ -547,7 +549,7 @@ Tine.Voipmanager.Model.AsteriskVoicemail = Tine.Tinebase.data.Record.create(Tine
     appName: 'Voipmanager',
     modelName: 'AsteriskVoicemail',
     idProperty: 'id',
-    titleProperty: 'context',
+    titleProperty: 'mailbox',
     // ngettext('Voicemail', 'Voicemails', n);
     recordName: 'AsteriskVoicemail',
     recordsName: 'AsteriskVoicemails',
@@ -556,7 +558,7 @@ Tine.Voipmanager.Model.AsteriskVoicemail = Tine.Tinebase.data.Record.create(Tine
     containerName: 'voicemails list',
     containersName: 'voicemails lists',
     getTitle: function() {
-        return this.get('number') ? (this.get('number') + ' ' + this.get('context')) : false;
+        return this.get('mailbox') ? this.get('mailbox') : false;
     }
 });
 Tine.Voipmanager.Model.AsteriskVoicemail.getDefaultData = function() { 

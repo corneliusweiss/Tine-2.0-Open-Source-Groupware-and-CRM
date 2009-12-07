@@ -8,6 +8,8 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Cornelius Weiss <c.weiss@metaways.de>
  * @version     $Id$
+ * 
+ * @todo        add 'options' field and use it for (crm) remarks (product price/desc/quantity)
  */
 
 /**
@@ -81,12 +83,23 @@ class Tinebase_Model_Relation extends Tinebase_Record_Abstract
         'deleted_time'
     );
     
-    /*
-    public function setFromJson($relation)
+    
+    /**
+     * convert remark to array if json encoded
+     * 
+     * @see Tinebase_Record_Abstract::setFromArray
+     *
+     * @param array $_data            the new data to set
+     * 
+     * @todo    always json::encode remarks? / add options field that is always json encoded
+     */
+    public function setFromArray(array $_data)
     {
+        parent::setFromArray($_data);
         
+        if ($this->remark && is_string($this->remark) && strpos($this->remark, '{') === 0) {
+            $this->remark = Zend_Json::decode($this->remark);
+        }
     }
-    */
-
 } // end of Tinebase_Model_Relation
 ?>

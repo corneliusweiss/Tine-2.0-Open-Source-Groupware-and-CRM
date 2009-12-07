@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Felamimail\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-08-02 17:58+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2009-10-31 13:36+0100\n"
+"Last-Translator: Michal Sladek <msladek@brotel.cz>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,21 +13,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: Acl/Rights.php:99
-#, fuzzy
 msgid "manage email accounts"
-msgstr "Poštovní účet uživatele"
+msgstr "spravovat emailové účty"
 
 #: Acl/Rights.php:100
 msgid "Create and edit email accounts"
-msgstr ""
+msgstr "Vytvořit a editovat emailové účty"
 
-#: Controller/Message.php:1030 js/FelamimailGridDetailsPanel.js:122
-#: js/FelamimailGridPanel.js:254 js/FelamimailGridPanel.js:306
-#: js/FelamimailMessageEditDialog.js:258
+#: Controller/Message.php:983 js/FelamimailGridDetailsPanel.js:123
+#: js/FelamimailGridPanel.js:258 js/FelamimailGridPanel.js:313
+#: js/FelamimailMessageEditDialog.js:280
 msgid "Subject"
 msgstr "Předmět"
 
-#: Controller/Message.php:1030 js/FelamimailMessageEditDialog.js:175
+#: Controller/Message.php:983 js/FelamimailMessageEditDialog.js:197
 msgid "Body"
 msgstr "Tělo"
 
@@ -35,7 +34,7 @@ msgstr "Tělo"
 msgid "Email"
 msgstr "Pošta"
 
-#: js/FelamimailAccountEditDialog.js:64 js/FelamimailTreePanel.js:333
+#: js/FelamimailAccountEditDialog.js:64 js/FelamimailTreePanel.js:399
 #: js/Models.js:111
 msgid "Account"
 msgid_plural "Accounts"
@@ -71,9 +70,9 @@ msgstr "IMAP"
 msgid "Host"
 msgstr "Server"
 
-#: js/FelamimailAccountEditDialog.js:116 js/FelamimailAccountEditDialog.js:164
-msgid "Port"
-msgstr "Port"
+#: js/FelamimailAccountEditDialog.js:116
+msgid "Port (Default: 143 / SSL: 993)"
+msgstr "Port (Výchozí: 143 / SSL: 993)"
 
 #: js/FelamimailAccountEditDialog.js:122 js/FelamimailAccountEditDialog.js:170
 msgid "Secure Connection"
@@ -103,6 +102,10 @@ msgstr "Heslo"
 #: js/FelamimailAccountEditDialog.js:148
 msgid "SMTP"
 msgstr "SMTP"
+
+#: js/FelamimailAccountEditDialog.js:164
+msgid "Port (Default: 25)"
+msgstr "Port (Výchozí: 25)"
 
 #: js/FelamimailAccountEditDialog.js:185
 msgid "Authentication"
@@ -156,285 +159,326 @@ msgstr "Podporuje \"has_children\""
 
 #: js/FelamimailAccountEditDialog.js:260
 msgid "Display Format"
-msgstr ""
+msgstr "Formát zobrazení"
 
 #: js/FelamimailAccountEditDialog.js:271
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: js/FelamimailAccountEditDialog.js:272
-#, fuzzy
 msgid "Plain Text"
-msgstr "Plain"
+msgstr "Prostý text"
 
 #: js/FelamimailAccountEditDialog.js:275
 msgid "Sort Folders (experimental)"
-msgstr ""
+msgstr "Řadit složky (experimentální)"
 
-#: js/FelamimailAttachmentGrid.js:127
+#: js/FelamimailAttachmentGrid.js:129
 msgid "Upload Failed"
 msgstr "Upload se nezdařil"
 
-#: js/FelamimailAttachmentGrid.js:128
+#: js/FelamimailAttachmentGrid.js:130
 msgid ""
 "Could not upload attachment. Filesize could be too big. Please notify your "
-"Administrator."
+"Administrator. Max upload size: "
 msgstr ""
-"Nepodařilo se uploadovat přílohu. Možná je soubor příliš velký. Kontaktujte "
-"prosím svého administrátora."
 
-#: js/FelamimailAttachmentGrid.js:139
+#: js/FelamimailAttachmentGrid.js:142
 msgid "Add Attachment"
 msgstr "Připojit přílohu"
 
-#: js/FelamimailAttachmentGrid.js:147
+#: js/FelamimailAttachmentGrid.js:150
 msgid "Remove Attachment"
 msgstr "Odebrat přílohu"
 
-#: js/FelamimailGridDetailsPanel.js:123 js/FelamimailGridPanel.js:255
-#: js/FelamimailGridPanel.js:312 js/FelamimailMessageEditDialog.js:226
+#: js/FelamimailGridDetailsPanel.js:124 js/FelamimailGridPanel.js:259
+#: js/FelamimailGridPanel.js:319 js/FelamimailMessageEditDialog.js:248
 msgid "From"
 msgstr "Od"
 
-#: js/FelamimailGridDetailsPanel.js:124
+#: js/FelamimailGridDetailsPanel.js:125
 msgid "Add"
 msgstr "Přidat"
 
-#: js/FelamimailGridDetailsPanel.js:125
+#: js/FelamimailGridDetailsPanel.js:126
 msgid "Add contact to addressbook"
 msgstr "Přidat kontakt do adresáře"
 
-#: js/FelamimailGridDetailsPanel.js:127 js/FelamimailGridDetailsPanel.js:346
+#: js/FelamimailGridDetailsPanel.js:127
+msgid "Date"
+msgstr "Datum"
+
+#: js/FelamimailGridDetailsPanel.js:129 js/FelamimailGridDetailsPanel.js:348
 msgid "Show or hide header information"
 msgstr "Zobrazit nebo skrýt informace ze záhlaví"
 
-#: js/FelamimailGridDetailsPanel.js:130 js/FelamimailMessageEditDialog.js:167
+#: js/FelamimailGridDetailsPanel.js:132 js/FelamimailMessageEditDialog.js:189
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: js/FelamimailGridPanel.js:129
+#: js/FelamimailGridPanel.js:131
 msgid "Write"
 msgstr "Napsat"
 
-#: js/FelamimailGridPanel.js:138
+#: js/FelamimailGridPanel.js:140
 msgid "Reply"
 msgstr "Odpovědět"
 
-#: js/FelamimailGridPanel.js:148
+#: js/FelamimailGridPanel.js:150
 msgid "Reply To All"
 msgstr "Odpovědět všem"
 
-#: js/FelamimailGridPanel.js:158
+#: js/FelamimailGridPanel.js:160
 msgid "Forward"
 msgstr "Přeposlat"
 
-#: js/FelamimailGridPanel.js:167
+#: js/FelamimailGridPanel.js:169
 msgid "Toggle Flag"
 msgstr "Překlopit příznak"
 
-#: js/FelamimailGridPanel.js:178
-#, fuzzy
+#: js/FelamimailGridPanel.js:180
 msgid "Mark read/unread"
-msgstr "Označit jako nepřečtené"
+msgstr "Označit jako (ne)přečtené"
 
-#: js/FelamimailGridPanel.js:190 js/FelamimailGridPanel.js:191
-#: js/FelamimailGridPanel.js:193
+#: js/FelamimailGridPanel.js:192 js/FelamimailGridPanel.js:193
+#: js/FelamimailGridPanel.js:195
 msgid "Delete"
 msgstr "Smazat"
 
-#: js/FelamimailGridPanel.js:202
+#: js/FelamimailGridPanel.js:203
 msgid "Add Account"
 msgstr "Přidat účet"
 
-#: js/FelamimailGridPanel.js:256 js/FelamimailGridPanel.js:318
+#: js/FelamimailGridPanel.js:257
+msgid "Subject/From"
+msgstr "Předmět/Od"
+
+#: js/FelamimailGridPanel.js:260 js/FelamimailGridPanel.js:325
 msgid "To"
 msgstr "Komu"
 
-#: js/FelamimailGridPanel.js:257
+#: js/FelamimailGridPanel.js:261
 msgid "Cc"
 msgstr "Kopie"
 
-#: js/FelamimailGridPanel.js:258
+#: js/FelamimailGridPanel.js:262
 msgid "Bcc"
 msgstr "Skrytá kopie"
 
-#: js/FelamimailGridPanel.js:259 js/FelamimailGridPanel.js:333
+#: js/FelamimailGridPanel.js:263 js/FelamimailGridPanel.js:340
 msgid "Received"
 msgstr "Přijaté"
 
-#: js/FelamimailGridPanel.js:287
+#: js/FelamimailGridPanel.js:294
 msgid "Id"
 msgstr "Id"
 
-#: js/FelamimailGridPanel.js:325
+#: js/FelamimailGridPanel.js:332
 msgid "Sent"
 msgstr "Odeslané"
 
-#: js/FelamimailGridPanel.js:340
+#: js/FelamimailGridPanel.js:347
 msgid "Size"
 msgstr "Velikost"
 
-#: js/FelamimailGridPanel.js:382
+#: js/FelamimailGridPanel.js:389
 msgid "Answered"
 msgstr "Odpovězené"
 
-#: js/FelamimailGridPanel.js:385
+#: js/FelamimailGridPanel.js:392
 msgid "Forwarded"
 msgstr "Přeposlané"
 
-#: js/FelamimailGridPanel.js:388
+#: js/FelamimailGridPanel.js:395
 msgid "Recent"
 msgstr "Nedávné"
 
-#: js/FelamimailGridPanel.js:481
+#: js/FelamimailGridPanel.js:488 js/FelamimailTreeLoader.js:179
 msgid "Error"
 msgstr "Chyba"
 
-#: js/FelamimailGridPanel.js:481
+#: js/FelamimailGridPanel.js:488
 msgid "No Account configured"
 msgstr "Žádný účet není nakonfigurován"
 
-#: js/FelamimailGridPanel.js:527
+#: js/FelamimailGridPanel.js:540
 msgid "wrote"
 msgstr "napsal(a)"
 
-#: js/FelamimailGridPanel.js:529
+#: js/FelamimailGridPanel.js:542
 msgid "Re: "
 msgstr "Re:"
 
-#: js/FelamimailGridPanel.js:536
+#: js/FelamimailGridPanel.js:549
 msgid "Original Message"
 msgstr "Původní zpráva"
 
-#: js/FelamimailGridPanel.js:544
+#: js/FelamimailGridPanel.js:557
 msgid "Original message"
 msgstr "Původní zpráva"
 
-#: js/FelamimailGridPanel.js:548
+#: js/FelamimailGridPanel.js:561
 msgid "Fwd: "
 msgstr "Fwd:"
 
-#: js/FelamimailGridPanel.js:665 js/FelamimailMessageEditDialog.js:139
+#: js/FelamimailGridPanel.js:695 js/FelamimailMessageEditDialog.js:161
 msgid "Failed"
 msgstr "Nezdařilo se"
 
-#: js/FelamimailGridPanel.js:666
+#: js/FelamimailGridPanel.js:696
 msgid "Some error occured while trying to update the messages."
 msgstr "Při aktualizaci zpráv došlo k chybě."
 
-#: js/FelamimailMessageEditDialog.js:44
+#: js/FelamimailMessageEditDialog.js:47
 msgid "Send"
 msgstr "Odeslat"
 
-#: js/FelamimailMessageEditDialog.js:93 js/FelamimailMessageEditDialog.js:269
+#: js/FelamimailMessageEditDialog.js:96 js/FelamimailMessageEditDialog.js:291
 msgid "Compose email:"
 msgstr "Napsat e-mail:"
 
-#: js/FelamimailMessageEditDialog.js:140
+#: js/FelamimailMessageEditDialog.js:133
+msgid "Add Note"
+msgstr "Přidat poznámku"
+
+#: js/FelamimailMessageEditDialog.js:134
+msgid "Edit Email Note Text:"
+msgstr "Editovat text emailové poznámky:"
+
+#: js/FelamimailMessageEditDialog.js:162
 msgid "Could not send {0}."
 msgstr "Nepodařilo se odeslat {0}."
 
-#: js/FelamimailMessageEditDialog.js:141
+#: js/FelamimailMessageEditDialog.js:163
 msgid "Error:"
 msgstr "Chyba:"
 
-#: js/FelamimailMessageEditDialog.js:159
+#: js/FelamimailMessageEditDialog.js:181
 msgid "Recipients"
 msgstr "Příjemci"
 
-#: js/FelamimailMessageEditDialog.js:292
+#: js/FelamimailMessageEditDialog.js:314
 msgid "Save contact note"
-msgstr ""
+msgstr "Uložit poznámku kontaktu"
 
-#: js/FelamimailRecipientGrid.js:130 js/FelamimailRecipientGrid.js:151
+#: js/FelamimailRecipientGrid.js:151 js/FelamimailRecipientGrid.js:172
 msgid "To:"
 msgstr "Komu:"
 
-#: js/FelamimailRecipientGrid.js:133 js/FelamimailRecipientGrid.js:152
+#: js/FelamimailRecipientGrid.js:154 js/FelamimailRecipientGrid.js:173
 msgid "Cc:"
 msgstr "Kopie:"
 
-#: js/FelamimailRecipientGrid.js:136 js/FelamimailRecipientGrid.js:153
+#: js/FelamimailRecipientGrid.js:157 js/FelamimailRecipientGrid.js:174
 msgid "Bcc:"
 msgstr "Skrytá kopie:"
 
-#: js/FelamimailTreePanel.js:148 js/FelamimailTreePanel.js:153
-#: js/FelamimailTreePanel.js:164
-msgid "Marked"
-msgstr "Označené"
+#: js/FelamimailRecipientGrid.js:195
+msgid "Remove"
+msgstr "Odstranit"
 
-#: js/FelamimailTreePanel.js:154
-msgid "Contains marked messages"
-msgstr "Obsahuje označené zprávy"
-
-#: js/FelamimailTreePanel.js:169
-msgid "Unread"
-msgstr "Nepřečtené"
-
-#: js/FelamimailTreePanel.js:170
-msgid "Contains unread messages"
-msgstr "Obsahuje nepřečtené zprávy"
-
-#: js/FelamimailTreePanel.js:195
-msgid "Update Cache"
-msgstr "Aktualizovat cache"
-
-#: js/FelamimailTreePanel.js:214
-msgid "Empty Folder"
-msgstr "Prázdná složka"
-
-#: js/FelamimailTreePanel.js:237
-msgid "Add Folder"
-msgstr "Přidat složku"
-
-#: js/FelamimailTreePanel.js:242
-msgid "New {0}"
-msgstr "Nové {0}"
-
-#: js/FelamimailTreePanel.js:242 js/FelamimailTreePanel.js:245
-#: js/FelamimailTreePanel.js:248 js/FelamimailTreePanel.js:309
-msgid "Folder"
-msgstr "Složka"
-
-#: js/FelamimailTreePanel.js:242
-msgid "Please enter the name of the new {0}:"
-msgstr "Prosím zadejte název nové {0}:"
-
-#: js/FelamimailTreePanel.js:245
-msgid "No {0} added"
-msgstr "Nebyly přidány {0}"
-
-#: js/FelamimailTreePanel.js:245
-msgid "You have to supply a {0} name!"
-msgstr "Musíte zadat jméno {0}!"
-
-#: js/FelamimailTreePanel.js:248
-msgid "Please wait"
-msgstr "Prosím čekejte"
-
-#: js/FelamimailTreePanel.js:248
-msgid "Creating {0}..."
-msgstr "Vytvářím {0}..."
-
-#: js/FelamimailTreePanel.js:276
-msgid "Edit Account"
-msgstr "Editovat účet"
-
-#: js/FelamimailTreePanel.js:629
+#: js/FelamimailTreeLoader.js:70
 msgid "Totalcount"
 msgstr "Celkem"
 
-#: js/FelamimailTreePanel.js:630
+#: js/FelamimailTreeLoader.js:71
 msgid "Cache"
 msgstr "Cache"
 
-#: js/FelamimailTreePanel.js:716
+#: js/FelamimailTreeLoader.js:160
 msgid "IMAP Credentials for {0}"
 msgstr "IMAP přihlášovací údaje pro {0}"
 
-#: js/FelamimailTreePanel.js:719
+#: js/FelamimailTreeLoader.js:163
 msgid "Credentials"
 msgstr "Přihlašovací údaje"
+
+#: js/FelamimailTreeLoader.js:180
+msgid "No connection to IMAP server."
+msgstr ""
+
+#: js/FelamimailTreePanel.js:187 js/FelamimailTreePanel.js:192
+#: js/FelamimailTreePanel.js:203
+msgid "Marked"
+msgstr "Označené"
+
+#: js/FelamimailTreePanel.js:193
+msgid "Contains marked messages"
+msgstr "Obsahuje označené zprávy"
+
+#: js/FelamimailTreePanel.js:208
+msgid "Unread"
+msgstr "Nepřečtené"
+
+#: js/FelamimailTreePanel.js:209
+msgid "Contains unread messages"
+msgstr "Obsahuje nepřečtené zprávy"
+
+#: js/FelamimailTreePanel.js:235
+msgid "Update Cache"
+msgstr "Aktualizovat cache"
+
+#: js/FelamimailTreePanel.js:260
+msgid "Empty Folder"
+msgstr "Prázdná složka"
+
+#: js/FelamimailTreePanel.js:286
+msgid "Add Folder"
+msgstr "Přidat složku"
+
+#: js/FelamimailTreePanel.js:291
+msgid "New {0}"
+msgstr "Nové {0}"
+
+#: js/FelamimailTreePanel.js:291 js/FelamimailTreePanel.js:294
+#: js/FelamimailTreePanel.js:297 js/FelamimailTreePanel.js:356
+#: js/FelamimailTreePanel.js:375
+msgid "Folder"
+msgstr "Složka"
+
+#: js/FelamimailTreePanel.js:291
+msgid "Please enter the name of the new {0}:"
+msgstr "Prosím zadejte název nové {0}:"
+
+#: js/FelamimailTreePanel.js:294
+msgid "No {0} added"
+msgstr "Nebyly přidány {0}"
+
+#: js/FelamimailTreePanel.js:294
+msgid "You have to supply a {0} name!"
+msgstr "Musíte zadat jméno {0}!"
+
+#: js/FelamimailTreePanel.js:297
+msgid "Please wait"
+msgstr "Prosím čekejte"
+
+#: js/FelamimailTreePanel.js:297
+msgid "Creating {0}..."
+msgstr "Vytvářím {0}..."
+
+#: js/FelamimailTreePanel.js:325
+msgid "Edit Account"
+msgstr "Editovat účet"
+
+#: js/FelamimailTreePanel.js:356
+msgid "Reload {0}"
+msgstr "Znovu načíst {0}"
+
+#: js/FelamimailTreePanel.js:698
+msgid "New mails"
+msgstr "Nové zprávy"
+
+#: js/FelamimailTreePanel.js:699
+msgid "You got {0} new mail(s) in Folder "
+msgstr "Máte {0} nových zrpáv ve složce"
+
+#: js/FelamimailTreePanel.js:822
+msgid "Invalid drop target"
+msgstr ""
+
+#: js/FelamimailTreePanel.js:822
+msgid "Could not move message(s)."
+msgstr ""
 
 #: js/Models.js:43
 msgid "Message"
@@ -446,25 +490,48 @@ msgstr[2] "Zpráv"
 #: js/Models.js:47 js/Models.js:115
 msgid "record list"
 msgid_plural "record lists"
-msgstr[0] "výpis záznamů"
-msgstr[1] "výpisy záznamů"
-msgstr[2] "výpisů záznamů"
+msgstr[0] "seznam záznamů"
+msgstr[1] "seznamy záznamů"
+msgstr[2] "seznamů záznamů"
 
-#: Preference.php:73
+#: Preference.php:81
 msgid "User Email Account"
 msgstr "Poštovní účet uživatele"
 
-#: Preference.php:74
+#: Preference.php:82
 msgid "Use user credentials for IMAP email account."
 msgstr "Použít přihlašovací údaje uživatele pro IMAP účet."
 
-#: Preference.php:77
+#: Preference.php:85
 msgid "Default Email Account"
 msgstr "Výchozí poštovní účet"
 
-#: Preference.php:78
+#: Preference.php:86
 msgid "The default email account to use when sending mails."
 msgstr "Výchozí poštovní účet pro odesílání e-mailů."
+
+#: Preference.php:89
+msgid "Email Update Interval"
+msgstr "Interval aktualizace emailu"
+
+#: Preference.php:90
+msgid ""
+"How often should Felamimail check for new Emails (in minutes). \"0\" means "
+"never."
+msgstr ""
+
+#~ msgid ""
+#~ "Could not upload attachment. Filesize could be too big. Please notify "
+#~ "your Administrator."
+#~ msgstr ""
+#~ "Nepodařilo se uploadovat přílohu. Možná je soubor příliš velký. "
+#~ "Kontaktujte prosím svého administrátora."
+
+#~ msgid "How often should Felamimail check for new Emails (in minutes) ."
+#~ msgstr "Jak často má Felamimail kontrolovat nové zprávy (v minutách)."
+
+#~ msgid "Port"
+#~ msgstr "Port"
 
 #~ msgid "Felamimail"
 #~ msgstr "Pošta"
@@ -477,3 +544,6 @@ msgstr "Výchozí poštovní účet pro odesílání e-mailů."
 
 #~ msgid "Could not connect to account."
 #~ msgstr "Připojení k účtu se nezdařilo."
+
+#~ msgid "Initializing folder cache ..."
+#~ msgstr "Inicializuji vyrovnávací paměť složek..."

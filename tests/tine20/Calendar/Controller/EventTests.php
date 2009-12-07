@@ -203,13 +203,19 @@ class Calendar_Controller_EventTests extends Calendar_TestCase
         ));
         
         try {
+            $exectionRaised = FALSE;
         	$this->_controller->create($conflictEvent, TRUE);
         } catch (Calendar_Exception_AttendeeBusy $busyException) {
             $fbData = $busyException->toArray();
             $this->assertGreaterThanOrEqual(2, count($fbData['freebusyinfo']));
+            $exectionRaised = TRUE;
         }
-        
+        if (! $exectionRaised) {
+            $this->fail('An expected exception has not been raised.');
+        }
         $persitentConflictEvent = $this->_controller->create($conflictEvent, FALSE);
+        
+        return $persitentConflictEvent;
     }
     
     public function testCreateEventWithConfictFromGroupMember()
@@ -230,8 +236,60 @@ class Calendar_Controller_EventTests extends Calendar_TestCase
         } catch (Calendar_Exception_AttendeeBusy $busyException) {
             $fbData = $busyException->toArray();
             $this->assertGreaterThanOrEqual(2, count($fbData['freebusyinfo']));
+            return;
         }
         
+        $this->fail('An expected exception has not been raised.');
+    }
+    
+    public function testCreateTransparentEventNoConflict()
+    {
+        $event = $this->_getEvent();
+        $event->attendee = $this->_getAttendee();
+        $persistentEvent = $this->_controller->create($event);
+        
+        $nonConflictEvent = $this->_getEvent();
+        $nonConflictEvent->transp = Calendar_Model_Event::TRANSP_TRANSP;
+        $nonConflictEvent->attendee = new Tinebase_Record_RecordSet('Calendar_Model_Attender', array(
+            array('user_type' => Calendar_Model_Attender::USERTYPE_USER, 'user_id' => $this->_personasContacts['sclever']->getId()),
+            array('user_type' => Calendar_Model_Attender::USERTYPE_USER, 'user_id' => $this->_personasContacts['pwulf']->getId())
+        ));
+        
+        $this->_controller->create($nonConflictEvent, TRUE);
+    }
+    
+    public function testCreateNoConflictParallelTrasparentEvent()
+    {
+        $event = $this->_getEvent();
+        $event->attendee = $this->_getAttendee();
+        $event->transp = Calendar_Model_Event::TRANSP_TRANSP;
+        $persistentEvent = $this->_controller->create($event);
+        
+        $nonConflictEvent = $this->_getEvent();
+        $nonConflictEvent->attendee = new Tinebase_Record_RecordSet('Calendar_Model_Attender', array(
+            array('user_type' => Calendar_Model_Attender::USERTYPE_USER, 'user_id' => $this->_personasContacts['sclever']->getId()),
+            array('user_type' => Calendar_Model_Attender::USERTYPE_USER, 'user_id' => $this->_personasContacts['pwulf']->getId())
+        ));
+        
+        $this->_controller->create($nonConflictEvent, TRUE);
+    }
+    
+    public function testUpdateWithConflictNoTimechange()
+    {
+        $persitentConflictEvent = $this->testCreateEventWithConfict();
+        $persitentConflictEvent->summary = 'only time updates should recheck free/busy';
+        
+        $this->_controller->update($persitentConflictEvent, TRUE);
+    }
+    
+    public function testUpdateWithConflictWithTimechange()
+    {
+        $persitentConflictEvent = $this->testCreateEventWithConfict();
+        $persitentConflictEvent->summary = 'time updates should recheck free/busy';
+        $persitentConflictEvent->dtend->addHour(1);
+        
+        $this->setExpectedException('Calendar_Exception_AttendeeBusy');
+        $this->_controller->update($persitentConflictEvent, TRUE);
     }
     
     public function testAttendeeAuthKeyPreserv()
@@ -261,6 +319,7 @@ class Calendar_Controller_EventTests extends Calendar_TestCase
         $this->assertEquals(Calendar_Model_Attender::STATUS_NEEDSACTION, $persistendEvent->attendee[0]->status, 'creation of other attedee must not set status');
         
         $persistendEvent->attendee[0]->status = Calendar_Model_Attender::STATUS_ACCEPTED;
+        $persistendEvent->attendee[0]->status_authkey = NULL;
         $updatedEvent = $this->_controller->update($persistendEvent);
         $this->assertEquals(Calendar_Model_Attender::STATUS_NEEDSACTION, $updatedEvent->attendee[0]->status, 'updateing of other attedee must not set status');
     }
@@ -279,6 +338,31 @@ class Calendar_Controller_EventTests extends Calendar_TestCase
         
         $loadedEvent = $this->_controller->get($persistendEvent->getId());
         $this->assertEquals(Calendar_Model_Attender::STATUS_DECLINED, $loadedEvent->attendee[0]->status, 'status not set');
+        
+    }
+    
+    public function testAttendeeStatusFilter()
+    {
+        $event = $this->_getEvent();
+        $event->attendee = $this->_getAttendee();
+        unset($event->attendee[1]);
+        
+        $persitentEvent = $this->_controller->create($event);
+        
+        $filter = new Calendar_Model_EventFilter(array(
+            array('field' => 'uid',             'operator' => 'equals', 'value' => $persitentEvent->uid),
+            array('field' => 'attender_status', 'operator' => 'not',    'value' => Calendar_Model_Attender::STATUS_DECLINED),
+        ));
+        
+        $events = $this->_controller->search($filter);
+        $this->assertEquals(1, count($events));
+        
+        $attender = $persitentEvent->attendee[0];
+        $attender->status = Calendar_Model_Attender::STATUS_DECLINED;
+        $updatedPersistentEvent = $this->_controller->update($persitentEvent);
+        
+        $events = $this->_controller->search($filter);
+        $this->assertEquals(0, count($events));
         
     }
     
@@ -372,6 +456,11 @@ class Calendar_Controller_EventTests extends Calendar_TestCase
         
         // create event and invite admin group
         $event = $this->_getEvent();
+        
+        // only events in future will be changed!
+        $event->dtstart = Zend_Date::now()->addHour(1);
+        $event->dtend = Zend_Date::now()->addHour(2);
+        
         $event->attendee = $this->_getAttendee();
         $event->attendee[1] = new Calendar_Model_Attender(array(
             'user_id'   => $defaultAdminGroup->getId(),

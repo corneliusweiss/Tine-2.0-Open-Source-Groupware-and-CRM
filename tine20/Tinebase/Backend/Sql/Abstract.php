@@ -200,13 +200,13 @@ abstract class Tinebase_Backend_Sql_Abstract extends Tinebase_Backend_Abstract i
      * Get multiple entries
      *
      * @param string|array $_id Ids
+     * @param array $_containerIds all allowed container ids that are added to getMultiple query
      * @return Tinebase_Record_RecordSet
      * 
      * @todo get custom fields here as well
      */
-    public function getMultiple($_id) 
+    public function getMultiple($_id, $_containerIds = NULL) 
     {
-        
         if (empty($_id)) {
             return new Tinebase_Record_RecordSet($this->_modelName);
         }
@@ -214,6 +214,13 @@ abstract class Tinebase_Backend_Sql_Abstract extends Tinebase_Backend_Abstract i
         $select = $this->_getSelect();
         $select->where($this->_db->quoteIdentifier($this->_tableName . '.' . $this->_identifier) . ' in (?)', (array) $_id);
         
+        if ($_containerIds !== NULL && isset($this->_schema['container_id'])) {
+            if (empty($_containerIds)) {
+                $select->where('1=0 /* insufficient grants */');
+            } else {
+                $select->where($this->_db->quoteIdentifier($this->_tableName . '.container_id') . ' in (?) /* add acl in getMultiple */', (array) $_containerIds);
+            }
+        }
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
         
         $stmt = $this->_db->query($select);

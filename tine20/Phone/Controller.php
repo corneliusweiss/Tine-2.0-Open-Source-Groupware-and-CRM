@@ -79,7 +79,7 @@ class Phone_Controller extends Tinebase_Controller_Abstract
             
             // use first phone and first line
             $filter = new Voipmanager_Model_Snom_PhoneFilter(array(
-                'accountId' => $accountId 
+                array('field' => 'account_id', 'operator' => 'equals', 'value' => $accountId)
             ));
             $phones = $vmController->search($filter);
 
@@ -102,7 +102,9 @@ class Phone_Controller extends Tinebase_Controller_Abstract
         }
 
         $asteriskLine = Voipmanager_Controller_Asterisk_SipPeer::getInstance()->get($asteriskLineId);
-        $backend->dialNumber('SIP/' . $asteriskLine->name, $asteriskLine->context, $_number, 1, "WD <$_number>");
+        $asteriskContext = Voipmanager_Controller_Asterisk_Context::getInstance()->get($asteriskLine->context_id);
+        
+        $backend->dialNumber('SIP/' . $asteriskLine->name, $asteriskContext->name, $_number, 1, "WD <$_number>");
     }    
     
     /**

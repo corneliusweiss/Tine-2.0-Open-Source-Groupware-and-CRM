@@ -19,11 +19,25 @@
  */
 class Tinebase_Server_Json extends Tinebase_Server_Abstract
 {
-	
+    /**
+     * handle request
+     * 
+     * @return void
+     */	
 	public function handle()
 	{
-	    $this->_initFramework();
+	    try {
+    	    $this->_initFramework();
+    	    $exception = FALSE;
+	    } catch (Exception $exception) {
+	        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' initFramework exception: ' . $exception);
             
+	        // handle all kind of session exceptions as 'Not Authorised'
+	        if ($exception instanceof Zend_Session_Exception) {
+                $exception = new Tinebase_Exception_AccessDenied('Not Authorised', 401);
+            }
+        }
+        
         $server = new Zend_Json_Server();
         $server->setAutoEmitResponse(false);
         $server->setAutoHandleExceptions(false);
@@ -38,13 +52,15 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
         	$isBatchedRequest = false;
         	$requests = array(Zend_Json::decode($json));
         }
-        
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' is JSON request. rawdata: ' . print_r($requests, true));
         $response = array();
         foreach ($requests as $requestOptions) {
         	$request = new Zend_Json_Server_Request();
         	$request->setOptions($requestOptions);
         	
-        	$response[] = $this->_handle($server, $request);
+        	$response[] = $exception ? 
+        	   $this->_handleException($server, $request, $exception) :
+        	   $this->_handle($server, $request);
         }
         
         echo $isBatchedRequest ? '['. implode(',', $response) .']' : $response[0];
@@ -60,7 +76,7 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
     {
         try {
             $method  = $request->getMethod();
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' is JSON request. method: ' . $method);
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ .' is JSON request. method: ' . $method);
             
             $jsonKey = (isset($_SERVER['HTTP_X_TINE20_JSONKEY'])) ? $_SERVER['HTTP_X_TINE20_JSONKEY'] : '';
             $this->_checkJsonKey($method, $jsonKey);
@@ -69,8 +85,14 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
             $server->setClass('Tinebase_Frontend_Json', 'Tinebase');
             $server->setClass('Tinebase_Frontend_Json_UserRegistration', 'Tinebase_UserRegistration');
             
+            if(empty($method)) {
+                // SMD request
+                return self::getServiceMap();
+            }
+            
             // register additional Json apis only available for authorised users
             if (Zend_Auth::getInstance()->hasIdentity()) {
+                
                 //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " user data: " . print_r(Tinebase_Core::getUser()->toArray(), true));
                 
                 $applicationParts = explode('.', $method);
@@ -86,7 +108,7 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
                         break;
                         
                     default;
-                        if(Tinebase_Core::getUser()->hasRight($applicationName, Tinebase_Acl_Rights_Abstract::RUN)) {
+                        if(Tinebase_Core::getUser() && Tinebase_Core::getUser()->hasRight($applicationName, Tinebase_Acl_Rights_Abstract::RUN)) {
                             try {
                                 $server->setClass($applicationName.'_Frontend_Json', $applicationName);
                             } catch (Exception $e) {
@@ -96,42 +118,76 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
                         break;
                 }
             }
-            
+
+            // handle response
             return $server->handle($request);
             
         } catch (Exception $exception) {
-            
-            // handle all kind of session exceptions as 'Not Authorised'
-            if ($exception instanceof Zend_Session_Exception) {
-                $exception = new Tinebase_Exception_AccessDenied('Not Authorised', 401);
-            }
-            
-            if (! $server) {
-            	// exception from initFramework
-            	error_log($exception);
-            	$server = new Zend_Json_Server();
-            	$request = new Zend_Json_Server_Request_Http();
-            }
-            
-            $exceptionData = method_exists($exception, 'toArray')? $exception->toArray() : array();
-            $exceptionData['message'] = $exception->getMessage();
-            $exceptionData['code']    = $exception->getCode();
-            $exceptionData['trace']   = $exception->getTrace();
-            
-            $server->fault($exceptionData['message'], $exceptionData['code'], $exceptionData);
-            
-            $response = $server->getResponse();
-	        if (null !== ($id = $request->getId())) {
-	            $response->setId($id);
-	        }
-	        if (null !== ($version = $request->getVersion())) {
-	            $response->setVersion($version);
-	        }
-        
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $exception);
-            return $response;
-            //exit;
+            return $this->_handleException($server, $request, $exception);
         }
+    }
+    
+    /**
+     * handle exceptions
+     * 
+     * @param Zend_Json_Server $server
+     * @param Zend_Json_Server_Request_Http $request
+     * @param Exception $exception
+     * @return string json data
+     */
+    protected function _handleException($server, $request, $exception)
+    {
+        $exceptionData = method_exists($exception, 'toArray')? $exception->toArray() : array();
+        $exceptionData['message'] = $exception->getMessage();
+        $exceptionData['code']    = $exception->getCode();
+        if (Tinebase_Core::getConfig()->suppressExceptionTraces !== TRUE) {
+            $exceptionData['trace']   = $exception->getTrace();
+        }
+        
+        $server->fault($exceptionData['message'], $exceptionData['code'], $exceptionData);
+        
+        $response = $server->getResponse();
+        if (null !== ($id = $request->getId())) {
+            $response->setId($id);
+        }
+        if (null !== ($version = $request->getVersion())) {
+            $response->setVersion($version);
+        }
+    
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $exception);
+        
+        return $response;
+    }
+    
+    /**
+     * return service map
+     * 
+     * @return Zend_Json_Server_Smd
+     */
+    public static function getServiceMap()
+    {
+        $server = new Zend_Json_Server();
+        
+        $server->setClass('Tinebase_Frontend_Json', 'Tinebase');
+        $server->setClass('Tinebase_Frontend_Json_UserRegistration', 'Tinebase_UserRegistration');
+        
+        if (Tinebase_Core::isRegistered(Tinebase_Core::USER)) { 
+            $server->setClass('Tinebase_Frontend_Json_Container', 'Tinebase_Container');
+            $server->setClass('Tinebase_Frontend_Json_PersistentFilter', 'Tinebase_PersistentFilter');
+            
+            $userApplications = Tinebase_Core::getUser()->getApplications(TRUE);
+            foreach($userApplications as $application) {
+                $jsonAppName = $application->name . '_Frontend_Json';
+                $server->setClass($jsonAppName, $application->name);
+            }
+        }
+        
+        $server->setTarget('index.php')
+               ->setEnvelope(Zend_Json_Server_Smd::ENV_JSONRPC_2);
+            
+        $smd = $server->getServiceMap();
+        
+        return $smd;
     }
     
     /**
@@ -143,6 +199,7 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
     protected function _checkJsonKey($method, $jsonKey)
     {
         $anonymnousMethods = array(
+            '', //empty method
             'Tinebase.getRegistryData',
             'Tinebase.getAllRegistryData',
             'Tinebase.login',

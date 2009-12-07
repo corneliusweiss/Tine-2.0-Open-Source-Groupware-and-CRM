@@ -30,4 +30,55 @@ class Voipmanager_Backend_Asterisk_SipPeer extends Tinebase_Backend_Sql_Abstract
      * @var string
      */
     protected $_modelName = 'Voipmanager_Model_Asterisk_SipPeer';
+    
+    /**
+     * get the basic select object to fetch records from the database
+     *  
+     * @param array|string|Zend_Db_Expr $_cols columns to get, * per default
+     * @param boolean $_getDeleted get deleted records (if modlog is active)
+     * @return Zend_Db_Select
+     */
+    protected function _getSelect($_cols = '*', $_getDeleted = FALSE)
+    {        
+        $select = parent::_getSelect($_cols, $_getDeleted);
+        
+        // add join only if needed and allowed
+        if (($_cols == '*') || (is_array($_cols) && isset($_cols['context']))) {
+            $select->joinLeft(
+                array('contexts'  => $this->_tablePrefix . 'asterisk_context'),
+                'context_id = contexts.id',
+                array('context' => 'name')
+            );
+        }
+        
+        // add regseconds only if needed and allowed
+        if (($_cols == '*') || (is_array($_cols) && isset($_cols['regseconds']))) {
+            $select->columns('FROM_UNIXTIME(regseconds) AS regseconds');
+        }
+        
+        return $select;
+    }
+    
+    /**
+     * converts record into raw data for adapter
+     *
+     * @param  Tinebase_Record_Abstract $_record
+     * @return array
+     */
+    protected function _recordToRawData($_record)
+    {
+        $result = parent::_recordToRawData($_record);
+        
+        // context is joined from the asterisk_context table and can not be set here
+        unset($result['context']);
+        
+        // readonly fields, only setable by asterisk
+        unset($result['ipaddr']);
+        unset($result['lastms']);
+        unset($result['regseconds']);
+        unset($result['regserver']);
+        unset($result['useragent']);
+        
+        return $result;
+    }
 }

@@ -230,7 +230,10 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
                         $_xmlNode->appendChild($_xmlDocument->createElementNS('uri:Calendar', $key, $date));
                         break;
                     default:
-                        $_xmlNode->appendChild($_xmlDocument->createElementNS('uri:Calendar', $key, $data->$value));
+                        $node = $_xmlDocument->createElementNS('uri:Calendar', $key);
+                        $node->appendChild(new DOMText($data->$value));
+                        
+                        $_xmlNode->appendChild($node);
                         break;
                 }
             }
@@ -335,7 +338,7 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
             Tinebase_Core::get(Tinebase_Core::CACHE)
         );
         
-        $_xmlNode->appendChild($_xmlDocument->createElementNS('uri:Calendar', 'Timezone', $timeZoneConverter->encodeTinezone(
+        $_xmlNode->appendChild($_xmlDocument->createElementNS('uri:Calendar', 'Timezone', $timeZoneConverter->encodeTimezone(
             Tinebase_Core::get(Tinebase_Core::USERTIMEZONE)
         )));
         
@@ -425,12 +428,18 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
             }
         }
         
+        // whole day events ends at 23:59:59 in Tine 2.0 but 00:00 the next day in AS
+        if(isset($xmlData->AllDayEvent) && $xmlData->AllDayEvent == 1) {
+            $event->dtend->subSecond(1);
+        }
+        
         if(isset($xmlData->Reminder)) {
             $alarm = clone $event->dtstart;
             
             $event->alarms = new Tinebase_Record_RecordSet('Tinebase_Model_Alarm', array(array(
-                'alarm_time'    => $alarm->subMinute((int)$xmlData->Reminder),
-                'model'         => 'Calendar_Model_Event',
+                'alarm_time'        => $alarm->subMinute((int)$xmlData->Reminder),
+                'minutes_before'    => (int)$xmlData->Reminder,
+                'model'             => 'Calendar_Model_Event'
             )));
         }
         

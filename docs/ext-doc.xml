@@ -55,9 +55,12 @@
         <source src="../tine20/Tinebase/js/data/Record.js"/>
         <source src="../tine20/Tinebase/js/data/RecordStore.js"/>
         <source src="../tine20/Tinebase/js/data/RecordProxy.js"/>
+        <source src="../tine20/Tinebase/js/widgets/account/PickerPanel.js"/>
         <source src="../tine20/Tinebase/js/widgets/app/GridPanel.js"/>
         <source src="../tine20/Tinebase/js/widgets/customfields/CustomfieldsPanel.js"/>
+        <source src="../tine20/Tinebase/js/widgets/dialog/LinkPanel.js"/>
         <source src="../tine20/Tinebase/js/widgets/grid/DetailsPanel.js"/>
+        <source src="../tine20/Tinebase/js/widgets/grid/QuickaddGridPanel.js"/>
         <source src="../tine20/Tinebase/js/widgets/form/" match="*.js"/>
         <source src="../tine20/Addressbook/js/ContactGrid.js"/>
         <source src="../tine20/Addressbook/js/SearchCombo.js"/>
@@ -78,7 +81,11 @@
         <source src="../tine20/Calendar/js/PagingToolbar.js"/> 
         <source src="../tine20/Calendar/js/ParallelEventsRegistry.js"/> 
         <source src="../tine20/Calendar/js/RrulePanel.js"/> -->
+        <source src="../tine20/Crm/js" match="*.js"/>
+        <source src="../tine20/ExampleApplication/js/ExampleRecordGridPanel.js"/>
+        <source src="../tine20/ExampleApplication/js/ExampleRecordEditDialog.js"/>
         <source src="../tine20/Felamimail/js" match="*.js"/>
+        <source src="../tine20/Sales/js" match="*.js"/>
         <source src="../tine20/Setup/js" match="*.js"/>
         <source src="../tine20/Tasks/js/EditDialog.js"/>
         <source src="../tine20/Tasks/js/GridPanel.js"/>

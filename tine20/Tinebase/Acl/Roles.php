@@ -104,12 +104,14 @@ class Tinebase_Acl_Roles
     {        
         $application = Tinebase_Application::getInstance()->getApplicationByName($_application);
         if ($application->status != 'enabled') {
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' Application ' . $_application . ' is disabled!');
             return false;
         }
         
-        $roleMemberships = Tinebase_Acl_Roles::getInstance()->getRoleMemberships($_accountId);
+        $roleMemberships = $this->getRoleMemberships($_accountId);
         
-        if ( empty($roleMemberships) ) {
+        if (empty($roleMemberships)) {
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' ' . $_accountId . ' has no role memberships!');
             return false;
         }
 
@@ -119,13 +121,13 @@ class Tinebase_Acl_Roles
                      . ' OR ' . $this->_db->quoteInto($this->_db->quoteIdentifier('right') . ' = ?', Tinebase_Acl_Rights::ADMIN) . ')')
                ->where($this->_db->quoteInto($this->_db->quoteIdentifier('application_id') . ' = ?', $application->getId()));
                
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
+
         if (!$row = $this->_roleRightsTable->fetchRow($select)) {
             $result = false;
         } else {
             $result = true;
         }
-        
-        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $select->__toString());
         
         return $result;
     }
@@ -143,9 +145,9 @@ class Tinebase_Acl_Roles
      */
     public function getApplications($_accountId, $_anyRight = FALSE)
     {  
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $_anyRight);
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $_anyRight);
         
-        $roleMemberships = Tinebase_Acl_Roles::getInstance()->getRoleMemberships($_accountId);
+        $roleMemberships = $this->getRoleMemberships($_accountId);
         
         if (empty($roleMemberships)) {
             throw new Tinebase_Exception_AccessDenied('User has no role memberships');
@@ -196,7 +198,7 @@ class Tinebase_Acl_Roles
             throw new Tinebase_Exception_AccessDenied('User has no rights. the application is disabled.');
         }
         
-        $roleMemberships = Tinebase_Acl_Roles::getInstance()->getRoleMemberships($_accountId);
+        $roleMemberships = $this->getRoleMemberships($_accountId);
                         
         $select = $this->_db->select()
             ->from(SQL_TABLE_PREFIX . 'role_rights', array('account_rights' => 'GROUP_CONCAT(' . SQL_TABLE_PREFIX . 'role_rights.right)'))
@@ -370,10 +372,25 @@ class Tinebase_Acl_Roles
             Tinebase_TransactionManager::getInstance()->commitTransaction($transactionId);
             
         } catch (Exception $e) {
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' error while deleting role ' . $e->__toString());
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' error while deleting role ' . $e->__toString());
             Tinebase_TransactionManager::getInstance()->rollBack();
             throw new Tinebase_Exception_Backend($e->getMessage());
         }
+    }
+    
+    /**
+     * Delete all Roles returned by {@see getRoles()} using {@see deleteRoles()}
+     * @return void
+     */
+    public function deleteAllRoles()
+    {
+        $roleIds = array();
+        $roles = $this->_rolesTable->fetchAll();
+        foreach ($roles as $role) {
+          $roleIds[] = $role->id;
+        }
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Deleting ' . count($roles) .' users');
+        $this->deleteRoles($roleIds);
     }
     
     /**
@@ -449,8 +466,8 @@ class Tinebase_Acl_Roles
         $this->_roleMembersTable->delete($where);
               
         $validTypes = array( Tinebase_Acl_Rights::ACCOUNT_TYPE_USER, Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, Tinebase_Acl_Rights::ACCOUNT_TYPE_ANYONE);
-        foreach ( $_roleMembers as $member ) {
-            if ( !in_array($member['account_type'], $validTypes) ) {
+        foreach ($_roleMembers as $member) {
+            if (!in_array($member['type'], $validTypes)) {
                 throw new Tinebase_Exception_InvalidArgument('account_type must be one of ' . 
                     implode(', ', $validTypes) . ' (values given: ' . 
                     print_r($member, true) . ')');
@@ -458,8 +475,8 @@ class Tinebase_Acl_Roles
             
             $data = array(
                 'role_id'       => $roleId,
-                'account_type'  => $member['account_type'],
-                'account_id'    => $member['account_id'],
+                'account_type'  => $member['type'],
+                'account_id'    => $member['id'],
             );
             $this->_roleMembersTable->insert($data); 
         }
@@ -549,6 +566,46 @@ class Tinebase_Acl_Roles
             );
             $this->_roleRightsTable->insert($data); 
         }
+    }
+    
+    /**
+     * Create initial Roles
+     * 
+     * @todo make hard coded role names ('user role' and 'admin role') configurable
+     * 
+     * @return void
+     */
+    public function createInitialRoles()
+    {
+        $groupsBackend = Tinebase_Group::factory(Tinebase_Group::SQL);
+        
+        $adminGroup = $groupsBackend->getDefaultAdminGroup();
+        $userGroup  = $groupsBackend->getDefaultGroup();
+        
+        // add roles and add the groups to the roles
+        $adminRole = new Tinebase_Model_Role(array(
+            'name'                  => 'admin role',
+            'description'           => 'admin role for tine. this role has all rights per default.',
+        ));
+        $adminRole = $this->createRole($adminRole);
+        $this->setRoleMembers($adminRole->getId(), array(
+            array(
+                'id'    => $adminGroup->getId(),
+                'type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
+            )
+        ));
+        
+        $userRole = new Tinebase_Model_Role(array(
+            'name'                  => 'user role',
+            'description'           => 'userrole for tine. this role has only the run rights for all applications per default.',
+        ));
+        $userRole = $this->createRole($userRole);
+        $this->setRoleMembers($userRole->getId(), array(
+            array(
+                'id'    => $userGroup->getId(),
+                'type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
+            )
+        ));
     }
     
 }

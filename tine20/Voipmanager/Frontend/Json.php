@@ -33,26 +33,10 @@ class Voipmanager_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      */
     protected function _recordToJson($_record)
     {
+        $recordArray = parent::_recordToJson($_record);
+        
         switch (get_class($_record)) {
-            case 'Voipmanager_Model_Snom_Template':
-                $recordArray = parent::_recordToJson($_record);
-                
-                // add snom softwares (no filter + no pagination)
-                $recordArray['software_id'] = array(
-                    'value'     => $_record->software_id,
-                    'records'   => $this->searchSnomSoftwares('', '')
-                );
-
-                // add snom settings (no filter + no pagination)
-                $recordArray['setting_id'] = array(
-                    'value'     => $_record->setting_id,
-                    'records'   => $this->searchSnomSettings('', '')
-                );
-                break;
-                
             case 'Voipmanager_Model_Snom_Phone':
-                $recordArray = parent::_recordToJson($_record);
-                
                 // add settings
                 $recordArray = array_merge($recordArray, $this->getSnomPhoneSettings($_record->getId()));
                 
@@ -75,23 +59,56 @@ class Voipmanager_Frontend_Json extends Tinebase_Frontend_Json_Abstract
                 
                 break;
 
-            case 'Voipmanager_Model_Asterisk_SipPeer':
-                $recordArray = parent::_recordToJson($_record);
+            case 'Voipmanager_Model_Snom_Template':
+                // add snom softwares (no filter + no pagination)
+                $recordArray['software_id'] = array(
+                    'value'     => $recordArray['software_id'],
+                    'records'   => $this->searchSnomSoftwares('', '')
+                );
+
+                // add snom settings (no filter + no pagination)
+                $recordArray['setting_id'] = array(
+                    'value'     => $recordArray['setting_id'],
+                    'records'   => $this->searchSnomSettings('', '')
+                );
+                break;
                 
-                // add snom templates (no filter + no pagination)
-                $recordArray['context'] = array(
-                    'value'     => $_record->context,
+            case 'Voipmanager_Model_Snom_Phone':
+                // add settings
+                $recordArray = array_merge($recordArray, $this->getSnomPhoneSettings($recordArray['id']));
+                
+                // resolve snom template_id
+                $recordArray['template_id'] = array(
+                    'value'     => $recordArray['template_id'],
+                    'records'   => $this->searchSnomTemplates('', '')
+                );
+
+                // resolve snom location_id
+                $recordArray['location_id'] = array(
+                    'value'     => $recordArray['location_id'],
+                    'records'   => $this->searchSnomLocations('', '')
+                );
+                
+                // add names to lines
+                foreach ($recordArray['lines'] as &$line) {
+                    $line['name'] = Voipmanager_Controller_Asterisk_SipPeer::getInstance()->get($line['asteriskline_id'])->name;
+                }
+                
+                break;
+
+            case 'Voipmanager_Model_Asterisk_SipPeer':
+            case 'Voipmanager_Model_Asterisk_Voicemail':
+                // resolve context_id
+                $recordArray['context_id'] = array(
+                    'value'     => $recordArray['context_id'],
                     'records'   => $this->searchAsteriskContexts('', '')
                 );
                 break;
-            
-            default:
-                $recordArray = parent::_recordToJson($_record);
         }
         
         return $recordArray;
     }
-    
+
     
 /****************************************
  * SNOM PHONE / PHONESETTINGS FUNCTIONS
@@ -113,9 +130,7 @@ class Voipmanager_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         
         foreach ($result['results'] as &$phone) {
             // resolve location and template names
-            $phoneTemplate = $this->getSnomTemplate($phone['template_id']);
-            $phoneLocation = $this->getSnomLocation($phone['location_id']);
-            
+
             if($location = Voipmanager_Controller_Snom_Location::getInstance()->get($phone['location_id'])) {
                 $phone['location'] = $location->name;
             }

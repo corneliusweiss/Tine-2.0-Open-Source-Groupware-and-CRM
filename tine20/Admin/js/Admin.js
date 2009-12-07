@@ -402,7 +402,7 @@ Tine.Admin.AccessLog.Main = function() {
         var AccessLogQuickSearchField = new Ext.ux.SearchField({
             id:        'AccessLogQuickSearchField',
             width:     200,
-            emptyText: this.translation.gettext('enter searchfilter')
+            emptyText: Tine.Tinebase.translation._hidden('enter searchfilter')
         }); 
         AccessLogQuickSearchField.on('change', function() {
             Ext.getCmp('gridAdminAccessLog').getStore().load({params:{start:0, limit:50}});
@@ -630,22 +630,10 @@ Tine.Admin.AccessLog.Main = function() {
 	        sort: 'li',
 	        dir: 'DESC'
 	    },
-            
+         
+        // @deprecated
 	    updateMainToolbar : function() 
 	    {
-	        var menu = Ext.menu.MenuMgr.get('Tinebase_System_AdminMenu');
-	        menu.removeAll();
-	        /*menu.add(
-	            {text: 'product', handler: Tine.Crm.Main.handlers.editProductSource}
-	        );*/
-	
-	        var adminButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_AdminButton');
-	        adminButton.setIconClass('AdminTreePanel');
-	        //if(Tine.Admin.rights.indexOf('admin') > -1) {
-	        //    adminButton.setDisabled(false);
-	        //} else {
-	            adminButton.setDisabled(true);
-	        //}
 	    }
     };
     

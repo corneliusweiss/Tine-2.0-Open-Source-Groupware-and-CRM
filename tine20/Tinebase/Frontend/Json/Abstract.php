@@ -78,9 +78,10 @@ abstract class Tinebase_Frontend_Json_Abstract extends Tinebase_Frontend_Abstrac
      * @param string $_paging json encoded
      * @param Tinebase_Controller_SearchInterface $_controller the record controller
      * @param string $_filterModel the class name of the filter model to use
+     * @param bool $_getRelations
      * @return array
      */
-    protected function _search($_filter, $_paging, Tinebase_Controller_SearchInterface $_controller, $_filterModel)
+    protected function _search($_filter, $_paging, Tinebase_Controller_SearchInterface $_controller, $_filterModel, $_getRelations = FALSE)
     {
         $decodedFilter = is_array($_filter) ? $_filter : Zend_Json::decode($_filter);
         $decodedPagination = is_array($_paging) ? $_paging : Zend_Json::decode($_paging);
@@ -98,7 +99,7 @@ abstract class Tinebase_Frontend_Json_Abstract extends Tinebase_Frontend_Abstrac
 
         $pagination = new Tinebase_Model_Pagination($decodedPagination);
         
-        $records = $_controller->search($filter, $pagination);
+        $records = $_controller->search($filter, $pagination, $_getRelations);
         
         $result = $this->_multipleRecordsToJson($records, $filter);
         
@@ -158,16 +159,17 @@ abstract class Tinebase_Frontend_Json_Abstract extends Tinebase_Frontend_Abstrac
     /**
      * deletes existing records
      *
-     * @param array $_ids 
+     * @param array|string $_ids 
      * @param Tinebase_Controller_Record_Interface $_controller the record controller
      * @return array
      */
     protected function _delete($_ids, Tinebase_Controller_Record_Interface $_controller)
     {
-        if (strpos($_ids, '[') !== false) {
+        if (! is_array($_ids) && strpos($_ids, '[') !== false) {
             $_ids = Zend_Json::decode($_ids);
         }
         $_controller->delete($_ids);
+        
         return array(
             'status'    => 'success'
         );  

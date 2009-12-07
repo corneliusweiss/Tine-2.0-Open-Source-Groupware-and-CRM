@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tine 2.0 Voipmanager\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Michal Sladek <msladek@brotel.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,57 +16,59 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-SearchPath-0: Voipmanager\n"
 
-#: js/Asterisk/ContextEditDialog.js:41 js/Asterisk/ContextGridPanel.js:73
-#: js/Asterisk/SipPeerEditDialog.js:48 js/Asterisk/VoicemailEditDialog.js:71
-#: js/Snom/LocationEditDialog.js:42 js/Snom/LocationGridPanel.js:128
-#: js/Snom/PhoneEditDialog.js:285 js/Snom/TemplateEditDialog.js:42
+#: js/Asterisk/ContextEditDialog.js:41 js/Asterisk/ContextGridPanel.js:76
+#: js/Asterisk/SipPeerEditDialog.js:48 js/Asterisk/SipPeerGridPanel.js:51
+#: js/Asterisk/VoicemailEditDialog.js:69 js/Snom/LocationEditDialog.js:42
+#: js/Snom/LocationGridPanel.js:131 js/Snom/PhoneEditDialog.js:285
+#: js/Snom/TemplateEditDialog.js:42
 msgid "Name"
 msgstr "Název"
 
-#: js/Asterisk/ContextEditDialog.js:49 js/Asterisk/ContextGridPanel.js:82
-#: js/Snom/LocationEditDialog.js:49 js/Snom/LocationGridPanel.js:134
+#: js/Asterisk/ContextEditDialog.js:49 js/Asterisk/ContextGridPanel.js:85
+#: js/Snom/LocationEditDialog.js:49 js/Snom/LocationGridPanel.js:137
 #: js/Snom/SettingEditDialog.js:121 js/Snom/SoftwareEditDialog.js:67
-#: js/Snom/SoftwareGridPanel.js:79 js/Snom/TemplateEditDialog.js:49
-#: js/Snom/TemplateGridPanel.js:79
+#: js/Snom/SoftwareGridPanel.js:82 js/Snom/TemplateEditDialog.js:49
+#: js/Snom/TemplateGridPanel.js:82
 msgid "Description"
 msgstr "Popis"
 
-#: js/Asterisk/ContextGridPanel.js:51 js/Asterisk/SipPeerEditDialog.js:56
-#: js/Asterisk/VoicemailEditDialog.js:55 js/Models.js:496 js/Voipmanager.js:53
+#: js/Asterisk/ContextGridPanel.js:51 js/Asterisk/MeetmeGridPanel.js:51
+#: js/Asterisk/SipPeerGridPanel.js:50 js/Asterisk/VoicemailGridPanel.js:51
+#: js/Snom/LocationGridPanel.js:50 js/Snom/PhoneGridPanel.js:67
+#: js/Snom/SettingGridPanel.js:51 js/Snom/SoftwareGridPanel.js:51
+#: js/Snom/TemplateGridPanel.js:51
+msgid "Quick search"
+msgstr ""
+
+#: js/Asterisk/ContextGridPanel.js:69 js/Asterisk/MeetmeGridPanel.js:69
+#: js/Asterisk/VoicemailGridPanel.js:69 js/Snom/LocationGridPanel.js:124
+#: js/Snom/SoftwareGridPanel.js:69 js/Snom/TemplateGridPanel.js:69
+msgid "id"
+msgstr "ID"
+
+#: js/Asterisk/MeetmeEditDialog.js:41 js/Asterisk/MeetmeGridPanel.js:76
+msgid "confno"
+msgstr "číslo konference"
+
+#: js/Asterisk/MeetmeEditDialog.js:49 js/Asterisk/MeetmeGridPanel.js:85
+msgid "pin"
+msgstr "pin"
+
+#: js/Asterisk/MeetmeEditDialog.js:57 js/Asterisk/MeetmeGridPanel.js:94
+msgid "adminpin"
+msgstr "pin administrátora"
+
+#: js/Asterisk/SipPeerEditDialog.js:41 js/Asterisk/VoicemailEditDialog.js:42
+msgid "General"
+msgstr "Obecné"
+
+#: js/Asterisk/SipPeerEditDialog.js:56 js/Asterisk/VoicemailEditDialog.js:56
+#: js/Models.js:497 js/Voipmanager.js:53
 msgid "Context"
 msgid_plural "Contexts"
 msgstr[0] "Kontext"
 msgstr[1] "Kontexty"
 msgstr[2] "Kontextů"
-
-#: js/Asterisk/ContextGridPanel.js:66 js/Asterisk/MeetmeGridPanel.js:66
-#: js/Asterisk/VoicemailGridPanel.js:72 js/Snom/LocationGridPanel.js:121
-#: js/Snom/SoftwareGridPanel.js:66 js/Snom/TemplateGridPanel.js:66
-msgid "id"
-msgstr "ID"
-
-#: js/Asterisk/MeetmeEditDialog.js:41 js/Asterisk/MeetmeGridPanel.js:73
-msgid "confno"
-msgstr "číslo konference"
-
-#: js/Asterisk/MeetmeEditDialog.js:49 js/Asterisk/MeetmeGridPanel.js:82
-msgid "pin"
-msgstr "pin"
-
-#: js/Asterisk/MeetmeEditDialog.js:57 js/Asterisk/MeetmeGridPanel.js:91
-msgid "adminpin"
-msgstr "pin administrátora"
-
-#: js/Asterisk/MeetmeGridPanel.js:51 js/Models.js:586 js/Voipmanager.js:73
-msgid "Meetme"
-msgid_plural "Meetmes"
-msgstr[0] "Meetme konference"
-msgstr[1] "Meetme konference"
-msgstr[2] "Meetme konferencí"
-
-#: js/Asterisk/SipPeerEditDialog.js:41 js/Asterisk/VoicemailEditDialog.js:42
-msgid "General"
-msgstr "Obecné"
 
 #: js/Asterisk/SipPeerEditDialog.js:68
 msgid "Type"
@@ -117,7 +119,7 @@ msgid "NAT"
 msgstr "NAT"
 
 #: js/Asterisk/SipPeerEditDialog.js:140 js/Asterisk/SipPeerEditDialog.js:151
-#: js/Asterisk/VoicemailEditDialog.js:116 js/Snom/LocationEditDialog.js:164
+#: js/Asterisk/VoicemailEditDialog.js:114 js/Snom/LocationEditDialog.js:164
 #: js/Snom/LocationEditDialog.js:185 js/Snom/PhoneEditDialog.js:528
 #: js/Snom/PhoneEditDialog.js:565 js/Snom/PhoneEditDialog.js:574
 #: js/Snom/PhoneEditDialog.js:583 js/Snom/PhoneEditDialog.js:592
@@ -129,7 +131,7 @@ msgid "off"
 msgstr "vypnuto"
 
 #: js/Asterisk/SipPeerEditDialog.js:140 js/Asterisk/SipPeerEditDialog.js:151
-#: js/Asterisk/VoicemailEditDialog.js:115 js/Snom/LocationEditDialog.js:163
+#: js/Asterisk/VoicemailEditDialog.js:113 js/Snom/LocationEditDialog.js:163
 #: js/Snom/LocationEditDialog.js:184 js/Snom/PhoneEditDialog.js:525
 #: js/Snom/PhoneEditDialog.js:564 js/Snom/PhoneEditDialog.js:573
 #: js/Snom/PhoneEditDialog.js:582 js/Snom/PhoneEditDialog.js:591
@@ -144,299 +146,288 @@ msgstr "zapnuto"
 msgid "Qualify"
 msgstr "Kontrola dostupnosti SIP klienta"
 
-#: js/Asterisk/SipPeerGridPanel.js:50
-msgid "Sip Peer"
-msgstr "SIP peer"
-
-#: js/Asterisk/SipPeerGridPanel.js:66 js/Snom/PhoneGridPanel.js:82
-#: js/Snom/SettingGridPanel.js:66
+#: js/Asterisk/SipPeerGridPanel.js:70 js/Snom/PhoneGridPanel.js:85
+#: js/Snom/SettingGridPanel.js:69
 msgid "Id"
 msgstr "ID"
 
-#: js/Asterisk/SipPeerGridPanel.js:73 js/Snom/PhoneEditDialog.js:514
+#: js/Asterisk/SipPeerGridPanel.js:77 js/Snom/PhoneEditDialog.js:514
 #: js/Snom/SettingEditDialog.js:112 js/Snom/SettingEditDialog.js:184
-#: js/Snom/SettingGridPanel.js:73 js/Snom/SoftwareEditDialog.js:61
-#: js/Snom/SoftwareGridPanel.js:73 js/Snom/TemplateGridPanel.js:73
+#: js/Snom/SettingGridPanel.js:76 js/Snom/SoftwareEditDialog.js:61
+#: js/Snom/SoftwareGridPanel.js:76 js/Snom/TemplateGridPanel.js:76
 msgid "name"
 msgstr "název"
 
-#: js/Asterisk/SipPeerGridPanel.js:79
+#: js/Asterisk/SipPeerGridPanel.js:83
 msgid "account code"
 msgstr "kód účtu"
 
-#: js/Asterisk/SipPeerGridPanel.js:86
+#: js/Asterisk/SipPeerGridPanel.js:90
 msgid "ama flags"
 msgstr "AMA příznaky"
 
-#: js/Asterisk/SipPeerGridPanel.js:93
+#: js/Asterisk/SipPeerGridPanel.js:97
 msgid "call group"
 msgstr "vyzváněcí skupina"
 
-#: js/Asterisk/SipPeerGridPanel.js:100
+#: js/Asterisk/SipPeerGridPanel.js:104
 msgid "caller id"
 msgstr "ID volajícícho"
 
-#: js/Asterisk/SipPeerGridPanel.js:106
+#: js/Asterisk/SipPeerGridPanel.js:110
 msgid "can reinvite"
 msgstr "smí provést SIP reinvite"
 
-#: js/Asterisk/SipPeerGridPanel.js:113 js/Asterisk/VoicemailGridPanel.js:85
+#: js/Asterisk/SipPeerGridPanel.js:117 js/Asterisk/VoicemailGridPanel.js:82
 msgid "context"
 msgstr "kontext"
 
-#: js/Asterisk/SipPeerGridPanel.js:119
+#: js/Asterisk/SipPeerGridPanel.js:123
 msgid "default ip"
 msgstr "výchozí IP"
 
-#: js/Asterisk/SipPeerGridPanel.js:126
+#: js/Asterisk/SipPeerGridPanel.js:130
 msgid "dtmf mode"
 msgstr "DTMF režim"
 
-#: js/Asterisk/SipPeerGridPanel.js:133
+#: js/Asterisk/SipPeerGridPanel.js:137
 msgid "from user"
 msgstr "od uživatele"
 
-#: js/Asterisk/SipPeerGridPanel.js:140
+#: js/Asterisk/SipPeerGridPanel.js:144
 msgid "from domain"
 msgstr "z domény"
 
-#: js/Asterisk/SipPeerGridPanel.js:147
+#: js/Asterisk/SipPeerGridPanel.js:151
 msgid "full contact"
 msgstr "celý kontakt"
 
-#: js/Asterisk/SipPeerGridPanel.js:154
+#: js/Asterisk/SipPeerGridPanel.js:158
 msgid "host"
 msgstr "host"
 
-#: js/Asterisk/SipPeerGridPanel.js:161
+#: js/Asterisk/SipPeerGridPanel.js:165
 msgid "insecure"
 msgstr "nezabezpečený"
 
-#: js/Asterisk/SipPeerGridPanel.js:168 js/Snom/PhoneEditDialog.js:484
-#: js/Snom/SettingEditDialog.js:147 js/Snom/SettingGridPanel.js:92
+#: js/Asterisk/SipPeerGridPanel.js:172 js/Snom/PhoneEditDialog.js:484
+#: js/Snom/SettingEditDialog.js:147 js/Snom/SettingGridPanel.js:95
 msgid "language"
 msgstr "jazyk"
 
-#: js/Asterisk/SipPeerGridPanel.js:175 js/Asterisk/VoicemailGridPanel.js:79
+#: js/Asterisk/SipPeerGridPanel.js:179 js/Asterisk/VoicemailGridPanel.js:76
 msgid "mailbox"
 msgstr "schránka"
 
-#: js/Asterisk/SipPeerGridPanel.js:181
+#: js/Asterisk/SipPeerGridPanel.js:185
 msgid "md5 secret"
 msgstr "MD5 klíč"
 
-#: js/Asterisk/SipPeerGridPanel.js:188
+#: js/Asterisk/SipPeerGridPanel.js:192
 msgid "nat"
 msgstr "NAT"
 
-#: js/Asterisk/SipPeerGridPanel.js:195
+#: js/Asterisk/SipPeerGridPanel.js:199
 msgid "deny"
 msgstr "zamítnout"
 
-#: js/Asterisk/SipPeerGridPanel.js:202
+#: js/Asterisk/SipPeerGridPanel.js:206
 msgid "permit"
 msgstr "povolit"
 
-#: js/Asterisk/SipPeerGridPanel.js:209
+#: js/Asterisk/SipPeerGridPanel.js:213
 msgid "mask"
 msgstr "maska"
 
-#: js/Asterisk/SipPeerGridPanel.js:216
+#: js/Asterisk/SipPeerGridPanel.js:220
 msgid "pickup group"
 msgstr "vyzvedávací skupina"
 
-#: js/Asterisk/SipPeerGridPanel.js:222
+#: js/Asterisk/SipPeerGridPanel.js:226
 msgid "port"
 msgstr "port"
 
-#: js/Asterisk/SipPeerGridPanel.js:229
+#: js/Asterisk/SipPeerGridPanel.js:233
 msgid "qualify"
 msgstr "kontrola dostupnosti SIP klienta (qualify)"
 
-#: js/Asterisk/SipPeerGridPanel.js:236
+#: js/Asterisk/SipPeerGridPanel.js:240
 msgid "restrict cid"
 msgstr "potlačit identifikaci volajícího"
 
-#: js/Asterisk/SipPeerGridPanel.js:243
+#: js/Asterisk/SipPeerGridPanel.js:247
 msgid "rtp timeout"
 msgstr "časový limit RTP"
 
-#: js/Asterisk/SipPeerGridPanel.js:250
+#: js/Asterisk/SipPeerGridPanel.js:254
 msgid "rtp hold timeout"
 msgstr "časový limit RTP při zaparkovaném hovoru"
 
-#: js/Asterisk/SipPeerGridPanel.js:257
+#: js/Asterisk/SipPeerGridPanel.js:261
 msgid "secret"
 msgstr "bezpečnostní kód"
 
-#: js/Asterisk/SipPeerGridPanel.js:264
+#: js/Asterisk/SipPeerGridPanel.js:268
 msgid "type"
 msgstr "typ"
 
-#: js/Asterisk/SipPeerGridPanel.js:270
-msgid "username"
-msgstr "uživatelské jméno"
+#: js/Asterisk/SipPeerGridPanel.js:274
+msgid "defaultuser"
+msgstr "výchozí uživatel"
 
-#: js/Asterisk/SipPeerGridPanel.js:277
+#: js/Asterisk/SipPeerGridPanel.js:281
 msgid "disallow"
 msgstr "zakázat"
 
-#: js/Asterisk/SipPeerGridPanel.js:284
+#: js/Asterisk/SipPeerGridPanel.js:288
 msgid "allow"
 msgstr "povolit"
 
-#: js/Asterisk/SipPeerGridPanel.js:291
+#: js/Asterisk/SipPeerGridPanel.js:295
 msgid "music on hold"
 msgstr "hudba při čekání"
 
-#: js/Asterisk/SipPeerGridPanel.js:298
+#: js/Asterisk/SipPeerGridPanel.js:302
 msgid "reg seconds"
 msgstr "registrace v sekundách"
 
-#: js/Asterisk/SipPeerGridPanel.js:304
+#: js/Asterisk/SipPeerGridPanel.js:309
 msgid "ip address"
 msgstr "IP adresa"
 
-#: js/Asterisk/SipPeerGridPanel.js:311
+#: js/Asterisk/SipPeerGridPanel.js:316
 msgid "reg exten"
 msgstr "registrace linky"
 
-#: js/Asterisk/SipPeerGridPanel.js:318
+#: js/Asterisk/SipPeerGridPanel.js:323
 msgid "can call forward"
 msgstr "smí přesměrovat hovor"
 
-#: js/Asterisk/SipPeerGridPanel.js:325
+#: js/Asterisk/SipPeerGridPanel.js:330
 msgid "set var"
 msgstr "nastavení proměnné"
 
-#: js/Asterisk/SipPeerGridPanel.js:332
+#: js/Asterisk/SipPeerGridPanel.js:337
 msgid "notify ringing"
 msgstr "upozornit na vyzvánění"
 
-#: js/Asterisk/SipPeerGridPanel.js:339
+#: js/Asterisk/SipPeerGridPanel.js:344
 msgid "use client code"
 msgstr "použít kód klienta"
 
-#: js/Asterisk/SipPeerGridPanel.js:346
+#: js/Asterisk/SipPeerGridPanel.js:351
 msgid "auth user"
 msgstr "autentikace uživatele"
 
-#: js/Asterisk/SipPeerGridPanel.js:353
+#: js/Asterisk/SipPeerGridPanel.js:358
 msgid "call limit"
 msgstr "limit volání"
 
-#: js/Asterisk/SipPeerGridPanel.js:360
+#: js/Asterisk/SipPeerGridPanel.js:365
 msgid "busy level"
 msgstr "počet souběžných hovorů než je obsazeno"
 
-#: js/Asterisk/VoicemailEditDialog.js:78
+#: js/Asterisk/VoicemailEditDialog.js:76
 msgid "Password"
 msgstr "Heslo"
 
-#: js/Asterisk/VoicemailEditDialog.js:86 js/Asterisk/VoicemailGridPanel.js:97
+#: js/Asterisk/VoicemailEditDialog.js:84 js/Asterisk/VoicemailGridPanel.js:94
 msgid "email"
 msgstr "email"
 
-#: js/Asterisk/VoicemailEditDialog.js:92 js/Asterisk/VoicemailGridPanel.js:103
+#: js/Asterisk/VoicemailEditDialog.js:90 js/Asterisk/VoicemailGridPanel.js:100
 msgid "pager"
 msgstr "pager"
 
-#: js/Asterisk/VoicemailEditDialog.js:98
+#: js/Asterisk/VoicemailEditDialog.js:96
 msgid "Additional"
 msgstr "Dodatečný"
 
-#: js/Asterisk/VoicemailEditDialog.js:122
-#: js/Asterisk/VoicemailGridPanel.js:109
+#: js/Asterisk/VoicemailEditDialog.js:120
+#: js/Asterisk/VoicemailGridPanel.js:106
 msgid "tz"
 msgstr "časové pásmo"
 
-#: js/Asterisk/VoicemailEditDialog.js:128
-#: js/Asterisk/VoicemailGridPanel.js:130
+#: js/Asterisk/VoicemailEditDialog.js:126
+#: js/Asterisk/VoicemailGridPanel.js:127
 msgid "dialout"
 msgstr "odchozí kontext pro funkci \"place an outgoing call\""
 
-#: js/Asterisk/VoicemailEditDialog.js:134
-#: js/Asterisk/VoicemailGridPanel.js:137
+#: js/Asterisk/VoicemailEditDialog.js:132
+#: js/Asterisk/VoicemailGridPanel.js:134
 msgid "callback"
 msgstr "odchozí kontext pro funkci \"return phone call\""
 
-#: js/Asterisk/VoicemailEditDialog.js:140
-#: js/Asterisk/VoicemailGridPanel.js:165
+#: js/Asterisk/VoicemailEditDialog.js:138
+#: js/Asterisk/VoicemailGridPanel.js:162
 msgid "sayduration"
 msgstr "informovat o délce vzkazu"
 
-#: js/Asterisk/VoicemailEditDialog.js:144
-#: js/Asterisk/VoicemailGridPanel.js:172
+#: js/Asterisk/VoicemailEditDialog.js:142
+#: js/Asterisk/VoicemailGridPanel.js:169
 msgid "saydurationm"
 msgstr "po kolika minutách informovat o délce vzkazu"
 
-#: js/Asterisk/VoicemailEditDialog.js:149
-#: js/Asterisk/VoicemailGridPanel.js:116
+#: js/Asterisk/VoicemailEditDialog.js:147
+#: js/Asterisk/VoicemailGridPanel.js:113
 msgid "attach"
 msgstr "připojit vzkaz k emailu"
 
-#: js/Asterisk/VoicemailEditDialog.js:153
-#: js/Asterisk/VoicemailGridPanel.js:123
+#: js/Asterisk/VoicemailEditDialog.js:151
+#: js/Asterisk/VoicemailGridPanel.js:120
 msgid "saycid"
 msgstr "přečíst číslo volajícího"
 
-#: js/Asterisk/VoicemailEditDialog.js:157
-#: js/Asterisk/VoicemailGridPanel.js:144
+#: js/Asterisk/VoicemailEditDialog.js:155
+#: js/Asterisk/VoicemailGridPanel.js:141
 msgid "review"
 msgstr "povolit revizi nahraného vzkazu"
 
-#: js/Asterisk/VoicemailEditDialog.js:161
-#: js/Asterisk/VoicemailGridPanel.js:151
+#: js/Asterisk/VoicemailEditDialog.js:159
+#: js/Asterisk/VoicemailGridPanel.js:148
 msgid "operator"
 msgstr "povolit funkci operátora během a po nahrávání vzkazu"
 
-#: js/Asterisk/VoicemailEditDialog.js:165
-#: js/Asterisk/VoicemailGridPanel.js:158
+#: js/Asterisk/VoicemailEditDialog.js:163
+#: js/Asterisk/VoicemailGridPanel.js:155
 msgid "envelope"
 msgstr "přehrát obálku (datum/čas) před vzkazem"
 
-#: js/Asterisk/VoicemailEditDialog.js:169
-#: js/Asterisk/VoicemailGridPanel.js:179
+#: js/Asterisk/VoicemailEditDialog.js:167
+#: js/Asterisk/VoicemailGridPanel.js:176
 msgid "sendvoicemail"
 msgstr "umožnit nahrání vzkazu z menu hlasové pošty"
 
-#: js/Asterisk/VoicemailEditDialog.js:173
-#: js/Asterisk/VoicemailGridPanel.js:186
+#: js/Asterisk/VoicemailEditDialog.js:171
+#: js/Asterisk/VoicemailGridPanel.js:183
 msgid "delete"
 msgstr "smazat"
 
-#: js/Asterisk/VoicemailEditDialog.js:177
-#: js/Asterisk/VoicemailGridPanel.js:193
+#: js/Asterisk/VoicemailEditDialog.js:175
+#: js/Asterisk/VoicemailGridPanel.js:190
 msgid "nextaftercmd"
 msgstr "po smazání vzkazu automaticky přehrát následující"
 
-#: js/Asterisk/VoicemailEditDialog.js:181
-#: js/Asterisk/VoicemailGridPanel.js:200
+#: js/Asterisk/VoicemailEditDialog.js:179
+#: js/Asterisk/VoicemailGridPanel.js:197
 msgid "forcename"
 msgstr "vyžadovat nahrání jména u nových uživatelů hlasové pošty"
 
-#: js/Asterisk/VoicemailEditDialog.js:185
-#: js/Asterisk/VoicemailGridPanel.js:207
+#: js/Asterisk/VoicemailEditDialog.js:183
+#: js/Asterisk/VoicemailGridPanel.js:204
 msgid "forcegreetings"
 msgstr "vyžadovat nahrání uvítací zprávy u nových uživatelů hlasové pošty"
 
-#: js/Asterisk/VoicemailEditDialog.js:189
-#: js/Asterisk/VoicemailGridPanel.js:214
+#: js/Asterisk/VoicemailEditDialog.js:187
+#: js/Asterisk/VoicemailGridPanel.js:211
 msgid "hidefromdir"
 msgstr "nezobrazovat schránku v seznamu vytvářeném modulem app_directory"
 
-#: js/Asterisk/VoicemailGridPanel.js:51 js/Models.js:551 js/Voipmanager.js:63
-msgid "Voicemail"
-msgid_plural "Voicemails"
-msgstr[0] "Hlasová pošta"
-msgstr[1] "Hlasové pošty"
-msgstr[2] "Hlasových pošt"
-
-#: js/Asterisk/VoicemailGridPanel.js:91
+#: js/Asterisk/VoicemailGridPanel.js:88
 msgid "fullname"
 msgstr "Jméno a příjmení"
 
-#: js/Models.js:82 js/Snom/PhoneEditDialog.js:270 js/Snom/PhoneGridPanel.js:67
+#: js/Models.js:82 js/Snom/PhoneEditDialog.js:270
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] "Telefon"
@@ -450,8 +441,7 @@ msgstr[0] "seznam telefonů"
 msgstr[1] "seznamy telefonů"
 msgstr[2] "seznamů telefonů"
 
-#: js/Models.js:133 js/Snom/LocationGridPanel.js:50
-#: js/Snom/PhoneGridPanel.js:100 js/Voipmanager.js:116
+#: js/Models.js:133 js/Snom/PhoneGridPanel.js:103 js/Voipmanager.js:116
 msgid "Location"
 msgid_plural "Locations"
 msgstr[0] "Umístění"
@@ -465,8 +455,7 @@ msgstr[0] "seznam umístění"
 msgstr[1] "seznamy umístění"
 msgstr[2] "seznamů umístění"
 
-#: js/Models.js:170 js/Snom/PhoneGridPanel.js:109
-#: js/Snom/TemplateGridPanel.js:51
+#: js/Models.js:170 js/Snom/PhoneGridPanel.js:112
 msgid "Template"
 msgid_plural "Templates"
 msgstr[0] "Šablona"
@@ -480,8 +469,7 @@ msgstr[0] "Seznam šablon"
 msgstr[1] "Seznamy šablon"
 msgstr[2] "Seznamů šablon"
 
-#: js/Models.js:208 js/Snom/PhoneGridPanel.js:124
-#: js/Snom/SoftwareGridPanel.js:51 js/Voipmanager.js:157
+#: js/Models.js:208 js/Snom/PhoneGridPanel.js:127 js/Voipmanager.js:157
 msgid "Software"
 msgid_plural "Softwares"
 msgstr[0] "Software"
@@ -523,7 +511,7 @@ msgstr[0] "seznam linek"
 msgstr[1] "seznamy linek"
 msgstr[2] "seznamů linek"
 
-#: js/Models.js:336 js/Snom/SettingGridPanel.js:51 js/Voipmanager.js:147
+#: js/Models.js:336 js/Voipmanager.js:147
 msgid "Setting"
 msgid_plural "Settings"
 msgstr[0] "Nastavení"
@@ -551,42 +539,56 @@ msgstr[0] "seznam vlastníků"
 msgstr[1] "seznamy vlastníků"
 msgstr[2] "seznamů vlastníků"
 
-#: js/Models.js:462 js/Voipmanager.js:32
+#: js/Models.js:463 js/Voipmanager.js:32
 msgid "SipPeer"
 msgid_plural "SipPeers"
 msgstr[0] "SipPeer"
 msgstr[1] "SipPeery"
 msgstr[2] "SipPeerů"
 
-#: js/Models.js:466
+#: js/Models.js:467
 msgid "sipPeers list"
 msgid_plural "sipPeers lists"
 msgstr[0] "seznam SipPeerů"
 msgstr[1] "seznamy SipPeerů"
 msgstr[2] "seznamů SipPeerů"
 
-#: js/Models.js:500
+#: js/Models.js:501
 msgid "contexts list"
 msgid_plural "contexts lists"
 msgstr[0] "seznam konetxtů"
 msgstr[1] "seznamy kontextů"
 msgstr[2] "seznamů kontextů"
 
-#: js/Models.js:555
+#: js/Models.js:553 js/Voipmanager.js:63
+msgid "Voicemail"
+msgid_plural "Voicemails"
+msgstr[0] "Hlasová pošta"
+msgstr[1] "Hlasové pošty"
+msgstr[2] "Hlasových pošt"
+
+#: js/Models.js:557
 msgid "voicemails list"
 msgid_plural "voicemails lists"
 msgstr[0] "seznam hlasové pošty"
 msgstr[1] "seznamy hlasové pošty"
 msgstr[2] "seznamů hlasové pošty"
 
-#: js/Models.js:590
+#: js/Models.js:588 js/Voipmanager.js:73
+msgid "Meetme"
+msgid_plural "Meetmes"
+msgstr[0] "Meetme konference"
+msgstr[1] "Meetme konference"
+msgstr[2] "Meetme konferencí"
+
+#: js/Models.js:592
 msgid "meetmes list"
 msgid_plural "meetmes lists"
 msgstr[0] "seznam konferencí meetme"
 msgstr[1] "seznamy konferencí meetme"
 msgstr[2] "seznamů konferencí meetme"
 
-#: js/Snom/LocationEditDialog.js:55 js/Snom/LocationGridPanel.js:79
+#: js/Snom/LocationEditDialog.js:55 js/Snom/LocationGridPanel.js:82
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -594,7 +596,7 @@ msgstr "Registrar"
 msgid "Base Download URL"
 msgstr "Základní URL pro download"
 
-#: js/Snom/LocationEditDialog.js:77 js/Snom/LocationGridPanel.js:72
+#: js/Snom/LocationEditDialog.js:77 js/Snom/LocationGridPanel.js:75
 msgid "Update Policy"
 msgstr "Aktualizační politika"
 
@@ -614,7 +616,7 @@ msgstr "americký formát datumu (mm/dd)"
 msgid "time_24_format"
 msgstr "24 hodinový formát času"
 
-#: js/Snom/LocationEditDialog.js:194 js/Snom/LocationGridPanel.js:93
+#: js/Snom/LocationEditDialog.js:194 js/Snom/LocationGridPanel.js:96
 msgid "NTP Server"
 msgstr "NTP server"
 
@@ -642,7 +644,7 @@ msgstr "Heslo pro administrátorský režim"
 msgid "Enable webserver"
 msgstr "Povolit webový server"
 
-#: js/Snom/LocationEditDialog.js:305 js/Snom/LocationGridPanel.js:100
+#: js/Snom/LocationEditDialog.js:305 js/Snom/LocationGridPanel.js:103
 msgid "Webserver Type"
 msgstr "Typ webového serveru"
 
@@ -650,11 +652,11 @@ msgstr "Typ webového serveru"
 msgid "HTTP Port"
 msgstr "HTTP port"
 
-#: js/Snom/LocationEditDialog.js:366 js/Snom/LocationGridPanel.js:107
+#: js/Snom/LocationEditDialog.js:366 js/Snom/LocationGridPanel.js:110
 msgid "HTTPS Port"
 msgstr "HTTPS port"
 
-#: js/Snom/LocationEditDialog.js:387 js/Snom/LocationGridPanel.js:114
+#: js/Snom/LocationEditDialog.js:387 js/Snom/LocationGridPanel.js:117
 msgid "HTTP User"
 msgstr "HTTP uživatel"
 
@@ -662,23 +664,23 @@ msgstr "HTTP uživatel"
 msgid "HTTP Password"
 msgstr "HTTP heslo"
 
-#: js/Snom/LocationGridPanel.js:65
+#: js/Snom/LocationGridPanel.js:68
 msgid "FW Interval"
 msgstr "Interval dotazování na konfigurační soubor firmwaru"
 
-#: js/Snom/LocationGridPanel.js:86
+#: js/Snom/LocationGridPanel.js:89
 msgid "Admin Mode"
 msgstr "Režim administrace"
 
-#: js/Snom/LocationGridPanel.js:140
+#: js/Snom/LocationGridPanel.js:143
 msgid "Filter Registrar"
 msgstr "Ignorovat SIP pakety nepocházející z registraru nebo proxy"
 
-#: js/Snom/LocationGridPanel.js:147
+#: js/Snom/LocationGridPanel.js:150
 msgid "CP Dialoginfo"
 msgstr "Zobrazení dialogu pro vyzvednutí hovoru na monitorované lince"
 
-#: js/Snom/LocationGridPanel.js:154
+#: js/Snom/LocationGridPanel.js:157
 msgid "Pickup Indic."
 msgstr "Akustická indikace dialogu pro vyzvednutí hovoru"
 
@@ -749,7 +751,7 @@ msgid "Settings"
 msgstr "Nastavení"
 
 #: js/Snom/PhoneEditDialog.js:466 js/Snom/SettingEditDialog.js:125
-#: js/Snom/SettingGridPanel.js:85
+#: js/Snom/SettingGridPanel.js:88
 msgid "web_language"
 msgstr "jazyk webového rozhranní"
 
@@ -769,7 +771,7 @@ msgid "- factory default -"
 msgstr "- tovární nastavení -"
 
 #: js/Snom/PhoneEditDialog.js:508 js/Snom/SettingEditDialog.js:175
-#: js/Snom/SettingGridPanel.js:99
+#: js/Snom/SettingGridPanel.js:102
 msgid "display_method"
 msgstr "zobrazování příchozích a odchozích hovorů"
 
@@ -790,7 +792,7 @@ msgid "number + name"
 msgstr "číslo + jméno"
 
 #: js/Snom/PhoneEditDialog.js:520 js/Snom/SettingEditDialog.js:191
-#: js/Snom/SettingGridPanel.js:162
+#: js/Snom/SettingGridPanel.js:165
 msgid "call_waiting"
 msgstr "indikace čekajícího hovoru"
 
@@ -803,7 +805,7 @@ msgid "ringer"
 msgstr "zvonek"
 
 #: js/Snom/PhoneEditDialog.js:531 js/Snom/SettingEditDialog.js:206
-#: js/Snom/SettingGridPanel.js:106
+#: js/Snom/SettingGridPanel.js:109
 msgid "mwi_notification"
 msgstr "oznámení čekající zprávy"
 
@@ -820,7 +822,7 @@ msgid "reminder"
 msgstr "připomínka"
 
 #: js/Snom/PhoneEditDialog.js:541 js/Snom/SettingEditDialog.js:220
-#: js/Snom/SettingGridPanel.js:113
+#: js/Snom/SettingGridPanel.js:116
 msgid "mwi_dialtone"
 msgstr "vyzvánecí tón indikující čekající zprávu"
 
@@ -833,7 +835,7 @@ msgid "stutter"
 msgstr "přerušovaný"
 
 #: js/Snom/PhoneEditDialog.js:550 js/Snom/SettingEditDialog.js:233
-#: js/Snom/SettingGridPanel.js:120
+#: js/Snom/SettingGridPanel.js:123
 msgid "headset_device"
 msgstr "náhlavní zařízení"
 
@@ -842,27 +844,27 @@ msgid "headset_rj"
 msgstr "výstup pro náhlavní soupravu"
 
 #: js/Snom/PhoneEditDialog.js:559 js/Snom/SettingEditDialog.js:246
-#: js/Snom/SettingGridPanel.js:127
+#: js/Snom/SettingGridPanel.js:130
 msgid "message_led_other"
 msgstr "indikace zmeškaných hovorů a stavů hovoru diodou hlasové pošty"
 
 #: js/Snom/PhoneEditDialog.js:568 js/Snom/SettingEditDialog.js:259
-#: js/Snom/SettingGridPanel.js:134
+#: js/Snom/SettingGridPanel.js:137
 msgid "global_missed_counter"
 msgstr "zobrazení zmeškaných hovorů pro všechny linky"
 
 #: js/Snom/PhoneEditDialog.js:577 js/Snom/SettingEditDialog.js:272
-#: js/Snom/SettingGridPanel.js:141
+#: js/Snom/SettingGridPanel.js:144
 msgid "scroll_outgoing"
 msgstr "procházení aktivními odchozími linkami pomocí navigačních kláves"
 
 #: js/Snom/PhoneEditDialog.js:586 js/Snom/SettingEditDialog.js:285
-#: js/Snom/SettingGridPanel.js:148
+#: js/Snom/SettingGridPanel.js:151
 msgid "show_local_line"
 msgstr "zobrazovat stav místní SIP linky"
 
 #: js/Snom/PhoneEditDialog.js:595 js/Snom/SettingEditDialog.js:298
-#: js/Snom/SettingGridPanel.js:155
+#: js/Snom/SettingGridPanel.js:158
 msgid "show_call_status"
 msgstr "zobrazovat stav hovoru"
 
@@ -886,10 +888,6 @@ msgstr "Linky"
 msgid "Users"
 msgstr "Uživatelé"
 
-#: js/Snom/PhoneEditDialog.js:719
-msgid "Rights"
-msgstr "Práva"
-
 #: js/Snom/PhoneGridPanel.js:43
 msgid "reset phones HTTP authentication"
 msgstr "Resetovat HTTP autentikaci telefonu"
@@ -898,39 +896,39 @@ msgstr "Resetovat HTTP autentikaci telefonu"
 msgid "Open phones web gui"
 msgstr "Otevřít web GUI telefonu"
 
-#: js/Snom/PhoneGridPanel.js:89
+#: js/Snom/PhoneGridPanel.js:92
 msgid "MAC address"
 msgstr "MAC adresa"
 
-#: js/Snom/PhoneGridPanel.js:95 js/Snom/SettingGridPanel.js:79
+#: js/Snom/PhoneGridPanel.js:98 js/Snom/SettingGridPanel.js:82
 msgid "description"
 msgstr "popis"
 
-#: js/Snom/PhoneGridPanel.js:118
+#: js/Snom/PhoneGridPanel.js:121
 msgid "IP Address"
 msgstr "IP adresa"
 
-#: js/Snom/PhoneGridPanel.js:130
+#: js/Snom/PhoneGridPanel.js:133
 msgid "current model"
 msgstr "současný model"
 
-#: js/Snom/PhoneGridPanel.js:137
+#: js/Snom/PhoneGridPanel.js:140
 msgid "redirect event"
 msgstr "událost vedoucí k přesměrování"
 
-#: js/Snom/PhoneGridPanel.js:144
+#: js/Snom/PhoneGridPanel.js:147
 msgid "redirect number"
 msgstr "přesměrování na číslo"
 
-#: js/Snom/PhoneGridPanel.js:151
+#: js/Snom/PhoneGridPanel.js:154
 msgid "redirect time"
 msgstr "interval v sekundách, po kterém dojde k přesměrování"
 
-#: js/Snom/PhoneGridPanel.js:158
+#: js/Snom/PhoneGridPanel.js:161
 msgid "settings loaded at"
 msgstr "nastavení načtena v"
 
-#: js/Snom/PhoneGridPanel.js:166
+#: js/Snom/PhoneGridPanel.js:169
 msgid "last modified"
 msgstr "naposledy změněno"
 
@@ -942,15 +940,15 @@ msgstr "Verze softwaru"
 msgid "Keylayout"
 msgstr "Rozložení kláves"
 
-#: js/Snom/TemplateGridPanel.js:85
+#: js/Snom/TemplateGridPanel.js:88
 msgid "Keylayout Id"
 msgstr "ID rozložení kláves"
 
-#: js/Snom/TemplateGridPanel.js:92
+#: js/Snom/TemplateGridPanel.js:95
 msgid "Settings Id"
 msgstr "ID nastavení"
 
-#: js/Snom/TemplateGridPanel.js:99
+#: js/Snom/TemplateGridPanel.js:102
 msgid "Software Id"
 msgstr "ID softwaru"
 
@@ -977,6 +975,15 @@ msgstr "Telefony"
 #: js/Voipmanager.js:126
 msgid "Templates"
 msgstr "Šablony"
+
+#~ msgid "Sip Peer"
+#~ msgstr "SIP peer"
+
+#~ msgid "Rights"
+#~ msgstr "Práva"
+
+#~ msgid "username"
+#~ msgstr "uživatelské jméno"
 
 #~ msgid "edit myphone"
 #~ msgstr "editovat myphone"

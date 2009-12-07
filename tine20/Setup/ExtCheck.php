@@ -418,24 +418,32 @@ class Setup_ExtCheck
                     if (version_compare($value['attributes']['VERSION'], phpversion(), '<')) {
                         $data[] = array($value['attributes']['NAME'], 'SUCCESS');
                     } else {
+                        Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ 
+                            . ' PHP version incompatible: ' . phpversion() . '<' . $value['attributes']['VERSION']);
                         $data[] = array($value['attributes']['NAME'], 'FAILURE');
                     }
                     break;
                 case 'MySQL':
                     // get setup controller for database connection
-                    $dbConfig = Tinebase_Core::getConfig()->database;
-                    $hostnameWithPort = (isset($dbConfig->port)) ? $dbConfig->host . ':' . $dbConfig->port : $dbConfig->host;
-                    $link = @mysql_connect($hostnameWithPort, $dbConfig->username, $dbConfig->password);
-                    if (!$link) {
-                        //die('Could not connect to mysql database: ' . mysql_error());
-                        Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . 'Could not connect to mysql database: ' . mysql_error());
-                        Setup_Core::set(Setup_Core::CHECKDB, FALSE);
-                    }                    
-                    //echo "mysql version: " . mysql_get_server_info();
-                    if (version_compare($value['attributes']['VERSION'], @mysql_get_server_info(), '<')) {
-                        $data[] = array($value['attributes']['NAME'], 'SUCCESS');
+                    if (Setup_Core::configFileExists()) {
+                        $dbConfig = Tinebase_Core::getConfig()->database;
+                        $hostnameWithPort = (isset($dbConfig->port)) ? $dbConfig->host . ':' . $dbConfig->port : $dbConfig->host;
+                        $link = @mysql_connect($hostnameWithPort, $dbConfig->username, $dbConfig->password);
+                        if (!$link) {
+                            //die('Could not connect to mysql database: ' . mysql_error());
+                            Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . 'Could not connect to mysql database: ' . mysql_error()); 
+                            Setup_Core::set(Setup_Core::CHECKDB, FALSE);
+                        }
+                        $mysqlVersion = @mysql_get_server_info();
                     } else {
-                        $data[] = array($value['attributes']['NAME'], 'FAILURE');
+                        $mysqlVersion = @mysql_get_client_info();
+                    }
+                    $text = $value['attributes']['NAME'] . ' (> ' . $value['attributes']['VERSION'] . ')';
+                    //echo "mysql version: " . mysql_get_server_info();
+                    if (version_compare($value['attributes']['VERSION'], $mysqlVersion, '<')) {
+                        $data[] = array($text, 'SUCCESS');
+                    } else {
+                        $data[] = array($text, 'FAILURE');
                     }
                     break;
                 default:
@@ -519,8 +527,6 @@ class Setup_ExtCheck
      * get check result data
      *
      * @return array
-     * 
-     * @todo    add message
      */
     public function getData()
     {
@@ -536,14 +542,18 @@ class Setup_ExtCheck
         foreach ($data as $check) {
             list($key, $value) = $check;
             if ($value != 'SUCCESS') {
-                
-                if ($key === 'MySQL') {
-                    $message = 'Could not connect to MySQL DB, version incompatible (' . @mysql_get_server_info() . ') or ';
-                } else {
-                    $message = '';
+                if ($key === 'PHP') {
+                    $message = 'PHP version too low: ' . phpversion();
                     $result['success'] = FALSE;
+                } else {
+                    if ($key === 'MySQL') {
+                        $message = 'Could not connect to MySQL DB, version incompatible (' . @mysql_get_server_info() . ') or ';
+                    } else {
+                        $message = '';
+                        $result['success'] = FALSE;
+                    }
+                    $message .= 'Extension ' . $key . ' not found.' . $helperLink;
                 }
-                $message .= 'Extension ' . $key . ' not found.' . $helperLink;
                 
                 $result['result'][] = array(
                     'key'       => $key,

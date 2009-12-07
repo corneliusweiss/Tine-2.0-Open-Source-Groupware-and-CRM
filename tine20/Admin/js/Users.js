@@ -51,6 +51,10 @@ Tine.Admin.Users.Main = function() {
               gridValue = "<img src='images/oxygen/16x16/actions/dialog-cancel.png' width='12' height='12'/>";
               break;
               
+            case 'expired':
+              gridValue = "<img src='images/oxygen/16x16/status/user-away.png' width='12' height='12'/>";
+              break;
+
             default:
               gridValue = _value;
               break;
@@ -73,20 +77,8 @@ Tine.Admin.Users.Main = function() {
             this.updateMainToolbar();        
         },
         
+        // @deprecated
         updateMainToolbar : function() {
-            var menu = Ext.menu.MenuMgr.get('Tinebase_System_AdminMenu');
-            menu.removeAll();
-            /*menu.add(
-                {text: 'product', handler: Tine.Crm.Main.handlers.editProductSource}
-            );*/
-    
-            var adminButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_AdminButton');
-            adminButton.setIconClass('AdminTreePanel');
-            //if(Admin.Crm.rights.indexOf('admin') > -1) {
-            //    adminButton.setDisabled(false);
-            //} else {
-                adminButton.setDisabled(true);
-            //}
         },
 
         addButtonHandler: function(_button, _event) {
@@ -218,7 +210,7 @@ Tine.Admin.Users.Main = function() {
             var UserAdminQuickSearchField = new Ext.ux.SearchField({
                 id: 'UserAdminQuickSearchField',
                 width:240,
-                emptyText: this.translation.gettext('enter searchfilter')
+                emptyText: Tine.Tinebase.translation._hidden('enter searchfilter')
             }); 
             UserAdminQuickSearchField.on('change', function() {
                 Ext.getCmp('AdminUserGrid').getStore().load({params:{start:0, limit:50}});
@@ -305,6 +297,7 @@ Tine.Admin.Users.Main = function() {
                     { header: this.translation.gettext('Last name'), id: 'accountLastName', dataIndex: 'accountLastName', hidden: true},
                     { header: this.translation.gettext('First name'), id: 'accountFirstName', dataIndex: 'accountFirstName', hidden: true},
                     { header: this.translation.gettext('Email'), id: 'accountEmailAddress', dataIndex: 'accountEmailAddress', width: 200},
+                    { header: this.translation.gettext('OpenID'), id: 'openid', dataIndex: 'openid', width: 200, hidden: true},
                     { header: this.translation.gettext('Last login at'), id: 'accountLastLogin', dataIndex: 'accountLastLogin', hidden: ldapBackend, width: 130, renderer: Tine.Tinebase.common.dateTimeRenderer},
                     { header: this.translation.gettext('Last login from'), id: 'accountLastLoginfrom', hidden: ldapBackend, dataIndex: 'accountLastLoginfrom'},
                     { header: this.translation.gettext('Password changed'), id: 'accountLastPasswordChange', dataIndex: 'accountLastPasswordChange', width: 130, renderer: Tine.Tinebase.common.dateTimeRenderer},
@@ -471,7 +464,6 @@ Tine.Admin.Model.UserArray = [
     { name: 'accountLastName' },
     { name: 'accountLoginName' },
     { name: 'accountPassword' },
-    { name: 'accountPassword2' },
     { name: 'accountDisplayName' },
     { name: 'accountFullName' },
     { name: 'accountStatus' },
@@ -483,6 +475,8 @@ Tine.Admin.Model.UserArray = [
     { name: 'accountEmailAddress' },
     { name: 'accountHomeDirectory' },
     { name: 'accountLoginShell' },
+    { name: 'openid'},
+    { name: 'visibility'},
     { name: 'sambaSAM' },
     { name: 'emailUser' }
 ];

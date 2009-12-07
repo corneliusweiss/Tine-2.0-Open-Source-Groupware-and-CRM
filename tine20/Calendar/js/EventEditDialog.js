@@ -122,13 +122,29 @@ Tine.Calendar.EventEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, {
                                 name: 'dtend',
                                 requiredGrant: 'editGrant'
                             }, {
-                                columnWidth: .4,
+                                columnWidth: .17,
                                 xtype: 'checkbox',
                                 hideLabel: true,
                                 boxLabel: this.app.i18n._('whole day'),
                                 listeners: {scope: this, check: this.onAllDayChange},
                                 name: 'is_all_day_event',
                                 requiredGrant: 'editGrant'
+                            }, {
+                                columnWidth: .23,
+                                xtype: 'checkbox',
+                                hideLabel: true,
+                                boxLabel: this.app.i18n._('non-blocking'),
+                                name: 'transp',
+                                requiredGrant: 'editGrant',
+                                id: 'mycheckid',
+                                getValue: function() {
+                                    var bool = Ext.form.Checkbox.prototype.getValue.call(this);
+                                    return bool ? 'TRANSPARENT' : 'OPAQUE';
+                                },
+                                setValue: function(value) {
+                                    var bool = (value == 'TRANSPARENT' || value === true);
+                                    return Ext.form.Checkbox.prototype.setValue.call(this, bool);
+                                }
                             }]]
                         }]
                     }, {
@@ -149,7 +165,7 @@ Tine.Calendar.EventEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, {
                     region: 'east',
                     layout: 'accordion',
                     animate: true,
-                    width: 210,
+                    width: 200,
                     split: true,
                     collapsible: true,
                     collapseMode: 'mini',
@@ -215,6 +231,12 @@ Tine.Calendar.EventEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, {
      */
     isValid: function() {
         var isValid = this.validateDtStart() && this.validateDtEnd();
+        
+        if (! this.rrulePanel.isValid()) {
+            isValid = false;
+            
+            this.rrulePanel.ownerCt.setActiveTab(this.rrulePanel);
+        }
         
         return isValid && Tine.Calendar.EventEditDialog.superclass.isValid.apply(this, arguments);
     },
@@ -339,7 +361,8 @@ Tine.Calendar.EventEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, {
  * @return {Ext.ux.Window}
  */
 Tine.Calendar.EventEditDialog.openWindow = function (config) {
-    var id = (config.record && config.record.id) ? config.record.id : 0;
+    // record is JSON encoded here...
+    var id = config.recordId ? config.recordId : 0;
     var window = Tine.WindowFactory.getWindow({
         width: 800,
         height: 470,

@@ -12,6 +12,7 @@
  * @todo        make this a real controller + singleton (create extra sql backend)
  * @todo        add getAllprefsForApp (similar to config) to get all prefs for the registry in one request
  * @todo        add getPreference function that returns the complete record 
+ * @todo        allow free-form preferences
  */
 
 
@@ -123,7 +124,7 @@ abstract class Tinebase_Preference_Abstract extends Tinebase_Backend_Sql_Abstrac
      */
     public function getValue($_preferenceName, $_default = NULL)
     {
-        $accountId = (Tinebase_Core::isRegistered(Tinebase_Core::USER)) ? Tinebase_Core::getUser()->getId() : '0'; 
+        $accountId = (Tinebase_Core::getUser()) ? Tinebase_Core::getUser()->getId() : '0'; 
         
         Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' get user preference "' . $_preferenceName . '" for account id ' . $accountId);
         

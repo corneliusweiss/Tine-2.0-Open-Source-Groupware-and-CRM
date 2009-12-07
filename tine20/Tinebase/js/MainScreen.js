@@ -56,14 +56,14 @@ Tine.Tinebase.MainScreen = Ext.extend(Ext.Panel, {
                         this.action_logout
                     ]                
                 }
-            }, {
+            }/*, {
                 text: _('Admin'),
                 id: 'Tinebase_System_AdminButton',
                 disabled: true,
                 menu: {
                     id: 'Tinebase_System_AdminMenu'
                 }     
-            },{
+            }*/,{
                 text: _('Preferences'),
                 id: 'Tinebase_System_PreferencesButton',
                 disabled: false,
@@ -213,14 +213,14 @@ Tine.Tinebase.MainScreen = Ext.extend(Ext.Panel, {
         this.action_changePassword = new Ext.Action({
             text: _('Change password'),
             handler: this.onChangePassword,
-            disabled: !Tine.Tinebase.registry.get('changepw'),
+            disabled: (Tine.Tinebase.registry.get('changepw') == '0'),
             iconCls: 'action_password'
         });
         
         this.action_installGoogleGears = new Ext.Action({
             text: _('Install Google Gears'),
             handler: this.onInstallGoogleGears,
-            disabled: (window.google && google.gears) ? true : false
+            disabled: (window.google && google.gears)
         });
         
         /*
@@ -379,10 +379,10 @@ Tine.Tinebase.MainScreen = Ext.extend(Ext.Panel, {
         };
         
         Ext.Msg.show({
-            title: _('About Tine 2.0'),
+            title: String.format(_('About {0}'), Tine.title),
             msg: 
                 '<div class="tb-about-dlg">' +
-                    '<div class="tb-about-img"><a href="http://www.tine20.org" target="_blank"><img src="' + Tine.Login.loginLogo + '" /></a></div>' +
+                    '<div class="tb-about-img"><a href="http://www.tine20.org" target="_blank"><img src="' + Tine.Tinebase.LoginPanel.prototype.loginLogo + '" /></a></div>' +
                     '<div class="tb-about-version">Version: ' + version.codeName + '</div>' +
                     '<div class="tb-about-build">( ' + version.packageString + ' )</div>' +
                     '<div class="tb-about-copyright">Copyright: 2007-' + new Date().getFullYear() + '&nbsp;<a href="http://www.metaways.de" target="_blank">Metaways Infosystems GmbH</a></div>' +
@@ -539,7 +539,12 @@ Tine.Tinebase.MainScreen = Ext.extend(Ext.Panel, {
                     callback : function(options, Success, response) {
                         // remove the event handler
                         // the reload() trigers the unload event
-                        window.location = window.location.href.replace(/#+.*/, '');
+                        var redirect = (Tine.Tinebase.registry.get('redirectUrl'));
+                        if (redirect && redirect != '') {
+                            window.location = Tine.Tinebase.registry.get('redirectUrl');
+                        } else {
+                            window.location = window.location.href.replace(/#+.*/, '');
+                        }
                     }
                 });
             }

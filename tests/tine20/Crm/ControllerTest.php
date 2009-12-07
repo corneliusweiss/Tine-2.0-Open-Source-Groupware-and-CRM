@@ -8,6 +8,7 @@
  * @author      Lars Kneschke <l.kneschke@metaways.de>
  * @version     $Id$
  * 
+ * @todo        refactor controller tests
  * @todo        resolve test dependencies - make them _stand-alone_
  */
 
@@ -172,153 +173,6 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
             'summary'              => 'phpunit: crm test task',        
         ));
         
-        // some products
-        $this->_objects['someProducts'] = array(
-                new Crm_Model_Product(array(
-                    'id' => 1001,
-                    'productsource' => 'Just a phpunit test product #1',
-                    'price' => '47.11')),
-                new Crm_Model_Product(array(
-                    'id' => 1002,
-                    'productsource' => 'Just a phpunit test product #2',
-                    'price' => '18.05')),
-                new Crm_Model_Product(array(
-                    'id' => 1003,
-                    'productsource' => 'Just a phpunit test product #3',
-                    'price' => '19.78')),
-                new Crm_Model_Product(array(
-                    'id' => 1004,
-                    'productsource' => 'Just a phpunit test product #4',
-                    'price' => '20.07'))
-        );
-        
-        // products to update
-        $this->_objects['someProductsToUpdate'] = array(
-                new Crm_Model_Product(array(
-                    'id' => 1002,
-                    'productsource' => 'Just a phpunit test product #2 UPDATED',
-                    'price' => '18.05')),
-                new Crm_Model_Product(array(
-                    'id' => 1003,
-                    'productsource' => 'Just a phpunit test product #3 UPDATED',
-                    'price' => '19.78'))
-        );
-        
-        // some lead types
-        $this->_objects['someLeadTypes'] = array(
-                new Crm_Model_Leadtype(array(
-                    'id' => 1001,
-                    'leadtype' => 'Just a phpunit test lead type #1',
-                    'leadtype_translate' => 0)),
-                new Crm_Model_Leadtype(array(
-                    'id' => 1002,
-                    'leadtype' => 'Just a phpunit test lead type #2',
-                    'leadtype_translate' => 0)),
-                new Crm_Model_Leadtype(array(
-                    'id' => 1003,
-                    'leadtype' => 'Just a phpunit test lead type #3',
-                    'leadtype_translate' => 0)),
-                new Crm_Model_Leadtype(array(
-                    'id' => 1004,
-                    'leadtype' => 'Just a phpunit test lead type #4',
-                    'leadtype_translate' => 0))
-        );
-        
-        // some lead types to update
-        $this->_objects['someLeadTypesToUpdate'] = array(
-                new Crm_Model_Leadtype(array(
-                    'id' => 1002,
-                    'leadtype' => 'Just a phpunit test lead type #2 UPDATED',
-                    'leadtype_translate' => 0)),
-                new Crm_Model_Leadtype(array(
-                    'id' => 1003,
-                    'leadtype' => 'Just a phpunit test lead type #3 UPDATED',
-                    'leadtype_translate' => 0))
-        );
-        
-        // some lead sources
-        $this->_objects['someLeadSources'] = array(
-                new Crm_Model_Leadsource(array(
-                    'id' => 1001,
-                    'leadsource' => 'Just a phpunit test lead source #1',
-                    'translate' => 0)),
-                new Crm_Model_Leadsource(array(
-                    'id' => 1002,
-                    'leadsource' => 'Just a phpunit test lead source #2',
-                    'translate' => 0)),
-                new Crm_Model_Leadsource(array(
-                    'id' => 1003,
-                    'leadsource' => 'Just a phpunit test lead source #3',
-                    'translate' => 0)),
-                new Crm_Model_Leadsource(array(
-                    'id' => 1004,
-                    'leadsource' => 'Just a phpunit test lead source #4',
-                    'translate' => 0))
-        );
-        
-        // some lead sources to update
-        $this->_objects['someLeadSourcesToUpdate'] = array(
-                new Crm_Model_Leadsource(array(
-                    'id' => 1002,
-                    'leadsource' => 'Just a phpunit test lead source #2 UPDATED',
-                    'translate' => 0)),
-                new Crm_Model_Leadsource(array(
-                    'id' => 1003,
-                    'leadsource' => 'Just a phpunit test lead source #3 UPDATED',
-                    'translate' => 0))
-        );
-        
-        // some lead states
-        $this->_objects['someLeadStates'] = array(
-                new Crm_Model_Leadstate(array(
-                    'id' => 1001,
-                    'leadstate' => 'Just a phpunit test lead state #1',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0)),
-                new Crm_Model_Leadstate(array(
-                    'id' => 1002,
-                    'leadstate' => 'Just a phpunit test lead state #2',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0)),
-                new Crm_Model_Leadstate(array(
-                    'id' => 1003,
-                    'leadstate' => 'Just a phpunit test lead state #3',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0)),
-                new Crm_Model_Leadstate(array(
-                    'id' => 1004,
-                    'leadstate' => 'Just a phpunit test lead state #4',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0)),
-                new Crm_Model_Leadstate(array(
-                    'id' => 1005,
-                    'leadstate' => 'Just a phpunit test lead state #5',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0))
-                
-        );
-        
-        // some lead states to update
-        $this->_objects['someLeadStatesToUpdate'] = array(
-                new Crm_Model_Leadstate(array(
-                    'id' => 1002,
-                    'leadstate' => 'Just a phpunit test lead state #2 UPDATED',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0)),
-                new Crm_Model_Leadstate(array(
-                    'id' => 1003,
-                    'leadstate' => 'Just a phpunit test lead state #3 UPDATED',
-                    'probability' => 10,
-                    'endslead' => 0,
-                    'translate' => 0))
-        );
-
         $this->objects['note'] = new Tinebase_Model_Note(array(
             'note_type_id'      => 1,
             'note'              => 'phpunit test note',    
@@ -376,23 +230,6 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->_objects['initialLead']->description, $lead->description);
     }
     
-    /**
-     * try to get an empty lead
-     *
-     */
-    public function testGetEmptyLead()
-    {
-        $lead = Crm_Controller_Lead::getInstance()->getEmptyLead();
-                
-        $this->assertType('Crm_Model_Lead', $lead);
-
-        // check for linked internal contact
-        $this->assertEquals(Zend_Registry::get('currentAccount')->accountFullName, $lead->relations[0]->related_record['n_fn']);
-        $this->assertEquals('RESPONSIBLE', $lead->relations[0]->type);
-        
-        // empty lead can not be valid
-        $this->assertFalse($lead->isValid());
-    }
     
     /**
      * try to update a lead
@@ -418,7 +255,8 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         $count = Crm_Controller_Lead::getInstance()->searchCount($filter);
                 
         $this->assertEquals(1, count($leads));
-        $this->assertEquals($count, count($leads));
+        $this->assertEquals($count['totalcount'], count($leads));
+        $this->assertEquals(1, $count['leadstates'][1]);
         $this->assertType('Tinebase_Record_RecordSet', $leads);
     }
     
@@ -447,7 +285,7 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         $lead = Crm_Controller_Lead::getInstance()->get($this->_objects['initialLead']->getId());
         $lead->relations = array(array(
             'own_model'              => 'Crm_Model_Lead',
-            'own_backend'            => Crm_Backend_Factory::SQL,
+            'own_backend'            => 'Sql',
             'own_id'                 => $this->_objects['initialLead']->getId(),
             'own_degree'             => Tinebase_Model_Relation::DEGREE_SIBLING,
             'related_model'          => 'Tasks_Model_Task',
@@ -470,9 +308,11 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
     /**
      * try to set / get linked contacts
      *
+     * @deprecated when we have the update test in jsonTest, remove that
      */
     public function testLinkedContacts()
     {
+        /*
         // create test contact
         try {
             $contact = Addressbook_Controller_Contact::getInstance()->get($this->_objects['user']->getId());
@@ -484,7 +324,7 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         $lead = Crm_Controller_Lead::getInstance()->get($this->_objects['initialLead']->getId());
         $lead->relations = array(array(
             'own_model'              => 'Crm_Model_Lead',
-            'own_backend'            => Crm_Backend_Factory::SQL,
+            'own_backend'            => 'Sql',
             'own_id'                 => $this->_objects['initialLead']->getId(),
             'own_degree'             => Tinebase_Model_Relation::DEGREE_SIBLING,
             'related_model'          => 'Addressbook_Model_Contact',
@@ -500,7 +340,7 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         
         $this->assertGreaterThan(0, count($updatedLead->relations));
         $this->assertEquals($contact->getId(), $updatedLead->relations[0]->related_id);
-    
+        */
     }
     
     /**
@@ -513,7 +353,7 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
 
         // purge all relations
         $backend = new Tinebase_Relation_Backend_Sql();        
-        $backend->purgeAllRelations('Crm_Model_Lead', Crm_Backend_Factory::SQL, $this->_objects['initialLead']->getId());
+        $backend->purgeAllRelations('Crm_Model_Lead', 'Sql', $this->_objects['initialLead']->getId());
 
         // delete contact
         Addressbook_Controller_Contact::getInstance()->delete($this->_objects['user']->getId());
@@ -522,257 +362,6 @@ class Crm_ControllerTest extends PHPUnit_Framework_TestCase
         Crm_Controller_Lead::getInstance()->get($this->_objects['initialLead']);
     }
     
-    /**
-     * try to get the lead sources
-     *
-     */
-    public function testGetLeadSources()
-    {
-        $sources = Crm_Controller_LeadSources::getInstance()->getLeadSources();
-        
-        $this->assertEquals(4, count($sources));
-    }
-    
-    /**
-     * try to get the lead types
-     *
-     */
-    public function testGetLeadTypes()
-    {
-        $types = Crm_Controller_LeadTypes::getInstance()->getLeadTypes();
-        
-        $this->assertEquals(3, count($types));
-    }
-    
-    /**
-     * try to get one lead type
-     *
-     */
-    public function testGetLeadType()
-    {
-        $types = Crm_Controller_LeadTypes::getInstance()->getLeadTypes();
-        
-        $type = Crm_Controller_LeadTypes::getInstance()->getLeadType($types[0]->id);
-        
-        $this->assertType('Crm_Model_Leadtype', $type);
-        $this->assertTrue($type->isValid());
-    }
-    
-    /**
-     * try to get all lead states
-     *
-     */
-    public function testGetLeadStates()
-    {
-        $states = Crm_Controller_LeadStates::getInstance()->getLeadStates();
-        
-        $this->assertTrue(count($states) >= 6);
-    }
-    
-    /**
-     * try to get one lead state
-     *
-     */
-    public function testGetLeadState()
-    {
-        $states = Crm_Controller_LeadStates::getInstance()->getLeadStates();
-        
-        $state = Crm_Controller_LeadStates::getInstance()->getLeadState($states[0]->id);
-        
-        $this->assertType('Crm_Model_Leadstate', $state);
-        $this->assertTrue($state->isValid());
-    }
-    
-    /**
-     * try to save / create, update and delete more than one product
-     * 
-     * @todo complete test for products to delete
-     */
-    public function testSaveProducts() {
-    	// save db table content (because of test dependencies)
-    	$savedProducts = Crm_Controller_LeadProducts::getInstance()->getProducts();
-    	
-    	// go!
-    	$someProducts = new Tinebase_Record_RecordSet('Crm_Model_Product',
-                $this->_objects['someProducts']);
-        
-        // save / create some products
-        $resultProducts = Crm_Controller_LeadProducts::getInstance()
-                ->saveProducts($someProducts);
-        
-        $this->assertEquals($someProducts->toArray(), $resultProducts->toArray());
-        
-        // get every saved product back from database one by one
-        $backend = Crm_Backend_Factory::factory(Crm_Backend_Factory::PRODUCTS);
-        
-        foreach ($this->_objects['someProducts'] as $product) {
-        	$this->assertEquals($product->toArray(), $backend->get($product->id)->toArray());
-        }
-        
-        // update some products
-        $someProducts = new Tinebase_Record_RecordSet('Crm_Model_Product',
-                $this->_objects['someProductsToUpdate']);
-        
-        $resultProducts = Crm_Controller_LeadProducts::getInstance()
-                ->saveProducts($someProducts);
-        
-        foreach ($this->_objects['someProductsToUpdate'] as $product) {
-            $this->assertEquals($product['productsource'],
-                    //$backend->get($product->id)->productsource);
-                    Crm_Controller_LeadProducts::getInstance()->getProduct($product->id)->productsource);
-        }
-        
-        // cleanup
-        Crm_Controller_LeadProducts::getInstance()->saveProducts($savedProducts);
-    }
-    
-    /**
-     * try to save / create, update and delete more than one lead type
-     * 
-     * @todo complete test for lead types to delete
-     */
-    public function testSaveLeadTypes() {
-        // save db table content (because of test dependencies)
-        $savedLeadTypes = Crm_Controller_LeadTypes::getInstance()->getLeadTypes();
-        
-        // go!
-    	//$someLeadTypes = new Tinebase_Record_RecordSet('Crm_Model_Leadtype', $this->_objects['someLeadTypes']);
-    	// add test lead types to saved lead types
-    	$someLeadTypes = clone($savedLeadTypes);
-    	foreach ($this->_objects['someLeadTypes'] as $record) {
-    	    $someLeadTypes->addRecord($record);
-    	}
-        
-        // save / create some lead types
-        $resultLeadTypes = Crm_Controller_LeadTypes::getInstance()
-                ->saveLeadtypes($someLeadTypes);
-        
-        $this->assertEquals($someLeadTypes->toArray(), $resultLeadTypes->toArray());
-        
-        // get every saved lead type back from database one by one
-        $backend = Crm_Backend_Factory::factory(Crm_Backend_Factory::LEAD_TYPES);
-        
-        foreach ($this->_objects['someLeadTypes'] as $leadType) {
-            $this->assertEquals($leadType->toArray(), $backend->get($leadType->id)->toArray());
-        }
-        
-        // update some lead types
-        // removed that because of the sql constraint for leads/leadtypes
-        /*
-        $someLeadTypes = new Tinebase_Record_RecordSet('Crm_Model_Leadtype',
-                $this->_objects['someLeadTypesToUpdate']);
-        
-        $resultLeadTypes = Crm_Controller_LeadTypes::getInstance()
-                ->saveLeadtypes($someLeadTypes);
-        
-        foreach ($this->_objects['someLeadTypesToUpdate'] as $leadType) {
-            $this->assertEquals($leadType['leadtype'],
-                    $backend->get($leadType->id)->leadtype);
-        }
-        */
-        
-        // cleanup
-        Crm_Controller_LeadTypes::getInstance()->saveLeadtypes($savedLeadTypes);
-    }
-    
-    /**
-     * try to save / create, update and delete more than one lead source
-     * 
-     * @todo complete test for lead sources to delete
-     */
-    public function testSaveLeadSources() {
-        // save db table content (because of test dependencies)
-        $savedLeadSources = Crm_Controller_LeadSources::getInstance()->getLeadSources();
-        
-        // go!
-        //$someLeadSources = new Tinebase_Record_RecordSet('Crm_Model_Leadsource', $this->_objects['someLeadSources']);
-        // add test lead sources to saved lead types
-        $someLeadSources = clone($savedLeadSources);
-        foreach ($this->_objects['someLeadSources'] as $record) {
-            $someLeadSources->addRecord($record);
-        }
-                
-        // save / create some lead types
-        $resultLeadSources = Crm_Controller_LeadSources::getInstance()
-                ->saveLeadsources($someLeadSources);
-        
-        $this->assertEquals($someLeadSources->toArray(), $resultLeadSources->toArray());
-        
-        // get every saved lead source back from database one by one
-        $backend = Crm_Backend_Factory::factory(Crm_Backend_Factory::LEAD_SOURCES);
-        
-        foreach ($this->_objects['someLeadSources'] as $leadSource) {
-            $this->assertEquals($leadSource->toArray(), $backend->get($leadSource->id)->toArray());
-        }
-        
-        // update some lead sources
-        // removed that because of the sql constraint for leads/sources
-        /*
-        $someLeadSources = new Tinebase_Record_RecordSet('Crm_Model_Leadsource',
-                $this->_objects['someLeadSourcesToUpdate']);
-        
-        $resultLeadSources = Crm_Controller_LeadSources::getInstance()
-                ->saveLeadsources($someLeadSources);
-        
-        foreach ($this->_objects['someLeadSourcesToUpdate'] as $leadSource) {
-            $this->assertEquals($leadSource['leadsource'],
-                    $backend->get($leadSource->id)->leadsource);
-        }
-        */
-        
-        // cleanup
-        Crm_Controller_LeadSources::getInstance()->saveLeadsources($savedLeadSources);
-    }
-    
-    /**
-     * try to save / create, update and delete more than one lead state
-     * 
-     * @todo complete test for lead states to delete
-     */
-    public function testSaveLeadStates() {
-        // save db table content (because of test dependencies)
-        $savedLeadStates = Crm_Controller_LeadStates::getInstance()->getLeadStates();
-        
-        // go!
-        //$someLeadStates = new Tinebase_Record_RecordSet('Crm_Model_Leadstate', $this->_objects['someLeadStates']);
-        // add test lead states to saved lead types
-        $someLeadStates = clone($savedLeadStates);
-        foreach ($this->_objects['someLeadStates'] as $record) {
-            $someLeadStates->addRecord($record);
-        }
-                
-        // save / create some lead states
-        $resultLeadStates = Crm_Controller_LeadStates::getInstance()
-                ->saveLeadstates($someLeadStates);
-        
-        $this->assertEquals($someLeadStates->toArray(), $resultLeadStates->toArray());
-        
-        // get every saved lead state back from database one by one
-        $backend = Crm_Backend_Factory::factory(Crm_Backend_Factory::LEAD_STATES);
-        
-        foreach ($this->_objects['someLeadStates'] as $leadState) {
-            $this->assertEquals($leadState->toArray(), $backend->get($leadState->id)->toArray());
-        }
-        
-        // update some lead states
-        // removed that because of the sql constraint for leads/states
-        /*        
-        $someLeadStates = new Tinebase_Record_RecordSet('Crm_Model_Leadstate',
-                $this->_objects['someLeadStatesToUpdate']);
-        
-        $resultLeadStates = Crm_Controller_LeadStates::getInstance()
-                ->saveLeadstates($someLeadStates);
-        
-        foreach ($this->_objects['someLeadStatesToUpdate'] as $leadState) {
-            $this->assertEquals($leadState['leadstate'],
-                    $backend->get($leadState->id)->leadstate);
-        }
-        */
-        
-        // cleanup
-        Crm_Controller_LeadStates::getInstance()->saveLeadstates($savedLeadStates);
-    }
-
     /**
      * get lead filter
      *

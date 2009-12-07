@@ -104,7 +104,6 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
      * renders the quick add fields
      */
     renderQuickAddFields: function() {
-        
         Ext.each(this.getVisibleCols(), function(item){
             if (item.quickaddField) {
                 item.quickaddField.render(this.idPrefix + item.id);
@@ -114,6 +113,8 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
         },this);
         
         // rezise quickeditor fields according to parent column
+        this.colModel.on('widthchange', this.syncFields, this);
+        this.colModel.on('hiddenchange', this.syncFields, this);
         this.on('resize', this.syncFields);
         this.on('columnresize', this.syncFields);
         this.syncFields();
@@ -129,7 +130,7 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     	// check if all quickadd fields are blured
     	var hasFocus;
     	Ext.each(this.getVisibleCols(), function(item){
-    	    if(item.quickaddField.hasFocus){
+    	    if(item.quickaddField && item.quickaddField.hasFocus){
     	    	hasFocus = true;
     	    }
     	}, this);
@@ -138,8 +139,10 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     	if (!hasFocus) {
     		var data = {};
     		Ext.each(this.getVisibleCols(), function(item){
-                data[item.id] = item.quickaddField.getValue();
-                item.quickaddField.setDisabled(item.id != this.quickaddMandatory);
+                if(item.quickaddField){
+                    data[item.id] = item.quickaddField.getValue();
+                    item.quickaddField.setDisabled(item.id != this.quickaddMandatory);
+                }
             }, this);
             
             if (this.colModel.getColumnById(this.quickaddMandatory).quickaddField.getValue() != '') {
@@ -184,9 +187,13 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
         var ts = this.getView().templates;
         
         var newRows = '';
-    	Ext.each(this.getVisibleCols(), function(item){
-    	    newRows += '<td><div class="x-small-editor" id="' + this.idPrefix + item.id + '"></div></td>';
-    	}, this);
+        
+        var cm = this.colModel;
+        var ncols = cm.getColumnCount();
+        for (var i=0; i<ncols; i++) {
+            var colId = cm.getColumnId(i);
+            newRows += '<td><div class="x-small-editor" id="' + this.idPrefix + colId + '"></div></td>';
+        }
         
     	ts.header = new Ext.Template(
             '<table border="0" cellspacing="0" cellpadding="0" style="{tstyle}">',
@@ -196,25 +203,8 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
             '</tr></tbody>',
             '</table>'
         );
-        
-        
-        /*
-        ts.master = new Ext.Template(
-            '<div class="x-grid3" hidefocus="true">',
-                '<div class="x-grid3-viewport">',
-                    '<div class="x-grid3-header x-grid3-quickadd"><div class="x-grid3-header-inner"><div class="x-grid3-header-offset">{header}</div></div><div class="x-clear"></div></div>',
-                    '<div class="x-grid3-scroller"><div class="x-grid3-body">{body}</div><a href="#" class="x-grid3-focus" tabIndex="-1"></a></div>',
-                "</div>",
-                '<div class="x-grid3-resize-marker">&#160;</div>',
-                '<div class="x-grid3-resize-proxy">&#160;</div>',
-            "</div>"
-            );
-        
-        this.getView().templates = {
-            header: this.makeHeaderTemplate()
-        };
-        */
     },
+    
     /**
      * @private
      */
@@ -223,19 +213,34 @@ Ext.ux.grid.QuickaddGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
         if (Ext.isSafari) {pxToSubstract = 11;}
 
         var cm = this.colModel;
-        Ext.each(this.getVisibleCols(), function(item){
-            if(item.quickaddField){
-            	item.quickaddField.setSize(cm.getColumnWidth(cm.getIndexById(item.id))-pxToSubstract);
+        var visCols = this.getVisibleCols();
+        
+        var newRow = Ext.DomQuery.selectNode('tr[class=new-row]', this.getView().mainHd.dom);
+        
+        var ncols = cm.getColumnCount();
+        for (var col, i=0; i<ncols; i++) {
+            col = cm.getColumnAt(i);
+            
+            if (visCols.indexOf(col) < 0) {
+                newRow.childNodes[i].style.display = 'none';
+            } else {
+                newRow.childNodes[i].style.display = '';
+                if (col.quickaddField) {
+                    col.quickaddField.setSize(cm.getColumnWidth(cm.getIndexById(col.id))-pxToSubstract);
+                }
             }
-        }, this);
+        }
     },
+    
     /**
      * @private
      */
     onMandatoryFocus: function() {
         this.adding = true;
         Ext.each(this.getVisibleCols(), function(item){
-            item.quickaddField.setDisabled(false);
+            if(item.quickaddField){
+                item.quickaddField.setDisabled(false);
+            }
         }, this);
     }
         

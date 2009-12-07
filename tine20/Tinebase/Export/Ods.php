@@ -230,7 +230,7 @@ class Tinebase_Export_Ods extends OpenDocument_Document
             $recordBackend = new Timetracker_Backend_Timesheet();
         }
         
-        $locale = Tinebase_Core::get('locale');
+        $locale = Tinebase_Core::get(Tinebase_Core::LOCALE);
         
         // add timesheet rows
         $i = 0;
@@ -255,7 +255,7 @@ class Tinebase_Export_Ods extends OpenDocument_Document
                 switch($params['type']) {
                     case 'datetime':
                         // @todo add another style for datetime fields?
-                        $value = $record->$key->toString(Zend_Locale_Format::getDateFormat($locale), $locale);
+                        $value = ($record->$key) ? $record->$key->toString(Zend_Locale_Format::getDateFormat($locale), $locale) : '';
                         $altStyle = 'ceAlternateCentered';
                         //$type = 'date';
                         $type = 'string';

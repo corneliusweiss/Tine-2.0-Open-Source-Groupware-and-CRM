@@ -171,11 +171,11 @@ class Setup_Frontend_Json extends Tinebase_Frontend_Abstract
      */
     public function loadConfig()
     {
-        $result = (!Setup_Core::configFileExists()) 
+        $result = (! Setup_Core::configFileExists()) 
                 ? Setup_Controller::getInstance()->getConfigDefaults()
-                : Setup_Controller::getInstance()->getConfigData();
+                : ((Setup_Core::isRegistered(Setup_Core::USER)) ? Setup_Controller::getInstance()->getConfigData() : array());
 
-        return Setup_Core::isRegistered(Setup_Core::USER) ? $result : array();
+        return $result;
     }
     
     /**
@@ -209,9 +209,13 @@ class Setup_Frontend_Json extends Tinebase_Frontend_Abstract
             'configExists'    => Setup_Core::configFileExists(),
             'configWritable'  => Setup_Core::configFileWritable(),
             'checkDB'         => Setup_Core::get(Setup_Core::CHECKDB),
-        	'setupRequired'	  => $this->_controller->setupRequired(),
+            'checkLogger'     => $this->_controller->checkConfigLogger(),
+            'checkCaching'    => $this->_controller->checkConfigCaching(),
+            'checkTmpDir'     => $this->_controller->checkConfigTmpDir(),
+            'checkSessionDir' => $this->_controller->checkConfigSessionDir(),
+            'setupRequired'	  => $this->_controller->setupRequired(),
         );
-        
+
         return $result;        
     }
     
@@ -293,20 +297,17 @@ class Setup_Frontend_Json extends Tinebase_Frontend_Abstract
                 'packageString' => TINE20_PACKAGESTRING,
                 'releaseTime'   => TINE20_RELEASETIME
             ),
+            'authenticationData'   => $this->loadAuthenticationData(),
         );
         
         // authenticated or non existent config
         if (! Setup_Core::configFileExists() || Setup_Core::isRegistered(Setup_Core::USER)) {
-        	$checkDB = Setup_Core::get(Setup_Core::CHECKDB);
-        	$setupRequired = $this->_controller->setupRequired();
+            $registryData = array_merge($registryData, $this->checkConfig());
         	$registryData = array_merge($registryData, array(
-	            'configWritable'       => Setup_Core::configFileWritable(),
-	            'checkDB'              => $checkDB,
+        	    'acceptedTermsVersion' => (! empty($registryData['checkDB']) && $this->_controller->isInstalled('Tinebase')) ? Setup_Controller::getInstance()->getAcceptedTerms() : 0,
 	            'setupChecks'          => $this->envCheck(),
-        	    'setupRequired'        => $setupRequired,
 	            'configData'           => $this->loadConfig(),
-        	    'authenticationData'   => ($checkDB) ? $this->loadAuthenticationData() : array(),
-        	    'emailData'            => ($checkDB && ! $setupRequired) ? $this->getEmailConfig() : array(),
+        	    'emailData'            => (! empty($registryData['checkDB']) && $this->_controller->isInstalled('Tinebase')) ? $this->getEmailConfig() : array(),
 	        ));
         }
         

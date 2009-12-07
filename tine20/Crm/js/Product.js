@@ -1,232 +1,239 @@
-/**
+/*
  * Tine 2.0
- * product edit dialog and model
  * 
  * @package     Crm
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
- * @todo translate
  */
-
-Ext.namespace('Tine.Crm', 'Tine.Crm.Product');
-
-Tine.Crm.Product.Model = Ext.data.Record.create([
-    {name: 'id'},
-    {name: 'productsource'},
-    {name: 'price'}
-]);
+ 
+Ext.ns('Tine.Crm.Product');
 
 /**
- * get product store
- * if available, load data from Tine.Crm.registry.get('Products')
- *
- * @return Ext.data.JsonStore with products
- */
-Tine.Crm.Product.getStore = function() {
-    var store = Ext.StoreMgr.get('CrmProductStore');
-    if (!store) {
-        // create store
-        store = new Ext.data.JsonStore({
-            fields: Tine.Crm.Product.Model,
-            baseParams: {
-                method: 'Crm.getProducts',
-                sort: 'productsource',
-                dir: 'ASC'
-            },
-            root: 'results',
-            totalProperty: 'totalcount',
-            id: 'id',
-            remoteSort: false
-        });
-        
-        // check if initital data available
-        if ( Tine.Crm.registry.get('Products') ) {
-            store.loadData(Tine.Crm.registry.get('Products'));
-        }
-        
-        Ext.StoreMgr.add('CrmProductStore', store);
-    }
-    return store;
-};
-
-Tine.Crm.Product.EditDialog = function() {
-    var Dialog = new Ext.Window({
-        title: 'Products',
-        id: 'productWindow',
-        modal: true,
-        width: 350,
-        height: 500,
-        minWidth: 300,
-        minHeight: 500,
-        layout: 'fit',
-        plain:true,
-        bodyStyle:'padding:5px;',
-        buttonAlign:'center'
-    }); 
-        
-    var columnModelProductsource = new Ext.grid.ColumnModel([
-            { id:'id', 
-              header: "id", 
-              dataIndex: 'id', 
-              width: 25, 
-              hidden: true 
-            },
-            { id:'productsource', 
-              header: 'entries', 
-              dataIndex: 'productsource', 
-              width: 170, 
-              hideable: false, 
-              sortable: false, 
-              editor: new Ext.form.TextField({
-                allowBlank: false,
-                maxLength: 60
-            }) 
-            }, 
-            {
-              id: 'price',  
-              header: "price",
-              dataIndex: 'price',
-              width: 80,
-              align: 'right',
-              editor: new Ext.form.NumberField({
-                  allowBlank: false,
-                  allowNegative: false,
-                  decimalSeparator: ',',
-                  maxValue: 999999999999.99
-                  }),
-              renderer: Ext.util.Format.euMoney                    
-            }
-    ]);            
-        
-    var handlerProductsourceAdd = function(){
-        var p = new Tine.Crm.Product.Model({
-            'id': 'NULL',
-            productsource: '',
-            price: '0.00'
-        });
-        productsourceGridPanel.stopEditing();
-        Tine.Crm.Product.getStore().insert(0, p);
-        productsourceGridPanel.startEditing(0, 0);
-        productsourceGridPanel.fireEvent('celldblclick',this, 0, 1);                
-    };
-                
-    var handlerProductsourceDelete = function(){
-        var productsourceGrid  = Ext.getCmp('editProductsourceGrid');
-        var productsourceStore = Tine.Crm.Product.getStore();
-        
-        var selectedRows = productsourceGrid.getSelectionModel().getSelections();
-        for (var i = 0; i < selectedRows.length; ++i) {
-            productsourceStore.remove(selectedRows[i]);
-        }   
-    };                        
-                
-  
-    var handlerProductsourceSaveClose = function(){
-        var productsourceStore = Tine.Crm.Product.getStore();        
-        var productsourceJson = Tine.Tinebase.common.getJSONdata(productsourceStore); 
-
-         Ext.Ajax.request({
-                    params: {
-                        method: 'Crm.saveProducts',
-                        optionsData: productsourceJson
-                    },
-                    text: 'Saving productsource...',
-                    success: function(_result, _request){
-                            productsourceStore.reload();
-                            productsourceStore.rejectChanges();
-                       },
-                    failure: function(form, action) {
-                        //  Ext.MessageBox.alert("Error",action.result.errorMessage);
-                        }
-                });          
-    };          
-    
-    var productsourceGridPanel = new Ext.grid.EditorGridPanel({
-        store: Tine.Crm.Product.getStore(),
-        id: 'editProductsourceGrid',
-        cm: columnModelProductsource,
-        autoExpandColumn:'productsource',
-        frame:false,
-        viewConfig: {
-            forceFit: true
-        },
-        sm: new Ext.grid.RowSelectionModel({multiSelect:true}),
-        clicksToEdit:2,
-        tbar: [{
-            text: 'new item',
-            iconCls: 'actionAdd',
-            handler : handlerProductsourceAdd
-            },{
-            text: 'delete item',
-            iconCls: 'actionDelete',
-            handler : handlerProductsourceDelete
-            },{
-            text: 'save',
-            iconCls: 'actionSaveAndClose',
-            handler : handlerProductsourceSaveClose 
-            }]  
-        });
-     
-    Dialog.add(productsourceGridPanel);
-    Dialog.show();                          
-};
-
-/**
- * product selection combo box
+ * @namespace   Tine.Crm.Product
+ * @class       Tine.Crm.Product.GridPanel
+ * @extends     Ext.grid.EditorGridPanel
  * 
+ * Lead Dialog Products Grid Panel
+ * 
+ * <p>
+ * TODO         allow multiple relations with 1 product or add product quantity?
+ * TODO         check if we need edit/add actions again
+ * TODO         make resizing work correctly
+ * </p>
+ * 
+ * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
+ * @author      Philipp Schuele <p.schuele@metaways.de>
+ * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @version     $Id$
  */
-Tine.Crm.Product.ComboBox = Ext.extend(Ext.form.ComboBox, {
+Tine.Crm.Product.GridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
+    /**
+     * grid config
+     * @private
+     */
+    autoExpandColumn: 'name',
+    clicksToEdit: 1,
+    loadMask: true,
+    
+    /**
+     * The record currently being edited
+     * 
+     * @type Tine.Crm.Model.Lead
+     * @property record
+     */
+    record: null,
+    
+    /**
+     * store to hold all contacts
+     * 
+     * @type Ext.data.Store
+     * @property store
+     */
+    store: null,
+    
+    /**
+     * @type Ext.Menu
+     * @property contextMenu
+     */
+    contextMenu: null,
 
     /**
-     * @cfg {bool} setPrice in price form field
+     * @type Array
+     * @property otherActions
      */
-    setPrice: false,
+    otherActions: null,
     
-	name: 'product_combo',
-    hiddenName: 'id',
-    displayField:'productsource',
-    valueField: 'id',
-    allowBlank: false, 
-    typeAhead: true,
-    editable: true,
-    selectOnFocus: true,
-    forceSelection: true, 
-    triggerAction: "all", 
-    mode: 'local', 
-    lazyRender: true,
-    listClass: 'x-combo-list-small',
+    /**
+     * @type function
+     * @property recordEditDialogOpener
+     */
+    recordEditDialogOpener: null,
 
-    //private
-    initComponent: function(){
-
-        Tine.Crm.Product.ComboBox.superclass.initComponent.call(this);        
-
-        if (this.setPrice) {
-            // update price field
-            this.on('select', function(combo, record, index){
-                var priceField = Ext.getCmp('new-product_price');
-                priceField.setValue(record.data.price);
-                
-            }, this);
-        }
-    }
+    /**
+     * record class
+     * @cfg {Tine.Sales.Model.Product} recordClass
+     */
+    recordClass: null,
+    
+    /**
+     * @private
+     */
+    initComponent: function() {
+        // init properties
+        this.app = this.app ? this.app : Tine.Tinebase.appMgr.get('Crm');
+        this.title = this.app.i18n._('Products');
+        //this.recordEditDialogOpener = Tine.Products.EditDialog.openWindow;
+        this.recordEditDialogOpener = Ext.emptyFn;
+        this.recordClass = Tine.Sales.Model.Product;
         
-});
+        this.storeFields = Tine.Sales.Model.ProductArray;
+        this.storeFields.push({name: 'relation'});   // the relation object           
+        this.storeFields.push({name: 'relation_type'});
+        this.storeFields.push({name: 'remark_price'});
+        this.storeFields.push({name: 'remark_description'});
+        this.storeFields.push({name: 'remark_quantity'});
+        
+        // create delegates
+        this.initStore = Tine.Crm.LinkGridPanel.initStore.createDelegate(this);
+        //this.initActions = Tine.Crm.LinkGridPanel.initActions.createDelegate(this);
+        this.initGrid = Tine.Crm.LinkGridPanel.initGrid.createDelegate(this);
+        //this.onUpdate = Tine.Crm.LinkGridPanel.onUpdate.createDelegate(this);
+        this.onUpdate = Ext.emptyFn;
 
-/**
- * product renderer
- */
-Tine.Crm.Product.renderer = function(data) {
-                                                
-    record = Tine.Crm.Product.getStore().getById(data);
+        // call delegates
+        this.initStore();
+        this.initActions();
+        this.initGrid();
+        
+        // init store stuff
+        this.store.setDefaultSort('name', 'asc');
+        
+        this.on('newentry', function(productData){
+            // add new product to store
+            var newProduct = [productData];
+            this.store.loadData(newProduct, true);
+            
+            return true;
+        }, this);
+        
+        Tine.Crm.Product.GridPanel.superclass.initComponent.call(this);
+    },
     
-    if (record) {
-        return Ext.util.Format.htmlEncode(record.data.productsource);
-    }
-    else {
-        return Ext.util.Format.htmlEncode(data);
-    }
-};
+    /**
+     * @return Ext.grid.ColumnModel
+     * @private
+     */
+    getColumnModel: function() {
+        return new Ext.grid.ColumnModel({
+            defaults: {
+                sortable: true
+            },
+            columns: [
+            {
+                header: this.app.i18n._("Product"),
+                id: 'name',
+                dataIndex: 'name',
+                width: 150
+            }, {
+                header: this.app.i18n._("Description"),
+                id: 'remark_description',
+                dataIndex: 'remark_description',
+                width: 150,
+                editor: new Ext.form.TextField({
+                })
+            }, {
+                header: this.app.i18n._("Price"),
+                id: 'remark_price',
+                dataIndex: 'remark_price',
+                width: 150,
+                editor: new Ext.form.NumberField({
+                    allowBlank: false,
+                    allowNegative: false,
+                    // TODO hardcode separator or get it from locale?
+                    decimalSeparator: ','
+                }),
+                renderer: Ext.util.Format.euMoney
+            }, {
+                header: this.app.i18n._("Quantity"),
+                id: 'remark_quantity',
+                dataIndex: 'remark_quantity',
+                width: 50,
+                editor: new Ext.form.NumberField({
+                    allowBlank: false,
+                    allowNegative: false
+                })
+            }]
+        });
+    },
+    
+    /**
+     * init actions and bars
+     */
+    initActions: function() {
+
+        this.actionUnlink = new Ext.Action({
+            requiredGrant: 'editGrant',
+            text: String.format(this.app.i18n._('Unlink {0}'), this.recordClass.getMeta('recordName')),
+            tooltip: String.format(this.app.i18n._('Unlink selected {0}'), this.recordClass.getMeta('recordName')),
+            disabled: true,
+            iconCls: 'actionRemove',
+            onlySingle: true,
+            scope: this,
+            handler: function(_button, _event) {                       
+                var selectedRows = this.getSelectionModel().getSelections();
+                for (var i = 0; i < selectedRows.length; ++i) {
+                    this.store.remove(selectedRows[i]);
+                }           
+            }
+        });
+        
+        // init toolbars and ctx menut / add actions
+        this.bbar = [                
+            this.actionUnlink
+        ];
+        
+        this.actions = [
+            this.actionUnlink
+        ];
+        
+        this.contextMenu = new Ext.menu.Menu({
+            items: this.actions
+        });
+        this.tbar = new Ext.Panel({
+            layout: 'fit',
+            items: [
+                new Tine.Tinebase.widgets.form.RecordPickerComboBox({
+                    anchor: '90%',
+                    emptyText: this.app.i18n._('Search for Products to add ...'),
+                    productsStore: this.store,
+                    blurOnSelect: true,
+                    recordClass: Tine.Sales.Model.Product,
+                    getValue: function() {
+                        return this.selectedRecord ? this.selectedRecord.data : null;
+                    },
+                    onSelect: function(record){
+                        // check if already in?
+                        if (! this.productsStore.getById(record.id)) {
+                            var newRecord = new Ext.data.Record({
+                                price: record.data.price,
+                                remark_price: record.data.price,
+                                remark_quantity: 1,
+                                name: record.data.name,
+                                relation_type: 'product',
+                                related_id: record.id,
+                                id: record.id
+                            }, record.id);
+                            this.productsStore.insert(0, newRecord);
+                        }
+                            
+                        this.collapse();
+                        this.clearValue();
+                    }
+                })
+            ]
+        });
+    }    
+});

@@ -162,6 +162,7 @@ function concatCss(array $_files, $_filename)
     global $tine20path;
     
     $cssDebug = fopen("$tine20path/$_filename", 'w+');
+    fwrite($cssDebug, getCopyrightHeader());
     
     foreach ($_files as $file) {
         list($filename) = explode('?', $file);
@@ -190,6 +191,7 @@ function concatJs(array $_files, $_filename)
     $revisionInfo = getDevelopmentRevision();
     
     $jsDebug = fopen("$tine20path/$_filename", 'w+');
+    fwrite($jsDebug, getCopyrightHeader());
     
     foreach ($_files as $file) {
         list($filename) = explode('?', $file);
@@ -233,6 +235,21 @@ if (file_exists($yuiCompressorPath)) {
     }
 }
 
+function getCopyrightHeader()
+{
+    $year = date('Y');
+    
+    return "/*!
+ * Tine 2.0 USER CLIENT
+ * 
+ * license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
+ * copyright   Copyright (c) 2007-{$year} Metaways Infosystems GmbH (http://www.metaways.de)
+ *
+ * FOR MORE DETAILED LICENSE AND COPYRIGHT INFORMATION PLEASE CONSULT THE LICENSE FILE 
+ * LOCATED AT: <YOUR TINE 2.0 URL>/LICENSE OR VISIT THE TINE 2.0 HOMEPAGE AT http://www.tine20.org
+ */";
+}
+
 /*
  * code to build the html5 manfest
  *  
@@ -269,13 +286,12 @@ library/ExtJS/resources/css/xtheme-gray.css
 if ($opts->a || $opts->m) {
     $files = array(
         'Tinebase/css/tine-all.css',                               
-        'Tinebase/js/tine-all.js',                                 
+        'Tinebase/js/tine-all.js',
+        'styles/tine20.css',                             
         'library/ExtJS/ext-all.js',
         'library/ExtJS/adapter/ext/ext-base.js',   
         'library/ExtJS/resources/css/ext-all.css',
-        'library/ExtJS/resources/css/xtheme-gray.css',
-        //'images/empty_photo.png',
-        'images/oxygen/16x16/actions/knewstuff.png'
+        'images/oxygen/16x16/actions/knewstuff.png' // ???
     );
     
     // no subdirs! => solaris does not know find -maxdeps 1
@@ -321,7 +337,7 @@ if ($opts->a || $opts->m) {
     foreach($files as $file) {
         if (! is_file("$tine20path/$file")) {
             echo "WARNING $file not found, removing it from manifest.\n";
-        } else if (substr(basename($file), 0, 1) == '.' || ! in_array(array_value(1, explode('.', basename($file))), array('js', 'css', 'gif', 'png', 'jpg')))  {
+        } else if (substr(basename($file), 0, 1) == '.' || ! preg_match('/(js|css|gif|png|jpg)$/', $file))  {
             echo "INFO $file is unwanted, removing it from manifest.\n";
         } else {
             $manifest['entries'][] = array(

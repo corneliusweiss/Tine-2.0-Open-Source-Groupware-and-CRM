@@ -29,7 +29,7 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
     private function __construct() {
         $this->_applicationName = 'Crm';
         $this->_modelName = 'Crm_Model_Lead';
-        $this->_backend = Crm_Backend_Factory::factory(Crm_Backend_Factory::LEADS);
+        $this->_backend = new Crm_Backend_Leads();
         $this->_currentAccount = Tinebase_Core::getUser();
         
         // send notifications
@@ -71,50 +71,6 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
     /****************************** overwritten functions ************************/
     
     /**
-     * get lead identified by leadId
-     *
-     * @param   int $_id
-     * @return  Crm_Model_Lead
-     */
-    public function get($_id)
-    {
-        $lead = parent::get($_id);
-        
-        // add products
-        $lead->products = Crm_Controller_LeadProducts::getInstance()->getLeadProducts($lead->getId());
-        
-        return $lead;
-    }
-    
-    /**
-     * add Lead
-     *
-     * @param   Tinebase_Record_Interface $_lead the lead to add
-     * @return  Crm_Model_Lead the newly added lead
-     */ 
-    public function create(Tinebase_Record_Interface $_lead)
-    {
-        $lead = parent::create($_lead);
-        $this->_setLeadProducts($lead->getId(), $_lead);
-        
-        return $lead;
-    }
-
-   /**
-     * update Lead
-     *
-     * @param   Tinebase_Record_Interface $_lead the lead to update
-     * @return  Crm_Model_Lead the updated lead
-     */ 
-    public function update(Tinebase_Record_Interface $_lead)
-    {
-        $lead = parent::update($_lead);
-        $this->_setLeadProducts($lead->getId(), $_lead);
-        
-        return $lead;
-    }
-    
-    /**
      * search for leads
      *
      * @param Tinebase_Model_Filter_FilterGroup $_filter
@@ -127,63 +83,38 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
         $leads = parent::search($_filter, $_pagination, $_getRelations, $_onlyIds);
         
         if ($_getRelations) {
-            $leads->setByIndices('relations', Tinebase_Relations::getInstance()->getMultipleRelations($this->_modelName, $this->_backend->getType(), $leads->getId(), NULL, array('CUSTOMER', 'PARTNER')));
+            $leads->setByIndices('relations', Tinebase_Relations::getInstance()->getMultipleRelations(
+                $this->_modelName, 
+                $this->_backend->getType(), 
+                $leads->getId(), 
+                NULL, 
+                array('CUSTOMER', 'PARTNER', 'TASK', 'RESPONSIBLE', 'PRODUCT')
+            ));
         }
         
         return $leads;
     }
     
-    /*********** other public functions **************/
-    
-    /**
-     * returns an empty lead with some defaults set
-     * - add creator as internal contact
-     *
-     * @return Crm_Model_Lead
+/**
+     * Gets total count of search with $_filter
      * 
-     * @todo make use of Tinebase_Config possible here
-     * @todo add responsible user even if LDAP backend when we have LDAP contacts
+     * @param Tinebase_Model_Filter_FilterGroup $_filter
+     * @return array
      */
-    public function getEmptyLead()
+    public function searchCount(Tinebase_Model_Filter_FilterGroup $_filter) 
     {
-        $defaultState  = (isset(Tinebase_Core::getConfig()->crm->defaultstate) ? Tinebase_Core::getConfig()->crm->defaultstate : 1);
-        $defaultType   = (isset(Tinebase_Core::getConfig()->crm->defaulttype) ? Tinebase_Core::getConfig()->crm->defaulttype : 1);
-        $defaultSource = (isset(Tinebase_Core::getConfig()->crm->defaultsource) ? Tinebase_Core::getConfig()->crm->defaultsource : 1);
-        
-        $defaultData = array(
-            'leadstate_id'   => $defaultState,
-            'leadtype_id'    => $defaultType,
-            'leadsource_id'  => $defaultSource,
-            'start'          => Zend_Date::now(),
-            'probability'    => 0,
-            'turnover'       => 0
-        );
-        $emptyLead = new Crm_Model_Lead($defaultData, true);
-        
-        // add creator as RESPONSIBLE (only if user backend isn't LDAP)
-        if (Tinebase_User::getConfiguredBackend() !== Tinebase_User::LDAP) {
-            try {
-                $userContact = Addressbook_Controller_Contact::getInstance()->getContactByUserId($this->_currentAccount->getId());
-                $emptyLead->relations = new Tinebase_Record_RecordSet('Tinebase_Model_Relation');
-                $emptyLead->relations->addRecord(new Tinebase_Model_Relation(array(
-                    'own_id'                 => '',
-                    'own_model'              => 'Crm_Model_Lead',
-                    'own_backend'            => Crm_Backend_Factory::SQL,
-                    'own_degree'             => Tinebase_Model_Relation::DEGREE_SIBLING,
-                    'related_model'          => 'Addressbook_Model_Contact',
-                    'related_backend'        => Addressbook_Backend_Factory::SQL,
-                    'related_id'             => $userContact->getId(),
-                    'type'                   => 'RESPONSIBLE',
-                    'related_record'         => $userContact->toArray()
-                )));
-            } catch (Addressbook_Exception_AccessDenied $aea) {
-                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' Could not add responsible user: ' . $aea->getMessage());
-            }
-        }
-        
-        return $emptyLead;
-    }
+        $this->checkFilterACL($_filter);
 
+        $result['totalcount'] = $this->_backend->searchCount($_filter);
+        
+        // add counts for leadstates/sources/types
+        $result['leadstates'] = $this->_backend->getGroupCountForField($_filter, 'leadstate_id');
+        $result['leadsources'] = $this->_backend->getGroupCountForField($_filter, 'leadsource_id');
+        $result['leadtypes'] = $this->_backend->getGroupCountForField($_filter, 'leadtype_id');
+        
+        return $result;
+    }            
+    
     /********************* notifications ***************************/
     
     /**
@@ -192,6 +123,7 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
      * @todo:
      *  - add changes to mail body
      *  - find updater in addressbook to notify him
+     *  - add products?
      *  
      * @param Crm_Model_Lead            $_lead
      * @param Tinebase_Model_FullUser   $_updater
@@ -208,9 +140,10 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
         
         $view->updater = $_updater;
         $view->lead = $_lead;
-        $view->leadState = Crm_Controller_LeadStates::getInstance()->getLeadState($_lead->leadstate_id);
-        $view->leadType = Crm_Controller_LeadTypes::getInstance()->getLeadType($_lead->leadtype_id);
-        $view->leadSource = Crm_Controller_LeadSources::getInstance()->getLeadSource($_lead->leadsource_id);
+        $settings = Crm_Controller::getInstance()->getSettings();
+        $view->leadState = $settings->getOptionById($_lead->leadstate_id, 'leadstates');
+        $view->leadType = $settings->getOptionById($_lead->leadtype_id, 'leadtypes');
+        $view->leadSource = $settings->getOptionById($_lead->leadsource_id, 'leadsources');
         $view->container = Tinebase_Container::getInstance()->getContainerById($_lead->container_id);
         //$view->updates = $_updates;
         
@@ -233,7 +166,7 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
         }
         
         $view->lang_state = $translate->_('State');
-        $view->lang_type = $translate->_('Type');
+        $view->lang_type = $translate->_('Role');
         $view->lang_source = $translate->_('Source');
         $view->lang_start = $translate->_('Start');
         $view->lang_scheduledEnd = $translate->_('Scheduled end');
@@ -257,7 +190,7 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
         // create pdf
         try {
             $pdfGenerator = new Crm_Export_Pdf();
-            $pdfGenerator->generateLeadPdf($_lead);
+            $pdfGenerator->generate($_lead);
             $pdfOutput = $pdfGenerator->render();
         } catch ( Zend_Pdf_Exception $e ) {
             Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' error creating pdf: ' . $e->__toString());
@@ -277,27 +210,6 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
     /*********************** helper functions ************************/
     
     /**
-     * set lead products
-     *
-     * @param integer $_leadId
-     * @param Crm_Model_Lead $_lead
-     */
-    protected function _setLeadProducts($_leadId, Crm_Model_Lead $_lead)
-    {
-        // add product links
-        $productsArray = array();
-        if (isset($_lead->products) && is_array($_lead->products)) {
-            foreach ($_lead->products as $product) {
-                $product['lead_id'] = $_leadId; 
-                $productsArray[] = $product;     
-            }
-        }       
-        
-        $products = new Tinebase_Record_RecordSet('Crm_Model_LeadProduct', $productsArray);
-        Crm_Controller_LeadProducts::getInstance()->saveLeadProducts($_leadId, $products);                        
-    }
-    
-    /**
      * returns recipients for a lead notification
      *
      * @param  Crm_Model_Lead $_lead
@@ -307,7 +219,7 @@ class Crm_Controller_Lead extends Tinebase_Controller_Record_Abstract
     {
         $recipients = array();
         
-        $relations = Tinebase_Relations::getInstance()->getRelations('Crm_Model_Lead', Crm_Backend_Factory::SQL, $_lead->getId(), true);
+        $relations = Tinebase_Relations::getInstance()->getRelations('Crm_Model_Lead', 'Sql', $_lead->getId(), true);
         
         foreach ($relations as $relation) {
             if ($relation->related_model == 'Addressbook_Model_Contact' && $relation->type == 'RESPONSIBLE') {

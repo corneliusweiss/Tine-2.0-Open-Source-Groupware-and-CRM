@@ -135,9 +135,14 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      * @param int $_start
      * @param int $_limit
      * @return array with results array & totalcount (int)
+     * 
+     * @deprecated
+     * @todo    remove this if it isn't used anymore
      */
     public function getGroups($filter, $sort, $dir, $start, $limit)
     {
+        Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . " Calling deprecated function.");
+        
         $filter = array(
             array('field' => 'query', 'operator' => 'contains', 'value' => $filter),
         );
@@ -158,6 +163,8 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      * @param string $_filter json encoded
      * @param string $_paging json encoded
      * @return array
+     * 
+     * @todo replace this by Admin.searchGroups / getGroups (without acl check)? or add getGroupCount to Tinebase_Group
      */
     public function searchGroups($filter, $paging)
     {
@@ -170,10 +177,12 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         );
         
         // old fn style yet
-        $groups = Tinebase_Group::getInstance()->getGroups($filterData[0]['value'], $pagingData['sort'], $pagingData['dir'], $pagingData['start'], $pagingData['limit']);
+        $sort = (isset($pagingData['sort']))    ? $pagingData['sort']   : 'name';
+        $dir  = (isset($pagingData['dir']))     ? $pagingData['dir']    : 'ASC';
+        $groups = Tinebase_Group::getInstance()->getGroups($filterData[0]['value'], $sort, $dir, $pagingData['start'], $pagingData['limit']);
 
         $result['results'] = $groups->toArray();
-        $result['totalcount'] = count($groups);
+        $result['totalcount'] = Admin_Controller_Group::getInstance()->searchCount($filterData[0]['value']);
         
         return $result;
     }
@@ -247,10 +256,10 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         $inTag = new Tinebase_Model_Tag($tagData);
         
         if (strlen($inTag->getId()) < 40) {
-            Tinebase_Core::getLogger()->debug('creating tag: ' . print_r($inTag->toArray(), true));
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' creating tag: ' . print_r($inTag->toArray(), true));
             $outTag = Tinebase_Tags::getInstance()->createTag($inTag);
         } else {
-            Tinebase_Core::getLogger()->debug('updating tag: ' .print_r($inTag->toArray(), true));
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' updating tag: ' .print_r($inTag->toArray(), true));
             $outTag = Tinebase_Tags::getInstance()->updateTag($inTag);
         }
         return $outTag->toArray();
@@ -390,7 +399,7 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         if (! $success) {
             
             // reset credentials cache
-            setcookie('usercredentialcache');
+            setcookie('usercredentialcache', '', time() - 3600);
             
             $response = array(
 				'success'      => FALSE,
@@ -410,7 +419,8 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     {
         Tinebase_Controller::getInstance()->logout($_SERVER['REMOTE_ADDR']);
         
-        setcookie('usercredentialcache');
+        setcookie('usercredentialcache', '', time() - 3600);
+                
         $result = array(
 			'success'=> true,
         );
@@ -452,20 +462,23 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
                 'packageString' => TINE20_PACKAGESTRING,
                 'releaseTime'   => TINE20_RELEASETIME,
             ),
-            'defaultUsername' => $defaultUsername,
-            'defaultPassword' => $defaultPassword,
-            'titlePostfix'    => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::PAGETITLEPOSTFIX, NULL, '')->value,
+            'defaultUsername'   => $defaultUsername,
+            'defaultPassword'   => $defaultPassword,
+            'titlePostfix'      => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::PAGETITLEPOSTFIX, NULL, '')->value,
+            'redirectUrl'       => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value,
         );
         
         if (Tinebase_Core::isRegistered(Tinebase_Core::USER)) {
+            $user = Tinebase_Core::getUser();
             $registryData += array(    
-                'currentAccount'   => Tinebase_Core::getUser()->toArray(),
-                'accountBackend'   => Tinebase_User::getConfiguredBackend(),
-                'jsonKey'          => Tinebase_Core::get('jsonKey'),
-                'userApplications' => Tinebase_Core::getUser()->getApplications()->toArray(),
-                'NoteTypes'        => $this->getNoteTypes(),
-                'stateInfo'        => Tinebase_State::getInstance()->loadStateInfo(),
-                'changepw'         => Tinebase_User::getBackendConfiguration('changepw', true)
+                'currentAccount'    => $user->toArray(),
+                'userContact'       => Addressbook_Controller_Contact::getInstance()->getContactByUserId($user->getId())->toArray(),
+                'accountBackend'    => Tinebase_User::getConfiguredBackend(),
+                'jsonKey'           => Tinebase_Core::get('jsonKey'),
+                'userApplications'  => $user->getApplications()->toArray(),
+                'NoteTypes'         => $this->getNoteTypes(),
+                'stateInfo'         => Tinebase_State::getInstance()->loadStateInfo(),
+                'changepw'          => Tinebase_User::getBackendConfiguration('changepw', true)
             );
         }
         
@@ -482,7 +495,7 @@ class Tinebase_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     {
         $registryData = array();
         
-        if (Tinebase_Core::isRegistered(Tinebase_Core::USER)) { 
+        if (Tinebase_Core::getUser()) { 
             $userApplications = Tinebase_Core::getUser()->getApplications(TRUE);
             
             foreach($userApplications as $application) {

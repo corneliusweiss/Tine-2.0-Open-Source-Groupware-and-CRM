@@ -60,4 +60,57 @@ class Felamimail_Setup_Update_Release2 extends Setup_Update_Abstract
         $this->setApplicationVersion('Felamimail', '2.2');
         $this->setTableVersion('felamimail_account', '8');
     }
+    
+    /**
+     * 
+     */    
+    public function update_2()
+    {
+        // does nothing
+    }
+    
+    /**
+     * - added cache status 'deleting'
+     */    
+    public function update_3()
+    {
+        $field = '<field>
+                    <name>cache_status</name>
+                    <type>enum</type>
+                    <value>pending</value>
+                    <value>empty</value>
+                    <value>complete</value>
+                    <value>incomplete</value>
+                    <value>updating</value>
+                    <value>deleting</value>
+                </field>';
+        
+        $declaration = new Setup_Backend_Schema_Field_Xml($field);
+        $this->_backend->alterCol('felamimail_folder', $declaration, 'cache_status');
+        
+        $this->setApplicationVersion('Felamimail', '2.4');
+        $this->setTableVersion('felamimail_account', '4');        
+    }
+    
+    /**
+     * - add recent field to folders?
+     * - add options field to accounts?
+     */    
+    /*
+    public function update_2()
+    {
+        $field = '<field>
+                    <name>display_format</name>
+                    <type>enum</type>
+                    <default>html</default>
+                    <value>html</value>
+                    <value>plain</value>
+                </field>';
+        $declaration = new Setup_Backend_Schema_Field_Xml($field);
+        $this->_backend->addCol('felamimail_account', $declaration);
+        
+        $this->setApplicationVersion('Felamimail', '2.3');
+        $this->setTableVersion('felamimail_account', 6);
+    }
+    */
 }

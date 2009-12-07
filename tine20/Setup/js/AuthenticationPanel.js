@@ -71,6 +71,14 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
      * @type Ext.form.ComboBox
      */
     accountsStorageCombo: null,
+    
+    /**
+     * The currently active accounts storage backend
+     * 
+     * @property originalAccountsStorage
+     * @type String
+     */
+    originalAccountsStorage: null,
 
     /**
      * @private
@@ -86,6 +94,9 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
         this.idPrefix                   = Ext.id();
         this.authProviderIdPrefix       = this.idPrefix + '-authProvider-',
         this.accountsStorageIdPrefix    = this.idPrefix + '-accountsStorage-',
+        this.originalAccountsStorage    = (Tine.Setup.registry.get(this.registryKey).accounts) 
+            ? Tine.Setup.registry.get(this.registryKey).accounts.backend
+            : 'Sql';
         
         Tine.Setup.AuthenticationPanel.superclass.initComponent.call(this);
     },
@@ -105,8 +116,27 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
      */
     onChangeAccountsStorage: function() {
         var AccountsStorage = this.accountsStorageCombo.getValue();
+
+        if (AccountsStorage == 'Ldap' && AccountsStorage != this.originalAccountsStorage) {
+          Ext.Msg.confirm(this.app.i18n._('Delete all existing users and groups'), this.app.i18n._('Switching from SQL to LDAP will delete all existing User Accounts, Groups and Roles. Do you really want to switch the accounts storage backend to LDAP ?'), function(confirmbtn, value) {
+                if (confirmbtn == 'yes') {
+                    this.doOnChangeAccountsStorage(AccountsStorage);
+                } else {
+                  this.accountsStorageCombo.setValue(this.originalAccountsStorage);
+                }
+            }, this);
+        } else {
+          this.doOnChangeAccountsStorage(AccountsStorage);
+        }
+    },
+    
+    /**
+     * Change card layout depending on selected combo box entry
+     */
+    doOnChangeAccountsStorage: function(AccountsStorage) {
         var cardLayout = Ext.getCmp(this.accountsStorageIdPrefix + 'CardLayout').getLayout();
         cardLayout.setActiveItem(this.accountsStorageIdPrefix + AccountsStorage);
+        this.originalAccountsStorage = AccountsStorage;
     },
     
     /**
@@ -117,6 +147,19 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
         
         this.onChangeAuthProvider.defer(250, this);
         this.onChangeAccountsStorage.defer(250, this);
+    },
+    
+        
+    /**
+     * transforms form data into a config object
+     * 
+     * @hack   smuggle termsAccept in 
+     * @return {Object} configData
+     */
+    form2config: function() {
+        configData = this.supr().form2config.call(this);
+        configData.acceptedTermsVersion = Tine.Setup.registry.get('acceptedTermsVersion');
+        return configData;
     },
     
    /**
@@ -144,7 +187,8 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                     scope: this,
                     change: this.onChangeAuthProvider,
                     select: this.onChangeAuthProvider
-                }
+                },
+                tabIndex: 1
             });
             
        this.accountsStorageCombo = new Ext.form.ComboBox({
@@ -195,15 +239,18 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                         inputType: 'text',
                         name: 'authentication_Sql_adminLoginName',
                         fieldLabel: this.app.i18n._('Initial admin login name'),
-                        disabled: !setupRequired
+                        disabled: !setupRequired,
+                        tabIndex: 2
                     }, {
                         name: 'authentication_Sql_adminPassword',
                         fieldLabel: this.app.i18n._('Initial admin Password'),
-                        disabled: !setupRequired
+                        disabled: !setupRequired,
+                        tabIndex: 3
                     }, {
                         name: 'authentication_Sql_adminPasswordConfirmation',
                         fieldLabel: this.app.i18n._('Password confirmation'),
-                        disabled: !setupRequired
+                        disabled: !setupRequired,
+                        tabIndex: 4
                     } ]
                 }, {
                     id: this.authProviderIdPrefix + 'Ldap',
@@ -288,7 +335,7 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                         selectOnFocus:true,
                         store: [['1', 'Yes'], ['0','No']],
                         name: 'accounts_Sql_changepw',
-                        fieldLabel: this.app.i18n._('Allow user to change her password?'),
+                        fieldLabel: this.app.i18n._('User can change password'),
                         value: '0'
                     } ]
                 }, {
@@ -397,6 +444,32 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                     } ]
                 }]
             } ]
+          }, {
+            xtype:'fieldset',
+            collapsible: false,
+            autoHeight:true,
+            title: this.app.i18n._('Redirect Settings'),
+            defaults: {
+                width: 300,
+                xtype: 'textfield'
+            },
+            items: [{
+                inputType: 'text',
+                name: 'redirectSettings_redirectUrl',
+                fieldLabel: this.app.i18n._('Redirect Url (after Logout, redirect to login screen if empty)')
+            }, {
+                xtype: 'combo',
+                listWidth: 300,
+                mode: 'local',
+                forceSelection: true,
+                allowEmpty: false,
+                triggerAction: 'all',
+                selectOnFocus:true,
+                store: [['1', 'Yes'], ['0','No']],
+                name: 'redirectSettings_redirectToReferrer',
+                fieldLabel: this.app.i18n._('Redirect to referring site, if exists'),
+                value: '0'
+            } ]
           } ];
     },
     
@@ -404,7 +477,7 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
      * applies registry state to this cmp
      */
     applyRegistryState: function() {
-        this.action_saveConfig.setDisabled(!this.isValid());
+        this.action_saveConfig.setDisabled(false);
         
         if (Tine.Setup.registry.get('setupRequired')) {
             this.action_saveConfig.setText(this.app.i18n._('Save config and install'));
@@ -425,6 +498,9 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
     isValid: function() {
         var form = this.getForm();
 
+        var result = form.isValid();
+        
+        // check if passwords match
         if (form.findField('authentication_Sql_adminPassword') 
             && form.findField('authentication_Sql_adminPassword').getValue() != form.findField('authentication_Sql_adminPasswordConfirmation').getValue()) 
         {
@@ -432,9 +508,31 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                 id: 'authentication_Sql_adminPasswordConfirmation',
                 msg: this.app.i18n._("Passwords don't match")
             }]);
-            return false;
+            result = false;
         }
         
-        return form.isValid();
+        // check if initial username/passwords are set
+        if(Tine.Setup.registry.get('setupRequired') && form.findField('authentication_Sql_adminLoginName')) {
+            if (form.findField('authentication_Sql_adminLoginName').getValue() == '') {
+                form.markInvalid([{
+                    id: 'authentication_Sql_adminLoginName',
+                    msg: this.app.i18n._("Should not be empty")
+                }]);
+                result = false;
+            }
+            if (form.findField('authentication_Sql_adminPassword').getValue() == '') {
+                form.markInvalid([{
+                    id: 'authentication_Sql_adminPassword',
+                    msg: this.app.i18n._("Should not be empty")
+                }]);
+                form.markInvalid([{
+                    id: 'authentication_Sql_adminPasswordConfirmation',
+                    msg: this.app.i18n._("Should not be empty")
+                }]);
+                result = false;
+            }
+        }
+        
+        return result;
     }
 });

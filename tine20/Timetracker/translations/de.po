@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Timetracker\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-06-03 14:14+0100\n"
+"PO-Revision-Date: 2009-11-26 15:45+0100\n"
 "Last-Translator: Philipp Schuele <p.schuele@metaways.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -20,92 +20,115 @@ msgstr "Zeitkonten verwalten"
 msgid "Add, edit and delete timeaccounts"
 msgstr "Zeitkonten ändern, editieren und löschen"
 
-#: Export/Ods.php:89 js/Timetracker.js:29
+#: Export/Ods.php:110
+#: js/Timetracker.js:30
 msgid "Timesheets"
 msgstr "Stundenzettel"
 
-#: Export/Ods.php:116
+#: Export/Ods.php:137
 msgid "Total Sum"
 msgstr "Gesamtsumme"
 
-#: Export/Ods.php:133
+#: Export/Ods.php:154
 msgid "Not billable"
 msgstr "Nicht abrechenbar"
 
-#: Export/Ods.php:141 Export/Ods.php:212 Export/Ods.php:264
-#: js/TimesheetEditDialog.js:189 js/TimesheetGridPanel.js:48
-#: js/TimesheetGridPanel.js:188 js/TimesheetGridPanel.js:254
+#: Export/Ods.php:162
+#: Export/Ods.php:235
+#: Export/Ods.php:287
+#: js/TimesheetEditDialog.js:192
+#: js/TimesheetGridPanel.js:73
+#: js/TimesheetGridPanel.js:217
+#: js/TimesheetGridPanel.js:254
 msgid "Billable"
 msgstr "Abrechenbar"
 
-#: Export/Ods.php:149
+#: Export/Ods.php:170
 msgid "Total"
 msgstr "Total"
 
-#: Export/Ods.php:176 js/TimesheetEditDialog.js:151
-#: js/TimesheetGridPanel.js:186 js/TimesheetGridPanel.js:208
+#: Export/Ods.php:199
+#: js/TimesheetEditDialog.js:151
+#: js/TimesheetGridPanel.js:215
+#: js/TimesheetGridPanel.js:245
 msgid "Date"
 msgstr "Datum"
 
-#: Export/Ods.php:181 Export/Ods.php:242 js/TimeaccountEditDialog.js:156
-#: js/TimeaccountGridPanel.js:54 js/TimesheetEditDialog.js:173
-#: js/TimesheetGridPanel.js:187 js/TimesheetGridPanel.js:244
-#: js/TimesheetGridPanel.js:391
+#: Export/Ods.php:204
+#: Export/Ods.php:265
+#: js/Models.js:132
+#: js/TimeaccountEditDialog.js:93
+#: js/TimeaccountEditDialog.js:155
+#: js/TimesheetEditDialog.js:173
+#: js/TimesheetGridPanel.js:216
+#: js/TimesheetGridPanel.js:253
+#: js/TimesheetGridPanel.js:393
 msgid "Description"
 msgstr "Beschreibung"
 
-#: Export/Ods.php:186
+#: Export/Ods.php:209
 msgid "Timeaccount Number"
 msgstr "Zeitkontonummer"
 
-#: Export/Ods.php:192
+#: Export/Ods.php:215
 msgid "Timeaccount"
 msgstr "Zeitkonto"
 
-#: Export/Ods.php:199
+#: Export/Ods.php:222
 msgid "Staff Member"
 msgstr "Mitarbeiter"
 
-#: Export/Ods.php:205 js/TimesheetEditDialog.js:146
-#: js/TimesheetGridPanel.js:283
+#: Export/Ods.php:228
+#: js/TimesheetEditDialog.js:146
+#: js/TimesheetGridPanel.js:261
 msgid "Duration"
 msgstr "Dauer"
 
-#: Export/Ods.php:217 js/TimesheetEditDialog.js:196
-#: js/TimesheetGridPanel.js:53 js/TimesheetGridPanel.js:189
-#: js/TimesheetGridPanel.js:262
+#: Export/Ods.php:240
+#: js/TimesheetEditDialog.js:199
+#: js/TimesheetGridPanel.js:78
+#: js/TimesheetGridPanel.js:218
+#: js/TimesheetGridPanel.js:256
 msgid "Cleared"
 msgstr "Abgerechnet"
 
-#: Export/Ods.php:232 js/TimeaccountEditDialog.js:85
-#: js/TimeaccountGridPanel.js:75 js/TimesheetGridPanel.js:182
+#: Export/Ods.php:255
+#: js/Models.js:130
+#: js/TimeaccountEditDialog.js:83
+#: js/TimeaccountGridPanel.js:94
 msgid "Number"
 msgstr "Nummer"
 
-#: Export/Ods.php:237 js/TimeaccountEditDialog.js:90
-#: js/TimeaccountGridPanel.js:81 js/TimesheetGridPanel.js:183
+#: Export/Ods.php:260
+#: js/Models.js:131
+#: js/TimeaccountEditDialog.js:88
+#: js/TimeaccountGridPanel.js:99
 msgid "Title"
 msgstr "Titel"
 
-#: Export/Ods.php:247 js/TimeaccountGridPanel.js:55
+#: Export/Ods.php:270
+#: js/Models.js:133
 msgid "Created By"
 msgstr "Erstellt von"
 
-#: Export/Ods.php:253
+#: Export/Ods.php:276
 msgid "Creation Date"
 msgstr "Erstellt am"
 
-#: Export/Ods.php:258 js/TimeaccountEditDialog.js:111
-#: js/TimeaccountGridPanel.js:87
+#: Export/Ods.php:281
+#: js/Models.js:134
+#: js/TimeaccountEditDialog.js:110
+#: js/TimeaccountGridPanel.js:104
 msgid "Status"
 msgstr "Status"
 
-#: Export/Ods.php:269 js/TimeaccountEditDialog.js:134
-#: js/TimesheetEditDialog.js:207
+#: Export/Ods.php:292
+#: js/TimeaccountEditDialog.js:133
+#: js/TimesheetEditDialog.js:210
 msgid "Cleared In"
 msgstr "Abgerechnet in"
 
-#: Export/Ods.php:274
+#: Export/Ods.php:297
 msgid "Open"
 msgstr "offen"
 
@@ -113,11 +136,13 @@ msgstr "offen"
 msgid "{0}"
 msgstr "{0}"
 
-#: js/DurationSpinner.js:63 js/DurationSpinner.js:73
+#: js/DurationSpinner.js:63
+#: js/DurationSpinner.js:73
 msgid "Not a valid time"
 msgstr "Keine gültige Zeitangabe"
 
-#: js/Models.js:46 js/TimesheetEditDialog.js:119 js/TimesheetGridPanel.js:180
+#: js/Models.js:46
+#: js/TimesheetEditDialog.js:119
 msgid "Timesheet"
 msgid_plural "Timesheets"
 msgstr[0] "Stundenzettel"
@@ -129,10 +154,11 @@ msgid_plural "timesheets lists"
 msgstr[0] "Stundenzettel-Liste"
 msgstr[1] "Stundenzettel-Listen"
 
-#: js/Models.js:107 js/TimeaccountEditDialog.js:69
-#: js/TimeaccountGridPanel.js:53 js/TimeaccountSelect.js:166
-#: js/TimesheetEditDialog.js:136 js/TimesheetGridPanel.js:182
-#: js/TimesheetGridPanel.js:183 js/TimesheetGridPanel.js:223
+#: js/Models.js:107
+#: js/TimeaccountEditDialog.js:67
+#: js/TimeaccountSelect.js:169
+#: js/TimesheetEditDialog.js:136
+#: js/TimesheetGridPanel.js:249
 msgid "Time Account"
 msgid_plural "Time Accounts"
 msgstr[0] "Zeitkonto"
@@ -144,111 +170,132 @@ msgid_plural "timeaccount lists"
 msgstr[0] "Stundenzettel-Liste"
 msgstr[1] "Stundenzettel-Listen"
 
-#: js/TimeaccountEditDialog.js:99
+#: js/Models.js:129
+#: js/TimesheetGridPanel.js:213
+msgid "Quick search"
+msgstr "Schnellsuche"
+
+#: js/TimeaccountEditDialog.js:98
 msgid "Unit"
 msgstr "Einheit"
 
-#: js/TimeaccountEditDialog.js:103
+#: js/TimeaccountEditDialog.js:102
 msgid "Unit Price"
 msgstr "Preis einer Einheit"
 
-#: js/TimeaccountEditDialog.js:108 js/TimeaccountGridPanel.js:94
+#: js/TimeaccountEditDialog.js:107
+#: js/TimeaccountGridPanel.js:110
 msgid "Budget"
 msgstr "Budget"
 
-#: js/TimeaccountEditDialog.js:117 js/TimeaccountSelect.js:79
+#: js/TimeaccountEditDialog.js:116
+#: js/TimeaccountSelect.js:79
 msgid "closed"
 msgstr "geschlossen"
 
-#: js/TimeaccountEditDialog.js:117
+#: js/TimeaccountEditDialog.js:116
 msgid "open"
 msgstr "offen"
 
-#: js/TimeaccountEditDialog.js:119
+#: js/TimeaccountEditDialog.js:118
 msgid "Billed"
 msgstr "Abgerechnet"
 
-#: js/TimeaccountEditDialog.js:127 js/TimeaccountSelect.js:235
+#: js/TimeaccountEditDialog.js:126
+#: js/TimeaccountSelect.js:250
 #: Setup/setup.xml:80
 msgid "not yet billed"
 msgstr "noch nicht abgerechnet"
 
-#: js/TimeaccountEditDialog.js:128 js/TimeaccountSelect.js:236
+#: js/TimeaccountEditDialog.js:127
+#: js/TimeaccountSelect.js:251
 #: Setup/setup.xml:82
 msgid "to bill"
 msgstr "abzurechnen"
 
-#: js/TimeaccountEditDialog.js:129 js/TimeaccountSelect.js:237
+#: js/TimeaccountEditDialog.js:128
+#: js/TimeaccountSelect.js:252
 #: Setup/setup.xml:84
 msgid "billed"
 msgstr "abgerechnet"
 
-#: js/TimeaccountEditDialog.js:133 js/TimesheetEditDialog.js:206
+#: js/TimeaccountEditDialog.js:132
+#: js/TimesheetEditDialog.js:209
 msgid "not cleared yet..."
 msgstr "noch nicht abgerechnet"
 
-#: js/TimeaccountEditDialog.js:139
+#: js/TimeaccountEditDialog.js:138
 msgid "Timesheets are billable"
 msgstr "Stundenzettel sind abrechenbar"
 
-#: js/TimeaccountEditDialog.js:170
+#: js/TimeaccountEditDialog.js:169
 msgid "Enter description"
 msgstr "Bitte geben Sie eine Beschreibung an..."
 
-#: js/TimeaccountEditDialog.js:186
+#: js/TimeaccountEditDialog.js:185
 msgid "Access"
 msgstr "Zugang"
 
-#: js/TimeaccountEditDialog.js:210
+#: js/TimeaccountEditDialog.js:209
 msgid "Book Own"
 msgstr "Eigene buchen"
 
-#: js/TimeaccountEditDialog.js:215
+#: js/TimeaccountEditDialog.js:214
 msgid "View All"
 msgstr "Alle sehen"
 
-#: js/TimeaccountEditDialog.js:220
+#: js/TimeaccountEditDialog.js:219
 msgid "Book All"
 msgstr "Alle buchen"
 
-#: js/TimeaccountEditDialog.js:225
+#: js/TimeaccountEditDialog.js:224
 msgid "Manage Clearing"
 msgstr "Abrechenbar setzen"
 
-#: js/TimeaccountEditDialog.js:230
+#: js/TimeaccountEditDialog.js:229
 msgid "Manage All"
 msgstr "Darf Alles"
 
-#: js/TimeaccountEditDialog.js:238
+#: js/TimeaccountEditDialog.js:237
 msgid "Permissions"
 msgstr "Zugriffsrechte"
 
-#: js/TimeaccountGridPanel.js:101 js/TimesheetGridPanel.js:58
-#: js/TimesheetGridPanel.js:270
+#: js/TimeaccountGridPanel.js:91
+#: js/TimesheetGridPanel.js:243
+msgid "Tags"
+msgstr "Tags"
+
+#: js/TimeaccountGridPanel.js:116
+#: js/TimesheetGridPanel.js:83
+#: js/TimesheetGridPanel.js:258
 msgid "Cleared in"
 msgstr "Abgerechnet in"
 
-#: js/TimeaccountGridPanel.js:122 js/TimesheetGridPanel.js:459
+#: js/TimeaccountGridPanel.js:137
+#: js/TimesheetGridPanel.js:462
 msgid "Export"
 msgstr "Export"
 
-#: js/TimeaccountGridPanel.js:131 js/TimesheetGridPanel.js:468
+#: js/TimeaccountGridPanel.js:146
+#: js/TimesheetGridPanel.js:471
 msgid "Export as ODS"
 msgstr "Als ODS exportieren"
 
-#: js/TimeaccountGridPanel.js:138 js/TimesheetGridPanel.js:474
+#: js/TimeaccountGridPanel.js:153
+#: js/TimesheetGridPanel.js:478
 msgid "Export as CSV"
 msgstr "Als CSV exportieren"
 
-#: js/TimeaccountGridPanel.js:149
+#: js/TimeaccountGridPanel.js:164
 msgid "Show closed"
 msgstr "Geschlosse anzeigen"
 
-#: js/TimeaccountSelect.js:212
+#: js/TimeaccountSelect.js:227
 msgid "Time Account - Status"
 msgstr "Zeitkonto - Status"
 
-#: js/TimesheetEditDialog.js:91 js/TimesheetEditDialog.js:92
+#: js/TimesheetEditDialog.js:91
+#: js/TimesheetEditDialog.js:92
 msgid "Billed in ..."
 msgstr "Abgerechnet in ..."
 
@@ -272,84 +319,85 @@ msgstr "nicht gesetzt"
 msgid "Enter description..."
 msgstr "Bitte geben Sie eine Beschreibung an..."
 
-#: js/TimesheetEditDialog.js:183 js/TimesheetGridPanel.js:185
-#: js/TimesheetGridPanel.js:276
+#: js/TimesheetEditDialog.js:186
+#: js/TimesheetGridPanel.js:214
+#: js/TimesheetGridPanel.js:259
 msgid "Account"
 msgstr "Benutzer"
 
-#: js/TimesheetGridPanel.js:40
+#: js/TimesheetGridPanel.js:65
 msgid "Mass Update"
 msgstr "Massenaktualisierung"
 
-#: js/TimesheetGridPanel.js:46
+#: js/TimesheetGridPanel.js:71
 msgid "Update field:"
 msgstr "Feld aktualisieren:"
 
-#: js/TimesheetGridPanel.js:117
+#: js/TimesheetGridPanel.js:149
 msgid "Update {0} records"
 msgstr "{0} Einträge aktualiseren"
 
-#: js/TimesheetGridPanel.js:126
+#: js/TimesheetGridPanel.js:158
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: js/TimesheetGridPanel.js:132
+#: js/TimesheetGridPanel.js:164
 msgid "Ok"
 msgstr "Ok"
 
-#: js/TimesheetGridPanel.js:158
+#: js/TimesheetGridPanel.js:190
 msgid "Success"
 msgstr "Erfolgreich"
 
-#: js/TimesheetGridPanel.js:159
+#: js/TimesheetGridPanel.js:191
 msgid "Updated {0} records"
 msgstr "{0} Einträge aktualisiert"
 
-#: js/TimesheetGridPanel.js:216
+#: js/TimesheetGridPanel.js:247
 msgid "Start time"
 msgstr "Startzeit"
 
-#: js/TimesheetGridPanel.js:233
+#: js/TimesheetGridPanel.js:251
 msgid "Time Account closed"
 msgstr "Zeitkonto geschlossen"
 
-#: js/TimesheetGridPanel.js:304
+#: js/TimesheetGridPanel.js:306
 msgid "timeframe"
 msgstr "Zeitrahmen"
 
-#: js/TimesheetGridPanel.js:328
+#: js/TimesheetGridPanel.js:330
 msgid "summary"
 msgstr "Zusammenfassung"
 
-#: js/TimesheetGridPanel.js:331
+#: js/TimesheetGridPanel.js:333
 msgid "Total Timesheets"
 msgstr "Alle Stundenzettel"
 
-#: js/TimesheetGridPanel.js:332
+#: js/TimesheetGridPanel.js:334
 msgid "Billable Timesheets"
 msgstr "Abrechenbare Stundenzettel"
 
-#: js/TimesheetGridPanel.js:333
+#: js/TimesheetGridPanel.js:335
 msgid "Total Time"
 msgstr "Gesamtsumme"
 
-#: js/TimesheetGridPanel.js:334
+#: js/TimesheetGridPanel.js:336
 msgid "Time of Billable Timesheets"
 msgstr "Gesamtzeit abrechenbarer Stundenzettel"
 
-#: js/TimesheetGridPanel.js:405
+#: js/TimesheetGridPanel.js:407
 msgid "Detail"
 msgstr "Detail"
 
-#: js/Timetracker.js:34
+#: js/Timetracker.js:35
 msgid "All Timesheets"
 msgstr "Alle Stundenzettel"
 
-#: js/Timetracker.js:39
+#: js/Timetracker.js:40
 msgid "Timeaccounts"
 msgstr "Zeitkonten"
 
-#: js/Timetracker.js:44
+#: js/Timetracker.js:45
 msgid "All Timeaccounts"
 msgstr "Alle Zeitkonten"
 
@@ -357,17 +405,3 @@ msgstr "Alle Zeitkonten"
 msgid "Timetracker"
 msgstr "Zeiterfassung"
 
-#~ msgid "Filter"
-#~ msgstr "Filter"
-
-#~ msgid "Times could be added"
-#~ msgstr "Zeiten können addiert werden"
-
-#~ msgid "Duplicate"
-#~ msgstr "Duplikat"
-
-#~ msgid "Time account"
-#~ msgstr "Zeitkonto"
-
-#~ msgid "Implementation"
-#~ msgstr "Umsetzung"

@@ -1,372 +1,489 @@
-/**
+/*
  * Tine 2.0
  * 
  * @package     Crm
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
- * @version     $Id$
+ * @version     $Id:LeadEditDialog.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
  *
  */
-
-/****************** lead edit dialog layout ************************/
-
-/**
- * Lead Edit Dialog
- * separate layout from logic
- * 
- * @todo    add more components/panels
- * @todo    add history
- */
-Tine.Crm.LeadEditDialog.getEditForm = function(_linkTabpanels, _lead) {
-
-	var translation = new Locale.Gettext();
-    translation.textdomain('Crm');
-
-    /*********** OVERVIEW form fields ************/
-
-    var txtfld_leadName = new Ext.form.TextField({
-        hideLabel: true,
-        id: 'lead_name',
-        //fieldLabel:'Projektname', 
-        emptyText: translation._('Enter short name'),
-        name:'lead_name',
-        allowBlank: false,
-        selectOnFocus: true,
-        anchor:'100%'
-        //selectOnFocus:true            
-        }); 
  
-    var combo_leadstatus = new Ext.form.ComboBox({
-        fieldLabel: translation._('Leadstate'), 
-        id:'leadstatus',
-        name:'leadstate_id',
-        store: Tine.Crm.LeadState.getStore(),
-        displayField:'leadstate',
-        valueField:'id',
-        mode: 'local',
-        triggerAction: 'all',
-        editable: false,
-        allowBlank: false,
-//        listWidth: '25%',        IE does not like it
-        forceSelection: true,
-        anchor:'95%',
-        lazyInit: false
-    });
-    
-    combo_leadstatus.on('select', function(combo, record, index) {
-        if (record.data.probability !== null) {
-            var combo_probability = Ext.getCmp('combo_probability');
-            combo_probability.setValue(record.data.probability);
-        }
-
-        if (record.data.endslead == '1') {
-            var combo_endDate = Ext.getCmp('end');
-            combo_endDate.setValue(new Date());
-        }
-    });
-    
-    var combo_leadtyp = new Ext.form.ComboBox({
-        fieldLabel: translation._('Leadtype'), 
-        id:'leadtype',
-        name:'leadtype_id',
-        store: Tine.Crm.LeadType.getStore(),
-        mode: 'local',
-        displayField:'leadtype',
-        valueField:'id',
-        typeAhead: true,
-        triggerAction: 'all',
-//        listWidth: '25%',                
-        editable: false,
-        allowBlank: false,
-        forceSelection: true,
-        anchor:'95%'    
-    });
-
-    var combo_leadsource = new Ext.form.ComboBox({
-            fieldLabel: translation._('Leadsource'), 
-            id:'leadsource',
-            name:'leadsource_id',
-            store: Tine.Crm.LeadSource.getStore(),
-            displayField:'leadsource',
-            valueField:'id',
-            typeAhead: true,
-//            listWidth: '25%',                
-            mode: 'local',
-            triggerAction: 'all',
-            editable: false,
-            allowBlank: false,
-            forceSelection: true,
-            anchor:'95%'    
-    });
-
-    var combo_probability = new Ext.ux.PercentCombo({
-        fieldLabel: translation._('Probability'), 
-        id: 'combo_probability',
-        anchor:'95%',            
-//        listWidth: '25%',            
-        name:'probability'
-    });
-
-    var date_start = new Ext.form.DateField({
-        fieldLabel: translation._('Start'), 
-        allowBlank: false,
-        id: 'start',             
-        anchor: '95%'
-    });
-    
-    var date_scheduledEnd = new Ext.ux.form.ClearableDateField({
-        fieldLabel: translation._('Estimated end'), 
-        id: 'end_scheduled',
-        anchor: '95%'
-    });
-    
-    var date_end = new Ext.ux.form.ClearableDateField({
-        fieldLabel: translation._('End'), 
-        id: 'end',
-        anchor: '95%'
-    });
-    
-    /*********** OVERVIEW tab panel ************/
-
-    var tabPanelOverview = {
-        title: translation._('Overview'),
-        layout:'border',
-        layoutOnTabChange:true,
-        defaults: {
-            border: true,
-            frame: true            
-        },
-        items: [{
-            layout: 'accordion',
-            border: true,
-            animate: true,        	
-            region: 'east',
-            width: 210,
-            split: true,
-            collapsible: true,
-            collapseMode: 'mini',
-            items: [
-                new Ext.Panel({
-                    // @todo generalise!
-                    title: translation._('Description'),
-                    iconCls: 'descriptionIcon',
-                    layout: 'form',
-                    labelAlign: 'top',
-                    border: false,
-                    items: [{
-                        style: 'margin-top: -4px; border 0px;',
-                        labelSeparator: '',
-                        xtype:'textarea',
-                        name: 'description',
-                        hideLabel: true,
-                        grow: false,
-                        preventScrollbars:false,
-                        anchor:'100% 100%',
-                        emptyText: translation._('Enter description')                        
-                    }]
-                }),
-                new Tine.widgets.tags.TagPanel({
-                    app: 'Crm',
-                    border: false,
-                    bodyStyle: 'border:1px solid #B5B8C8;'
-                }),
-                new Tine.widgets.activities.ActivitiesPanel({
-                    app: 'Crm',
-                    showAddNoteForm: false,
-                    border: false,
-                    bodyStyle: 'border:1px solid #B5B8C8;'
-                })                                    
-            ]
-        },{
-            region:'center',
-            layout: 'form',
-            autoHeight: true,
-            id: 'editCenterPanel',
-            items: [
-                txtfld_leadName,
-                {
-                    xtype: 'panel',
-                    id: 'linkPanelTop',
-                    height: 210,
-                    items: [ _linkTabpanels.contactsPanel ]
-                },
-                {
-                layout:'column',
-                height: 140,
-                id: 'lead_combos',
-                anchor:'100%',                        
-                items: [{
-                    columnWidth: 0.33,
-                    items:[{
-                        layout: 'form',
-                        items: [
-                            combo_leadstatus, 
-                            combo_leadtyp,
-                            combo_leadsource
-                        ]
-                    }]                          
-                },{
-                    columnWidth: 0.33,
-                    items:[{
-                        layout: 'form',
-                        border:false,
-                        items: [
-                        {
-                            xtype:'numberfield',
-                            fieldLabel: translation._('Expected turnover'), 
-                            name: 'turnover',
-                            selectOnFocus: true,
-                            anchor: '95%'
-                        },  
-                            combo_probability//,
-                            //folderTrigger 
-                        ]
-                    }]              
-                },{
-                    columnWidth: 0.33,
-                    items:[{
-                        layout: 'form',
-                        border:false,
-                        items: [
-                            date_start,
-                            date_scheduledEnd,
-                            date_end   
-                        ]
-                    }]
-                }]
-            }, {
-                xtype: 'tabpanel',
-                //style: 'margin-top: 10px;',
-                id: 'linkPanelBottom',
-                activeTab: 0,
-                height: 250,
-                items: [
-                    _linkTabpanels.tasksPanel,
-                    _linkTabpanels.productsPanel
-                ]
-            }
-            ]
-        }]
-    };        
-    
-    /*********** HISTORY tab panel ************/
-
-    var tabPanelActivities = new Tine.widgets.activities.ActivitiesTabPanel({
-        app: 'Crm',
-        record_id: _lead.id,
-        record_model: 'Crm_Model_Lead'
-    });
-
-    /*********** MAIN tab panel ************/
-    
-    var tabPanel = new Ext.TabPanel({
-        plain:true,
-        activeTab: 0,
-        id: 'editMainTabPanel',
-        layoutOnTabChange:true,  
-        items:[
-            tabPanelOverview,
-            tabPanelActivities                    
-        ]
-    });
-    
-    // @todo add savePath (container) to the bottom and remove it from form in the middle
-    return [
-        tabPanel
-        //savePath
-    ];
-};
-
-/*********************** crm widgets ************************/
-
-Ext.namespace('Tine.Crm', 'Tine.Crm.contactType');
+Ext.namespace('Tine.Crm');
 
 /**
- * contact type select combo box
+ * @namespace   Tine.Crm
+ * @class       Tine.Crm.LeadEditDialog
+ * @extends     Tine.widgets.dialog.EditDialog
  * 
+ * <p>Lead Edit Dialog</p>
+ * <p>
+ * TODO         simplify relation handling (move init of stores to relation grids and get data from there later?)
+ * TODO         make marking of invalid fields work again
+ * TODO         add export button
+ * TODO         disable link grids if user has no run right for the app (adb/tasks/sales)
+ * </p>
+ * 
+ * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
+ * @author      Philipp Schuele <p.schuele@metaways.de>
+ * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @version     $Id:LeadEditDialog.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
+ * 
+ * @param       {Object} config
+ * @constructor
+ * Create a new Tine.Crm.LeadEditDialog
  */
-Tine.Crm.contactType.ComboBox = Ext.extend(Ext.form.ComboBox, {	
-	/**
-     * @cfg {bool} autoExpand Autoexpand comboBox on focus.
-     */
-    autoExpand: false,
+Tine.Crm.LeadEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, {
+    
     /**
-     * @cfg {bool} blurOnSelect blurs combobox when item gets selected
+     * linked contacts grid
+     * 
+     * @type Tine.Crm.Contact.GridPanel
+     * @property contactGrid
      */
-    blurOnSelect: false,
+    contactGrid: null,
     
-    displayField: 'label',
-    valueField: 'relation_type',
-    mode: 'local',
-    triggerAction: 'all',
-    lazyInit: false,
+    /**
+     * linked tasks grid
+     * 
+     * @type Tine.Crm.Task.GridPanel
+     * @property tasksGrid
+     */
+    tasksGrid: null,
     
-    //private
-    initComponent: function() {
-    	
-        var translation = new Locale.Gettext();
-        translation.textdomain('Crm');
-    	
-        Tine.Crm.contactType.ComboBox.superclass.initComponent.call(this);
-        // allways set a default
-        if(!this.value) {
-            this.value = 'responsible';
-        }
+    /**
+     * @private
+     */
+    windowNamePrefix: 'LeadEditWindow_',
+    appName: 'Crm',
+    recordClass: Tine.Crm.Model.Lead,
+    recordProxy: Tine.Crm.leadBackend,
+    tbarItems: [{xtype: 'widget-activitiesaddbutton'}],
+    evalGrants: false,
+    showContainerSelector: true,
+    getDefaultsAgain: false,
+
+    /**
+     * overwrite update toolbars function (we don't have record grants yet)
+     * @private
+     */
+    updateToolbars: function() {
+
+    },
+    
+    /**
+     * executed after record got updated from proxy
+     * 
+     * @private
+     */
+    onRecordLoad: function() {
+
+        // load contacts/tasks/products into link grid (only first time this function gets called/store is empty)
+        if (this.contactGrid && this.tasksGrid && this.productsGrid 
+            && this.contactGrid.store.getCount() == 0 
+            && this.tasksGrid.store.getCount() == 0 
+            && this.productsGrid.store.getCount() == 0) {
+                    
+            var relations = this.splitRelations();
+            //console.log(relations);
             
-        this.store = new Ext.data.SimpleStore({
-            fields: ['label', 'relation_type'],
-            data: [
-                    [translation._('Responsible'), 'responsible'],
-                    [translation._('Customer'), 'customer'],
-                    [translation._('Partner'), 'partner']
-                ]
+            this.contactGrid.store.loadData(relations.contacts, true);
+            this.tasksGrid.store.loadData(relations.tasks, true);
+            this.productsGrid.store.loadData(relations.products, true);
+        }
+        
+        Tine.Crm.LeadEditDialog.superclass.onRecordLoad.call(this);        
+    },
+    
+    /**
+     * executed when record gets updated from form
+     * - add attachments to record here
+     * 
+     * @private
+     */
+    onRecordUpdate: function() {
+        Tine.Crm.LeadEditDialog.superclass.onRecordUpdate.call(this);
+        
+        this.getAdditionalData();
+    },
+    
+    /**
+     * getRelationData
+     * get the record relation data (switch relation and related record)
+     * 
+     * @param   Object record with relation data
+     * @return  Object relation with record data
+     */
+    getRelationData: function(record) {
+        var relation = null; 
+        
+        if (record.data.relation) {
+            relation = record.data.relation;
+        } else {
+            // empty relation for new record
+            relation = {};
+        }
+
+        // set the relation type
+        if (!relation.type) {
+            relation.type = record.data.relation_type.toUpperCase();
+        }
+        
+        // do not do recursion!
+        delete record.data.relation;
+        //delete record.data.relation_type;
+        
+        // save record data        
+        relation.related_record = record.data;
+        
+        // add remark values
+        relation.remark = {};
+        if (record.data.remark_price) {
+            relation.remark.price = record.data.remark_price;
+        }
+        if (record.data.remark_description) {
+            relation.remark.description = record.data.remark_description;
+        }
+        if (record.data.remark_quantity) {
+            relation.remark.quantity = record.data.remark_quantity;
+        }
+        
+        return relation;
+    },
+
+    /**
+     * getAdditionalData
+     * collects additional data (start/end dates, linked contacts, ...)
+     * 
+     */
+    getAdditionalData: function() {
+        
+        // collect data of relations
+        var relations = [];
+        this.contactGrid.store.each(function(record) {                     
+            relations.push(this.getRelationData(record));
+        }, this);
+        this.tasksGrid.store.each(function(record) {
+            relations.push(this.getRelationData(record));
+        }, this);
+        this.productsGrid.store.each(function(record) {
+            relations.push(this.getRelationData(record));
+        }, this);
+        
+        this.record.data.relations = relations;
+    },
+    
+    /**
+     * split the relations array in contacts and tasks and switch related_record and relation objects
+     * 
+     * @return {Array}
+     */
+    splitRelations: function() {
+        
+        var contacts = [];
+        var tasks = []
+        var products = []
+        
+        var relations = this.record.get('relations');
+        
+        for (var i=0; i < relations.length; i++) {
+            var newLinkObject = relations[i]['related_record'];
+            delete relations[i]['related_record']['relation'];
+            newLinkObject.relation = relations[i];
+            newLinkObject.relation_type = relations[i]['type'].toLowerCase();
+    
+            //console.log(newLinkObject);
+            if ((newLinkObject.relation_type === 'responsible' 
+              || newLinkObject.relation_type === 'customer' 
+              || newLinkObject.relation_type === 'partner')) {
+                contacts.push(newLinkObject);
+            } else if (newLinkObject.relation_type === 'task') {                
+                tasks.push(newLinkObject);
+            } else if (newLinkObject.relation_type === 'product') {
+                newLinkObject.remark_description = relations[i].remark.description;
+                newLinkObject.remark_price = relations[i].remark.price;
+                newLinkObject.remark_quantity = relations[i].remark.quantity;
+                products.push(newLinkObject);
+            }
+        }
+
+        return {
+            contacts: contacts,
+            tasks: tasks,
+            products: products
+        };
+    },
+
+    /**
+     * returns dialog
+     * 
+     * NOTE: when this method gets called, all initalisation is done.
+     * 
+     * @return {Object}
+     * @private
+     */
+    getFormItems: function() {
+        
+        this.combo_probability = new Ext.ux.PercentCombo({
+            fieldLabel: this.app.i18n._('Probability'), 
+            id: 'combo_probability',
+            anchor:'95%',            
+            name:'probability'
         });
         
-        if (this.autoExpand) {
-            this.lazyInit = false;
-            this.on('focus', function(){
-                this.selectByValue(this.getValue());
-                this.onTriggerClick();
-            });
-        }
+        this.date_end = new Ext.ux.form.ClearableDateField({
+            fieldLabel: this.app.i18n._('End'), 
+            id: 'end',
+            anchor: '95%'
+        });
         
-        if (this.blurOnSelect){
-            this.on('select', function(){
-                this.fireEvent('blur', this);
-            }, this);
-        }
-    }
+        this.contactGrid = new Tine.Crm.Contact.GridPanel({
+            record: this.record,
+            anchor: '100% 98%'
+        });
+
+        this.tasksGrid = new Tine.Crm.Task.GridPanel({
+            record: this.record,
+            disabled: ! (Tine.Tasks && Tine.Tinebase.common.hasRight('run', 'Tasks'))
+        });
+        
+        this.productsGrid = new Tine.Crm.Product.GridPanel({
+            record: this.record,
+            disabled: ! (Tine.Sales && Tine.Tinebase.common.hasRight('run', 'Sales'))
+        });
+        
+        return {
+            xtype: 'tabpanel',
+            border: false,
+            plain:true,
+            activeTab: 0,
+            border: false,
+            items:[{
+                title: this.app.i18n._('Lead'),
+                autoScroll: true,
+                border: true,
+                frame: true,
+                layout: 'border',
+                id: 'editCenterPanel',
+                defaults: {
+                    border: true,
+                    frame: true            
+                },
+                items: [{
+                    region: 'center',
+                    layout: 'border',
+                    items: [{
+                        region: 'north',
+                        height: 40,
+                        layout: 'form',
+                        labelAlign: 'top',
+                        defaults: {
+                            anchor: '100%',
+                            labelSeparator: '',
+                            columnWidth: 1
+                        },
+                        items: [{
+                            xtype:'textfield',
+                            hideLabel: true,
+                            id: 'lead_name',
+                            emptyText: this.app.i18n._('Enter short name'),
+                            name:'lead_name',
+                            allowBlank: false,
+                            selectOnFocus: true,
+                            // TODO make this work
+                            listeners: {render: function(field){field.focus(false, 250);}}
+                        }]
+                    }, {
+                        region: 'center',
+                        layout: 'form',
+                        items: [ this.contactGrid ]
+                    }, {
+                        region: 'south',
+                        height: 390,
+                        split: true,
+                        collapseMode: 'mini',
+                        collapsible: true,
+                        items: [{
+                            xtype: 'panel',
+                            layout:'column',
+                            height: 140,
+                            id: 'lead_combos',
+                            anchor:'100%',
+                            labelAlign: 'top',
+                            items: [{
+                                columnWidth: 0.33,
+                                items:[{
+                                    layout: 'form',
+                                    defaults: {
+                                        valueField:'id',
+                                        typeAhead: true,
+                                        mode: 'local',
+                                        triggerAction: 'all',
+                                        editable: false,
+                                        allowBlank: false,
+                                        forceSelection: true,
+                                        anchor:'95%',
+                                        xtype: 'combo'
+                                    },
+                                    items: [{
+                                        fieldLabel: this.app.i18n._('Leadstate'), 
+                                        id:'leadstatus',
+                                        name:'leadstate_id',
+                                        store: Tine.Crm.LeadState.getStore(),
+                                        displayField:'leadstate',
+                                        lazyInit: false,
+                                        value: Tine.Crm.LeadState.getStore().getAt(0).id,
+                                        listeners: {
+                                            'select': function(combo, record, index) {
+                                                if (this.record.data.probability !== null) {
+                                                    this.combo_probability.setValue(record.data.probability);
+                                                }
+                                                if (record.data.endslead == '1') {
+                                                    this.date_end.setValue(new Date());
+                                                }
+                                            },
+                                            scope: this
+                                        }
+                                    }, {
+                                        fieldLabel: this.app.i18n._('Leadtype'), 
+                                        id:'leadtype',
+                                        name:'leadtype_id',
+                                        store: Tine.Crm.LeadType.getStore(),
+                                        value: Tine.Crm.LeadType.getStore().getAt(0).id,
+                                        displayField:'leadtype'
+                                    }, {
+                                        fieldLabel: this.app.i18n._('Leadsource'), 
+                                        id:'leadsource',
+                                        name:'leadsource_id',
+                                        store: Tine.Crm.LeadSource.getStore(),
+                                        value: Tine.Crm.LeadSource.getStore().getAt(0).id,
+                                        displayField:'leadsource'
+                                    }]
+                                }]
+                            }, {
+                                columnWidth: 0.33,
+                                items:[{
+                                    layout: 'form',
+                                    border:false,
+                                    items: [
+                                    {
+                                        xtype:'numberfield',
+                                        fieldLabel: this.app.i18n._('Expected turnover'), 
+                                        name: 'turnover',
+                                        selectOnFocus: true,
+                                        anchor: '95%',
+                                        minValue: 0
+                                    },  
+                                        this.combo_probability
+                                    ]
+                                }]
+                            }, {
+                                columnWidth: 0.33,
+                                items:[{
+                                    layout: 'form',
+                                    border:false,
+                                    items: [
+                                        new Ext.form.DateField({
+                                            fieldLabel: this.app.i18n._('Start'), 
+                                            allowBlank: false,
+                                            id: 'start',             
+                                            anchor: '95%'
+                                        }),
+                                        new Ext.ux.form.ClearableDateField({
+                                            fieldLabel: this.app.i18n._('Estimated end'), 
+                                            id: 'end_scheduled',
+                                            anchor: '95%'
+                                        }),
+                                        this.date_end   
+                                    ]
+                                }]
+                            }]
+                        }, {
+                            xtype: 'tabpanel',
+                            id: 'linkPanelBottom',
+                            activeTab: 0,
+                            height: 250,
+                            items: [
+                                this.tasksGrid,
+                                this.productsGrid
+                            ]
+                        }]
+                    }] // end of center lead panel with border layout
+                    }, {
+                        layout: 'accordion',
+                        animate: true,
+                        region: 'east',
+                        width: 210,
+                        split: true,
+                        collapsible: true,
+                        collapseMode: 'mini',
+                        margins: '0 5 0 5',
+                        border: true,
+                        items: [
+                            new Ext.Panel({
+                                title: this.app.i18n._('Description'),
+                                iconCls: 'descriptionIcon',
+                                layout: 'form',
+                                labelAlign: 'top',
+                                border: false,
+                                items: [{
+                                    style: 'margin-top: -4px; border 0px;',
+                                    labelSeparator: '',
+                                    xtype:'textarea',
+                                    name: 'description',
+                                    hideLabel: true,
+                                    grow: false,
+                                    preventScrollbars:false,
+                                    anchor:'100% 100%',
+                                    emptyText: this.app.i18n._('Enter description')                        
+                                }]
+                            }),
+                            new Tine.widgets.activities.ActivitiesPanel({
+                                app: 'Crm',
+                                showAddNoteForm: false,
+                                border: false,
+                                bodyStyle: 'border:1px solid #B5B8C8;'
+                            }),
+                            new Tine.widgets.tags.TagPanel({
+                                app: 'Crm',
+                                border: false,
+                                bodyStyle: 'border:1px solid #B5B8C8;'
+                            })
+                        ]} // end of accordion panel (east)
+                    ] // end of lead tabpanel items
+            }, new Tine.widgets.activities.ActivitiesTabPanel({
+                    app: this.appName,
+                    record_id: this.record.id,
+                    record_model: this.appName + '_Model_' + this.recordClass.getMeta('modelName')
+               }) // end of activities tabpanel
+            ] // end of main tabpanel items
+        }; // end of return
+    } // end of getFormItems
+    
+    // obsolete code
+//        exportLead: function(_button, _event) {         
+//            
+//            var leadId = Ext.util.JSON.encode([_button.leadId]);
+//            
+//            Tine.Tinebase.common.openWindow('exportWindow', 'index.php?method=Crm.exportLead&_format=pdf&_leadIds=' + leadId, 768, 1024);
+//        }
+    
 });
-Ext.reg('leadcontacttypecombo', Tine.Crm.contactType.ComboBox);
 
 /**
- * contact type renderer
+ * Crm Edit Popup
  * 
- * @param   string type
- * @return  contact type icon
+ * @param   {Object} config
+ * @return  {Ext.ux.Window}
  */
-Tine.Crm.contactType.Renderer = function(type)
-{
-    var translation = new Locale.Gettext();
-    translation.textdomain('Crm');
-    
-    switch ( type ) {
-        case 'responsible':
-            var iconClass = 'contactIconResponsible';
-            var qTip = translation._('Responsible');
-            break;
-        case 'customer':
-            var iconClass = 'contactIconCustomer';
-            var qTip = translation._('Customer');
-            break;
-        case 'partner':
-            var iconClass = 'contactIconPartner';
-            var qTip = translation._('Partner');
-            break;
-    }
-    
-    var icon = '<img class="x-menu-item-icon contactIcon ' + iconClass + '" src="library/ExtJS/resources/images/default/s.gif" ext:qtip="' + qTip + '"/>';
-    
-    return icon;
+Tine.Crm.LeadEditDialog.openWindow = function (config) {
+    var id = (config.record && config.record.id) ? config.record.id : 0;
+    var window = Tine.WindowFactory.getWindow({
+        width: 800,
+        height: 750,
+        name: Tine.Crm.LeadEditDialog.prototype.windowNamePrefix + id,
+        contentPanelConstructor: 'Tine.Crm.LeadEditDialog',
+        contentPanelConstructorConfig: config
+    });
+    return window;
 };

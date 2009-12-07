@@ -50,19 +50,19 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
     },
     
     /**
+     * phoneMenu
+     * @type Ext.menu.Menu 
+     * 
+     * TODO try to disable 'activation' of toolbar button when ctx menu button is selected
+     */
+    phoneMenu: null,
+    
+    /**
      * inits this cmp
      * @private
      */
     initComponent: function() {
         this.recordProxy = Tine.Addressbook.contactBackend;
-        
-        this.actionToolbarItems = this.getToolbarItems();
-        this.contextMenuItems = [
-            '-',
-            this.actions_exportContact,
-            this.actions_callContact,
-            this.actions_composeEmail
-        ];
         
         this.gridConfig.cm = this.getColumnModel();
         this.filterToolbar = this.getFilterToolbar();
@@ -70,6 +70,16 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
         
         this.plugins = this.plugins || [];
         this.plugins.push(this.filterToolbar);
+        
+        this.actionToolbarItems = this.getToolbarItems();
+        this.contextMenuItems = [
+            '-',
+            this.actions_exportContact,
+            this.actions_callContact
+        ];
+        if (Tine.Felamimail && Tine.Tinebase.common.hasRight('run', 'Felamimail')) {
+            this.contextMenuItems.push(this.actions_composeEmail);
+        }
         
         Tine.Addressbook.ContactGridPanel.superclass.initComponent.call(this);
         
@@ -81,26 +91,15 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
      * @private
      */
     getFilterToolbar: function() {
+        this.quickSearchFilterToolbarPlugin = new Tine.widgets.grid.FilterToolbarQuickFilterPlugin();
+        
         return new Tine.widgets.grid.FilterToolbar({
-            filterModels: [
-                {label: this.app.i18n.n_('Contact', 'Contacts', 1),    field: 'query',    operators: ['contains']},
-                {label: this.app.i18n._('First Name'), field: 'n_given' },
-                {label: this.app.i18n._('Last Name'),  field: 'n_family'},
-                {label: this.app.i18n._('Company'),    field: 'org_name'},
-                {label: this.app.i18n._('Phone'), field: 'telephone', operators: ['contains']},
-                {label: this.app.i18n._('Job Title'),    field: 'title'},
-                {label: this.app.i18n._('Job Role'),    field: 'role'},
-                new Tine.widgets.tags.TagFilter({app: this.app}),
-                //{label: this.app.i18n._('Birthday'),    field: 'bday', valueType: 'date'},
-                {label: this.app.i18n._('Street') + ' (' + this.app.i18n._('Company Address') + ')',      field: 'adr_one_street', defaultOperator: 'equals'},
-                {label: this.app.i18n._('Postal Code') + ' (' + this.app.i18n._('Company Address') + ')', field: 'adr_one_postalcode', defaultOperator: 'equals'},
-                {label: this.app.i18n._('City') + '  (' + this.app.i18n._('Company Address') + ')',       field: 'adr_one_locality'},
-                {label: this.app.i18n._('Street') + ' (' + this.app.i18n._('Private Address') + ')',      field: 'adr_two_street', defaultOperator: 'equals'},
-                {label: this.app.i18n._('Postal Code') + ' (' + this.app.i18n._('Private Address') + ')', field: 'adr_two_postalcode', defaultOperator: 'equals'},
-                {label: this.app.i18n._('City') + '  (' + this.app.i18n._('Private Address') + ')',       field: 'adr_two_locality'}
-             ],
-             defaultFilter: 'query',
-             filters: []
+            filterModels: Tine.Addressbook.Model.Contact.getFilterModel(),
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                this.quickSearchFilterToolbarPlugin
+            ]
         });
     },    
     
@@ -154,19 +153,19 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
             { id: 'note', header: this.app.i18n._('Note'), dataIndex: 'note' },
             { id: 'tz', header: this.app.i18n._('Timezone'), dataIndex: 'tz' },
             { id: 'geo', header: this.app.i18n._('Geo'), dataIndex: 'geo' },
-            { id: 'bday', header: this.app.i18n._('Birthday'), dataIndex: 'bday' }
+            { id: 'bday', header: this.app.i18n._('Birthday'), dataIndex: 'bday', renderer: Tine.Tinebase.common.dateRenderer },
+            { id: 'creation_time', header: _('Creation Time'), dataIndex: 'creation_time', renderer: Tine.Tinebase.common.dateRenderer },
+            { id: 'last_modified_time', header: _('Last Modified Time'), dataIndex: 'last_modified_time', renderer: Tine.Tinebase.common.dateRenderer }
         ]});
     },
     
     /**
      * return additional tb items
      * @private
-     * 
-     * TODO add toolbar items to context menu
      */
     getToolbarItems: function() {
         this.actions_exportContact = new Ext.Action({
-            text: _('Export'),
+            text: this.app.i18n._('Export Contact'),
             iconCls: 'action_export',
             scope: this,
             requiredGrant: 'readGrant',
@@ -183,7 +182,7 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
                     }),
                     new Tine.widgets.grid.ExportButton({
                         text: this.app.i18n._('Export as CSV'),
-                        iconCls: 'action_export',
+                        iconCls: 'tinebase-action-export-csv',
                         format: 'csv',
                         exportFunction: 'Addressbook.exportContacts',
                         gridPanel: this
@@ -192,15 +191,15 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
             }
         });
         
+        this.phoneMenu = new Ext.menu.Menu({
+        });
         this.actions_callContact = new Ext.Action({
             requiredGrant: 'readGrant',
             text: this.app.i18n._('Call contact'),
             disabled: true,
-            handler: this.onCallContact,
+            //handler: this.onCallContact,
             iconCls: 'PhoneIconCls',
-            menu: new Ext.menu.Menu({
-                id: 'Addressbook_Contacts_CallContact_Menu'
-            }),
+            menu: this.phoneMenu,
             scope: this
         });
         
@@ -237,45 +236,49 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
     onSelectionchange: function(sm) {
         var rowCount = sm.getCount();
         if (rowCount == 1 && Tine.Phone && Tine.Tinebase.common.hasRight('run', 'Phone')) {
-            var callMenu = Ext.menu.MenuMgr.get('Addressbook_Contacts_CallContact_Menu');
-            callMenu.removeAll();
+            this.phoneMenu.removeAll();
             
             this.actions_callContact.setDisabled(true);
             
             var contact = sm.getSelected();
+            
+            if (! contact) {
+                return false;
+            }
+            
             if(!Ext.isEmpty(contact.data.tel_work)) {
-                callMenu.add({
-                   id: 'Addressbook_Contacts_CallContact_Work', 
+                this.phoneMenu.add({
                    text: this.app.i18n._('Work') + ' ' + contact.data.tel_work + '',
                    scope: this,
-                   handler: this.onCallContact
+                   handler: this.onCallContact,
+                   field: 'tel_work'
                 });
                 this.actions_callContact.setDisabled(false);
             }
             if(!Ext.isEmpty(contact.data.tel_home)) {
-                callMenu.add({
-                   id: 'Addressbook_Contacts_CallContact_Home', 
+                this.phoneMenu.add({
                    text: this.app.i18n._('Home') + ' ' + contact.data.tel_home + '',
                    scope: this,
-                   handler: this.onCallContact
+                   handler: this.onCallContact,
+                   field: 'tel_home'
                 });
                 this.actions_callContact.setDisabled(false);
             }
             if(!Ext.isEmpty(contact.data.tel_cell)) {
-                callMenu.add({
-                   id: 'Addressbook_Contacts_CallContact_Cell', 
+                this.phoneMenu.add({
                    text: this.app.i18n._('Cell') + ' ' + contact.data.tel_cell + '',
                    scope: this,
-                   handler: this.onCallContact
+                   handler: this.onCallContact,
+                   field: 'tel_cell'
                 });
                 this.actions_callContact.setDisabled(false);
             }
             if(!Ext.isEmpty(contact.data.tel_cell_private)) {
-                callMenu.add({
-                   id: 'Addressbook_Contacts_CallContact_CellPrivate', 
+                this.phoneMenu.add({
                    text: this.app.i18n._('Cell private') + ' ' + contact.data.tel_cell_private + '',
                    scope: this,
-                   handler: this.onCallContact
+                   handler: this.onCallContact,
+                   field: 'tel_cell'
                 });
                 this.actions_callContact.setDisabled(false);
             }
@@ -290,34 +293,24 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
         var number;
 
         var contact = this.grid.getSelectionModel().getSelected();
-
-        switch(btn.getId()) {
-            case 'Addressbook_Contacts_CallContact_Work':
-                number = contact.data.tel_work;
-                break;
-            case 'Addressbook_Contacts_CallContact_Home':
-                number = contact.data.tel_home;
-                break;
-            case 'Addressbook_Contacts_CallContact_Cell':
-                number = contact.data.tel_cell;
-                break;
-            case 'Addressbook_Contacts_CallContact_CellPrivate':
-                number = contact.data.tel_cell_private;
-                break;
-            default:
-                if(!Ext.isEmpty(contact.data.tel_work)) {
-                    number = contact.data.tel_work;
-                } else if (!Ext.isEmpty(contact.data.tel_cell)) {
-                    number = contact.data.tel_cell;
-                } else if (!Ext.isEmpty(contact.data.tel_cell_private)) {
-                    number = contact.data.tel_cell_private;
-                } else if (!Ext.isEmpty(contact.data.tel_home)) {
-                    number = contact.data.tel_work;
-                }
-                break;
+        
+        if (! contact) {
+            return;
+        }
+        
+        if (!Ext.isEmpty(contact.get(btn.field))) {
+            number = contact.get(btn.field);
+        } else if(!Ext.isEmpty(contact.data.tel_work)) {
+            number = contact.data.tel_work;
+        } else if (!Ext.isEmpty(contact.data.tel_cell)) {
+            number = contact.data.tel_cell;
+        } else if (!Ext.isEmpty(contact.data.tel_cell_private)) {
+            number = contact.data.tel_cell_private;
+        } else if (!Ext.isEmpty(contact.data.tel_home)) {
+            number = contact.data.tel_work;
         }
 
-        Tine.Phone.dialNumber(number);
+        Tine.Phone.dialPhoneNumber(number);
     },
     
     /**
@@ -356,9 +349,10 @@ Tine.Addressbook.ContactGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPan
      * @return {String} HTML
      */
     contactTidRenderer: function(data, cell, record) {
-        switch(record.get('container_id').type) {
-            case 'internal':
-                return "<img src='images/oxygen/16x16/actions/user-female.png' width='12' height='12' alt='contact' ext:qtip='" + this.app.i18n._("Internal Contacts") + "'/>";
+    	
+        switch(record.get('type')) {
+            case 'user':
+                return "<img src='images/oxygen/16x16/actions/user-female.png' width='12' height='12' alt='contact' ext:qtip='" + this.app.i18n._("Internal Contact") + "'/>";
             default:
                 return "<img src='images/oxygen/16x16/actions/user.png' width='12' height='12' alt='contact'/>";
         }

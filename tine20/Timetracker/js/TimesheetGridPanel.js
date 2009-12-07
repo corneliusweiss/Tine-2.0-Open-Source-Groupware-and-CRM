@@ -210,17 +210,14 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             allowSaving: true,
             filterModels: [
-                //{label: this.app.i18n._('Timesheet'),    field: 'query',    operators: ['contains']}, // query only searches description
-                new Tine.Timetracker.TimeAccountGridFilter(),
-                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Number'), field: 'timeaccount_number'},
-                {label: this.app.i18n._('Time Account') + ' - ' + this.app.i18n._('Title'),  field: 'timeaccount_title'},
-                new Tine.Timetracker.TimeAccountStatusGridFilter(),
+                //{label: _('Quick search'),    field: 'query',    operators: ['contains']}, // query only searches description
                 {label: this.app.i18n._('Account'),      field: 'account_id', valueType: 'user'},
                 {label: this.app.i18n._('Date'),         field: 'start_date', valueType: 'date', pastOnly: true},
                 {label: this.app.i18n._('Description'),  field: 'description', defaultOperator: 'contains'},
                 {label: this.app.i18n._('Billable'),     field: 'is_billable', valueType: 'bool', defaultValue: true },
                 {label: this.app.i18n._('Cleared'),      field: 'is_cleared',  valueType: 'bool', defaultValue: false },
-                new Tine.widgets.tags.TagFilter({app: this.app})
+                {filtertype: 'tinebase.tag', app: this.app},
+                {filtertype: 'timetracker.timeaccount'}
              ],
              defaultFilter: 'start_date',
              filters: [
@@ -473,12 +470,14 @@ Tine.Timetracker.TimesheetGridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridP
                     new Tine.widgets.grid.ExportButton({
                         text: this.app.i18n._('Export as ODS'),
                         format: 'ods',
+                        iconCls: 'tinebase-action-export-ods',
                         exportFunction: 'Timetracker.exportTimesheets',
                         gridPanel: this
                     }),
                     new Tine.widgets.grid.ExportButton({
                         text: this.app.i18n._('Export as CSV'),
                         format: 'csv',
+                        iconCls: 'tinebase-action-export-csv',
                         exportFunction: 'Timetracker.exportTimesheets',
                         gridPanel: this
                     })

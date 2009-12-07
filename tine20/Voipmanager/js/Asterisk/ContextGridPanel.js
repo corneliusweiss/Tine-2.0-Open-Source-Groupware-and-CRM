@@ -20,7 +20,7 @@ Tine.Voipmanager.AsteriskContextGridPanel = Ext.extend(Tine.Tinebase.widgets.app
     evalGrants: false,
     
     // grid specific
-    defaultSortInfo: {field: 'description', direction: 'ASC'},
+    defaultSortInfo: {field: 'name', direction: 'ASC'},
     gridConfig: {
         loadMask: true,
         autoExpandColumn: 'description'
@@ -48,10 +48,13 @@ Tine.Voipmanager.AsteriskContextGridPanel = Ext.extend(Tine.Tinebase.widgets.app
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
-                {label: this.app.i18n._('Context'),    field: 'query',    operators: ['contains']}
-             ],
-             defaultFilter: 'query',
-             filters: []
+                {label: _('Quick search'),    field: 'query',    operators: ['contains']}
+            ],
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+            ]
         });
     },
     

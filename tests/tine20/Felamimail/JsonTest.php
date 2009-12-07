@@ -209,6 +209,16 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
      */
     public function testSendMessage()
     {
+        // set email to unittest@tine20.org
+        $contactFilter = new Addressbook_Model_ContactFilter(array(
+            array('field' => 'n_family', 'operator' => 'equals', 'value' => 'Clever')
+        ));
+        $contactIds = Addressbook_Controller_Contact::getInstance()->search($contactFilter, NULL, FALSE, TRUE);
+        $contact = Addressbook_Controller_Contact::getInstance()->get($contactIds[0]);
+        $contact->email = 'unittest@tine20.org';
+        $contact = Addressbook_Controller_Contact::getInstance()->update($contact);
+
+        // send email
         $messageToSend = $this->_getMessageData();
         $messageToSend['note'] = 1;
         $returned = $this->_json->saveMessage(Zend_Json::encode($messageToSend));
@@ -218,6 +228,7 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
         // check if message is in sent folder
         $sent = $this->_getFolder('Sent');
         $filter = $this->_getMessageFilter($sent->getId());
+        Felamimail_Controller_Cache::getInstance()->updateMessages($sent);
         $result = $this->_json->searchMessages(Zend_Json::encode($filter), '');
         //print_r($result);
         
@@ -237,11 +248,7 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
         $this->_deleteMessage($messageToSend['subject']);
 
         // check if email note has been added to contact(s)
-        $contactFilter = new Addressbook_Model_ContactFilter(array(
-            array('field' => 'n_family', 'operator' => 'equals', 'value' => 'Clever')
-        ));
-        $contactIds = Addressbook_Controller_Contact::getInstance()->search($contactFilter, NULL, FALSE, TRUE);
-        $contact = Addressbook_Controller_Contact::getInstance()->get($contactIds[0]);
+        $contact = Addressbook_Controller_Contact::getInstance()->get($contact->getId());
         $emailNoteType = Tinebase_Notes::getInstance()->getNoteTypeByName('email');
         
         // check / delete notes
@@ -318,6 +325,7 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
         
         $inbox = $this->_getFolder();
         $filter = $this->_getMessageFilter($inbox->getId());
+        Felamimail_Controller_Cache::getInstance()->updateMessages($inbox);
         $result = $this->_json->searchMessages(Zend_Json::encode($filter), '');
         $replyMessageFound = array();
         $originalMessage = array();
@@ -349,17 +357,20 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
         
         // move
         $drafts = $this->_getFolder('Drafts');
-        $this->_json->moveMessages($message['id'], $drafts->getId());
+        //print_r($message);
+        $this->_json->moveMessages(Zend_Json::encode(array($message['id'])), $drafts->getId());
         
         $filter = $this->_getMessageFilter($drafts->getId());
+        Felamimail_Controller_Cache::getInstance()->updateMessages($drafts);
         $result = $this->_json->searchMessages(Zend_Json::encode($filter), '');
+        //print_r($result);
         $movedMessage = array();
         foreach ($result['results'] as $mail) {
             if ($mail['subject'] == $message['subject']) {
                 $movedMessage = $mail;
             }
         }
-        $this->assertTrue(! empty($movedMessage));
+        $this->assertTrue(! empty($movedMessage), 'moved message not found');
         
         // delete
         $this->_deleteMessage($message['subject'], 'Drafts');
@@ -400,7 +411,7 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
      */
     protected function _getFolder($_name = 'INBOX')
     {
-        Felamimail_Controller_Folder::getInstance()->getSubFolders();
+        Felamimail_Controller_Cache::getInstance()->updateFolders();
         $folderBackend = new Felamimail_Backend_Folder();
         $folder = $folderBackend->getByBackendAndGlobalName('default', $_name);
         
@@ -467,8 +478,10 @@ class Felamimail_JsonTest extends PHPUnit_Framework_TestCase
         
         $inbox = $this->_getFolder();
         $filter = $this->_getMessageFilter($inbox->getId());
+        // update cache
+        Felamimail_Controller_Cache::getInstance()->updateMessages($inbox);
         $result = $this->_json->searchMessages(Zend_Json::encode($filter), '');
-        
+        //print_r($result);
         $message = array(); 
         foreach ($result['results'] as $mail) {
             if ($mail['subject'] == $messageToSend['subject']) {

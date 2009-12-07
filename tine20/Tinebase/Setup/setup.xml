@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application>
     <name>Tinebase</name>
-    <version>2.6</version>
+    <version>2.14</version>
     <tables>
         <table>
             <name>applications</name>
@@ -251,6 +251,19 @@
                     <length>40</length>
                     <notnull>true</notnull>
                 </field>
+                <field>
+                    <name>openid</name>
+                    <type>text</type>
+                    <length>254</length>
+                </field>
+                <field>
+                    <name>visibility</name>
+                    <type>enum</type>
+                    <value>hidden</value>
+                    <value>displayed</value>
+                    <default>displayed</default>
+                    <notnull>true</notnull>
+                </field>
                 <index>
                     <name>id</name>
                     <primary>true</primary>
@@ -263,6 +276,19 @@
                     <unique>true</unique>
                     <field>
                         <name>login_name</name>
+                    </field>
+                </index>
+                <index>
+                    <name>openid</name>
+                    <unique>true</unique>
+                    <field>
+                        <name>openid</name>
+                    </field>
+                </index>
+                <index>
+                    <name>visibility</name>
+                    <field>
+                        <name>visibility</name>
                     </field>
                 </index>
                 <index>
@@ -793,7 +819,7 @@
         
         <table>
             <name>relations</name>
-            <version>3</version>
+            <version>4</version>
             <declaration>
                 <field>
                     <name>id</name>
@@ -854,8 +880,6 @@
                 <field>
                     <name>remark</name>
                     <type>text</type>
-                    <length>256</length>
-                    <notnull>false</notnull>
                 </field>
                 <field>
                     <name>created_by</name>
@@ -2371,6 +2395,98 @@
                     <field>
                         <name>user_id</name>
                     </field>
+                </index>
+            </declaration>
+        </table>
+        <table>
+            <name>openid_assoc</name>
+            <version>1</version>
+            <declaration>
+                <field>
+                    <name>id</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>macfunc</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>secret</name>
+                    <type>text</type>
+                    <length>254</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>expires</name>
+                    <type>integer</type>
+                    <notnull>true</notnull>
+                </field>
+                <index>
+                    <name>id</name>
+                    <primary>true</primary>
+                    <field>
+                        <name>id</name>
+                    </field>
+                </index>
+            </declaration>
+        </table>        
+        <table>
+            <name>openid_sites</name>
+            <version>1</version>
+            <declaration>
+                <field>
+                    <name>id</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>account_id</name>
+                    <type>text</type>
+                    <length>40</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>site</name>
+                    <type>text</type>
+                    <length>254</length>
+                    <notnull>true</notnull>
+                </field>
+                <field>
+                    <name>trusted</name>
+                    <type>text</type>
+                </field>
+                <index>
+                    <name>id</name>
+                    <primary>true</primary>
+                    <field>
+                        <name>id</name>
+                    </field>
+                </index>
+                <index>
+                    <name>account_id-site</name>
+                    <unique>true</unique>
+                    <field>
+                        <name>account_id</name>
+                    </field>
+                    <field>
+                        <name>site</name>
+                    </field>
+                </index>
+                <index>
+                    <name>openid_sites::account_id--accounts::id</name>
+                    <field>
+                        <name>account_id</name>
+                    </field>
+                    <foreign>true</foreign>
+                    <reference>
+                        <table>accounts</table>
+                        <field>id</field>
+                    </reference>
                 </index>
             </declaration>
         </table>        

@@ -20,7 +20,9 @@ Ext.namespace('Tine.Tinebase.widgets.app');
  * @extends     Ext.Panel
  * 
  * <p>Application Grid Panel</p>
- * <p></p>
+ * <p>
+ * TODO         remove the loadmask on error
+ * </p>
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
@@ -130,6 +132,12 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
      * specialised strings for delete action button
      */
     i18nDeleteActionText: null,
+    
+    /**
+     * @cfg {String} newRecordIcon 
+     * icon for adding new records button
+     */
+    newRecordIcon: null,
 
     /**
      * @cfg {Bool} i18nDeleteRecordAction 
@@ -142,6 +150,12 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
      * @property updateOnSelectionChange
      */
     updateOnSelectionChange: true,
+
+    /**
+     * @type Bool
+     * @property showDeleteMask
+     */
+    showDeleteMask: true,
 
     /**
      * @type Ext.Toolbar
@@ -234,13 +248,20 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
         
         // add filter toolbar
         if (this.filterToolbar) {
-            this.items.push(this.filterToolbar);
-            this.filterToolbar.on('bodyresize', function(ftb, w, h) {
-                if (this.filterToolbar.rendered && this.layout.rendered) {
-                    this.layout.layout();
+            this.items.push({
+                region: 'north',
+                border: false,
+                items: this.filterToolbar,
+                listeners: {
+                    scope: this,
+                    afterlayout: function(ct) {
+                        ct.setHeight(this.filterToolbar.getHeight());
+                        ct.ownerCt.layout.layout();
+                    }
                 }
-            }, this);
+            });
         }
+
     },
     
     /**
@@ -264,7 +285,7 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
             actionType: 'add',
             text: this.i18nAddActionText ? this.app.i18n._hidden(this.i18nAddActionText) : String.format(_('Add {0}'), this.i18nRecordName),
             handler: this.onEditInNewWindow,
-            iconCls: this.app.appName + 'IconCls',
+            iconCls: (this.newRecordIcon !== null) ? this.newRecordIcon : this.app.appName + 'IconCls',
             scope: this
         });
         
@@ -272,10 +293,10 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
         this.action_deleteRecord = new Ext.Action({
             requiredGrant: 'deleteGrant',
             allowMultiple: true,
-            singularText: this.i18nDeleteActionText ? i18nDeleteActionText[0] : String.format(Tine.Tinebase.tranlation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
-            pluralText: this.i18nDeleteActionText ? i18nDeleteActionText[1] : String.format(Tine.Tinebase.tranlation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordsName),
-            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.tranlation,
-            text: this.i18nDeleteActionText ? this.i18nDeleteActionText[0] : String.format(Tine.Tinebase.tranlation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
+            singularText: this.i18nDeleteActionText ? this.i18nDeleteActionText[0] : String.format(Tine.Tinebase.translation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
+            pluralText: this.i18nDeleteActionText ? this.i18nDeleteActionText[1] : String.format(Tine.Tinebase.translation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordsName),
+            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.translation,
+            text: this.i18nDeleteActionText ? this.i18nDeleteActionText[0] : String.format(Tine.Tinebase.translation.ngettext('Delete {0}', 'Delete {0}', 1), this.i18nRecordName),
             handler: this.onDeleteRecords,
             disabled: true,
             iconCls: 'action_delete',
@@ -290,18 +311,24 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
 
         if (this.recordClass.getField('tags')) {
             this.action_tagsMassAttach = new Tine.widgets.tags.TagsMassAttachAction({
-                store:          this.store,
                 selectionModel: this.grid.getSelectionModel(),
-                recordClass:    this.recordClass
+                recordClass:    this.recordClass,
+                updateHandler:  this.loadData.createDelegate(this, [true])
             });
             
             this.contextMenuItems.push('-'/*, {xtype: 'menutextitem', text: _('Tagging')}*/, this.action_tagsMassAttach);
         }
         
+        var actionToolbarItems = this.actions.concat(this.actionToolbarItems);
+        if (this.filterToolbar && typeof this.filterToolbar.getQuickFilterField == 'function') {
+            actionToolbarItems.push('->');
+            actionToolbarItems.push(this.filterToolbar.getQuickFilterField());
+        }
+        
         this.actionToolbar = new Ext.Toolbar({
             split: false,
             height: 26,
-            items: this.actions.concat(this.actionToolbarItems)
+            items: actionToolbarItems
         });
         
         this.contextMenu = new Ext.menu.Menu({
@@ -365,8 +392,8 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
             pageSize: 50,
             store: this.store,
             displayInfo: true,
-            displayMsg: Tine.Tinebase.tranlation._('Displaying records {0} - {1} of {2}').replace(/records/, this.i18nRecordsName),
-            emptyMsg: String.format(Tine.Tinebase.tranlation._("No {0} to display"), this.i18nRecordsName),
+            displayMsg: Tine.Tinebase.translation._('Displaying records {0} - {1} of {2}').replace(/records/, this.i18nRecordsName),
+            emptyMsg: String.format(Tine.Tinebase.translation._("No {0} to display"), this.i18nRecordsName),
             displaySelectionHelper: true,
             sm: this.selectionModel
         });
@@ -387,7 +414,7 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
             autoFill: true,
             forceFit:true,
             ignoreAdd: true,
-            emptyText: String.format(Tine.Tinebase.tranlation._("No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."), this.i18nRecordsName, this.i18nContainersName),
+            emptyText: String.format(Tine.Tinebase.translation._("No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."), this.i18nRecordsName, this.i18nContainersName),
             onLoad: Ext.emptyFn,
             listeners: {
                 beforerefresh: function(v) {
@@ -416,7 +443,7 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
         this.gridConfig.enableHdMenu = false;
         
         if (this.stateful) {
-            this.gridConfig.stateful = true,
+            this.gridConfig.stateful = true;
             this.gridConfig.stateId  = this.stateId + '-Grid';
         }
         
@@ -446,6 +473,18 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
             this.updateOnSelectionChange = true;
         }, this);
         
+    },
+    
+    loadData: function(preserveCursor/*, preserveSelection*/) {
+        var opts = {};
+        
+        if (preserveCursor) {
+            opts.params = {
+                start: this.pagingToolbar.cursor
+            };
+        }
+        
+        this.store.load(opts);
     },
     
     /**
@@ -499,7 +538,8 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
     onStoreLoad: function(store, records, options) {
         // we always focus the first row so that keynav starts in the grid
         if (this.store.getCount() > 0) {
-            this.grid.getView().focusRow(0);
+            // this resets scroller ;-(
+            //this.grid.getView().focusRow(0);
         }
     },
     
@@ -534,12 +574,10 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
                 
             }
         } else {
-            switch (e.getKey()) {
-                case e.DELETE:
-                    if (!this.grid.editing && !this.grid.adding && !this.action_deleteRecord.isDisabled()) {
-                        this.onDeleteRecords.call(this);
-                    }
-                    break;
+            if (e.getKey() == e.DELETE) {
+                if (!this.grid.editing && !this.grid.adding && !this.action_deleteRecord.isDisabled()) {
+                    this.onDeleteRecords.call(this);
+                }
             }
         }
     },
@@ -608,7 +646,7 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
             listeners: {
                 scope: this,
                 'update': function(record) {
-                    this.store.load({});
+                    this.loadData(true);
                 }
             }
         });
@@ -635,28 +673,34 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
         var i18nItems    = this.app.i18n.n_hidden(this.recordClass.getMeta('recordName'), this.recordClass.getMeta('recordsName'), records.length);
         var i18nQuestion = this.i18nDeleteQuestion ?
             this.app.i18n.n_hidden(this.i18nDeleteQuestion[0], this.i18nDeleteQuestion[1], records.length) :
-            Tine.Tinebase.tranlation.ngettext('Do you really want to delete the selected record', 'Do you really want to delete the selected records', records.length);
+            Tine.Tinebase.translation.ngettext('Do you really want to delete the selected record', 'Do you really want to delete the selected records', records.length);
             
         Ext.MessageBox.confirm(_('Confirm'), i18nQuestion, function(btn) {
             if(btn == 'yes') {
                 if (this.recordProxy) {
-                    if (! this.deleteMask) {
-                        var message = String.format(_('Deleting {0}'), i18nItems)
-                        if (sm.isFilterSelect) {
-                            message = message + _(' ... This may take a long time!');
-                        } 
-                        this.deleteMask = new Ext.LoadMask(this.grid.getEl(), {msg: message});
+                    if (this.showDeleteMask) {
+                        if (! this.deleteMask) {
+                            var message = String.format(_('Deleting {0}'), i18nItems);
+                            if (sm.isFilterSelect) {
+                                message = message + _(' ... This may take a long time!');
+                            } 
+                            this.deleteMask = new Ext.LoadMask(this.grid.getEl(), {msg: message});
+                        }
+                        this.deleteMask.show();
                     }
-                    this.deleteMask.show();
                     
                     var options = {
                         scope: this,
                         success: function() {
-                            this.deleteMask.hide();
+                            if (this.showDeleteMask) {
+                                this.deleteMask.hide();
+                            }
                             this.onAfterDelete();
                         },
                         failure: function () {
-                            this.deleteMask.hide();
+                            if (this.showDeleteMask) {
+                                this.deleteMask.hide();
+                            }
                             Ext.MessageBox.alert(_('Failed'), String.format(_('Could not delete {0}.'), i18nItems)); 
                         }
                     };
@@ -680,6 +724,6 @@ Ext.extend(Tine.Tinebase.widgets.app.GridPanel, Ext.Panel, {
      * - reload the store
      */
     onAfterDelete: function() {
-        this.store.load({});
+        this.loadData(true);
     }
 });

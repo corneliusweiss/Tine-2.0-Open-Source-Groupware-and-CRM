@@ -89,7 +89,8 @@ html, body {
 }
 .action_export {
     background-image:url(../../images/oxygen/16x16/actions/file-export.png) !important;
-}	
+}
+
 .action_import {
     background-image:url(../../images/oxygen/16x16/actions/view-sort-ascending.png) !important;
 }   
@@ -108,6 +109,61 @@ html, body {
     background-image:url(../../images/oxygen/16x16/apps/kmail.png) !important;
 }
 
+.tinebase-action-export-xls {
+    background-image:url(../../images/oxygen/16x16/mimetypes/application-vnd.ms-excel.png) !important;
+}
+
+.tinebase-action-export-ods {
+    background-image:url(../../images/oxygen/16x16/mimetypes/application-vnd.oasis.opendocument.spreadsheet.png) !important;
+}
+
+.tinebase-action-export-csv {
+    background-image:url(../../images/oxygen/16x16/mimetypes/text-csv.png) !important;
+}
+/* ----- login dialog --------------------------------------------------------*/
+.tb-login-panel form {
+    padding: 20px 10px 20px 20px;
+}
+
+.tb-login-lobobox {
+	text-align:right;
+    height: 60px;
+}
+
+.tb-login-big-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: gray;
+    line-height: 35px;
+}
+
+.tb-login-logo {
+ }
+
+.tb-login-button-spacer {
+	height: 30px;
+}
+
+.tb-login-infosection {
+	padding-left: 20px;
+}
+
+.tb-login-infosection {
+    color: gray;
+    line-height:17px;
+    /*margin-top:-12px;*/
+}
+
+.tb-login-infosection a {
+	text-decoration: none;
+    font-style: normal;
+    color: #1E78AD;
+}
+
+.tb-login-infosection .tb-login-surveypanel {
+    padding-top: 20px;
+}
+
 /* ----- about dialog --------------------------------------------------------*/
 .tb-about-dlg {
     text-align: center;
@@ -123,7 +179,7 @@ html, body {
     margin-top: 50px;
 }
 
-/* ----- renderer ------------------------------------------------------------*/
+/* ----- account renderer ------------------------------------------------------------*/
 .renderer {
     width: 12px;
     float: left;
@@ -152,6 +208,18 @@ html, body {
     background-image:url(../../images/oxygen/16x16/actions/user.png) !important;
     background-repeat: no-repeat;
     background-position: 2px 2px;
+}
+
+.tinebase-accounttype-user {
+    background-image:url(../../images/oxygen/16x16/actions/user-female.png) !important;
+}
+
+.tinebase-accounttype-group {
+    background-image:url(../../images/oxygen/16x16/actions/users.png) !important;
+}
+
+.tinebase-accounttype-addanyone {
+    background-image:url(../../images/oxygen/16x16/actions/add-users.png) !important;
 }
 
 /* ----- notes ------------------------------------------------------------*/

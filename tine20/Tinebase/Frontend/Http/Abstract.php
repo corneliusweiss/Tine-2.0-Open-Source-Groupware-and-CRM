@@ -51,6 +51,117 @@ abstract class Tinebase_Frontend_Http_Abstract extends Tinebase_Frontend_Abstrac
     }
         
     /**
+     * generic export function
+     * 
+     * @param Tinebase_Model_Filter_FilterGroup $_filter
+     * @param string $_format
+     * @param Tinebase_Controller_Record_Abstract $_controller
+     * @return void
+     * 
+     * @todo add export interface for $export object with generate() method?
+     * @todo support single ids as filter?
+     * @todo use stream here instead of temp file?
+     */
+    protected function _export(Tinebase_Model_Filter_FilterGroup $_filter, $_format, Tinebase_Controller_Record_Abstract $_controller = NULL)
+    { 
+        // create export object
+        $exportClass = $_filter->getApplicationName() . '_Export_' . ucfirst(strtolower($_format));
+        if (! class_exists($exportClass)) {
+            throw new Tinebase_Exception_NotFound('No ' . $_format . ' export class found for ' . $_filter->getApplicationName());
+        }
+        $export = new $exportClass();
+        
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Exporting ' . $_filter->getModelName() . ' in format ' . $_format);
+
+        switch ($_format) {
+            case 'pdf':
+                
+                /*
+                if (is_array($decodedFilter)) {
+                    $filter = new Addressbook_Model_ContactFilter($decodedFilter);
+                    $paging = new Tinebase_Model_Pagination();
+                    $contactIds = Addressbook_Controller_Contact::getInstance()->search($filter, $paging, false, true);                
+                } else {
+                    $contactIds = (array) $decodedFilter;
+                }
+                */
+                
+                // get ids by filter
+                $ids = $_controller->search($_filter, NULL, FALSE, TRUE);
+                
+                // loop records
+                foreach ($ids as $id) {
+                    if (! empty($id)) {
+                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Creating pdf for ' . $_filter->getModelName() . '  id ' . $id);
+                        $record = $_controller->get($id);
+                        $export->generate($record);
+                    } else {
+                        Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' ' . $_filter->getModelName() . ' id empty!');
+                    }
+                }
+                    
+                // render pdf
+                try {
+                    $pdfOutput = $export->render();
+                } catch (Zend_Pdf_Exception $e) {
+                    Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' error creating pdf: ' . $e->__toString());
+                    exit;
+                }
+                
+                $contentType = 'application/x-pdf';
+                break;
+                
+            case 'csv':
+                $result = $export->generate($_filter);
+                $contentType = 'text/csv';
+                break;
+
+            case 'ods':
+                $result = $export->generate($_filter);
+                $contentType = 'application/vnd.oasis.opendocument.spreadsheet';
+                break;
+
+            case 'xls':
+                $result = $export->generate($_filter);
+                // @todo support older excel formats? add config option?
+                
+                // Excel 2007 content type
+                //$contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                
+                // Excel 5 content type
+                $contentType = 'application/vnd.ms-excel';
+                break;
+                
+            default:
+                throw new Tinebase_Exception_UnexpectedValue('Format ' . $_format . ' not supported.');
+        }
+
+        // write headers
+        $filename = 'tine20_export_' . strtolower($_filter->getApplicationName()) . '.' . $_format;
+        header("Pragma: public");
+        header("Cache-Control: max-age=0");
+        header("Content-Disposition: " . (($_format == 'pdf') ? 'inline' : 'attachment') . '; filename=' . $filename);
+        header("Content-Description: $_format File");  
+        header("Content-type: $contentType");
+        
+        // output export file
+        switch ($_format) {
+            case 'pdf':
+                echo $pdfOutput;
+                break;
+            case 'xls':
+                // redirect output to client browser
+                //$xlswriter = PHPExcel_IOFactory::createWriter($result, 'Excel2007');
+                $xlswriter = PHPExcel_IOFactory::createWriter($result, 'Excel5');
+                $xlswriter->save('php://output');
+                break;
+            default:
+                readfile($result);
+                unlink($result);
+        }
+    }        
+    
+    /**
      * Helper function to coerce browsers to reload js files when changed.
      *
      * @param string $_file

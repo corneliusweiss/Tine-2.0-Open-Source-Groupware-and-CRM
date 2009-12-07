@@ -61,12 +61,19 @@ Tine.widgets.container.GrantsDialog = Ext.extend(Tine.widgets.dialog.EditDialog,
             },
             root: 'results',
             totalProperty: 'totalcount',
-            id: 'id',
+            //id: 'id',
+            // use account_id here because that simplifies the adding of new records with the search comboboxes
+            id: 'account_id',
             fields: Tine.Tinebase.Model.Grant
         });
         this.grantsStore.load();
         
         Tine.widgets.container.GrantsDialog.superclass.initComponent.call(this);
+    },
+    
+    onRender: function() {
+        this.supr().onRender.apply(this, arguments);
+        this.window.setTitle(this.windowTitle);
     },
     
     /**
@@ -113,20 +120,15 @@ Tine.widgets.container.GrantsDialog = Ext.extend(Tine.widgets.dialog.EditDialog,
             }));
         }
         
-        return {
-            bodyStyle: 'padding:5px;',
-            buttonAlign: 'right',
-            labelAlign: 'top',
-            border: false,
-            layout: 'fit',
-            items: new Tine.widgets.account.ConfigGrid({
-                accountPickerType: 'both',
-                accountListTitle: _('Permissions'),
-                configStore: this.grantsStore,
-                hasAccountPrefix: true,
-                configColumns: columns
-            })
-        };
+        this.grantsGrid = new Tine.widgets.account.PickerGridPanel({
+            selectType: 'both',
+            store: this.grantsStore,
+            hasAccountPrefix: true,
+            configColumns: columns,
+            recordClass: Tine.Tinebase.Model.Grant
+        }); 
+        
+        return this.grantsGrid;
     },
     
     /**
@@ -156,6 +158,23 @@ Tine.widgets.container.GrantsDialog = Ext.extend(Tine.widgets.dialog.EditDialog,
                     this.purgeListeners();
                     this.window.close();
                 }
+            },
+            failure: function(response, options) {
+                var responseText = Ext.util.JSON.decode(response.responseText);
+                
+                if (responseText.data.code == 505) {
+                    Ext.Msg.show({
+                       title:   _('Error'),
+                       msg:     _('You are not allowed to remove all admins for this container!'),
+                       icon:    Ext.MessageBox.ERROR,
+                       buttons: Ext.Msg.OK
+                    });
+                    
+                } else {
+                    // call default exception handler
+                    var exception = responseText.data ? responseText.data : responseText;
+                    Tine.Tinebase.ExceptionHandler.handleRequestException(exception);
+                }                
             }
         });
     }

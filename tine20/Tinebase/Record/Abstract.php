@@ -317,7 +317,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
         // change timezone of current php process to usertimezone to let new dates be in the users timezone
         // NOTE: this is neccessary as creating the dates in UTC and just adding/substracting the timeshift would
         //       lead to incorrect results on DST transistions 
-        date_default_timezone_set(Tinebase_Core::get('userTimeZone'));
+        date_default_timezone_set(Tinebase_Core::get(Tinebase_Core::USERTIMEZONE));
 
         // NOTE: setFromArray creates new Zend_Dates of $this->datetimeFields
         $this->setFromJson($_data);
@@ -439,7 +439,7 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
                 }
                 if ($_throwExceptionOnInvalidData) {
                     $e = new Tinebase_Exception_Record_Validation('some fields ' . implode(',', array_keys($inputFilter->getMessages())) . ' have invalid content');
-                    Tinebase_Core::getLogger()->debug(__CLASS__ . ":\n" .
+                    Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ":\n" .
                         print_r($this->_validationErrors,true). $e);
                     throw $e;
                 }
@@ -785,9 +785,11 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
                     if ($this->__get($fieldName)->compare($_record->$fieldName) === 0) {
                         continue;
                     } else {
-                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' datetime for field ' . $fieldName . ' is not equal: ');
-                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $this->__get($fieldName)->getIso());
-                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $_record->$fieldName->getIso());
+                        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . 
+                            ' datetime for field ' . $fieldName . ' is not equal: '
+                            . $this->__get($fieldName)->getIso() . ' != '
+                            . $_record->$fieldName->getIso()
+                        );
                     } 
                 } elseif (!$_record->$fieldName instanceof Zend_Date
                           && $this->__get($fieldName) == $_record->$fieldName) {
@@ -875,14 +877,30 @@ abstract class Tinebase_Record_Abstract implements Tinebase_Record_Interface
      */
     public function setFromJson($_data)
     {
-        $recordData = Zend_Json::decode($_data);
+        if(is_array($_data)) {
+            $recordData = $_data;
+        } else {
+            $recordData = Zend_Json::decode($_data);
+        }
         
         // sanitize container id if it is an array
         if ($this->has('container_id') && isset($recordData['container_id']) && is_array($recordData['container_id'])) {
             $recordData['container_id'] = $recordData['container_id']['id'];
         }
         
+        $this->_setFromJson($recordData);
+        
         $this->setFromArray($recordData);
+    }
+    
+    /**
+     * can be reimplemented by subclasses to modify values during setFromJson
+     * @param array $_data the json decoded values
+     * @return void
+     */
+    protected function _setFromJson(array &$_data)
+    {
+        
     }
 
     /**

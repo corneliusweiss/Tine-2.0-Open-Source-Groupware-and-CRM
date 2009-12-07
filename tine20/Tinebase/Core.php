@@ -139,41 +139,53 @@ class Tinebase_Core
         $server = NULL;
         
         /**************************** JSON API *****************************/
-
-        if (( (isset($_SERVER['HTTP_X_TINE20_REQUEST_TYPE']) && $_SERVER['HTTP_X_TINE20_REQUEST_TYPE'] == 'JSON')  || 
-              (isset($_POST['requestType']) && $_POST['requestType'] == 'JSON')
-            )) {
+        if ( (isset($_SERVER['HTTP_X_TINE20_REQUEST_TYPE']) && $_SERVER['HTTP_X_TINE20_REQUEST_TYPE'] == 'JSON')  || 
+             (isset($_SERVER['CONTENT_TYPE']) && substr($_SERVER['CONTENT_TYPE'],0,16) == 'application/json')  ||
+             (isset($_POST['requestType']) && $_POST['requestType'] == 'JSON')
+            ) {
             $server = new Tinebase_Server_Json();
 
-        /**************************** SNOM API *****************************/
             
+        /**************************** JSONP API *****************************/
+        } elseif(
+            isset($_GET['jsonp'])
+        ) {
+            $server = new Tinebase_Server_JsonP();
+            
+            
+        /**************************** SNOM API *****************************/
         } elseif(
             isset($_SERVER['HTTP_USER_AGENT']) && 
             preg_match('/^Mozilla\/4\.0 \(compatible; (snom...)\-SIP (\d+\.\d+\.\d+)/i', $_SERVER['HTTP_USER_AGENT'])
         ) {
             $server = new Voipmanager_Server_Snom();
             
+            
         /**************************** ASTERISK API *****************************/
-
         } elseif(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == 'asterisk-libcurl-agent/1.0') {
             $server = new Voipmanager_Server_Asterisk();
             
-        /**************************** ActiveSync API *****************************/
             
-        } elseif($_SERVER['PHP_SELF'] == '/Microsoft-Server-ActiveSync' || 
-                 $_SERVER['SCRIPT_NAME'] == '/Microsoft-Server-ActiveSync' ||
-                 (isset($_SERVER['REDIRECT_ACTIVESYNC']) && $_SERVER['REDIRECT_ACTIVESYNC'] == 'true') || 
-                (isset($_SERVER['SCRIPT_URL']) && $_SERVER['SCRIPT_URL'] == '/Microsoft-Server-ActiveSync') ) {
+        /**************************** ActiveSync API *****************************/
+        } elseif(isset($_SERVER['REDIRECT_ACTIVESYNC']) && $_SERVER['REDIRECT_ACTIVESYNC'] == 'true') {
             $server = new ActiveSync_Server_Http();
+
             
         /**************************** CLI API *****************************/
-        
         } elseif (php_sapi_name() == 'cli') {
             $server = new Tinebase_Server_Cli();
             
+
         /**************************** HTTP API ****************************/
-        
         } else {
+            
+            /**************************** OpenID *****************************/
+            if (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/xrds+xml') !== FALSE) {
+                $_REQUEST['method'] = 'Tinebase.getXRDS';
+            } elseif (isset($_SERVER['REDIRECT_USERINFOPAGE']) && $_SERVER['REDIRECT_USERINFOPAGE'] == 'true') {
+                $_REQUEST['method'] = 'Tinebase.userInfoPage';
+            }
+            
             $server = new Tinebase_Server_Http();
         }        
         
@@ -263,7 +275,7 @@ class Tinebase_Core
             case E_USER_NOTICE:
             default:
                 if (Tinebase_Core::isRegistered(Tinebase_Core::LOGGER)) {
-                    Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " $errstr in {$errfile}::{$errline} ($severity)");
+                    Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . " $errstr in {$errfile}::{$errline} ($severity)");
                 } else {
                     error_log(" $errstr in {$errfile}::{$errline} ($severity)");
                 }
@@ -291,26 +303,39 @@ class Tinebase_Core
     }
     
     /**
-     * setup temp dir registry setting
-     *  - config.inc.php > session_save_path > sys_get_temp_dir > /tmp
+     * setup temp dir registry setting retrieved by {@see _getTempDir()}
      *  
      * @return void
      */
     public static function setupTempDir()
+    {       
+        self::set(self::TMPDIR, self::guessTempDir());
+    }
+    
+    /**
+     * figure out temp directory:
+     * config.inc.php > sys_get_temp_dir > session_save_path > /tmp
+     *  
+     * @return String
+     */
+    public static function guessTempDir()
     {
         $config = self::getConfig();
         
-        $defaultPath = session_save_path();
-        if (empty($defaultPath)) {
-            $defaultPath = sys_get_temp_dir();
+        $tmpdir = $config->get('tmpdir', null);
+        if (empty($tmpdir) || !@is_writable($tmpdir)) {
+            $tmpdir = sys_get_temp_dir();
+            if (empty($tmpdir) || !@is_writable($tmpdir)) {
+                $tmpdir = session_save_path();
+                if (empty($tmpdir) || !@is_writable($tmpdir)) {
+                    $tmpdir = '/tmp';
+                }
+            }
         }
-        if (empty($defaultPath)) {
-            $defaultPath = '/tmp';
-        }
-        $tmpdir = $config->get('tmpdir', $defaultPath);
         
-        self::set(self::TMPDIR, $tmpdir);
+        return $tmpdir;
     }
+    
     
     /**
      * initializes the logger
@@ -346,7 +371,7 @@ class Tinebase_Core
 
         self::set(self::LOGGER, $logger);
 
-        $logger->debug(__METHOD__ . '::' . __LINE__ .' logger initialized');
+        $logger->info(__METHOD__ . '::' . __LINE__ .' logger initialized');
     }
     
     /**
@@ -360,7 +385,7 @@ class Tinebase_Core
         
         // create zend cache
         if ($_enabled === true && $config->caching && $config->caching->active) {
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' cache enabled');
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' cache enabled');
             $frontendOptions = array(
                 'cache_id_prefix' => SQL_TABLE_PREFIX,
                 'lifetime' => ($config->caching->lifetime) ? $config->caching->lifetime : 7200,
@@ -386,7 +411,7 @@ class Tinebase_Core
                 break;
             }
         } else {
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' cache disabled');
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' cache disabled');
             $backendType = 'Test';
             $frontendOptions = array(
                 'caching' => false
@@ -461,9 +486,7 @@ class Tinebase_Core
         ini_set('session.gc_maxlifetime', $maxLifeTime);
         
         // set the session save path
-        $iniPath = session_save_path();
-        $defaultPath = (! empty($iniPath)) ? $iniPath . '/tine20_sessions' : self::getTempDir() . PATH_SEPARATOR . 'tine20_sessions';
-        $sessionSavepath = $config->get('session.save_path', $defaultPath);
+        $sessionSavepath = self::getSessionDir();
         if(ini_set('session.save_path', $sessionSavepath) !== false) { 
             if (!is_dir($sessionSavepath)) { 
                 mkdir($sessionSavepath, 0700); 
@@ -554,7 +577,7 @@ class Tinebase_Core
     {
         $session = self::get(self::SESSION);
         
-        self::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " given localeString '$_localeString'");
+        self::getLogger()->info(__METHOD__ . '::' . __LINE__ . " given localeString '$_localeString'");
         $localeString = NULL;
         if ($_localeString == 'auto') {
             
@@ -749,7 +772,8 @@ class Tinebase_Core
      */
     public static function getUser()
     {
-        return self::get(self::USER);
+        $result = (self::isRegistered(self::USER)) ? self::get(self::USER) : NULL;
+        return $result;
     }
 
     /**
@@ -801,5 +825,41 @@ class Tinebase_Core
     public static function getTempDir()
     {
         return self::get(self::TMPDIR);
+    }
+    
+    /**
+     * get temp dir string (without PATH_SEP at the end)
+     *
+     * @return string
+     */
+    public static function getSessionDir()
+    {
+        $sessionDirName ='tine20_sessions';
+        $config = self::getConfig();
+
+        $sessionDir = $config->get('sessiondir', null);
+        
+        #####################################
+        # LEGACY/COMPATIBILITY: had to rename session.save_path key to sessiondir because otherwise the 
+        # generic save config method would interpret the "_" as array key/value seperator
+        if (empty($sessionDir)) {
+          $sessionDir = $config->get('session.save_path', null);
+          if ($sessionDir) {
+            self::getLogger()->warn(__METHOD__ . '::' . __LINE__ . " config.inc.php key 'session.save_path' should be renamed to 'sessiondir'");
+          }
+        }
+        #####################################
+        
+        
+        if (empty($sessionDir) || !@is_writable($sessionDir)) {
+        
+            $sessionDir = session_save_path();
+            if (empty($sessionDir) || !@is_writable($sessionDir)) {
+                $sessionDir = self::guessTempDir();
+            }
+            
+            $sessionDir .= DIRECTORY_SEPARATOR . $sessionDirName;
+        }
+        return $sessionDir;        
     }
 }

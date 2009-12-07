@@ -196,32 +196,23 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
      * @param  string $_model     model of record
      * @param  string $_id        id of record
      * @param  string $_backend   backend of record
+     * @param  boolean $_onlyNonSystemNotes get only non-system notes per default
      * @return Tinebase_Record_RecordSet of Tinebase_Model_Note
-     * 
-     * @todo remove caching?
      */
-    public function getNotesOfRecord($_model, $_id, $_backend = 'Sql')
+    public function getNotesOfRecord($_model, $_id, $_backend = 'Sql', $_onlyNonSystemNotes = TRUE)
     {
         $backend = ucfirst(strtolower($_backend));
 
-        $cache = Tinebase_Core::get('cache');
-        $cacheId = 'getNotesOfRecord' . $_model . $_id . $backend;
-        $result = $cache->load($cacheId);
+        $filter = $this->_getNotesFilter($_id, $_model, $backend, $_onlyNonSystemNotes);
         
-        if (!$result) {
-            $filter = $this->_getNotesFilter($_id, $_model, $backend);
-            
-            $pagination = new Tinebase_Model_Pagination(array(
-                'limit' => Tinebase_Notes::NUMBER_RECORD_NOTES,
-                'sort'  => 'creation_time',
-                'dir'   => 'DESC'
-            ));
-            
-            $result = $this->searchNotes($filter, $pagination);
-            
-            $cache->save($result, $cacheId, array('notes'));
-        }        
+        $pagination = new Tinebase_Model_Pagination(array(
+            'limit' => Tinebase_Notes::NUMBER_RECORD_NOTES,
+            'sort'  => 'creation_time',
+            'dir'   => 'DESC'
+        ));
         
+        $result = $this->searchNotes($filter, $pagination);
+            
         return $result;          
     }
     
@@ -233,21 +224,21 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
      * @param  string                     $_backend   backend of record
      * @return void
      */
-    public function getMultipleNotesOfRecords($_records, $_notesProperty = 'notes', $_backend = 'Sql')
+    public function getMultipleNotesOfRecords($_records, $_notesProperty = 'notes', $_backend = 'Sql', $_onlyNonSystemNotes = TRUE)
     {
         if (count($_records) == 0) {
             return;
         }
         
         $modelName = $_records->getRecordClassName();
-        $filter = $this->_getNotesFilter($_records->getArrayOfIds(), $modelName, $_backend);
+        $filter = $this->_getNotesFilter($_records->getArrayOfIds(), $modelName, $_backend, $_onlyNonSystemNotes);
         
         // search and add index
         $notesOfRecords = $this->searchNotes($filter);
         $notesOfRecords->addIndices(array('record_id'));
         
         // add notes to records
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Getting ' . count($notesOfRecords) . ' notes for ' . count($_records) . ' records.');
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Getting ' . count($notesOfRecords) . ' notes for ' . count($_records) . ' records.');
         foreach($_records as $record) {
             //$record->notes = Tinebase_Notes::getInstance()->getNotesOfRecord($modelName, $record->getId(), $_backend);
             $record->{$_notesProperty} = $notesOfRecords->filter('record_id', $record->getId());
@@ -270,9 +261,11 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
         $model = get_class($_record);
         $backend = ucfirst(strtolower($_backend));        
         
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_record->toArray(), TRUE));
+        
         $currentNotesIds = $this->getNotesOfRecord($model, $_record->getId(), $backend)->getArrayOfIds();
         $notes = $_record->$_notesProperty;
-                
+        
         if ($notes instanceOf Tinebase_Record_RecordSet) {
             $notesToSet = $notes;
         } else {
@@ -314,7 +307,8 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
         // delete detached/deleted notes
         $this->deleteNotes($toDetach);
         
-        // add new notes        
+        // add new notes
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Adding ' . count($notesToSet) . ' note(s) to record.');         
         foreach ($notesToSet as $note) {
             //if (in_array($note->getId(), $toAttach)) {
             if (!$note->getId()) {
@@ -324,9 +318,6 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
                 $this->addNote($note);
             }
         }
-        
-        // invalidate cache
-        Tinebase_Core::get('cache')->remove('getNotesOfRecord' . $model . $_record->getId() . $backend);
     }
     
     /**
@@ -344,6 +335,8 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
         Tinebase_Timemachine_ModificationLog::getInstance()->setRecordMetaData($_note, 'create');
         
         $data = $_note->toArray(FALSE, FALSE);
+        
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($data, TRUE));
 
         $this->_notesTable->insert($data);        
     }
@@ -372,7 +365,7 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
         if ($_mods !== NULL && count($_mods) > 0) {
             
             //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' mods to log: ' . $_mods);
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' Adding "' . $_type . '" system note note to record.');
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ .' Adding "' . $_type . '" system note note to record.');
             
             $noteText .= ' | ' .$translate->_('Changed fields:');
             foreach ($_mods as $mod) {
@@ -380,7 +373,7 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
             }
         } else if ($_type === Tinebase_Model_Note::SYSTEM_NOTE_NAME_CHANGED) {
             // nothing changed -> don't add note
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' Nothing changed -> don\'t add "changed" note.');
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ .' Nothing changed -> don\'t add "changed" note.');
             return FALSE;
         }
         
@@ -422,9 +415,6 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
         $notes = $this->getNotesOfRecord($_model, $_id, $backend);
         
         $this->deleteNotes($notes->getArrayOfIds());
-        
-        // invalidate cache
-        Tinebase_Core::get('cache')->remove('getNotesOfRecord' . $_model . $_id . $backend);
     }
     
     /**
@@ -436,7 +426,7 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
      * @param boolean|optional $onlyNonSystemNotes
      * @return Tinebase_Model_NoteFilter
      */
-    protected function _getNotesFilter($_id, $_model, $_backend, $onlyNonSystemNotes = TRUE)
+    protected function _getNotesFilter($_id, $_model, $_backend, $_onlyNonSystemNotes = TRUE)
     {
         $backend = ucfirst(strtolower($_backend));
         
@@ -459,7 +449,7 @@ class Tinebase_Notes implements Tinebase_Backend_Sql_Interface
             array(
                 'field' => 'note_type_id',
                 'operator' => 'in',
-                'value' => $this->getNoteTypes($onlyNonSystemNotes)->getArrayOfIds()
+                'value' => $this->getNoteTypes($_onlyNonSystemNotes)->getArrayOfIds()
             )
         ));
         

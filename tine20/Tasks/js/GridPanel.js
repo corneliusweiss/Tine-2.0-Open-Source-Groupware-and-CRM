@@ -63,6 +63,7 @@ Tine.Tasks.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         this.gridConfig.cm = this.getColumnModel();
         this.initFilterToolbar();
         
+        this.plugins = this.plugins || [];
         this.plugins.push(this.action_showClosedToggle, this.filterToolbar);
         
         Tine.Tasks.GridPanel.superclass.initComponent.call(this);
@@ -86,14 +87,17 @@ Tine.Tasks.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
-                {label: this.app.i18n.n_('Task', 'Tasks', 1),    field: 'query',    operators: ['contains']},
+                {label: _('Quick search'),    field: 'query',    operators: ['contains']},
                 {label: this.app.i18n._('Summary'), field: 'summary' },
                 {label: this.app.i18n._('Due Date'), field: 'due', valueType: 'date', operators: ['within', 'before', 'after']},
                 {label: this.app.i18n._('Responsible'), field: 'organizer', valueType: 'user'},
                 new Tine.widgets.tags.TagFilter({app: this.app})
-             ],
-             defaultFilter: 'query',
-             filters: []
+            ],
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+            ]
         });
     },
     
@@ -234,7 +238,7 @@ Tine.Tasks.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
             quickaddField: new Tine.Addressbook.SearchCombo({
                 // at the moment we support accounts only
                 internalContactsOnly: true,
-
+                nameField: 'n_fileas',
                 blurOnSelect: true,
                 selectOnFocus: true,
                 getValue: function() {

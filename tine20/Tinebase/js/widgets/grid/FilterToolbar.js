@@ -40,6 +40,12 @@ Tine.widgets.grid.FilterToolbar = function(config) {
     
 };
 
+/**
+ * Filter registry
+ * @type Object
+ */
+Tine.widgets.grid.FilterToolbar.FILTERS = {};
+
 Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
     
     /**
@@ -60,6 +66,8 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
     border: false,
     monitorResize: true,
     region: 'north',
+    layout: 'fit',
+    //split: true,
     
     record: Ext.data.Record.create([
         {name: 'field'},
@@ -89,9 +97,9 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
                     '<td class="tw-ftb-frow-pbutton"></td>',
                     '<td class="tw-ftb-frow-mbutton"></td>',
                     '<td class="tw-ftb-frow-prefix">{prefix}</td>',
-                    '<td class="tw-ftb-frow-field">{field}</td>',
+                    '<td class="tw-ftb-frow-field" width="240px">{field}</td>',
                     '<td class="tw-ftb-frow-operator" width="90px" >{operator}</td>',
-                    '<td class="tw-ftb-frow-value">{value}</td>',
+                    '<td class="tw-ftb-frow-value" width="200px">{value}</td>',
                     '<td class="tw-ftb-frow-searchbutton"></td>',
                     //'<td class="tw-ftb-frow-deleteallfilters"></td>',
                     //'<td class="tw-ftb-frow-savefilterbutton"></td>',
@@ -329,21 +337,40 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
      * @private
      */
     onFieldChange: function(filter, newField) {
-        filter.set('field', newField);
-        filter.set('operator', '');
-        filter.set('value', '');
+        var oldOperator = filter.formFields.operator.getValue();
+        var oldValue    = filter.formFields.value.getValue();
+        
+        // only use old operator/value for textfields
+        var f = filter.formFields.value;
+        if (typeof f.selectText != 'function' || typeof f.doQuery == 'function') {
+            oldValue = '';
+        }
         
         filter.formFields.operator.destroy();
         filter.formFields.value.destroy();
         
-        var filterModel = this.getFilterModel(filter.get('field'));
+        var filterModel = this.getFilterModel(newField);
         var fRow = this.el.child('tr[id='+ this.frowIdPrefix + filter.id + ']');
         
         var opEl = fRow.child('td[class=tw-ftb-frow-operator]');
         var valEl = fRow.child('td[class=tw-ftb-frow-value]');
         
+        filter.set('field', newField);
+        filter.set('operator', '');
+        filter.set('value', '');
+        
         filter.formFields.operator = filterModel.operatorRenderer(filter, opEl);
         filter.formFields.value = filterModel.valueRenderer(filter, valEl);
+        
+        // only use old operator/value for textfields
+        var f = filter.formFields.value;
+        if (oldValue && typeof f.selectText == 'function' && typeof f.doQuery != 'function') {
+            if (typeof filter.formFields.operator.setValue == 'function') {
+                filter.formFields.operator.setValue(oldOperator);
+            }
+            filter.formFields.value.setValue(oldValue);
+            filter.formFields.value.selectText.defer(50, filter.formFields.value);
+        }
     },
     
     /**
@@ -366,23 +393,41 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
 
         // init filter models
         this.filterModelMap = {};
+        var filtersFields = [];
+        
         for (var i=0; i<this.filterModels.length; i++) {
-            var fm = this.filterModels[i];
-            if (! fm.isFilterModel) {
-                var modelConfig = fm;
-                fm = new Tine.widgets.grid.FilterModel(modelConfig);
-            }
-            // store reference in internal map
-            this.filterModelMap[fm.field] = fm;
+            var config = this.filterModels[i];
+            var fm = this.createFilterModel(config);
             
-            // register trigger events
+            if (fm.isForeignFilter) {
+                fm.field = fm.ownField + ':' + fm.foreignField;
+            }
+            
+            this.filterModelMap[fm.field] = fm;
+            filtersFields.push(fm);
+            
             fm.on('filtertrigger', this.onFiltertrigger, this);
+            
+            // handle subfilters "inline" at the moment
+            if (typeof fm.getSubFilters == 'function') {
+                var subfilters = fm.getSubFilters();
+                Ext.each(subfilters, function(sfm) {
+                    sfm.isSubfilter = true;
+                    
+                    sfm.field = fm.ownField + ':' + sfm.field;
+                    sfm.label = fm.label + ' - ' + sfm.label;
+                    
+                    this.filterModelMap[sfm.field] = sfm;
+                    filtersFields.push(sfm);
+                    sfm.on('filtertrigger', this.onFiltertrigger, this);
+                }, this);
+            }
         }
         
         // init filter selection
         this.fieldStore = new Ext.data.JsonStore({
             fields: ['field', 'label'],
-            data: this.filterModels
+            data: filtersFields
         });
     },
     
@@ -392,12 +437,22 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
      */
     onFilterRowsChange: function() {
         this.arrangeButtons();
+        
         if (! this.supressEvents) {
-            var size = this.tableEl.getSize();
-            
-            //this.setSize(size.width, size.height);
-            //this.syncSize();
-            this.fireEvent('bodyresize', this, size.width, size.height);
+            this.ownerCt.layout.layout();
+        }
+    },
+    
+    createFilterModel: function(config) {
+        if (config.isFilterModel) {
+            return config;
+        }
+        
+        if (config.filtertype) {
+            // filter from reg
+            return new Tine.widgets.grid.FilterToolbar.FILTERS[config.filtertype](config);
+        } else {
+            return new Tine.widgets.grid.FilterModel(config);
         }
     },
     
@@ -421,6 +476,9 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
             });
         }
         this.filterStore.add(filter);
+        
+        // NOTE: adding filter rows and contents in hidden state leads to layouting problems
+        this.show();
         
         var fRow = this.templates.filterrow.insertAfter(this.el.child('tr[class=fw-ftb-frow]:last'),{
             id: 'tw-ftb-frowid-' + filter.id
@@ -449,6 +507,9 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
         //var isLast = this.filterStore.getAt(this.filterStore.getCount()-1).id == filter.id;
         var isLast = this.filterStore.getCount() == 1;
         this.filterStore.remove(this.filterStore.getById(filter.id));
+        filter.formFields.field.destroy();
+        filter.formFields.operator.destroy();
+        filter.formFields.value.destroy();        
         
         if (isLast) {
             // add a new first row
@@ -483,26 +544,34 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
         this.onFilterRowsChange();
     },
     
-    /**
-     * @todo generalise TA quick hack ;-)
-     */
     getValue: function() {
         var filters = [];
-        var ta_filters = [];
+        var foreignFilters = {};
         this.filterStore.each(function(filter) {
             var line = {};
-            for (formfield in filter.formFields) {
+            for (var formfield in filter.formFields) {
                 line[formfield] = filter.formFields[formfield].getValue();
             }
-            if (line.field.match(/^timeaccount_/)) {
-                line.field = line.field.replace(/^timeaccount_/, '');
-                ta_filters.push(line);
+            
+            if (line.field && line.field.match(/:/)) {
+                // subfilter handling
+                var parts = line.field.split(':');
+                var ownField = parts[0];
+                var foreignField = parts[1];
+                
+                line.field = foreignField;
+                foreignFilters[ownField] = foreignFilters[ownField] || [];
+                foreignFilters[ownField].push(line);
+                
             } else {
                 filters.push(line);
             }
         }, this);
-        if (ta_filters.length > 0) {
-            filters.push({field: 'timeaccount_id', operator: 'AND', value: ta_filters});
+        
+        for (var ownField in foreignFilters) {
+            if (foreignFilters.hasOwnProperty(ownField)) {
+                filters.push({field: ownField, operator: 'AND', value: foreignFilters[ownField]});
+            }
         }
         return filters;
     },
@@ -515,23 +584,18 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
         
         var filterData, filter, existingFilterPos, existingFilter;
         
-        /**** foreign timeaccount_id hack ****/
+        // subfilter handling
         for (var i=0; i<filters.length; i++) {
             filterData = filters[i];
             
-            if (filterData.field.match(/^timeaccount_/)) {
-                filters.remove(filters[i]);
-                
-                var taFilters = filterData.value;
-                for (var j=taFilters.length -1; j>=0; j--) {
-                    taFilters[j].field = 'timeaccount_' + taFilters[j].field;
-                    filters.splice(i, 0, taFilters[j]);
+            if (filterData.operator == 'AND' || filterData.operator == 'OR') {
+                var subFilters = filterData.value;
+                for (var j=subFilters.length -1; j>=0; j--) {
+                    subFilters[j].field = filterData.field + ':' + subFilters[j].field;
+                    filters.splice(i+1, 0, subFilters[j]);
                 }
-
-                break;
             }
         }
-        /**** end of foreign timeaccount_id hack ****/
         
         for (var i=0; i<filters.length; i++) {
             filterData = filters[i];
@@ -629,7 +693,7 @@ Ext.extend(Tine.widgets.grid.FilterToolbar, Ext.Panel, {
     
     storeOnBeforeload: function(store, options) {
         this.allFilterData = options.params.filter;
-        this.store.fireEvent('loadexception');
+        this.store.fireEvent('exception');
         return false;
     }
     

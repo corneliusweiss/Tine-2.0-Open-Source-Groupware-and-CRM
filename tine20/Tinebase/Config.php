@@ -58,7 +58,7 @@ class Tinebase_Config
     public static function getInstance() 
     {
         if (self::$_instance === NULL) {
-            self::$_instance = new Tinebase_Config;
+            self::$_instance = new Tinebase_Config();
         }
         
         return self::$_instance;
@@ -102,6 +102,7 @@ class Tinebase_Config
             
             // check config.inc.php and get value from there
             if ($_fromFile && isset(Tinebase_Core::getConfig()->{$_name})) {
+                Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Config setting for ' . $_name . ' not found, getting value from config.inc.php.');
                 $value = (is_object(Tinebase_Core::getConfig()->{$_name}))
                     ? Tinebase_Core::getConfig()->{$_name}->toArray() 
                     : Tinebase_Core::getConfig()->{$_name};
@@ -109,6 +110,7 @@ class Tinebase_Config
                 if ($_default === NULL) {
                     throw new Tinebase_Exception_NotFound("Application config setting with name $_name not found and no default value given!");
                 } else {
+                    Setup_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Config setting for ' . $_name . ' not found, using default.');
                     $value = $_default;
                 }
             }
@@ -226,4 +228,41 @@ class Tinebase_Config
     {
         $this->_backend->delete($_config->getId());
     }
+    
+    /**
+     * Delete config for application (simplified deleteConfig())
+     *
+     * @param string $_name
+     * @param string $_applicationName [optional]
+     * @return Tinebase_Model_Config
+     */
+    public function deleteConfigForApplication($_name, $_applicationName = 'Tinebase')
+    {
+        try {
+            $configRecord = $this->getConfig($_name, Tinebase_Application::getInstance()->getApplicationByName($_applicationName)->getId());
+            return $this->deleteConfig($configRecord);
+        } catch (Tinebase_Exception_NotFound $e) {
+            //no config found => nothing to delete
+        }
+    }
+    
+    /**
+     * get option setting string
+     * 
+     * @param Tinebase_Record_Interface $_record
+     * @param string $_id
+     * @param string $_label
+     * @return string
+     */
+    public static function getOptionString($_record, $_label)
+    {
+        $controller = Tinebase_Core::getApplicationInstance($_record->getApplication());
+        $settings = $controller->getSettings();
+        $idField = $_label . '_id';
+        
+        $option = $settings->getOptionById($_record->{$idField}, $_label . 's');
+        
+        $result = (isset($option[$_label])) ? $option[$_label] : '';
+        return $result;
+    }    
 }

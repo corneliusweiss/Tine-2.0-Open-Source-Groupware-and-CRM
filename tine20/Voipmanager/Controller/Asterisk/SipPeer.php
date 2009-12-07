@@ -20,14 +20,22 @@
 class Voipmanager_Controller_Asterisk_SipPeer extends Voipmanager_Controller_Abstract
 {
     /**
+     * holds the instance of the singleton
+     *
+     * @var Voipmanager_Controller_Asterisk_SipPeer
+     */
+    private static $_instance = NULL;
+    
+    /**
      * the constructor
      *
      * don't use the constructor. use the singleton 
      */
-    private function __construct() {
-        $this->_modelName = 'Voipmanager_Model_Asterisk_SipPeer';
-        $this->_backend      = new Voipmanager_Backend_Asterisk_SipPeer($this->getDatabaseBackend());
-        $this->_cache        = Zend_Registry::get('cache');        
+    private function __construct() 
+    {
+        $this->_modelName   = 'Voipmanager_Model_Asterisk_SipPeer';
+        $this->_backend     = new Voipmanager_Backend_Asterisk_SipPeer();
+        $this->_cache       = Zend_Registry::get('cache');        
     }
         
     /**
@@ -38,13 +46,6 @@ class Voipmanager_Controller_Asterisk_SipPeer extends Voipmanager_Controller_Abs
     {        
     }
             
-    /**
-     * holds the instance of the singleton
-     *
-     * @var Voipmanager_Controller_Asterisk_SipPeer
-     */
-    private static $_instance = NULL;
-    
     /**
      * the singleton pattern
      *
@@ -78,10 +79,103 @@ class Voipmanager_Controller_Asterisk_SipPeer extends Voipmanager_Controller_Abs
         return $result;    
     }
     
+    /**
+     * (non-PHPdoc)
+     * @see Tinebase/Controller/Record/Tinebase_Controller_Record_Abstract#create($_record)
+     */
+    public function create(Tinebase_Record_Interface $_record)
+    {
+        $this->_cache->clean('all', array('asteriskSipPeer'));
+        
+        $result =  parent::create($_record);
+        
+        /*if(isset(Tinebase_Core::getConfig()->asterisk)) {
+            $this->publishConfiguration();
+        }*/
+        
+        return $result;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Tinebase/Controller/Record/Tinebase_Controller_Record_Abstract#delete($_ids)
+     */
+    public function delete($_ids)
+    {
+        $this->_cache->clean('all', array('asteriskSipPeer'));
+        
+        $result = parent::delete($_ids);
+        
+        /*if(isset(Tinebase_Core::getConfig()->asterisk)) {
+            $this->publishConfiguration();
+        }*/
+        
+        return $result;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Tinebase/Controller/Record/Tinebase_Controller_Record_Abstract#update($_record)
+     */
     public function update(Tinebase_Record_Interface $_record)
     {
         $this->_cache->clean('all', array('asteriskSipPeer'));
-        return parent::update($_record);
+        
+        $result =  parent::update($_record);
+        
+        /*if(isset(Tinebase_Core::getConfig()->asterisk)) {
+            $this->publishConfiguration();
+        }*/
+        
+        return $result;
     }
     
+    /**
+     * create sip.conf and upload to asterisk server
+     * 
+     * @return void
+     */
+    
+    /*
+     
+    currently unused
+    
+    public static function publishConfiguration()
+    {   
+        if(isset(Tinebase_Core::getConfig()->asterisk)) {
+            $asteriskConfig = Tinebase_Core::getConfig()->asterisk;
+            
+            $url        = $asteriskConfig->managerbaseurl;
+            $username   = $asteriskConfig->managerusername;
+            $password   = $asteriskConfig->managerpassword;
+        } else {
+            throw new Voipmanager_Exception_NotFound('No settings found for asterisk backend in config file!');
+        }
+        
+        $filter = new Voipmanager_Model_Asterisk_SipPeerFilter(array());
+        
+        $sipPeers = $controller = Voipmanager_Controller_Asterisk_SipPeer::getInstance()->search($filter);     
+        
+        $fieldsToSkip = array('id', 'name');
+        
+        $fp = fopen("php://temp", 'r+');
+        foreach($sipPeers as $sipPeer) {
+            fputs($fp, "[" . $sipPeer->name . "]\n");
+            foreach($sipPeer as $key => $value) {
+                if(empty($value) || in_array($key, $fieldsToSkip)) {
+                    continue;
+                }
+                fputs($fp, " $key = $value\n");
+            }
+            fputs($fp, "\n");
+        }
+        rewind($fp);
+        
+        $ajam = new Ajam_Connection($url);
+        $ajam->login($username, $password);
+        $ajam->upload($url . '/tine20config', 'sip.conf', stream_get_contents($fp));
+        $ajam->command('sip reload');
+        $ajam->logout();
+    }
+     */
 }

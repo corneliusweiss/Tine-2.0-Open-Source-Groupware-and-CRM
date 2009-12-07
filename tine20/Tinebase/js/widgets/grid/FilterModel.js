@@ -3,9 +3,10 @@
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
+ * TODO         add year to 'inweek' filter?
  */
 
 Ext.namespace('Tine.widgets', 'Tine.widgets.grid');
@@ -42,12 +43,12 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
     field: '',
     
     /**
-     * @cfg {string} type of value
+     * @cfg {String} type of value
      */
     valueType: 'string',
     
     /**
-     * @cfg {string} default value
+     * @cfg {String} default value
      */
     defaultValue: null,
     
@@ -60,6 +61,21 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
      * @cfg {String} name of the default operator
      */
     defaultOperator: null,
+
+    /**
+     * @cfg {Ext.data.Store|Array} (used by combo valueType)
+     */
+    store: null,
+    
+    /**
+     * @cfg {String} displayField (used by combo valueType)
+     */
+    displayField: null,
+    
+    /**
+     * @cfg {String} valueField (used by combo valueType)
+     */
+    valueField: null,
     
     /**
      * @private
@@ -85,6 +101,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 case 'bool':
                 case 'number':
                 case 'percentage':
+                case 'combo':
                     this.defaultOperator = 'equals';
                     break;
                 case 'string':
@@ -135,8 +152,10 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                 {operator: 'before',     label: _('is before')},
                 {operator: 'after',      label: _('is after')},
                 {operator: 'within',     label: _('is within')},
+                {operator: 'inweek',     label: _('is in week no.')},
                 {operator: 'startswith', label: _('starts with')},
-                {operator: 'endswith',   label: _('ends with')}
+                {operator: 'endswith',   label: _('ends with')},
+                {operator: 'oneof',      label: _('one of')}
             ]
         });
 
@@ -144,10 +163,10 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
         if (this.operators.length == 0) {
             switch (this.valueType) {
                 case 'string':
-                    this.operators.push('contains', 'equals', 'startswith', 'endswith', 'not');
+                    this.operators.push('contains', 'equals', 'startswith', 'endswith', 'not', 'oneof');
                     break;
                 case 'date':
-                    this.operators.push('equals', 'before', 'after', 'within');
+                    this.operators.push('equals', 'before', 'after', 'within', 'inweek');
                     break;
                 case 'number':
                 case 'percentage':
@@ -215,16 +234,24 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
         
         // for date filters we need to rerender the value section
         if (this.valueType == 'date') {
-            var valueType = newOperator == 'within' ? 'withinCombo' : 'datePicker';
-            
-            if (valueType == 'withinCombo') {
-                filter.datePicker.hide();
-                filter.withinCombo.show();
-                filter.formFields.value = filter.withinCombo;
-            } else {
-                filter.withinCombo.hide();
-                filter.datePicker.show();
-                filter.formFields.value = filter.datePicker;
+            switch (newOperator) {
+                case 'within':
+                    filter.numberfield.hide();
+                    filter.datePicker.hide();
+                    filter.withinCombo.show();
+                    filter.formFields.value = filter.withinCombo;                
+                    break;
+                case 'inweek':
+                    filter.withinCombo.hide();
+                    filter.datePicker.hide();
+                    filter.numberfield.show();
+                    filter.formFields.value = filter.numberfield;                
+                    break;
+                default:
+                    filter.withinCombo.hide();
+                    filter.numberfield.hide();
+                    filter.datePicker.show();
+                    filter.formFields.value = filter.datePicker;                
             }
         }
         //console.log('operator change');
@@ -238,6 +265,7 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
      */
     valueRenderer: function(filter, el) {
         var value;
+        var fieldWidth = 200;
         
         switch (this.valueType) {
             case 'date':
@@ -246,25 +274,40 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
             case 'percentage':
                 value = new Ext.ux.PercentCombo({
                     filter: filter,
-                    width: 200,
+                    width: fieldWidth,
                     id: 'tw-ftb-frow-valuefield-' + filter.id,
                     value: filter.data.value ? filter.data.value : this.defaultValue,
                     renderTo: el
                 });
                 break;
             case 'user':
-                value = new Tine.widgets.AccountpickerField({
-                    filter: filter,
-                    width: 200,
+                value = new Tine.Addressbook.SearchCombo({
+                    width: fieldWidth,
+                    listWidth: 350,
                     id: 'tw-ftb-frow-valuefield-' + filter.id,
                     value: filter.data.value ? filter.data.value : this.defaultValue,
-                    renderTo: el
+                    emptyText: _('Search Account ...'),
+                    internalContactsOnly: true,
+                    name: 'organizer',
+                    nameField: 'n_fileas',
+                    useAccountRecord: true,
+                    filter: filter,
+                    renderTo: el,
+                    listeners: {
+                        'specialkey': function(field, e) {
+                             if(e.getKey() == e.ENTER){
+                                 this.onFiltertrigger();
+                             }
+                        },
+                        'select': this.onFiltertrigger,
+                        scope: this
+                    }
                 });
                 break;
             case 'bool':
                 value = new Ext.form.ComboBox({
                     filter: filter,
-                    width: 200,
+                    width: fieldWidth,
                     id: 'tw-ftb-frow-valuefield-' + filter.id,
                     value: filter.data.value ? filter.data.value : this.defaultValue,
                     renderTo: el,
@@ -277,18 +320,39 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                     ]
                 });
                 break;
+            case 'combo':
+                var comboConfig = {
+                    filter: filter,
+                    width: fieldWidth,
+                    id: 'tw-ftb-frow-valuefield-' + filter.id,
+                    value: filter.data.value ? filter.data.value : this.defaultValue,
+                    renderTo: el,
+                    mode: 'local',
+                    forceSelection: true,
+                    triggerAction: 'all',
+                    store: this.store,
+                    listeners: {
+                        'specialkey': function(field, e) {
+                             if(e.getKey() == e.ENTER){
+                                 this.onFiltertrigger();
+                             }
+                        },
+                        'select': this.onFiltertrigger,
+                        scope: this
+                    }
+                };
+                if (this.displayField !== null && this.valueField !== null) {
+                    comboConfig.displayField = this.displayField;
+                    comboConfig.valueField = this.valueField;
+                }
+                value = new Ext.form.ComboBox(comboConfig);
+                break;
             case 'string':
             case 'number':
             default:
-                // @todo: we need a Ext.ux.form.ClearableTextField
-                //        which in contrast to a TriggerField displays
-                //        the trigger in the area of the field and not with
-                //        extra space right of it!
-                value = new Ext.form.TextField({
-                    //hideTrigger: true,
-                    //triggerClass: 'x-form-clear-trigger',
+                value = new Ext.ux.form.ClearableTextField({
                     filter: filter,
-                    width: 200,
+                    width: fieldWidth,
                     id: 'tw-ftb-frow-valuefield-' + filter.id,
                     value: filter.data.value ? filter.data.value : this.defaultValue,
                     renderTo: el,
@@ -296,27 +360,11 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
                         scope: this,
                         specialkey: function(field, e){
                             if(e.getKey() == e.ENTER){
-                                //field.trigger.setVisible(field.getValue().length > 0);
                                 this.onFiltertrigger();
                             }
-                        }/*,
-                        change: function() {
-                            //console.log('change');
-                        }*/
-                    }/*,
-                    onTriggerClick: function() {
-                        value.setValue(null);
-                        //value.trigger.hide();
-                        this.fireEvent('change');
-                    }*/
+                        }
+                    }
                 });
-                /*
-                value.on('specialkey', function(field, e){
-                     if(e.getKey() == e.ENTER){
-                         this.onFiltertrigger();
-                     }
-                }, this);
-                */
                 break;
         }
         
@@ -339,7 +387,16 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
      */
     dateValueRenderer: function(filter, el) {
         var operator = filter.get('operator') ? filter.get('operator') : this.defaultOperator;
-        var valueType = operator == 'within' ? 'withinCombo' : 'datePicker';
+        
+        var valueType = 'datePicker';
+        switch (operator) {
+            case 'within':
+                valueType = 'withinCombo';
+                break;
+            case 'inweek':
+                valueType = 'numberfield';
+                break;
+        }
         
         var pastOps = [
             ['dayThis',         _('today')], 
@@ -400,6 +457,19 @@ Ext.extend(Tine.widgets.grid.FilterModel, Ext.Component, {
             width: 200,
             value: pickerValue,
             renderTo: el
+        });
+        
+        filter.numberfield = new Ext.form.NumberField({
+            hidden: valueType != 'numberfield',
+            filter: filter,
+            width: 200,
+            value: pickerValue,
+            renderTo: el,
+            minValue: 1,
+            maxValue: 52,
+            maxLength: 2,   
+            allowDecimals: false,
+            allowNegative: false
         });
         
         // upps, how to get a var i only know the name of???

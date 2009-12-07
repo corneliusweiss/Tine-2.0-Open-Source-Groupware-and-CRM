@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tasks\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-08-06 10:22+0100\n"
-"Last-Translator: Cornelius Weiss <c.weiss@metaways.de>\n"
+"PO-Revision-Date: 2009-11-26 15:44+0100\n"
+"Last-Translator: Philipp Schuele <p.schuele@metaways.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,48 +21,54 @@ msgstr "Gemeinsame Aufgabenlisten verwalten"
 msgid "Create new shared tasks lists"
 msgstr "Neue gemeinse Aufgabenliste anlegen"
 
-#: Controller/Task.php:153
+#: Controller/Task.php:158
 msgid "Notification for Task "
-msgstr ""
+msgstr "Benachrichtigung für Aufgabe"
 
 #: Controller.php:97
 #, python-format
 msgid "%s's personal tasks"
 msgstr "%ss persönliche Aufgaben"
 
-#: js/EditDialog.js:153 js/GridPanel.js:90 js/GridPanel.js:155
+#: js/EditDialog.js:169
+#: js/GridPanel.js:91
+#: js/GridPanel.js:167
 msgid "Summary"
 msgstr "Beschreibung"
 
-#: js/EditDialog.js:158
+#: js/EditDialog.js:174
 msgid "Due date"
 msgstr "Fälligkeitsdatum"
 
-#: js/EditDialog.js:161 js/GridPanel.js:176 Model/Task.php:180
+#: js/EditDialog.js:177
+#: js/GridPanel.js:186
+#: Model/Task.php:181
 msgid "Priority"
 msgstr "Priorität"
 
-#: js/EditDialog.js:164 js/GridPanel.js:92 js/GridPanel.js:228
-msgid "Responsible"
-msgstr "Verantwortlich"
+#: js/EditDialog.js:180
+msgid "Add Responsible ..."
+msgstr "Verantwortlichen hinzufügen ..."
 
-#: js/EditDialog.js:168
+#: js/EditDialog.js:187
 msgid "Notes"
 msgstr "Anmerkungen"
 
-#: js/EditDialog.js:169
+#: js/EditDialog.js:188
 msgid "Enter description..."
 msgstr "Beschreibung eingeben..."
 
-#: js/EditDialog.js:174
+#: js/EditDialog.js:193
 msgid "Percentage"
 msgstr "Prozent"
 
-#: js/EditDialog.js:178 js/GridPanel.js:205 Model/Task.php:181
+#: js/EditDialog.js:197
+#: js/GridPanel.js:213
+#: Model/Task.php:182
 msgid "Status"
 msgstr "Status"
 
-#: js/EditDialog.js:182
+#: js/EditDialog.js:201
 msgid "Completed"
 msgstr "Abgeschlossen"
 
@@ -72,70 +78,85 @@ msgid_plural "Do you really want to delete the selected tasks?"
 msgstr[0] "Wollen Sie die ausgewählte Aufgabe wirklich löschen?"
 msgstr[1] "Wollen Sie die ausgewählten Aufgaben wirklich löschen?"
 
-#: js/GridPanel.js:91 js/GridPanel.js:167
+#: js/GridPanel.js:90
+msgid "Quick search"
+msgstr "Schnellsuche"
+
+#: js/GridPanel.js:92
+#: js/GridPanel.js:178
 msgid "Due Date"
 msgstr "Fällig am"
 
-#: js/GridPanel.js:113
+#: js/GridPanel.js:93
+#: js/GridPanel.js:234
+msgid "Responsible"
+msgstr "Verantwortlich"
+
+#: js/GridPanel.js:117
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: js/GridPanel.js:113
+#: js/GridPanel.js:117
 msgid "Could not save task."
 msgstr "Konnte Aufgabe nicht speichern."
 
-#: js/GridPanel.js:163
+#: js/GridPanel.js:164
+msgid "Tags"
+msgstr "Tags"
+
+#: js/GridPanel.js:174
 msgid "Add a task..."
 msgstr "Aufgabe hinzufügen..."
 
-#: js/GridPanel.js:191 Model/Task.php:182
+#: js/GridPanel.js:200
+#: Model/Task.php:183
 msgid "Percent"
 msgstr "Prozent"
 
-#: js/GridPanel.js:220
+#: js/GridPanel.js:227
 msgid "Creation Time"
 msgstr "Angelegt am"
 
-#: js/GridPanel.js:254
+#: js/GridPanel.js:260
 msgid "Show closed"
 msgstr "Geschlossene Aufgaben anzeigen"
 
-#: js/Status.js:45 Setup/setup.xml:449
+#: js/Status.js:45
+#: Setup/setup.xml:449
 msgid "IN-PROCESS"
 msgstr "IN BEARBEITUNG"
 
-#: js/Tasks.js:85
+#: js/Tasks.js:87
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "Aufgabe"
 msgstr[1] "Aufgaben"
 
-#: js/Tasks.js:85
+#: js/Tasks.js:87
 msgid "Tasks"
 msgstr "Aufgaben"
 
-#: js/Tasks.js:89
+#: js/Tasks.js:91
 msgid "to do list"
 msgid_plural "to do lists"
 msgstr[0] "Aufgabenliste"
 msgstr[1] "Aufgabenlisten"
 
-#: js/Tasks.js:89
+#: js/Tasks.js:91
 msgid "to do lists"
 msgstr "Aufgabenlisten"
 
-#: Model/Task.php:177
-msgid "Due"
-msgstr ""
-
 #: Model/Task.php:178
-msgid "Organizer"
-msgstr ""
+msgid "Due"
+msgstr "Fälligkeit"
 
 #: Model/Task.php:179
-#, fuzzy
+msgid "Organizer"
+msgstr "Organisator"
+
+#: Model/Task.php:180
 msgid "Description"
-msgstr "Beschreibung eingeben..."
+msgstr "Beschreibung"
 
 #: Setup/setup.xml:405
 msgid "NEEDS-ACTION"
@@ -149,83 +170,3 @@ msgstr "ERLEDIGT"
 msgid "CANCELLED"
 msgstr "ZURÜCKGESTELLT"
 
-#~ msgid "to to list"
-#~ msgstr "Aufgabenliste"
-
-#, fuzzy
-#~ msgid "Tasks) "
-#~ msgstr "Aufgabe"
-
-#~ msgid "Could not delete task(s)."
-#~ msgstr "Konnte Aufgabe(n) nicht löschen."
-
-#~ msgid "Edit task"
-#~ msgstr "Aufgabe bearbeiten"
-
-#~ msgid "Add task"
-#~ msgstr "Aufgabe hinzufügen"
-
-#~ msgid "Delete task"
-#~ msgid_plural "Delete tasks"
-#~ msgstr[0] "Aufgabe löschen"
-#~ msgstr[1] "Aufgaben löschen"
-
-#~ msgid "Enter searchfilter"
-#~ msgstr "Suchfilter eingeben"
-
-#~ msgid "Search:"
-#~ msgstr "Suchen nach:"
-
-#~ msgid "Displaying tasks {0} - {1} of {2}"
-#~ msgstr "Zeige Aufgabe {0} - {1} von {2}"
-
-#~ msgid "No tasks to display"
-#~ msgstr "Keine Aufgaben vorhanden"
-
-#~ msgid "No Tasks to display"
-#~ msgstr "Keine Aufgaben vorhanden"
-
-#~ msgid "Loading Task..."
-#~ msgstr "lade Task..."
-
-#~ msgid "Please Wait"
-#~ msgstr "Bitte warten"
-
-#~ msgid "Add New Task"
-#~ msgstr "Neuen Task erstellen"
-
-#~ msgid "Edit Task \"{0}\""
-#~ msgstr "Task \"{0}\" bearbeiten"
-
-#~ msgid "Please wait"
-#~ msgstr "Bitte warten"
-
-#~ msgid "Saving Task"
-#~ msgstr "Aufgabe speichern"
-
-#~ msgid "Errors"
-#~ msgstr "Fehler"
-
-#~ msgid "Please fix the errors noted."
-#~ msgstr "Bitte beheben Sie die angezeigten Fehler."
-
-#~ msgid "Confirm"
-#~ msgstr "Bestätigen"
-
-#~ msgid "Do you really want to delete this task?"
-#~ msgstr "Wollen Sie die ausgewählte Aufgabe wirklich löschen?"
-
-#~ msgid "Please wait a moment..."
-#~ msgstr "Einen Moment noch..."
-
-#~ msgid "Enter short name..."
-#~ msgstr "Kurzbezeichnung eingeben..."
-
-#~ msgid "Saved in"
-#~ msgstr "Gespeichert in"
-
-#~ msgid "Folder"
-#~ msgstr "Ordner"
-
-#~ msgid "Delete tasks"
-#~ msgstr "Aufgaben löschen"

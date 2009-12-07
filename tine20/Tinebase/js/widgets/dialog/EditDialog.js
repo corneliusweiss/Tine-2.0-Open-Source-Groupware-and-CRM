@@ -68,7 +68,14 @@ Tine.widgets.dialog.EditDialog = Ext.extend(Ext.FormPanel, {
      * record in edit process.
      */
     record: null,
-
+    /**
+     * @cfg {Bool} getDefaultsAgain
+     * load record defaults if new record is created and mode != local
+     * 
+     * TODO is it required to load the defaults again here?
+     */
+    getDefaultsAgain: true,
+    
     /**
      * @cfg {String} saveAndCloseButtonText
      * text of save and close button
@@ -239,7 +246,9 @@ Tine.widgets.dialog.EditDialog = Ext.extend(Ext.FormPanel, {
                     }
                 });
             } else {
-                this.record = new this.recordClass(this.recordClass.getDefaultData(), 0);
+                if (this.getDefaultsAgain) {
+                    this.record = new this.recordClass(this.recordClass.getDefaultData(), 0);
+                }
                 this.onRecordLoad();
             }
         } else {
@@ -410,12 +419,7 @@ Tine.widgets.dialog.EditDialog = Ext.extend(Ext.FormPanel, {
                             this.window.close();
                         }
                     },
-                    // NOTE: we don't have a failure handler in the generic edit dialog any more (always open exception dialog on fail)
-                    //       -> use the method 'onRequestFailed' for custom handling in child class
-                    /*failure:  function (result, request) {
-                        Ext.MessageBox.alert(_('Failed'), String.format(_('Could not save {0}.'), this.i18nRecordName)); 
-                    },*/
-                    exceptionHandler: this.onRequestFailed,
+                    failure: this.onRequestFailed,
                     timeout: 150000 // 3 minutes
                 });
             } else {
@@ -457,5 +461,14 @@ Tine.widgets.dialog.EditDialog = Ext.extend(Ext.FormPanel, {
                 });
             }
         });
+    },
+    
+    /**
+     * generic request exception handler
+     * 
+     * @param {Object} exception
+     */
+    onRequestFailed: function(exception) {
+        Tine.Tinebase.ExceptionHandler.handleRequestException(exception);
     }
 });

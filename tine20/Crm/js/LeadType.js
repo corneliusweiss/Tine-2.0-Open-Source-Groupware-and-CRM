@@ -1,4 +1,4 @@
-/**
+/*
  * Tine 2.0
  * lead type edit dialog and model
  * 
@@ -8,14 +8,17 @@
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
- * @todo translate
  */
 
 Ext.namespace('Tine.Crm', 'Tine.Crm.LeadType');
 
 /**
+ * @namespace Tine.Crm.LeadType
+ * @class Tine.Crm.LeadType.Model
+ * @extends Ext.data.Record
+ * 
  * lead type model
- */
+ */ 
 Tine.Crm.LeadType.Model = Ext.data.Record.create([
    {name: 'id', type: 'int'},
    {name: 'leadtype'}
@@ -23,9 +26,8 @@ Tine.Crm.LeadType.Model = Ext.data.Record.create([
 
 /**
  * get lead type store
- * if available, load data from LeadTypes
  * 
- * @return Ext.data.JsonStore with lead types
+ * @return  {Ext.data.JsonStore}
  */
 Tine.Crm.LeadType.getStore = function() {
 	
@@ -45,8 +47,8 @@ Tine.Crm.LeadType.getStore = function() {
             remoteSort: false
         });
         
-        if ( Tine.Crm.registry.get('LeadTypes') ) {
-        	store.loadData(Tine.Crm.registry.get('LeadTypes'));
+        if ( Tine.Crm.registry.get('leadtypes') ) {
+        	store.loadData(Tine.Crm.registry.get('leadtypes'));
         }
         	
         Ext.StoreMgr.add('CrmLeadTypeStore', store);
@@ -54,106 +56,60 @@ Tine.Crm.LeadType.getStore = function() {
 	return store;
 };
 
-Tine.Crm.LeadType.EditDialog = function() {
-    var Dialog = new Ext.Window({
-        title: 'Leadtypes',
-        id: 'leadtypeWindow',
-        modal: true,
-        width: 350,
-        height: 500,
-        minWidth: 300,
-        minHeight: 500,
-        layout: 'fit',
-        plain:true,
-        bodyStyle:'padding:5px;',
-        buttonAlign:'center'
-    }); 
-        
-    var columnModelLeadtype = new Ext.grid.ColumnModel([
-            { id:'id', 
-              header: "id", 
-              dataIndex: 'id', 
-              width: 25, 
-              hidden: true 
-            },
-            { id:'leadtype_id', 
-              header: 'leadtype', 
-              dataIndex: 'leadtype', 
-              width: 170, 
-              hideable: false, 
-              sortable: false, 
-              editor: new Ext.form.TextField({allowBlank: false}) 
-            }                    
-    ]);            
+/**
+ * @namespace   Tine.Crm.LeadType
+ * @class       Tine.Crm.LeadType.GridPanel
+ * @extends     Tine.Crm.Admin.QuickaddGridPanel
+ * 
+ * lead types grid panel
+ * 
+ * <p>
+ * </p>
+ * 
+ * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
+ * @author      Philipp Schuele <p.schuele@metaways.de>
+ * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @version     $Id$
+ */
+Tine.Crm.LeadType.GridPanel = Ext.extend(Tine.Crm.Admin.QuickaddGridPanel, {
     
-    var handlerLeadtypeAdd = function(){
-        var p = new Tine.Crm.LeadType.Model({
-            id: 'NULL',
-            leadtype: ''
-        });
-        leadtypeGridPanel.stopEditing();
-        Tine.Crm.LeadType.getStore().insert(0, p);
-        leadtypeGridPanel.startEditing(0, 0);
-        leadtypeGridPanel.fireEvent('celldblclick',this, 0, 1);                
-    };
-                
-    var handlerLeadtypeDelete = function(){
-        var leadtypeGrid  = Ext.getCmp('editLeadtypeGrid');
-        var leadtypeStore = Tine.Crm.LeadType.getStore();
-        
-        var selectedRows = leadtypeGrid.getSelectionModel().getSelections();
-        for (var i = 0; i < selectedRows.length; ++i) {
-            leadtypeStore.remove(selectedRows[i]);
-        }   
-    };                        
-                  
-    var handlerLeadtypeSaveClose = function(){
-        var leadtypeStore =Tine.Crm.LeadType.getStore();        
-        var leadtypeJson = Tine.Tinebase.common.getJSONdata(leadtypeStore); 
-    
-        Ext.Ajax.request({
-            params: {
-                method: 'Crm.saveLeadtypes',
-                optionsData: leadtypeJson
-            },
-            text: 'Saving leadtypes...',
-            success: function(_result, _request) {
-                leadtypeStore.reload();
-                leadtypeStore.rejectChanges();
-            },
-            failure: function(form, action) {
-                //  Ext.MessageBox.alert("Error",action.result.errorMessage);
-            }
-        });          
-    };          
-    
-    var leadtypeGridPanel = new Ext.grid.EditorGridPanel({
-        store: Tine.Crm.LeadType.getStore(),
-        id: 'editLeadtypeGrid',
-        cm: columnModelLeadtype,
-        autoExpandColumn:'leadtype',
-        frame:false,
-        viewConfig: {
-            forceFit: true
-        },
-        sm: new Ext.grid.RowSelectionModel({multiSelect:true}),
-        clicksToEdit:2,
-        tbar: [{
-            text: 'new item',
-            iconCls: 'actionAdd',
-            handler : handlerLeadtypeAdd
-            },{
-            text: 'delete item',
-            iconCls: 'actionDelete',
-            handler : handlerLeadtypeDelete
-            },{
-            text: 'save',
-            iconCls: 'actionSaveAndClose',
-            handler : handlerLeadtypeSaveClose 
-            }]  
-        });            
-                
-    Dialog.add(leadtypeGridPanel);
-    Dialog.show();          
-};
+    /**
+     * @private
+     */
+    autoExpandColumn:'leadtype',
+    quickaddMandatory: 'leadtype',
 
+    /**
+     * @private
+     */
+    initComponent: function() {
+        this.app = this.app ? this.app : Tine.Tinebase.appMgr.get('Crm');
+        
+        this.store = Tine.Crm.LeadType.getStore();
+        this.recordClass = Tine.Crm.LeadType.Model;
+        
+        Tine.Crm.LeadType.GridPanel.superclass.initComponent.call(this);
+    },
+    
+    getColumnModel: function() {
+        return new Ext.grid.ColumnModel([
+        { 
+            id:'id', 
+            header: "id", 
+            dataIndex: 'leadtype_id', 
+            width: 25, 
+            hidden: true 
+        }, { 
+            id:'leadtype', 
+            header: 'entries', 
+            dataIndex: 'leadtype', 
+            width: 170, 
+            hideable: false, 
+            sortable: false, 
+            editor: new Ext.form.TextField({allowBlank: false}),
+            quickaddField: new Ext.form.TextField({
+                emptyText: this.app.i18n._('Add a Leadtype...')
+            })
+        }]);
+    }
+});

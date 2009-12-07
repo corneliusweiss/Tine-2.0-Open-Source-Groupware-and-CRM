@@ -149,6 +149,9 @@ Ext.extend(Tine.Tinebase.data.RecordProxy, Ext.data.DataProxy, {
             Ext.apply(p, additionalArguments);
         }
         
+        // increase timeout as this can take a longer (5 minutes)
+        options.timeout = 300000;
+        
         return this.doXHTTPRequest(options);
     },
     
@@ -351,31 +354,31 @@ Ext.extend(Tine.Tinebase.data.RecordProxy, Ext.data.DataProxy, {
                     options.success.apply(options.scope, args);
                 }
             },
-            failure: function (response) {
+            // note incoming options are implicitly jsonprc converted
+            failure: function (response, jsonrpcoptions) {
                 if (typeof options.failure == 'function') {
                     var args = [];
                     if (typeof options.beforeFailure == 'function') {
                         args = options.beforeFailure.call(this, response);
                     } else {
-                        var responseData = Ext.decode(response.responseText)
+                        var responseData = Ext.decode(response.responseText);
                         args = [responseData.data ? responseData.data : responseData];
                     }
                 
                     options.failure.apply(options.scope, args);
                 } else {
-                    Ext.Ajax.fireEvent('requestexception', Ext.Ajax, response, options);
+                    var responseData = Ext.decode(response.responseText);
+                    var exception = responseData.data ? responseData.data : responseData;
+                    exception.request = jsonrpcoptions.jsonData;
+                    exception.response = response.responseText;
+                    
+                    Tine.Tinebase.ExceptionHandler.handleRequestException(exception);
                 }
             }
         };
         
         if (options.timeout) {
             requestOptions.timeout = options.timeout;
-        }
-        
-        if (typeof options.exceptionHandler == 'function') {
-            requestOptions.exceptionHandler = function(response) {
-                return options.exceptionHandler.call(options.scope, response, options);
-            };
         }
         
         return Ext.Ajax.request(requestOptions);

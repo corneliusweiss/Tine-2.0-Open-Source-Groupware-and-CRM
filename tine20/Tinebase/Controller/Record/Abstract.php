@@ -10,7 +10,6 @@
  * @version     $Id$
  *
  * @todo        add (empty) sendNotifications()
- * @todo        add rights to check to generic functions (do that before extending this class in admin controllers)
  */
 
 /**
@@ -103,9 +102,7 @@ abstract class Tinebase_Controller_Record_Abstract
     public function search(Tinebase_Model_Filter_FilterGroup $_filter = NULL, Tinebase_Record_Interface $_pagination = NULL, $_getRelations = FALSE, $_onlyIds = FALSE)
     {
     	$this->_checkRight('get');
-    	if ($this->_doContainerACLChecks) {
-            $this->checkFilterACL($_filter);
-    	}
+        $this->checkFilterACL($_filter);
         
         $result = $this->_backend->search($_filter, $_pagination, $_onlyIds);
         
@@ -124,9 +121,7 @@ abstract class Tinebase_Controller_Record_Abstract
      */
     public function searchCount(Tinebase_Model_Filter_FilterGroup $_filter) 
     {
-        if ($this->_doContainerACLChecks) {
-            $this->checkFilterACL($_filter);
-        }
+        $this->checkFilterACL($_filter);
 
         $count = $this->_backend->searchCount($_filter);
         
@@ -193,14 +188,16 @@ abstract class Tinebase_Controller_Record_Abstract
     {
     	$this->_checkRight('get');
     	
-        $records = $this->_backend->getMultiple($_ids);
+    	// get all allowed containers and add them to getMultiple query
+    	$containerIds = ($this->_doContainerACLChecks && $_ignoreACL !== TRUE) 
+    	   ? Tinebase_Container::getInstance()->getContainerByACL(
+    	       $this->_currentAccount, 
+    	       $this->_applicationName, 
+    	       Tinebase_Model_Container::GRANT_READ,
+    	       TRUE) 
+    	   : NULL;
+        $records = $this->_backend->getMultiple($_ids, $containerIds);
         
-        foreach ($records as $record) {
-            if ($_ignoreACL !== TRUE && !$this->_checkGrant($record, 'get', FALSE)) {
-                $index = $records->getIndexById($record->getId());
-                unset($records[$index]);
-            } 
-        }
         return $records;
     }    
     
@@ -226,13 +223,12 @@ abstract class Tinebase_Controller_Record_Abstract
      * @param   Tinebase_Record_Interface $_record
      * @return  Tinebase_Record_Interface
      * @throws  Tinebase_Exception_AccessDenied
-     * @throws  Tinebase_Exception_Record_Validation
      */
     public function create(Tinebase_Record_Interface $_record)
     {
         $this->_checkRight('create');
     	
-        //Tinebase_Core::getLogger()->debug(print_r($_record->toArray(),true));
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_record->toArray(),true));
         
         try {
             $db = $this->_backend->getAdapter();
@@ -284,8 +280,8 @@ abstract class Tinebase_Controller_Record_Abstract
             
         } catch (Exception $e) {
             Tinebase_TransactionManager::getInstance()->rollBack();
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $e->getMessage());
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . $e->getTraceAsString());
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . $e->getMessage());
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . $e->getTraceAsString());
             throw $e;
         }
         
@@ -309,7 +305,6 @@ abstract class Tinebase_Controller_Record_Abstract
      * @param   Tinebase_Record_Interface $_record
      * @return  Tinebase_Record_Interface
      * @throws  Tinebase_Exception_AccessDenied
-     * @throws  Tinebase_Exception_Record_Validation
      */
     public function update(Tinebase_Record_Interface $_record)
     {
@@ -317,9 +312,8 @@ abstract class Tinebase_Controller_Record_Abstract
             $db = $this->_backend->getAdapter();
             $transactionId = Tinebase_TransactionManager::getInstance()->startTransaction($db);
             
-            if(!$_record->isValid()) {
-                throw new Tinebase_Exception_Record_Validation('Record is not valid. Invalid fields: ' . implode(',', $_record->getValidationErrors()));
-            }
+            $_record->isValid(TRUE);
+            
             $currentRecord = $this->_backend->get($_record->getId());
             
             // ACL checks
@@ -397,10 +391,8 @@ abstract class Tinebase_Controller_Record_Abstract
      */
     public function updateMultiple($_filter, $_data)
     {
-        if ($this->_doContainerACLChecks) {
-            $this->checkFilterACL($_filter, 'update');
-        }
         $this->_checkRight('update');
+        $this->checkFilterACL($_filter, 'update');
         
         // get only ids
         $ids = $this->_backend->search($_filter, NULL, TRUE);
@@ -414,7 +406,7 @@ abstract class Tinebase_Controller_Record_Abstract
      * If one of the records could not be deleted, no record is deleted
      * 
      * @param   array array of record identifiers
-     * @return  void
+     * @return  Tinebase_Record_RecordSet
      * @throws Tinebase_Exception_NotFound|Tinebase_Exception
      */
     public function delete($_ids)
@@ -428,7 +420,7 @@ abstract class Tinebase_Controller_Record_Abstract
         $records = $this->_backend->getMultiple((array)$ids);
         if (count((array)$ids) != count($records)) {
             //throw new Tinebase_Exception_NotFound('Error, only ' . count($records) . ' of ' . count((array)$ids) . ' records exist');
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Only ' . count($records) . ' of ' . count((array)$ids) . ' records exist.');
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' Only ' . count($records) . ' of ' . count((array)$ids) . ' records exist.');
         }
                     
         try {        
@@ -443,30 +435,41 @@ abstract class Tinebase_Controller_Record_Abstract
             
             Tinebase_TransactionManager::getInstance()->commitTransaction($transactionId);
             
+            // send notifications
+            if ($this->_sendNotifications) {
+                foreach ($records as $record) {
+                    $this->sendNotifications($record, $this->_currentAccount, 'deleted');
+                }
+            }
+            
+            
         } catch (Exception $e) {
             Tinebase_TransactionManager::getInstance()->rollBack();
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($e->getMessage(), true));
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($e->getTraceAsString(), true));
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . print_r($e->getMessage(), true));
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . print_r($e->getTraceAsString(), true));
             throw $e;
-        }                        
+        }
+        
+        // returns deleted records
+        return $records;
     }
     
     /**
      * delete records by filter
      *
      * @param Tinebase_Model_Filter_FilterGroup $_filter
-     * @return  void
+     * @return  Tinebase_Record_RecordSet
      */
     public function deleteByFilter(Tinebase_Model_Filter_FilterGroup $_filter)
     {
         Tinebase_Core::setExecutionLifeTime(300); // 5 minutes
         
-        $ids = $this->search($_filter, NULL, FALSE, TRUE)->getArrayOfIds();
+        $ids = $this->search($_filter, NULL, FALSE, TRUE);
         
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Deleting ' . count($ids) . ' records ...');
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Deleting ' . count($ids) . ' records ...');
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . print_r($ids, true));
         
-        $this->delete($ids);
+        return $this->delete($ids);
     }
     
     /**
@@ -580,7 +583,7 @@ abstract class Tinebase_Controller_Record_Abstract
             if ($_throw) {
                 throw new Tinebase_Exception_AccessDenied($_errorMessage);
             } else {
-                Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . 'No permissions to ' . $_action . ' in container ' . $_record->container_id);
+                Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' No permissions to ' . $_action . ' in container ' . $_record->container_id);
             }
         }
         
@@ -609,6 +612,11 @@ abstract class Tinebase_Controller_Record_Abstract
      */
     public function checkFilterACL(/*Tinebase_Model_Filter_FilterGroup */$_filter, $_action = 'get')
     {
+        if (! $this->_doContainerACLChecks) {
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Container ACL disabled for ' . $_filter->getModelName() . '.');
+            return TRUE;
+        }
+        
         $containerFilters = $_filter->getAclFilters();
         
         if (! $containerFilters) {
@@ -661,7 +669,7 @@ abstract class Tinebase_Controller_Record_Abstract
             }
         }
         
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ 
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ 
             . " About to save " . count($alarms) . " alarms for {$_record->id} " 
             //.  print_r($alarms->toArray(), true)
         );
@@ -680,7 +688,7 @@ abstract class Tinebase_Controller_Record_Abstract
      */
     protected function _inspectAlarmSet(Tinebase_Record_Abstract $_record, Tinebase_Model_Alarm $_alarm)
     {
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Setting alarm time for ' . $this->_recordAlarmField 
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Setting alarm time for ' . $this->_recordAlarmField 
             //. ' ' . print_r($_alarm->toArray(), true)
             //. print_r($_record->toArray(), true)
         );
@@ -704,7 +712,7 @@ abstract class Tinebase_Controller_Record_Abstract
         
         if ($_record instanceof Tinebase_Record_RecordSet) {
             
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " Resolving alarms and add them to record set.");
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " Resolving alarms and add them to record set.");
             
             $alarms->addIndices(array('record_id'));
             foreach ($_record as $record) {
@@ -719,7 +727,7 @@ abstract class Tinebase_Controller_Record_Abstract
             
         } else if ($_record instanceof Tinebase_Record_Interface) {
             
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " Resolving alarms and add them to record.");
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " Resolving alarms and add them to record.");
             
             $_record->alarms = $alarms;
 

@@ -62,6 +62,7 @@ class Setup_ControllerTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        $this->_installAllApplications(array('defaultAdminGroupName' => 'Administrators', 'defaultUserGroupName' =>  'Users'));
         $this->_installAllApplications();       
     }
        
@@ -98,12 +99,56 @@ class Setup_ControllerTest extends PHPUnit_Framework_TestCase
     public function testInstallAdminAccountOptions()
     {
     	$this->_uninstallAllApplications();
-    	$this->_installAllApplications(array('adminLoginName' => 'phpunit-admin', 'adminPassword' => 'phpunit-password'));
+    	$this->_uit->installApplications(array('Tinebase'), array('adminLoginName' => 'phpunit-admin', 'adminPassword' => 'phpunit-password'));
     	$adminUser = Tinebase_User::getInstance()->getFullUserByLoginName('phpunit-admin');
     	$this->assertTrue($adminUser instanceof Tinebase_Model_User);
     	
+    	$this->assertNull(Tinebase_Auth::getBackendConfiguration('adminLoginName'));
+    	$this->assertNull(Tinebase_Auth::getBackendConfiguration('adminPassword'));
+    	$this->assertNull(Tinebase_Auth::getBackendConfiguration('adminConfirmation'));
+    	
     	//cleanup
     	$this->_uninstallAllApplications();
+    }
+    
+    public function testSaveAuthenticationRedirectSettings()
+    {
+        $originalRedirectSettings = array(
+          Tinebase_Model_Config::REDIRECTURL => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value,
+          Tinebase_Model_Config::REDIRECTTOREFERRER => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTTOREFERRER, NULL, '')->value
+        );
+        
+        $newRedirectSettings = array(
+          Tinebase_Model_Config::REDIRECTURL => 'http://tine20.org',
+          Tinebase_Model_Config::REDIRECTTOREFERRER => '1'
+        );
+        
+        $this->_uit->saveAuthentication(array('redirectSettings' => $newRedirectSettings));
+        
+        $storedRedirectSettings = array(
+          Tinebase_Model_Config::REDIRECTURL => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value,
+          Tinebase_Model_Config::REDIRECTTOREFERRER => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTTOREFERRER, NULL, '')->value
+        );
+        
+        $this->assertEquals($storedRedirectSettings, $newRedirectSettings);
+        
+        
+        //test empty redirectUrl
+        $newRedirectSettings = array(
+          Tinebase_Model_Config::REDIRECTURL => '',
+          Tinebase_Model_Config::REDIRECTTOREFERRER => '0'
+        );
+        
+        $this->_uit->saveAuthentication(array('redirectSettings' => $newRedirectSettings));
+        
+        $storedRedirectSettings = array(
+          Tinebase_Model_Config::REDIRECTURL => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value,
+          Tinebase_Model_Config::REDIRECTTOREFERRER => Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTTOREFERRER, NULL, '')->value
+        );
+        
+        $this->assertEquals($storedRedirectSettings, $newRedirectSettings);
+        
+        $this->_uit->saveAuthentication($originalRedirectSettings);
     }
     
     public function testInstallGoupNameOptions()

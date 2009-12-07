@@ -7,7 +7,7 @@
  * @copyright   Copyright (c) 2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id:Dialer.js 4159 2008-09-02 14:15:05Z p.schuele@metaways.de $
  *
- * @todo        enable myphone edit dialog again
+ * TODO         refactor this
  */
  
 Ext.namespace('Tine.Phone');
@@ -28,20 +28,19 @@ Tine.Phone.getPanel = function(){
         text: translation._('Edit phone settings'),
         iconCls: 'PhoneIconCls',
         handler: function() {
-        	Ext.Msg.alert('Sorry, this function is disabled at the moment');
-        	/*
             var popupWindow = Tine.Phone.MyPhoneEditDialog.openWindow({
-                record: this.ctxNode.record,
+                record: this.ctxNode.attributes.record,
                 listeners: {
                     scope: this,
-                    'update': function(record) {
-                        this.store.load({});
+                    'update': function(encodedRecord) {
+                        // TODO update registry?
+                        var store = Ext.StoreMgr.get('UserPhonesStore');
+                        var record = new Tine.Voipmanager.Model.SnomPhone(Ext.util.JSON.decode(encodedRecord));
+                        store.add([record]);
+                        Tine.Phone.updatePhoneTree(store);
                     }
                 }
             });
-            */
-        	
-        	//Tine.Tinebase.common.openWindow('myPhonesWindow', 'index.php?method=Phone.editMyPhone&phoneId=' + this.ctxNode.id, 700, 300);
         },
         scope: this
     });
@@ -104,9 +103,7 @@ Tine.Phone.getPanel = function(){
     treePanel.getSelectionModel().on('selectionchange', function(_selectionModel) {
     	var node = _selectionModel.getSelectedNode();
 
-        // TODO reactivate that
         // update toolbar
-        /*
         var settingsButton = Ext.getCmp('phone-settings-button');
         if (settingsButton) {
             if(node && node.id != 'root') {
@@ -115,7 +112,6 @@ Tine.Phone.getPanel = function(){
                 settingsButton.setDisabled(true);
             }
         }
-        */
 
         //node.getOwnerTree().selectPath(node.getPath());
         Tine.Phone.Main.show(node);
@@ -166,11 +162,11 @@ Tine.Phone.updatePhoneTree = function(store){
  * 
  * @todo use window factory later
  */
-Tine.Phone.dialNumber = function(number) {
+Tine.Phone.dialPhoneNumber = function(number) {
 	
 	var phonesStore = Tine.Phone.loadPhoneStore();
 	var lines = phonesStore.getAt(0).data.lines;
-
+    
     // check if only one phone / one line exists and numer is set
 	if (phonesStore.getTotalCount() == 1 && lines.length == 1 && number) {
 		// call Phone.dialNumber
@@ -366,7 +362,10 @@ Tine.Phone.DialerPanel = Ext.extend(Ext.form.FormPanel, {
             // update line store again (we need this, because it is changed when dlg is opened the second time)
             this.setLineStore(phoneCombo.getValue());
         }
-        this.getForm().findField('lineId').setValue(this.linesStore.getAt(0).id);
+        var firstLine = this.linesStore.getAt(0);
+        if (firstLine) {
+            this.getForm().findField('lineId').setValue(firstLine.id);
+        }
     },
     
     /**
@@ -468,13 +467,22 @@ Tine.Phone.Main = {
         	text: this.translation._('Edit phone settings'),
             iconCls: 'PhoneIconCls',
             handler: function() {
-                Ext.Msg.alert('Sorry, this function is disabled at the moment');
-                /*
             	// get selected node id
             	var node = Ext.getCmp('phone-tree').getSelectionModel().getSelectedNode();
-            	
-                Tine.Tinebase.common.openWindow('myPhonesWindow', 'index.php?method=Phone.editMyPhone&phoneId=' + node.id, 700, 300);
-                */
+                
+                var popupWindow = Tine.Phone.MyPhoneEditDialog.openWindow({
+                    record: node.attributes.record,
+                    listeners: {
+                        scope: this,
+                        'update': function(encodedRecord) {
+                            // TODO update registry?
+                            var store = Ext.StoreMgr.get('UserPhonesStore');
+                            var record = new Tine.Voipmanager.Model.SnomPhone(Ext.util.JSON.decode(encodedRecord));
+                            store.add([record]);
+                            Tine.Phone.updatePhoneTree(store);
+                        }
+                    }
+                });
             },
             scope: this,
             disabled: true
@@ -495,7 +503,7 @@ Tine.Phone.Main = {
     		    }
     		}
     		
-    		Tine.Phone.dialNumber(number);
+    		Tine.Phone.dialPhoneNumber(number);
     	}
     },
     
@@ -529,7 +537,7 @@ Tine.Phone.Main = {
         var quickSearchField = new Ext.ux.SearchField({
             id: 'callhistoryQuickSearchField',
             width:240,
-            emptyText: this.translation._('enter searchfilter')
+            emptyText: Tine.Tinebase.translation._hidden('enter searchfilter')
         }); 
         quickSearchField.on('change', function(){
             this.store.load({});
@@ -649,18 +657,24 @@ Tine.Phone.Main = {
         }); 
         
         // the columnmodel
-        var columnModel = new Ext.grid.ColumnModel([
-            { resizable: true, id: 'direction', header: this.translation._('Direction'), dataIndex: 'direction', width: 20, renderer: this.renderer.direction },
-            { resizable: true, id: 'source', header: this.translation._('Source'), dataIndex: 'source', hidden: true },
-            { resizable: true, id: 'callerid', header: this.translation._('Caller Id'), dataIndex: 'callerid' },
-            { resizable: true, id: 'destination', header: this.translation._('Destination'), dataIndex: 'destination', renderer: this.renderer.destination },
-            { resizable: true, id: 'start', header: this.translation._('Start'), dataIndex: 'start', renderer: Tine.Tinebase.common.dateTimeRenderer },
-            { resizable: true, id: 'connected', header: this.translation._('Connected'), dataIndex: 'connected', renderer: Tine.Tinebase.common.dateTimeRenderer, hidden: true },
-            { resizable: true, id: 'disconnected', header: this.translation._('Disconnected'), dataIndex: 'disconnected', renderer: Tine.Tinebase.common.dateTimeRenderer, hidden: true  },
-            { resizable: true, id: 'duration', header: this.translation._('Duration'), dataIndex: 'duration', width: 40 },
-            { resizable: true, id: 'ringing', header: this.translation._('Ringing'), dataIndex: 'ringing', width: 40, hidden: true },
-            { resizable: true, id: 'id', header: this.translation._('Call ID'), dataIndex: 'id', hidden: true}
-        ]);
+        var columnModel = new Ext.grid.ColumnModel({
+            defaults: {
+                sortable: true,
+                resizable: true
+            },
+            columns: [
+                { id: 'direction', header: this.translation._('Direction'), dataIndex: 'direction', width: 20, renderer: this.renderer.direction },
+                { id: 'source', header: this.translation._('Source'), dataIndex: 'source', hidden: true },
+                { id: 'callerid', header: this.translation._('Caller Id'), dataIndex: 'callerid' },
+                { id: 'destination', header: this.translation._('Destination'), dataIndex: 'destination', renderer: this.renderer.destination },
+                { id: 'start', header: this.translation._('Start'), dataIndex: 'start', renderer: Tine.Tinebase.common.dateTimeRenderer },
+                { id: 'connected', header: this.translation._('Connected'), dataIndex: 'connected', renderer: Tine.Tinebase.common.dateTimeRenderer, hidden: true },
+                { id: 'disconnected', header: this.translation._('Disconnected'), dataIndex: 'disconnected', renderer: Tine.Tinebase.common.dateTimeRenderer, hidden: true  },
+                { id: 'duration', header: this.translation._('Duration'), dataIndex: 'duration', width: 40 },
+                { id: 'ringing', header: this.translation._('Ringing'), dataIndex: 'ringing', width: 40, hidden: true },
+                { id: 'id', header: this.translation._('Call ID'), dataIndex: 'id', hidden: true}
+            ]
+        });
         
         columnModel.defaultSortable = true; // by default columns are sortable
         
@@ -718,7 +732,7 @@ Tine.Phone.Main = {
             var record = _gridPar.getStore().getAt(_rowIndexPar);
             var number = record.data.destination;
             
-            Tine.Phone.dialNumber(number);
+            Tine.Phone.dialPhoneNumber(number);
         }, this);
 
         // add the grid to the layout
@@ -728,17 +742,10 @@ Tine.Phone.Main = {
     /**
      * update main toolbar
      * 
-     * @todo what about the admin button?
-     * @todo adopt to new application pattern (see addressbook, tasks, ...)
+     * @deprecated
      */
     updateMainToolbar : function() 
     {
-        var menu = Ext.menu.MenuMgr.get('Tinebase_System_AdminMenu');
-        menu.removeAll();
-
-        var adminButton = Ext.getCmp('tineMenu').items.get('Tinebase_System_AdminButton');
-        adminButton.setIconClass('PhoneTreePanel');
-        adminButton.setDisabled(true);
     },
     
 	show: function(_node) 

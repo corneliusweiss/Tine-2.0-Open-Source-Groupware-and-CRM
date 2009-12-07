@@ -25,35 +25,147 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
      */
 	public static function getServiceMap()
 	{
-		$server = new Zend_Json_Server();
-		
-		$server->setClass('Tinebase_Frontend_Json', 'Tinebase');
-		$server->setClass('Tinebase_Frontend_Json_UserRegistration', 'Tinebase_UserRegistration');
-		
-		if (Tinebase_Core::isRegistered(Tinebase_Core::USER)) { 
-			$server->setClass('Tinebase_Frontend_Json_Container', 'Tinebase_Container');
-            $server->setClass('Tinebase_Frontend_Json_PersistentFilter', 'Tinebase_PersistentFilter');
-            
-            $userApplications = Tinebase_Core::getUser()->getApplications(TRUE);
-            foreach($userApplications as $application) {
-                $jsonAppName = $application->name . '_Frontend_Json';
-                $server->setClass($jsonAppName, $application->name);
-            }
-		}
-        
-        $server->setTarget('index.php')
-               ->setEnvelope(Zend_Json_Server_Smd::ENV_JSONRPC_2);
-            
-        $smd = $server->getServiceMap();
+        $smd = Tinebase_Server_Json::getServiceMap();
         
         $smdArray = $smd->toArray();
         unset($smdArray['methods']);
         
         return $smdArray;
     }
+    
+    /**
+     * return xrds file
+     * used to autodiscover openId servers
+     * 
+     * @return void
+     */
+    public function getXRDS() 
+    {
+        // selfUrl == http://servername/pathtotine20/users/loginname
+        $url = dirname(dirname(Zend_OpenId::selfUrl())) . '/index.php?method=Tinebase.openId';
+        
+        header('Content-type: application/xrds+xml');
+        
+        echo '
+            <?xml version="1.0"?>
+            <xrds:XRDS xmlns="xri://$xrd*($v*2.0)" xmlns:xrds="xri://$xrds">
+              <XRD>
+                <Service priority="0">
+                  <Type>http://specs.openid.net/auth/2.0/signon</Type>
+                  <URI>' . $url . '</URI>
+                </Service>
+                <Service priority="1">
+                  <Type>http://openid.net/signon/1.1</Type>
+                  <URI>' . $url . '</URI>
+                </Service>
+                <Service priority="2">
+                  <Type>http://openid.net/signon/1.0</Type>
+                  <URI>' . $url . '</URI>
+                </Service>
+              </XRD>
+            </xrds:XRDS>';
+    }
+    
+    /**
+     * display user info page
+     * 
+     * in the future we can display public informations about the user here too
+     * currently it is only used as entry point for openId
+     * 
+     * @param string $username the username
+     * @return void
+     */
+    public function userInfoPage($username)
+    {
+        // selfUrl == http://servername/pathtotine20/users/loginname
+        $openIdUrl = dirname(dirname(Zend_OpenId::selfUrl())) . '/index.php?method=Tinebase.openId';
+        
+        $view = new Zend_View();
+        $view->setScriptPath('Tinebase/views');
+        
+        $view->openIdUrl = $openIdUrl;
+        $view->username = $username;
+
+        header('Content-Type: text/html; charset=utf-8');
+        echo $view->render('userInfoPage.php');
+    }
+    
+    /**
+     * handle all kinds of openId requests
+     * 
+     * @return void
+     */
+    public function openId()
+    {
+        $server = new Tinebase_OpenId_Provider(
+            null,
+            null,
+            null,
+            new Tinebase_OpenId_Provider_Storage
+        );
+        $server->setOpEndpoint(dirname(Zend_OpenId::selfUrl()) . '/index.php?method=Tinebase.openId');
+        
+        // handle openId login form
+        if (isset($_POST['openid_action']) && $_POST['openid_action'] === 'login') {
+            $server->login($_POST['openid_identifier'], $_POST['password'], $_POST['username']);
+            unset($_GET['openid_action']);
+            Zend_OpenId::redirect(dirname(Zend_OpenId::selfUrl()) . '/index.php', $_GET);
+
+        // display openId login form
+        } else if (isset($_GET['openid_action']) && $_GET['openid_action'] === 'login') {
+            $view = new Zend_View();
+            $view->setScriptPath('Tinebase/views');
             
+            $view->openIdIdentity = $_GET['openid_identity'];
+            $view->loginName = $_GET['openid_identity'];
+    
+            header('Content-Type: text/html; charset=utf-8');
+            echo $view->render('openidLogin.php');
+
+        // handle openId trust form
+        } else if (isset($_POST['openid_action']) && $_POST['openid_action'] === 'trust') {
+            if (isset($_POST['allow'])) {
+                if (isset($_POST['forever'])) {
+                    $server->allowSite($server->getSiteRoot($_GET));
+                }
+                $server->respondToConsumer($_GET);
+            } else if (isset($_POST['deny'])) {
+                if (isset($_POST['forever'])) {
+                    $server->denySite($server->getSiteRoot($_GET));
+                }
+                Zend_OpenId::redirect($_GET['openid_return_to'],
+                                      array('openid.mode'=>'cancel'));
+            }
+
+        // display openId trust form
+        } else if (isset($_GET['openid_action']) && $_GET['openid_action'] === 'trust') {
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " display openId trust screen");
+            $view = new Zend_View();
+            $view->setScriptPath('Tinebase/views');
+
+            $view->openIdConsumer = $server->getSiteRoot($_GET);
+            $view->openIdIdentity = $server->getLoggedInUser();
+    
+            header('Content-Type: text/html; charset=utf-8');
+            echo $view->render('openidTrust.php');
+
+        // handle all other openId requests
+        } else {
+            $result = $server->handle();
+
+            if (is_string($result)) {
+                echo $result;
+            } elseif ($result !== true) {
+                header('HTTP/1.0 403 Forbidden');
+                return;
+            }
+        }        
+        
+    }
+    
     /**
      * checks if a user is logged in. If not we redirect to login
+     * @todo $this->sessionTimedOut(); does not exist anymore
      */
     protected function checkAuth()
     {
@@ -94,6 +206,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
             'Tinebase/js/ux/Percentage.js',
             'Tinebase/js/ux/PopupWindow.js',
             'Tinebase/js/ux/PopupWindowManager.js',
+            'Tinebase/js/ux/Notification.js',
             'Tinebase/js/ux/WindowFactory.js',
             'Tinebase/js/ux/SliderTip.js',
             'Tinebase/js/ux/Wizard.js',
@@ -113,6 +226,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
             'Tinebase/js/ux/form/ColumnFormPanel.js',
             'Tinebase/js/ux/form/ExpandFieldSet.js',
             'Tinebase/js/ux/form/ClearableComboBox.js',
+            'Tinebase/js/ux/form/ClearableTextField.js',
             'Tinebase/js/ux/form/RecordsComboBox.js',
             'Tinebase/js/ux/form/DateTimeField.js',
             'Tinebase/js/ux/form/ClearableDateField.js',
@@ -128,36 +242,43 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
             'Tinebase/js/ux/GMapPanel.js',
             'Tinebase/js/ux/DatepickerRange.js',
             'Tinebase/js/ux/tree/CheckboxSelectionModel.js',
+            'Tinebase/js/ux/OpenLayers/Map.js',
+            'Tinebase/js/ux/OpenLayers/MapPanel.js',
+            'Tinebase/js/ux/display/DisplayPanel.js',
+            'Tinebase/js/ux/display/DisplayField.js',
+            'Tinebase/js/ux/layout/Display.js',
             // Tine 2.0 specific widgets
             'Tinebase/js/widgets/LangChooser.js',
             'Tinebase/js/widgets/ActionUpdater.js',
             'Tinebase/js/widgets/EditRecord.js',
             'Tinebase/js/widgets/Priority.js',
             'Tinebase/js/widgets/VersionCheck.js',
-            'Tinebase/js/widgets/AccountpickerPanel.js',
-            'Tinebase/js/widgets/account/PickerPanel.js',
-            'Tinebase/js/widgets/account/ConfigGrid.js',
+            'Tinebase/js/widgets/account/PickerGridPanel.js',
             'Tinebase/js/widgets/dialog/AlarmPanel.js',
             'Tinebase/js/widgets/dialog/EditDialog.js',
             'Tinebase/js/widgets/dialog/CredentialsDialog.js',
             'Tinebase/js/widgets/dialog/PreferencesDialog.js',
             'Tinebase/js/widgets/dialog/PreferencesTreePanel.js',
             'Tinebase/js/widgets/dialog/PreferencesPanel.js',
+            'Tinebase/js/widgets/dialog/LinkPanel.js',
             'Tinebase/js/widgets/customfields/CustomfieldsPanel.js',
 			'Tinebase/js/widgets/customfields/CustomfieldsCombo.js',
             'Tinebase/js/widgets/tree/Loader.js',
             'Tinebase/js/widgets/tree/ContextMenu.js',
-            'Tinebase/js/widgets/container/ContainerSelect.js',
-            'Tinebase/js/widgets/container/GrantsDialog.js',
-            'Tinebase/js/widgets/container/ContainerTree.js',
             'Tinebase/js/widgets/grid/DetailsPanel.js',
             'Tinebase/js/widgets/grid/FilterModel.js',
             'Tinebase/js/widgets/grid/FilterPlugin.js',
             'Tinebase/js/widgets/grid/FilterButton.js',
             'Tinebase/js/widgets/grid/ExportButton.js',
             'Tinebase/js/widgets/grid/FilterToolbar.js',
+            'Tinebase/js/widgets/grid/FilterToolbarQuickFilterPlugin.js',
             'Tinebase/js/widgets/grid/FilterSelectionModel.js',
+            'Tinebase/js/widgets/grid/ForeignRecordFilter.js',
             'Tinebase/js/widgets/grid/PersistentFilterPicker.js',
+            'Tinebase/js/widgets/grid/QuickaddGridPanel.js',
+            'Tinebase/js/widgets/container/ContainerSelect.js',
+            'Tinebase/js/widgets/container/GrantsDialog.js',
+            'Tinebase/js/widgets/container/ContainerTree.js',
             'Tinebase/js/widgets/tags/TagsPanel.js',
             'Tinebase/js/widgets/tags/TagCombo.js',
             'Tinebase/js/widgets/tags/TagFilter.js',
@@ -185,6 +306,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
             'Tinebase/js/data/AbstractBackend.js',
             //'Tinebase/js/data/MemoryBackend.js',
             'Tinebase/js/StateProvider.js',
+            'Tinebase/js/ExceptionHandler.js',
             'Tinebase/js/ExceptionDialog.js',
             'Tinebase/js/Container.js',
             'Tinebase/js/Models.js',
@@ -193,7 +315,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
             'Tinebase/js/AppPicker.js',
             'Tinebase/js/MainMenu.js',
             'Tinebase/js/MainScreen.js',
-            'Tinebase/js/Login.js',
+            'Tinebase/js/LoginPanel.js',
             'Tinebase/js/common.js',
             'Tinebase/js/tineInit.js',
             );
@@ -222,6 +344,7 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
     	   'Tinebase/css/ux/form/ExpandFieldSet.css',
     	   'Tinebase/css/ux/form/ImageField.css',
     	   'Tinebase/css/ux/form/Spinner.css',
+    	   'Tinebase/css/ux/display/DisplayPanel.css',
     	   'Tinebase/css/ux/LockCombo.css',
     	   'Tinebase/css/ux/Menu.css',
     	   'Tinebase/css/widgets/EditRecord.css',
@@ -243,14 +366,29 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
      */
     public function login()
     {
+        // redirect to REDIRECTURL if set
+        $redirectUrl = Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, '')->value;
+
+        if ($redirectUrl !== '') {
+            header('Location: ' . $redirectUrl);
+            return;
+        }
+        
         // check if setup/update required
         $setupController = Setup_Controller::getInstance();
         $applications = Tinebase_Application::getInstance()->getApplications();
         foreach ($applications as $application) {
             if ($application->status == 'enabled' && $setupController->updateNeeded($application)) {
-                $this->setupRequired();
+                $this->_renderSetupRequired();
             }
         }
+        
+        $this->_renderMainScreen();
+        
+        /**
+         * old code used to display user registration
+         * @todo must be reworked
+         * 
         
         $view = new Zend_View();
         $view->setScriptPath('Tinebase/views');
@@ -266,31 +404,16 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
         }        
         
         echo $view->render('mainscreen.php');
+        */
     }
     
     /**
-     * renders the setup/update required dialog
-     *
+     * renders the main screen
+     * 
+     * @return void
      */
-    public function setupRequired()
+    protected function _renderMainScreen()
     {
-        $view = new Zend_View();
-        $view->setScriptPath('Tinebase/views');
-
-        header('Content-Type: text/html; charset=utf-8');
-        
-        Tinebase_Core::getLogger()->DEBUG(__CLASS__ . '::' . __METHOD__ . ' (' . __LINE__ .') Update/Setup required!');
-        echo $view->render('update.php');
-        exit();        
-    }
-    
-	/**
-	 * renders the tine main screen 
-	 */
-    public function mainScreen()
-    {
-        $this->checkAuth();
-        
         $view = new Zend_View();
         $view->setScriptPath('Tinebase/views');
         
@@ -298,6 +421,75 @@ class Tinebase_Frontend_Http extends Tinebase_Frontend_Http_Abstract
 
         header('Content-Type: text/html; charset=utf-8');
         echo $view->render('mainscreen.php');
+        
+    }
+    
+    /**
+     * renders the setup/update required dialog
+     *
+     */
+    protected function _renderSetupRequired()
+    {
+        $view = new Zend_View();
+        $view->setScriptPath('Tinebase/views');
+
+        Tinebase_Core::getLogger()->DEBUG(__CLASS__ . '::' . __METHOD__ . ' (' . __LINE__ .') Update/Setup required!');
+
+        header('Content-Type: text/html; charset=utf-8');
+        echo $view->render('update.php');
+        exit();        
+    }
+    
+    /**
+     * login from HTTP post 
+     * 
+     * renders the tine main screen if authentication is successfull
+     * otherwise redirects back to login url 
+     */
+    public function loginFromPost($username, $password)
+    {
+        if (!empty($username)) {
+            // strip of everything after @ from username
+            list($username) = explode('@', $username);
+            
+            // try to login user
+            $success = (Tinebase_Controller::getInstance()->login($username, $password, $_SERVER['REMOTE_ADDR']) === TRUE); 
+        } else {
+            $success = FALSE;
+        }
+        
+        if ($success === TRUE) {
+            if (Tinebase_Core::isRegistered(Tinebase_Core::USERCREDENTIALCACHE)) {
+                $cacheId = Tinebase_Core::get(Tinebase_Core::USERCREDENTIALCACHE)->getCacheId();
+                setcookie('usercredentialcache', base64_encode(Zend_Json::encode($cacheId)));
+            } else {
+                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' Something went wrong with the CredentialCache / no CC registered.');
+                $success = FALSE;
+                // reset credentials cache
+                setcookie('usercredentialcache', '', time() - 3600);
+            }
+        
+        }
+
+        // authentication failed
+        // redirect back to loginurl
+        if ($success !== TRUE) {
+            $redirectUrl = Tinebase_Config::getInstance()->getConfig(Tinebase_Model_Config::REDIRECTURL, NULL, $_SERVER["HTTP_REFERER"])->value;
+            header('Location: ' . $redirectUrl);
+            return;
+        }
+
+        $this->_renderMainScreen();
+    }
+    
+    /**
+	 * checks authentication and display Tine 2.0 main screen 
+	 */
+    public function mainScreen()
+    {
+        $this->checkAuth();
+        
+        $this->_renderMainScreen();
     }
     
     /**

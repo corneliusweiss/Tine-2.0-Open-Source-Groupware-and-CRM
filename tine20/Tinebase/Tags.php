@@ -128,10 +128,10 @@ class Tinebase_Tags
                 $tags->addRecord(new Tinebase_Model_Tag($tagArray, true));
             }
         }
-        if (count($tags) === 0) {
+        if (count($tags) === 0 && ! empty($_id)) {
             //if (is_string($_id)) {
             //    throw new Tinebase_Exception_NotFound("Tag $_id not found or insufficient rights.");
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Tag(s) not found: ' . print_r($_id, true));
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' Tag(s) not found: ' . print_r($_id, true));
         }
         return $tags;
     }
@@ -361,7 +361,7 @@ class Tinebase_Tags
             $tagsOfRecords[$result['record_id']][] = new Tinebase_Model_Tag($result, true);
         }
         
-        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Getting ' . count($tagsOfRecords) . ' tags for ' . count($_records) . ' records.');
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Getting ' . count($tagsOfRecords) . ' tags for ' . count($_records) . ' records.');
         foreach($_records as $record) {
             //$record->{$_tagsProperty} = $tagsOfRecords->filter('record_id', $record->getId());
             $record->{$_tagsProperty} = new Tinebase_Record_RecordSet(
@@ -425,8 +425,15 @@ class Tinebase_Tags
      */
     public function attachTagToMultipleRecords($_filter, $_tag)
     {
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_filter->toArray(), TRUE));
+        
         // check/create tag on the fly
-        $tagId = $this->_createTagsOnTheFly(array($_tag))->getFirstRecord()->getId();
+        $tags = $this->_createTagsOnTheFly(array($_tag));
+        if (empty($tags) || count($tags) == 0) {
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' No tags created.');
+            return;
+        }
+        $tagId = $tags->getFirstRecord()->getId();
         
         list($appName, $i, $modelName) = explode('_', $_filter->getModelName());
         $appId = Tinebase_Application::getInstance()->getApplicationByName($appName)->getId();
@@ -437,7 +444,7 @@ class Tinebase_Tags
         $recordIds = $controller->search($_filter, NULL, FALSE, TRUE);
         
         if (empty($recordIds)) {
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' there are no records we could attach the tag to');
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' There are no records we could attach the tag to');
             return;
         }
         
@@ -453,6 +460,8 @@ class Tinebase_Tags
         }
         
         $toAttachIds = array_diff($recordIds, $allreadyAttachedIds);
+        
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Attaching 1 Tag to ' . count($toAttachIds) . ' records.');
         foreach ($toAttachIds as $recordId) {
             $this->_db->insert(SQL_TABLE_PREFIX . 'tagging', array(
                 'tag_id'         => $tagId,
@@ -558,6 +567,9 @@ class Tinebase_Tags
     public function setRights($_rights)
     {
         $rights = $_rights instanceof Tinebase_Model_TagRight ? array($_rights) : $_rights;
+        
+        Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Setting ' . count($rights) . ' tag right(s).');
+        
         foreach ($rights as $right) {
             if (! ($right instanceof Tinebase_Model_TagRight && $right->isValid())) {
                 throw new Tinebase_Exception_Record_Validation('The given right is not valid!');

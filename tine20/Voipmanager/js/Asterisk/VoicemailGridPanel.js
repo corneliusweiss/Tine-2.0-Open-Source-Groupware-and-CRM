@@ -48,10 +48,13 @@ Tine.Voipmanager.AsteriskVoicemailGridPanel = Ext.extend(Tine.Tinebase.widgets.a
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
-                {label: this.app.i18n._('Voicemail'),    field: 'query',    operators: ['contains']}
-             ],
-             defaultFilter: 'query',
-             filters: []
+                {label: _('Quick search'),    field: 'query',    operators: ['contains']}
+            ],
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+            ]
         });
     },
     
@@ -60,12 +63,6 @@ Tine.Voipmanager.AsteriskVoicemailGridPanel = Ext.extend(Tine.Tinebase.widgets.a
      * @private
      * 
      */
-     
-     
-
-     
-     
-     
     getColumns: function(){
         return [{ 
 	       	id: 'id', 
@@ -232,5 +229,6 @@ Tine.Voipmanager.AsteriskVoicemailGridPanel = Ext.extend(Tine.Tinebase.widgets.a
         return [
 
         ];
-    } 
+    }
+    
 });

@@ -59,6 +59,8 @@ class Setup_Frontend_Cli
             $this->_importAccounts($_opts);
         } elseif(isset($_opts->check_requirements)) {
             $this->_checkRequirements($_opts);
+        } elseif(isset($_opts->setconfig)) {
+            $this->_setConfig($_opts);
         }
     }
     
@@ -89,11 +91,68 @@ class Setup_Frontend_Cli
         }
         
         $options = $this->_parseRemainingArgs($_opts->getRemainingArgs());
+        $this->_promptRemainingOptions($applications, &$options);
+        
         $controller->installApplications($applications, $options);
         
         echo "Successfully installed " . count($applications) . " applications.\n";        
     }
 
+    /**
+     * 
+     * @todo add requird version server side
+     * 
+     * @param $_applications
+     * @param $_options
+     * @return unknown_type
+     */
+    protected function _promptRemainingOptions($_applications, $_options) {
+        if (in_array('Tinebase', $_applications)) {
+            
+            if (! isset($_options['acceptedTermsVersion'])) {
+                fwrite(STDOUT, PHP_EOL . file_get_contents(dirname(dirname(dirname(__FILE__))) . '/LICENSE' ));
+                $licenseAnswer = Tinebase_Server_Cli::promptInput('I have read the license agreement and accept it (type "yes" to accept)');
+                
+                
+                fwrite(STDOUT, PHP_EOL . file_get_contents(dirname(dirname(dirname(__FILE__))) . '/PRIVACY' ));
+                $privacyAnswer = Tinebase_Server_Cli::promptInput('I have read the privacy agreement and accept it (type "yes" to accept)');
+            
+                if (! (strtoupper($licenseAnswer) == 'YES' && strtoupper($privacyAnswer) == 'YES')) { 
+                    echo "error: you need to accept the terms! exiting \n";
+                    exit (1);
+                }
+                
+                $_options['acceptedTermsVersion'] = 1;
+            }
+            
+            
+            // initial username
+            if (! isset($_options['adminLoginName'])) {
+                $_options['adminLoginName'] = Tinebase_Server_Cli::promptInput('Inital Admin Users Username');
+                if (! $_options['adminLoginName']) {
+                    echo "error: username must be given! exiting \n";
+                    exit (1);
+                }
+            }
+            
+            // initial password
+            if (! isset($_options['adminPassword'])) {
+                $password1 = Tinebase_Server_Cli::promptInput('Inital Admin Users Password', TRUE);
+                if (! $password1) {
+                    echo "error: password must not be empty! exiting \n";
+                    exit (1);
+                }
+                $password2 = Tinebase_Server_Cli::promptInput('Confirm Password', TRUE);
+                if ($password1 == $password2) {
+                    $_options['adminPassword'] = $password1;
+                } else {
+                    echo "error: passwords do not match! exiting \n";
+                    exit (1);
+                }
+            }
+        }
+    }
+    
     /**
      * update existing applications
      *
@@ -120,9 +179,14 @@ class Setup_Frontend_Cli
         }
         
         foreach($applications as $key => &$application) {
-            if(!$controller->updateNeeded($application)) {
-                //echo "Application $application is already up to date! Skipped...\n";
-                unset($applications[$key]);
+            try {
+                if(!$controller->updateNeeded($application)) {
+                    //echo "Application $application is already up to date! Skipped...\n";
+                    unset($applications[$key]);
+                }
+            } catch (Setup_Exception_NotFound $e) {
+              Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' Failed to check if an application needs an update:' . $e->getMessage());
+              unset($applications[$key]);
             }
         }
 
@@ -208,15 +272,75 @@ class Setup_Frontend_Cli
     {
         $results = Setup_Controller::getInstance()->checkRequirements();
         if ($results['success']) {
-        	echo "OK - All requirements are met\n";
+          echo "OK - All requirements are met\n";
         } else {
-        	echo "ERRORS - The following requirements are not met: \n";
-        	foreach ($results['results'] as $result) {
-        		if (!empty($result['message'])) {
-        			echo "- " . strip_tags($result['message']) . "\n";
-        		}
-        	}
+          echo "ERRORS - The following requirements are not met: \n";
+          foreach ($results['results'] as $result) {
+            if (!empty($result['message'])) {
+              echo "- " . strip_tags($result['message']) . "\n";
+            }
+          }
         }
+    }
+    
+    /**
+     * do the environment check
+     *
+     * @return array
+     */
+    protected function _setConfig(Zend_Console_Getopt $_opts)
+    {
+        $options = $this->_parseRemainingArgs($_opts->getRemainingArgs());
+        $errors = array();
+        if (empty($options['configkey'])) {
+            $errors[] = 'Missing argument: configkey';
+        }
+        if (empty($options['configvalue'])) {
+            $errors[] = 'Missing argument: configvalue';
+        }
+        $configKey = (string)$options['configkey'];
+        $configValue = $this->_parseConfigValue($options['configvalue']);
+        //Setup_Controller::getInstance()->setConfig()
+        //$results = Setup_Controller::getInstance()->checkRequirements();
+        if (empty($errors)) {
+           Setup_Controller::setConfigOption($configKey, $configValue);
+           echo "OK - Updated configuration option $configKey\n";
+        } else {
+            echo "ERRORS - The following errors occured: \n";
+            foreach ($errors as $error) {
+                echo "- " . $error . "\n";
+            }
+        }
+    }
+    
+    /**
+     * parse email options
+     * 
+     * @param array $_options
+     * @return array
+     * 
+     * @todo generalize this to allow to add other options during cli setup
+     */
+    protected function _parseConfigValue($_value)
+    {
+        $result = $_value;
+        $_value = preg_replace('/\s*/', '', $_value);
+        $parts = explode(',', $_value);
+        if (count($parts) > 1) {
+            $result = array();
+            foreach ($parts as $part) {
+                if (preg_match('/_/', $part)) {
+                    list($key, $sub) = explode('_', $part);
+                    list($subKey, $value) = explode(':', $sub);
+                    $result[$key][$subKey] = $value;
+                } else {
+                    list($key, $value) = explode(':', $part);
+                    $result[$key] = $value;
+                }
+            }
+        }
+
+        return $result;
     }
     
     /**

@@ -20,7 +20,7 @@ Tine.Voipmanager.AsteriskSipPeerGridPanel = Ext.extend(Tine.Tinebase.widgets.app
     evalGrants: false,
     
     // grid specific
-    defaultSortInfo: {field: 'callerid', direction: 'ASC'},
+    defaultSortInfo: {field: 'name', direction: 'ASC'},
     gridConfig: {
         loadMask: true,
         autoExpandColumn: 'callerid'
@@ -46,11 +46,15 @@ Tine.Voipmanager.AsteriskSipPeerGridPanel = Ext.extend(Tine.Tinebase.widgets.app
      */
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
-            filterModels: [
-                {label: this.app.i18n._('Sip Peer'),    field: 'query',    operators: ['contains']}
-             ],
-             defaultFilter: 'query',
-             filters: []
+        	filterModels: [
+        	    {label: _('Quick search'),    field: 'query',    operators: ['contains']},
+        	    {label: this.app.i18n._('Name'), field: 'name' }
+        	],
+            defaultFilter: 'query',
+            filters: [],
+            plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+            ]
         });
     },    
     
@@ -266,9 +270,9 @@ Tine.Voipmanager.AsteriskSipPeerGridPanel = Ext.extend(Tine.Tinebase.widgets.app
 				width: 30,
                 sortable: true
 			},{ 
-				id: 'username', 
-				header: this.app.i18n._('username'), 
-				dataIndex: 'username', 
+				id: 'defaultuser', 
+				header: this.app.i18n._('defaultuser'), 
+				dataIndex: 'defaultuser', 
 				width: 30, 
                 sortable: true,
 				hidden: true 
@@ -298,7 +302,8 @@ Tine.Voipmanager.AsteriskSipPeerGridPanel = Ext.extend(Tine.Tinebase.widgets.app
 				header: this.app.i18n._('reg seconds'), 
 				dataIndex: 'regseconds', 
 				width: 50,
-                sortable: true
+                sortable: true, 
+                renderer: Tine.Tinebase.common.dateTimeRenderer
 			},{ 
 				id: 'ipaddr', 
 				header: this.app.i18n._('ip address'), 
@@ -374,9 +379,9 @@ Tine.Voipmanager.AsteriskSipPeerGridPanel = Ext.extend(Tine.Tinebase.widgets.app
      * @todo move export buttons to single menu/split button
      */
     getToolbarItems: function(){
-       
         return [
 
         ];
-    } 
+    }
+    
 });

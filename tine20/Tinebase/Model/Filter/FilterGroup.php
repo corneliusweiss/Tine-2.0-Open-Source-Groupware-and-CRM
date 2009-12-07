@@ -125,7 +125,7 @@ class Tinebase_Model_Filter_FilterGroup
      * @param  string $_condition {AND|OR}
      * @throws Tinebase_Exception_InvalidArgument
      */
-    public function __construct(array $_data, $_condition='', $_options = array())
+    public function __construct(array $_data = array(), $_condition='', $_options = array())
     {
         //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_data, true));
         $this->_setOptions($_options);
@@ -339,6 +339,24 @@ class Tinebase_Model_Filter_FilterGroup
     public function getFilterObjects()
     {
         return $this->_filterObjects;
+    }
+    
+    /**
+     * removes a filter
+     * 
+     * @param string|Tinebase_Model_Filter_Abstract $_field
+     * @return void
+     */
+    public function removeFilter($_field)
+    {
+        if ($_field instanceof Tinebase_Model_Filter_Abstract) {
+            $idx = array_search($_field, $this->_filterObjects, TRUE);
+            if ($idx !== FALSE) {
+                unset($this->_filterObjects[$idx]);
+            }
+        } else {
+            $this->_removeFilter($_field);
+        }
     }
     
     /**

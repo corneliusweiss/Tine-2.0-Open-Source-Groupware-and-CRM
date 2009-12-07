@@ -50,6 +50,8 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
         'accountEmailAddress'   => 'email',
         'accountHomeDirectory'  => 'home_dir',
         'accountLoginShell'     => 'login_shell',
+        'openid'                => 'openid',
+        'visibility'            => 'visibility'
     );
     
     /**
@@ -96,75 +98,52 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
         
         return $result;
     }
-    
-    /**
-     * get user by login name
-     *
-     * @param string $_loginName the loginname of the user
-     * @return Tinebase_Model_User the user object
-     *
-     * @throws Tinebase_Exception_NotFound when row is empty
-     */
-    public function getUserByLoginName($_loginName, $_accountClass = 'Tinebase_Model_User')
-    {
-        $select = $this->_getUserSelectObject()
-            ->where($this->_db->quoteInto($this->_db->quoteIdentifier(SQL_TABLE_PREFIX . 'accounts.login_name') . ' = ?', $_loginName));
-
-        $stmt = $select->query();
-
-        $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         
-        // throw exception if data is empty (if the row is no array, the setFromArray function throws a fatal error 
-        // because of the wrong type that is not catched by the block below)
-        if ( $row === false ) {
-            throw new Tinebase_Exception_NotFound("User $_loginName not found.");
-        } else {
-            try {
-                $account = new $_accountClass();
-                $account->setFromArray($row);
-            } catch (Exception $e) {
-                $validation_errors = $account->getValidationErrors();
-                Tinebase_Core::getLogger()->debug( 'Tinebase_User_Sql::getUserByLoginName: ' . $e->getMessage() . "\n" .
-                    "Tinebase_Model_User::validation_errors: \n" .
-                    print_r($validation_errors,true));
-                throw ($e);
-            }
-        }
-        
-        return $account;
-    }
-    
     /**
-     * get user by userId
+     * get user by property
      *
-     * @param   int $_accountId the user id
+     * @param   string  $_property      the key to filter
+     * @param   string  $_value         the value to search for
+     * @param   string  $_accountClass  type of model to return
+     * 
      * @return  Tinebase_Model_User the user object
      * @throws  Tinebase_Exception_NotFound
      * @throws  Tinebase_Exception_Record_Validation
      */
-    public function getUserById($_accountId, $_accountClass = 'Tinebase_Model_User')
+    public function getUserByProperty($_property, $_value, $_accountClass = 'Tinebase_Model_User')
     {
-        $accountId = Tinebase_Model_User::convertUserIdToInt($_accountId);
+        if(!array_key_exists($_property, $this->rowNameMapping)) {
+            throw new Tinebase_Exception_InvalidArgument("invalid property $_property requested");
+        }
+        
+        switch($_property) {
+            case 'accountId':
+                $value = Tinebase_Model_User::convertUserIdToInt($_value);
+                break;
+            default:
+                $value = $_value;
+                break;
+        }
         
         $select = $this->_getUserSelectObject()
-            ->where($this->_db->quoteInto($this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'accounts.id') . ' = ?', $accountId));
+            ->where($this->_db->quoteInto($this->_db->quoteIdentifier( SQL_TABLE_PREFIX . 'accounts.' . $this->rowNameMapping[$_property]) . ' = ?', $value));
         
         $stmt = $select->query();
 
         $row = $stmt->fetch(Zend_Db::FETCH_ASSOC);
         if ($row === false) {
-            throw new Tinebase_Exception_NotFound('User with id ' . $accountId . ' not found.');           
-        } else {
-            try {
-                $account = new $_accountClass();
-                $account->setFromArray($row);
-            } catch (Tinebase_Exception_Record_Validation $e) {
-                $validation_errors = $account->getValidationErrors();
-                Tinebase_Core::getLogger()->debug( 'Tinebase_User_Sql::_getUserFromSQL: ' . $e->getMessage() . "\n" .
-                    "Tinebase_Model_User::validation_errors: \n" .
-                    print_r($validation_errors,true));
-                throw ($e);
-            }
+            throw new Tinebase_Exception_NotFound('User with ' . $_property . ' =  ' . $value . ' not found.');           
+        }
+        
+        try {
+            $account = new $_accountClass();
+            $account->setFromArray($row);
+        } catch (Tinebase_Exception_Record_Validation $e) {
+            $validation_errors = $account->getValidationErrors();
+            Tinebase_Core::getLogger()->err(__METHOD__ . '::' . __LINE__ . ' ' . $e->getMessage() . "\n" .
+                "Tinebase_Model_User::validation_errors: \n" .
+                print_r($validation_errors,true));
+            throw ($e);
         }
         
         return $account;
@@ -196,11 +175,13 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
                     'accountLastLogin'      => $this->rowNameMapping['accountLastLogin'],
                     'accountLastLoginfrom'  => $this->rowNameMapping['accountLastLoginfrom'],
                     'accountLastPasswordChange' => $this->rowNameMapping['accountLastPasswordChange'],
-                    'accountStatus'         => $this->rowNameMapping['accountStatus'],
+                    'accountStatus'         => 'if(NOW() > ' . $this->rowNameMapping['accountExpires']. ', \'expired\', status)',
                     'accountExpires'        => $this->rowNameMapping['accountExpires'],
                     'accountPrimaryGroup'   => $this->rowNameMapping['accountPrimaryGroup'],
                     'accountHomeDirectory'  => $this->rowNameMapping['accountHomeDirectory'],
-                    'accountLoginShell'     => $this->rowNameMapping['accountLoginShell']
+                    'accountLoginShell'     => $this->rowNameMapping['accountLoginShell'],
+                    'openid',
+                    'visibility'
                 )
             )
             ->join(
@@ -390,6 +371,8 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
             'primary_group_id'  => $_account->accountPrimaryGroup,
             'home_dir'          => $_account->accountHomeDirectory,
             'login_shell'       => $_account->accountLoginShell,
+            'openid'            => $_account->openid,
+            'visibility'        => $_account->visibility,
         );
         
         $contactData = array(
@@ -457,6 +440,7 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
             'primary_group_id'  => $_account->accountPrimaryGroup,
             'home_dir'          => $_account->accountHomeDirectory,
             'login_shell'       => $_account->accountLoginShell,
+            'openid'            => $_account->openid 
         );
         
         $contact = new Addressbook_Model_Contact(array(
@@ -495,15 +479,46 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
     }
     
     /**
+     * add or update an user
+     *
+     * @param Tinebase_Model_FullUser $_account
+     * @return Tinebase_Model_FullUser
+     */
+    public function addOrUpdateUser(Tinebase_Model_FullUser $_account)
+    {
+        $result = null;
+        try {
+            $existingUser = $this->getUserByLoginName($_account->accountLoginName);
+            $updatedUser = $_account;
+            $updatedUser->setId($existingUser->getId());
+            $result = $this->updateUser($updatedUser);
+        } catch (Tinebase_Exception_NotFound $e) {
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ .' Could not get user by loginName "' . $_account->accountLoginName . '": ' . $e->getMessage() . ' => creating new user');
+            try {
+                $result = $this->addUser($_account);
+            } catch (Exception $e) {
+                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ .' Failed to add user: ' . print_r($_account->toArray() . 'Error: ' . $e->getMessage(), TRUE));
+            }
+        }
+        
+        return $result;
+        
+    }
+    
+    /**
      * delete a user
      *
      * @param int $_accountId
      */
     public function deleteUser($_accountId)
-    {
-        $accountId = Tinebase_Model_User::convertUserIdToInt($_accountId);
-        $account = $this->getFullUserById($accountId);
-        
+    {   
+        if ($_accountId instanceof Tinebase_Model_FullUser) {
+            $accountId = $_accountId->getId();
+            $account = $_accountId;
+        } else {
+            $accountId = Tinebase_Model_User::convertUserIdToInt($_accountId);
+            $account = $this->getFullUserById($accountId);
+        }
         $accountsTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'accounts'));
         $contactsTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'addressbook'));
         $groupMembersTable = new Tinebase_Db_Table(array('name' => SQL_TABLE_PREFIX . 'group_members'));
@@ -558,6 +573,19 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
             $this->deleteUser($accountId);
         }
     }
+    
+    /**
+     * Delete all users returned by {@see getUsers()} using {@see deleteUsers()}
+     * @return void
+     */
+    public function deleteAllUsers()
+    {
+        $users = $this->getUsers();
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Deleting ' . count($users) .' users');
+        foreach ( $users as $user ) {
+            $this->deleteUser($user);
+        }
+    }
 
     /**
      * Get multiple users
@@ -604,34 +632,32 @@ class Tinebase_User_Sql extends Tinebase_User_Abstract
      */
     public function importUsers($_options = null)
     {
-        $_loginName    = empty($_options['adminLoginName']) ? 'tine20admin' : $_options['adminLoginName'];
-        $_password     = empty($_options['adminPassword']) ? 'lars' : $_options['adminPassword'];
-        $_firstname    = empty($_options['adminFirstName']) ? 'Tine 2.0' : $_options['adminFirstName'];
-        $_lastname     = empty($_options['adminLastName']) ? 'Admin Account' : $_options['adminLastName'];
+        $_options['adminFirstName'] = isset($_options['adminFirstName']) ? $_options['adminFirstName'] : 'Tine 2.0';
+        $_options['adminLastName']  = isset($_options['adminLastName'])  ? $_options['adminLastName']  : 'Admin Account';
 
         // get admin & user groups
         $groupsBackend = Tinebase_Group::factory(Tinebase_Group::SQL);
         $adminGroup = $groupsBackend->getDefaultAdminGroup();
         $userGroup  = $groupsBackend->getDefaultGroup();
         
-        Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Creating initial admin user(' . $_loginName . ')');
+        Setup_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Creating initial admin user(' . $_options['adminLoginName'] . ')');
 
 
         $account = new Tinebase_Model_FullUser(array(
-            'accountLoginName'      => $_loginName,
+            'accountLoginName'      => $_options['adminLoginName'],
             'accountStatus'         => 'enabled',
             'accountPrimaryGroup'   => $userGroup->getId(),
-            'accountLastName'       => $_lastname,
-            'accountDisplayName'    => $_lastname . ', ' . $_firstname,
-            'accountFirstName'      => $_firstname,
+            'accountLastName'       => $_options['adminLastName'],
+            'accountDisplayName'    => $_options['adminLastName'] . ', ' . $_options['adminFirstName'],
+            'accountFirstName'      => $_options['adminFirstName'],
             'accountExpires'        => NULL,
             'accountEmailAddress'   => NULL,
         ));
 
-        $this->addUser($account);
+        $this->addOrUpdateUser($account);
         Tinebase_Core::set('currentAccount', $account);
         // set the password for the account
-        Tinebase_User::getInstance()->setPassword($_loginName, $_password);
+        Tinebase_User::getInstance()->setPassword($_options['adminLoginName'], $_options['adminPassword']);
 
         // add the admin account to all groups
         Tinebase_Group::getInstance()->addGroupMember($adminGroup, $account);

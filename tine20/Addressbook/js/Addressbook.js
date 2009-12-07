@@ -74,10 +74,10 @@ Tine.Addressbook.TreePanel = function(config) {
         }];
     //}
     
-    this.id = 'Addressbook_Tree',
+    this.id = 'Addressbook_Tree';
     this.recordClass = Tine.Addressbook.Model.Contact;
     Tine.Addressbook.TreePanel.superclass.constructor.call(this);
-}
+};
 Ext.extend(Tine.Addressbook.TreePanel , Tine.widgets.container.TreePanel);
 
 Tine.Addressbook.FilterPanel = function(config) {
@@ -180,7 +180,8 @@ Tine.Addressbook.Model.ContactArray = [
     {name: 'calendar_uri'},
     {name: 'note'},
     {name: 'tz'},
-    {name: 'geo'},
+    {name: 'lon'},
+    {name: 'lat'},
     {name: 'pubkey'},
     {name: 'creation_time',      type: 'date', dateFormat: Date.patterns.ISO8601Long},
     {name: 'created_by',         type: 'int'                  },
@@ -193,7 +194,9 @@ Tine.Addressbook.Model.ContactArray = [
     {name: 'account_id'},
     {name: 'tags'},
     {name: 'notes'},
-    {name: 'customfields'}
+    {name: 'relations'},
+    {name: 'customfields'},
+    {name: 'type'}
 ];
 
 /**
@@ -232,6 +235,31 @@ Tine.Addressbook.Model.Contact.getDefaultData = function() {
     return data;
 };*/
 
+Tine.Addressbook.Model.Contact.getFilterModel = function() {
+    var app = Tine.Tinebase.appMgr.get('Addressbook');
+    
+    var typeStore = [['contact', app.i18n._('Contact')], ['user', app.i18n._('User Account')]];
+    
+    return [
+        {label: _('Quick search'),                                                      field: 'query',              operators: ['contains']},
+        {label: app.i18n._('First Name'),                                               field: 'n_given' },
+        {label: app.i18n._('Last Name'),                                                field: 'n_family'},
+        {label: app.i18n._('Company'),                                                  field: 'org_name'},
+        {label: app.i18n._('Phone'),                                                    field: 'telephone',          operators: ['contains']},
+        {label: app.i18n._('Job Title'),                                                field: 'title'},
+        {label: app.i18n._('Job Role'),                                                 field: 'role'},
+        {filtertype: 'tinebase.tag', app: app},
+        //{label: app.i18n._('Birthday'),    field: 'bday', valueType: 'date'},
+        {label: app.i18n._('Street') + ' (' + app.i18n._('Company Address') + ')',      field: 'adr_one_street',     defaultOperator: 'equals'},
+        {label: app.i18n._('Postal Code') + ' (' + app.i18n._('Company Address') + ')', field: 'adr_one_postalcode', defaultOperator: 'equals'},
+        {label: app.i18n._('City') + '  (' + app.i18n._('Company Address') + ')',       field: 'adr_one_locality'},
+        {label: app.i18n._('Street') + ' (' + app.i18n._('Private Address') + ')',      field: 'adr_two_street',     defaultOperator: 'equals'},
+        {label: app.i18n._('Postal Code') + ' (' + app.i18n._('Private Address') + ')', field: 'adr_two_postalcode', defaultOperator: 'equals'},
+        {label: app.i18n._('City') + ' (' + app.i18n._('Private Address') + ')',        field: 'adr_two_locality'},
+        {label: app.i18n._('Type'), defaultValue: 'contact', valueType: 'combo',        field: 'type',               store: typeStore}
+    ];
+};
+    
 /**
  * default timesheets backend
  */

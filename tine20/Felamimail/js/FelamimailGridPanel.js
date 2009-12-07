@@ -20,10 +20,12 @@ Ext.namespace('Tine.Felamimail');
  * 
  * <p>Message Grid Panel</p>
  * <p><pre>
+ * TODO         mark to delete / to move messages
  * TODO         add flagged/'starred' filter
  * TODO         add show source code function
  * TODO         make doubleclick work again: show mail in new window (no edit dialog)
  * TODO         add pdf export
+ * TODO         make 'from' column non-(line-)breaking
  * </pre></p>
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
@@ -55,13 +57,14 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
      */
     evalGrants: false,
     filterSelectionDelete: true,
+    showDeleteMask: false,
     
     /**
      * @private grid cfg
      */
     defaultSortInfo: {field: 'received', direction: 'DESC'},
     gridConfig: {
-        loadMask: true,
+        //loadMask: true,
         autoExpandColumn: 'subject',
         // drag n drop
         enableDragDrop: true,
@@ -188,7 +191,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
             allowMultiple: true,
             singularText: this.app.i18n._('Delete'),
             pluralText: this.app.i18n._('Delete'),
-            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.tranlation,
+            translationObject: this.i18nDeleteActionText ? this.app.i18n : Tine.Tinebase.translation,
             text: this.app.i18n._('Delete'),
             handler: this.onDeleteRecords,
             disabled: true,
@@ -197,7 +200,6 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         });
         
         this.action_addAccount = new Ext.Action({
-            requiredGrant: 'readGrant',
             text: this.app.i18n._('Add Account'),
             handler: this.onAddAccount,
             iconCls: 'action_add',
@@ -214,7 +216,9 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
             this.action_markUnread,
             this.action_deleteRecord,
             '-',
-            this.action_addAccount
+            this.action_addAccount,
+            '->',
+            this.filterToolbar.getQuickFilterField()
         ];
         
         this.actionToolbar = new Ext.Toolbar({
@@ -250,6 +254,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     initFilterToolbar: function() {
         this.filterToolbar = new Tine.widgets.grid.FilterToolbar({
             filterModels: [
+                {label: this.app.i18n._('Subject/From'),field: 'query',         operators: ['contains']},
                 {label: this.app.i18n._('Subject'),     field: 'subject',       operators: ['contains']},
                 {label: this.app.i18n._('From'),        field: 'from',          operators: ['contains']},
                 {label: this.app.i18n._('To'),          field: 'to',            operators: ['contains']},
@@ -257,8 +262,11 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
                 {label: this.app.i18n._('Bcc'),         field: 'bcc',           operators: ['contains']},
                 {label: this.app.i18n._('Received'),    field: 'received',      valueType: 'date', pastOnly: true}
              ],
-             defaultFilter: 'subject',
-             filters: []
+             defaultFilter: 'query',
+             filters: [],
+             plugins: [
+                new Tine.widgets.grid.FilterToolbarQuickFilterPlugin()
+             ]
         });
     },    
     
@@ -309,7 +317,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         },{
             id: 'from',
             header: this.app.i18n._("From"),
-            width: 150,
+            width: 200,
             sortable: true,
             dataIndex: 'from'
         },{
@@ -322,7 +330,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         },{
             id: 'sent',
             header: this.app.i18n._("Sent"),
-            width: 150,
+            width: 100,
             sortable: true,
             dataIndex: 'sent',
             hidden: true,
@@ -330,7 +338,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         },{
             id: 'received',
             header: this.app.i18n._("Received"),
-            width: 150,
+            width: 100,
             sortable: true,
             dataIndex: 'received',
             renderer: Tine.Tinebase.common.dateTimeRenderer
@@ -483,6 +491,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         
         var recordData = this.recordClass.getDefaultData();
         var recordId = 0;
+        var selModel = this.grid.getSelectionModel();
         
         // set selected account as from
         recordData.from = this.app.getMainScreen().getTreePanel().getActiveAccount().data.id;
@@ -492,13 +501,16 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
             ||  button.actionType == 'forward'
         ) {
             // reply / forward
-            var selectedRows = this.grid.getSelectionModel().getSelections();
+            var selectedRows = selModel.getSelections();
+            if (selectedRows.length == 0) {
+                return;
+            }
             var selectedRecord = selectedRows[0];
             
             if (! selectedRecord.data.headers['content-type']) {
                 // record is not / not fully loaded -> defer
                 // TODO check if details panel is loading?
-                this.detailsPanel.onDetailsUpdate(this.grid.getSelectionModel());
+                this.detailsPanel.onDetailsUpdate(selModel);
                 this.onEditInNewWindow.defer(500, this, [button, event]);
                 return;
             }
@@ -554,7 +566,10 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
         } else if (button.actionType == 'edit') {
             
             // show existing email
-            var selectedRows = this.grid.getSelectionModel().getSelections();
+            var selectedRows = selModel.getSelections();
+            if (selectedRows.length == 0) {
+                return;
+            }
             var selectedRecord = selectedRows[0];
             recordId = selectedRecord.id;
             recordData.id = recordId;
@@ -576,9 +591,18 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
                 scope: this,
                 'update': function(record) {
                     this.store.load({});
+                    // TODO it would be better to select the record after the store has been reloaded but somehow this doesn't work
+                    //if (selectedRecord) {
+                    //    this.grid.getSelectionModel().selectRecords.defer(200, this, [[selectedRecord]]);
+                    //}
                 }
             }
         });
+        
+        // workaround for the problem that the actions are not disabled even when the store has been reloaded 
+        //  and no record is selected
+        // @see TODO above
+        selModel.clearSelections();
     },
     
     /**
@@ -591,6 +615,11 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
     onToggleFlag: function(button, event) {
         
         var messages = this.grid.getSelectionModel().getSelections();
+        
+        if (messages.length == 0) {
+            return;
+        }
+        
         var regexp = new RegExp('[ \,]*\\\\' + button.flag);
         var flagRegexp = new RegExp(button.flag);
         
@@ -696,18 +725,6 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
      * @return {Void}
      */
     onStoreLoad: function(store, records, options) {
-        var regexp = new RegExp('\\Recent');
-        var recentCount = 0;
-        store.each(function(record){
-            if (record.get('flags') && record.get('flags').match(regexp)) {
-                recentCount++;
-            }
-        }, this);
-        
-        if (recentCount > 0) {
-            //this.app.getMainScreen().getTreePanel().updateUnreadCount(recentCount);
-            this.app.getMainScreen().getTreePanel().updateFolderStatus(false);
-        }
     },
         
     /**
@@ -724,19 +741,36 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.Tinebase.widgets.app.GridPanel, {
                 'update': function(record) {
                     var account = new Tine.Felamimail.Model.Account(Ext.util.JSON.decode(record));
                     
-                    // add to tree / store / registry (?)
+                    // add to tree / store
                     var treePanel = this.app.getMainScreen().getTreePanel();
                     treePanel.addAccount(account);
                     treePanel.accountStore.add([account]);
+                    
+                    // add to registry
+                    Tine.Felamimail.registry.get('preferences').replace('defaultEmailAccount', account.id);
+                    // need to do this because store could be unitialized yet
+                    var registryAccounts = Tine.Felamimail.registry.get('accounts');
+                    registryAccounts.results.push(account.data);
+                    registryAccounts.totalcount++;
+                    Tine.Felamimail.registry.replace('accounts', registryAccounts);
                 }
             }
         });        
     },
-    
+
     /**
      * get update folder status after delete
+     * 
+     * TODO make marking of deleted messages work (how? use onDeleteRecords?)
      */
     onAfterDelete: function() {
+        /*
+        var selectedRows = this.grid.getSelectionModel().getSelections();
+        for (var i = 0; i < selectedRows.length; i++) {
+            Ext.get(this.grid.getView().getRow(i)).addClass('flag_deleted');
+        }
+        */
+        
         // get update folder status
         this.app.getMainScreen().getTreePanel().updateFolderStatus(false);
         this.store.load({});

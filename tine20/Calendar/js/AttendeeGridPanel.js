@@ -65,12 +65,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
         
         this.store = new Ext.data.SimpleStore({
             fields: Tine.Calendar.Model.Attender.getFieldDefinitions(),
-            sortInfo: {field: 'user_id', direction: 'ASC'},
-            listeners: {
-                scope: this,
-                cellcontextmenu : this.onContextMenu,
-                keydown: this.onKeyDown
-            }
+            sortInfo: {field: 'user_id', direction: 'ASC'}
         });
         
         this.on('beforeedit', this.onBeforeAttenderEdit, this);
@@ -105,7 +100,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
             width: 200,
             sortable: false,
             hidden: true,
-            header: Tine.Tinebase.tranlation._hidden('Saved in'),
+            header: Tine.Tinebase.translation._hidden('Saved in'),
             tooltip: this.app.i18n._('This is the calendar where the attender has saved this event in'),
             renderer: this.renderAttenderDispContainer.createDelegate(this),
             // disable for the moment, as updating calendarSelectWidget is not working in both directions
@@ -151,7 +146,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
                 store         : [
                     ['user',     this.app.i18n._('User')   ],
                     ['group',    this.app.i18n._('Group')  ],
-                    ['resource', this.app.i18n._('Resouce')]
+                    ['resource', this.app.i18n._('Resource')]
                 ]
             })
         }, {
@@ -288,6 +283,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     
     // NOTE: Ext docu seems to be wrong on arguments here
     onContextMenu: function(e, target) {
+        e.preventDefault();
         var row = this.getView().findRowIndex(target);
         var attender = this.store.getAt(row);
         if (attender) {
@@ -321,11 +317,11 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
      */
     onRecordLoad: function(record) {
         this.record = record;
-        this.store.removeAll(attendee);
+        this.store.removeAll();
         var attendee = record.get('attendee');
         Ext.each(attendee, function(attender) {
             var record = new Tine.Calendar.Model.Attender(attender, attender.id);
-            this.store.add(record);
+            this.store.addSorted(record);
             
             if (attender.displaycontainer_id  && this.record.get('container_id') && attender.displaycontainer_id.id == this.record.get('container_id').id) {
                 this.eventOriginator = record;
@@ -365,7 +361,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     onKeyDown: function(e) {
         switch(e.getKey()) {
             
-            case e.DELETE: {
+            case e.DELETE: 
                 if (this.record.get('editGrant')) {
                     var selection = this.getSelectionModel().getSelectedCell();
                     
@@ -381,7 +377,7 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
                         this.store.removeAt(row);
                     }
                 }
-            }
+                break;
         }
     },
     
@@ -489,21 +485,22 @@ Tine.Calendar.AttendeeGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
             metadata.css = 'x-form-empty-field';
         }
         
+        var il8n = Tine.Tinebase.appMgr.get('Calendar').i18n;
         switch (status) {
             case 'NEEDS-ACTION':
-                return this.app.i18n._('No response');
+                return il8n._('No response');
                 break;
             case 'ACCEPTED':
-                return this.app.i18n._('Accepted');
+                return il8n._('Accepted');
                 break;
             case 'DECLINED':
-                return this.app.i18n._('Declined');
+                return il8n._('Declined');
                 break;
             case 'TENTATIVE':
-                return this.app.i18n._('Tentative');
+                return il8n._('Tentative');
                 break;
             default:
-                return Ext.util.Format.htmlEncode(this.app.i18n._hidden(status));
+                return Ext.util.Format.htmlEncode(il8n._hidden(status));
                 break;
         }
     },

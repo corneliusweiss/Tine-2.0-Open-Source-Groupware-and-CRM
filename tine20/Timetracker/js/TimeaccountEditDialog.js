@@ -4,10 +4,9 @@
  * @package     Timetracker
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
- * @todo        make sorting work in grants grid
  */
  
 Ext.namespace('Tine.Timetracker');
@@ -64,7 +63,6 @@ Tine.Timetracker.TimeaccountEditDialog = Ext.extend(Tine.widgets.dialog.EditDial
             border: false,
             plain:true,
             activeTab: 0,
-            border: false,
             items:[{               
                 title: this.app.i18n._('Time Account'),
                 autoScroll: true,
@@ -92,6 +90,7 @@ Tine.Timetracker.TimeaccountEditDialog = Ext.extend(Tine.widgets.dialog.EditDial
                         allowBlank: false
                         }], [{
                         columnWidth: 1,
+                        fieldLabel: this.app.i18n._('Description'),
                         xtype: 'textarea',
                         name: 'description',
                         height: 150
@@ -99,7 +98,7 @@ Tine.Timetracker.TimeaccountEditDialog = Ext.extend(Tine.widgets.dialog.EditDial
                             fieldLabel: this.app.i18n._('Unit'),
                             name: 'price_unit'
                         }, {
-                        	xtype: 'numberfield',
+                            xtype: 'numberfield',
                             fieldLabel: this.app.i18n._('Unit Price'),
                             name: 'price',
                             allowNegative: false
@@ -199,10 +198,10 @@ Tine.Timetracker.TimeaccountEditDialog = Ext.extend(Tine.widgets.dialog.EditDial
             this.grantsStore =  new Ext.data.JsonStore({
                 root: 'results',
                 totalProperty: 'totalcount',
-                id: 'id',
-                fields: Tine.Timetracker.Model.TimeaccountGrant/*,
-                remoteSort: false,
-                sortInfo: {field: "account_name", direction: "DESC"}*/
+                //id: 'id',
+                // use account_id here because that simplifies the adding of new records with the search comboboxes
+                id: 'account_id',
+                fields: Tine.Timetracker.Model.TimeaccountGrant
             });
             
             var columns = [
@@ -233,13 +232,15 @@ Tine.Timetracker.TimeaccountEditDialog = Ext.extend(Tine.widgets.dialog.EditDial
                 })
             ];
             
-            this.grantsGrid = new Tine.widgets.account.ConfigGrid({
-                accountPickerType: 'both',
-                accountListTitle: this.app.i18n._('Permissions'),
-                configStore: this.grantsStore,
+            this.grantsGrid = new Tine.widgets.account.PickerGridPanel({
+                selectType: 'both',
+                title:  this.app.i18n._('Permissions'),
+                store: this.grantsStore,
                 hasAccountPrefix: true,
-                configColumns: columns
-            });
+                configColumns: columns,
+                selectAnyone: false,
+                recordClass: Tine.Tinebase.Model.Grant
+            }); 
         }
         return this.grantsGrid;
     }

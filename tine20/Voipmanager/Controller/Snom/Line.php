@@ -20,6 +20,13 @@
 class Voipmanager_Controller_Snom_Line extends Voipmanager_Controller_Abstract
 {
     /**
+     * holds the instance of the singleton
+     *
+     * @var Voipmanager_Controller_Snom_Line
+     */
+    private static $_instance = NULL;
+    
+    /**
      * Voipmanager backend class
      *
      * @var Voipmanager_Backend_Snom_Line
@@ -31,8 +38,9 @@ class Voipmanager_Controller_Snom_Line extends Voipmanager_Controller_Abstract
      *
      * don't use the constructor. use the singleton 
      */
-    private function __construct() {
-        $this->_backend      = new Voipmanager_Backend_Snom_Line($this->getDatabaseBackend());
+    private function __construct() 
+    {
+        $this->_backend      = new Voipmanager_Backend_Snom_Line();
         $this->_cache        = Zend_Registry::get('cache');        
     }
         
@@ -44,13 +52,6 @@ class Voipmanager_Controller_Snom_Line extends Voipmanager_Controller_Abstract
     {        
     }
             
-    /**
-     * holds the instance of the singleton
-     *
-     * @var Voipmanager_Controller_Snom_Line
-     */
-    private static $_instance = NULL;
-    
     /**
      * the singleton pattern
      *

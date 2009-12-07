@@ -215,7 +215,7 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
             // add primary group to account for the group selection combo box
             $group = Tinebase_Group::getInstance()->getGroupById($user->accountPrimaryGroup);
         } else {
-            $userArray = array('accountStatus' => 'enabled');
+            $userArray = array('accountStatus' => 'enabled', 'visibility' => 'displayed');
             
             // get default primary group for the group selection combo box
             $group = Tinebase_Group::getInstance()->getDefaultGroup();
@@ -259,7 +259,6 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     {
         $decodedAccountData = Zend_Json::decode($recordData);
         $password = $decodedAccountData['accountPassword'];
-        $passwordRepeat = $decodedAccountData['accountPassword2'];
         
         $account = new Tinebase_Model_FullUser();
         
@@ -294,9 +293,9 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
                 return $result;
             }
             
-            $account = Admin_Controller_User::getInstance()->create($account, $password, $passwordRepeat);
+            $account = Admin_Controller_User::getInstance()->create($account, $password, $password);
         } else {
-            $account = Admin_Controller_User::getInstance()->update($account, $password, $passwordRepeat);
+            $account = Admin_Controller_User::getInstance()->update($account, $password, $password);
         }
         
         $account->accountPrimaryGroup = Tinebase_Group::getInstance()->getGroupById($account->accountPrimaryGroup);
@@ -378,16 +377,19 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      * 
      * @param  array  &$_items array of arrays which contain a type and id property
      * @param  bool   $_hasAccountPrefix
+     * @param  bool   $_removePrefix
      * @return array  items with appended name 
-     * @throws UnexpectedValueException 
+     * @throws UnexpectedValueException
+     * 
+     * @todo    remove all this prefix stuff? why did we add this?
+     * @todo    use a resolveMultiple function here
      */
-    public static function resolveAccountName(array $_items, $_hasAccountPrefix=false)
+    public static function resolveAccountName(array $_items, $_hasAccountPrefix = FALSE, $_removePrefix = FALSE)
     {
         $prefix = $_hasAccountPrefix ? 'account_' : '';
         
         $return = array();
         foreach ($_items as $num => $item) {
-            
             switch ($item[$prefix . 'type']) {
                 case Tinebase_Acl_Rights::ACCOUNT_TYPE_USER:
                     $item[$prefix . 'name'] = Tinebase_User::getInstance()->getUserById($item[$prefix . 'id'])->accountDisplayName;
@@ -402,7 +404,15 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
                     throw new UnexpectedValueException('Unsupported accountType: ' . $item[$prefix . 'type']);
                     break;
             }
-            $return[$num] = $item;
+            if ($_removePrefix) {
+                $return[$num] = array(
+                    'id'    => $item[$prefix . 'id'],
+                    'name'  => $item[$prefix . 'name'], 
+                    'type'  => $item[$prefix . 'type'],
+                );
+            } else {
+                $return[$num] = $item;
+            }
         }
         return $return;
     }
@@ -454,6 +464,8 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      *
      * @param int $groupId
      * @return array with results / totalcount
+     * 
+     * @todo use Account Model?
      */
     public function getGroupMembers($groupId)
     {
@@ -465,9 +477,14 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         if ($groupId) {
             $accountIds = Admin_Controller_Group::getInstance()->getGroupMembers($groupId);
     
-            $result['results'] = array ();
-            foreach ( $accountIds as $accountId ) {
-                $result['results'][] = Tinebase_User::getInstance()->getUserById($accountId)->toArray();
+            $result['results'] = array();
+            foreach ($accountIds as $accountId) {
+                $account = Tinebase_User::getInstance()->getUserById($accountId);
+                $result['results'][] = array(
+                    'id'        => $accountId,
+                    'type'      => Tinebase_Acl_Rights::ACCOUNT_TYPE_USER,
+                    'name'      => $account->accountDisplayName,
+                ); 
             }
                     
             $result['totalcount'] = count($result['results']);
@@ -809,7 +826,7 @@ class Admin_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         if (!empty($roleId)) {
             $members = Admin_Controller_Role::getInstance()->getRoleMembers($roleId);
     
-            $result['results'] = self::resolveAccountName($members, true);
+            $result['results'] = self::resolveAccountName($members, TRUE, TRUE);
             $result['totalcount'] = count($result['results']);
         }
         return $result;

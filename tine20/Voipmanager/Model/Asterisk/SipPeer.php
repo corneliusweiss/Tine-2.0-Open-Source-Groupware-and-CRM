@@ -5,7 +5,7 @@
  * @package     Voipmanager
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Thomas Wadewitz <t.wadewitz@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
  */
@@ -39,9 +39,9 @@ class Voipmanager_Model_Asterisk_SipPeer extends Tinebase_Record_Abstract
      *
      * @var array
      */
-    protected $_filters = array(
-        '*'                     => 'StringTrim'
-    );
+    #protected $_filters = array(
+    #    '*'                     => 'StringTrim'
+    #);
     
     /**
      * list of zend validator
@@ -58,6 +58,7 @@ class Voipmanager_Model_Asterisk_SipPeer extends Tinebase_Record_Abstract
         'callgroup'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'callerid'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'canreinvite'           => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
+        'context_id'            => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'context'               => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'defaultip'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'dtmfmode'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),
@@ -81,7 +82,7 @@ class Voipmanager_Model_Asterisk_SipPeer extends Tinebase_Record_Abstract
         'rtpholdtimeout'        => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'secret'                => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'type'                  => array(Zend_Filter_Input::ALLOW_EMPTY => true),
-        'username'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),
+        'defaultuser'           => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'disallow'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'allow'                 => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'musiconhold'           => array(Zend_Filter_Input::ALLOW_EMPTY => true),
@@ -94,7 +95,10 @@ class Voipmanager_Model_Asterisk_SipPeer extends Tinebase_Record_Abstract
         'useclientcode'         => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
         'authuser'              => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'call-limit'            => array(Zend_Filter_Input::ALLOW_EMPTY => true),
-        'busy-level'            => array(Zend_Filter_Input::ALLOW_EMPTY => true)
+        'busy-level'            => array(Zend_Filter_Input::ALLOW_EMPTY => true),
+        'regserver'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
+        'useragent'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
+        'lastms'                => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => -1)
     );
 
     /**

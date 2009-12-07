@@ -22,6 +22,17 @@
 class Crm_Controller extends Tinebase_Controller_Abstract implements Tinebase_Event_Interface, Tinebase_Container_Interface
 {
     /**
+     * default settings
+     * 
+     * @var array
+     */
+    protected $_defaultsSettings = array(
+        'leadstate_id'  => 1,
+        'leadtype_id'   => 1,
+        'leadsource_id' => 1,
+    );
+    
+    /**
      * the constructor
      *
      * don't use the constructor. use the singleton 
@@ -89,6 +100,8 @@ class Crm_Controller extends Tinebase_Controller_Abstract implements Tinebase_Ev
      *
      * @param mixed[int|Tinebase_Model_User] $_account   the accountd object
      * @return Tinebase_Record_RecordSet                            of subtype Tinebase_Model_Container
+     * 
+     * @todo generalize this
      */
     public function createPersonalFolder($_accountId)
     {
@@ -112,17 +125,85 @@ class Crm_Controller extends Tinebase_Controller_Abstract implements Tinebase_Ev
     }
 
     /**
-     * delets the personal folder for deleted accounts
+     * Returns settings for crm app
+     * - result is cached
      *
-     * @param mixed[int|Tinebase_Model_User] $_account   the accountd object
-     * @return void
+     * @return  Crm_Model_Config
      * 
-     * @todo    implement
+     * @todo check 'endslead' values
+     * @todo generalize this
      */
-    public function deletePersonalFolder($_accountId)
+    public function getSettings()
     {
-        $accountId = Tinebase_Model_User::convertUserIdToInt($_accountId);
+        $cache = Tinebase_Core::get('cache');
+        $cacheId = convertCacheId('getCrmSettings');
+        $result = $cache->load($cacheId);
         
-        // delete personal folder here
-    } 
+        if (! $result) {
+        
+            $translate = Tinebase_Translation::getTranslation('Crm');
+            
+            $result = new Crm_Model_Config(array(
+                'defaults' => parent::getSettings()
+            ));
+            
+            $others = array(
+                Crm_Model_Config::LEADTYPES => array(
+                    array('id' => 1, 'leadtype' => $translate->_('Customer')),
+                    array('id' => 2, 'leadtype' => $translate->_('Partner')),
+                    array('id' => 3, 'leadtype' => $translate->_('Reseller')),
+                ), 
+                Crm_Model_Config::LEADSTATES => array(
+                    array('id' => 1, 'leadstate' => $translate->_('open'),                  'probability' => 0,     'endslead' => 0),
+                    array('id' => 2, 'leadstate' => $translate->_('contacted'),             'probability' => 10,    'endslead' => 0),
+                    array('id' => 3, 'leadstate' => $translate->_('waiting for feedback'),  'probability' => 30,    'endslead' => 0),
+                    array('id' => 4, 'leadstate' => $translate->_('quote sent'),            'probability' => 50,    'endslead' => 0),
+                    array('id' => 5, 'leadstate' => $translate->_('accepted'),              'probability' => 100,   'endslead' => 1),
+                    array('id' => 6, 'leadstate' => $translate->_('lost'),                  'probability' => 0,     'endslead' => 1),
+                ), 
+                Crm_Model_Config::LEADSOURCES => array(
+                    array('id' => 1, 'leadsource' => $translate->_('Market')),
+                    array('id' => 2, 'leadsource' => $translate->_('Email')),
+                    array('id' => 3, 'leadsource' => $translate->_('Telephone')),
+                    array('id' => 4, 'leadsource' => $translate->_('Website')),
+                )
+            );
+            foreach ($others as $setting => $defaults) {
+                $result->$setting = Tinebase_Config::getInstance()->getConfigAsArray($setting, $this->_applicationName, $defaults);
+            }
+            
+            // save result and tag it with 'settings'
+            $cache->save($result, $cacheId, array('settings'));
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * save crm settings
+     * 
+     * @param Crm_Model_Config $_settings
+     * @return Crm_Model_Config
+     * 
+     * @todo generalize this
+     */
+    public function saveSettings($_settings)
+    {
+        Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Updating Crm Settings: ' . print_r($_settings->toArray(), TRUE));
+        
+        foreach ($_settings->toArray() as $field => $value) {
+            if ($field == 'id') {
+                continue;
+            } else if ($field == 'defaults') {
+                parent::saveSettings($value);
+            } else {
+                Tinebase_Config::getInstance()->setConfigForApplication($field, Zend_Json::encode($value), $this->_applicationName);
+            }
+        }
+        
+        // invalidate cache
+        Tinebase_Core::get('cache')->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('settings'));
+        
+        return $this->getSettings();
+    }
 }

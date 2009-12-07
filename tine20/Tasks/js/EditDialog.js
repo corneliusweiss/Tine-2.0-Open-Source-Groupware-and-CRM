@@ -17,7 +17,10 @@ Ext.namespace('Tine.Tasks');
  * @extends     Tine.widgets.dialog.EditDialog
  * 
  * <p>Tasks Edit Dialog</p>
- * <p></p>
+ * <p>
+ * TODO         refactor this: remove initRecord/containerId/relatedApp, 
+ *              adopt to normal edit dialog flow and add getDefaultData to task model
+ * </p>
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
@@ -58,7 +61,17 @@ Ext.namespace('Tine.Tasks');
      * @private
      */
     initComponent: function() {
+        // init tabpanels
         this.alarmPanel = new Tine.widgets.dialog.AlarmPanel({});
+        this.linkPanel = new Tine.widgets.dialog.LinkPanel({
+            relatedRecords: {
+                Crm_Model_Lead: {
+                    recordClass: Tine.Crm.Model.Lead,
+                    dlgOpener: Tine.Crm.LeadEditDialog.openWindow
+                }
+            }
+        });
+        
         Tine.Tasks.EditDialog.superclass.initComponent.call(this);
     },
     
@@ -88,7 +101,10 @@ Ext.namespace('Tine.Tasks');
     onRecordLoad: function() {
         Tine.Tasks.EditDialog.superclass.onRecordLoad.call(this);
         this.handleCompletedDate();
+        
+        // update tabpanels
         this.alarmPanel.onRecordLoad(this.record);
+        this.linkPanel.onRecordLoad(this.record);
     },
     
     /**
@@ -160,9 +176,12 @@ Ext.namespace('Tine.Tasks');
                     }), new Tine.widgets.Priority.Combo({
                         fieldLabel: this.app.i18n._('Priority'),
                         name: 'priority'
-                    }), new Tine.widgets.AccountpickerField({
-                        fieldLabel: this.app.i18n._('Responsible'),
-                        name: 'organizer'
+                    }), new Tine.Addressbook.SearchCombo({
+                            emptyText: _('Add Responsible ...'),
+                            internalContactsOnly: true,
+                            name: 'organizer',
+                            nameField: 'n_fileas',
+                            useAccountRecord: true
                     })], [{
                         columnWidth: 1,
                         fieldLabel: this.app.i18n._('Notes'),
@@ -211,7 +230,8 @@ Ext.namespace('Tine.Tasks');
                 app: this.appName,
                 record_id: (this.record) ? this.record.id : '',
                 record_model: this.appName + '_Model_' + this.recordClass.getMeta('modelName')
-            }), this.alarmPanel
+            }), this.alarmPanel, 
+                this.linkPanel
             ]
         };
     }

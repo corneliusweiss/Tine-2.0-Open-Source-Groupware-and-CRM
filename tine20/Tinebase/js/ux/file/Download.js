@@ -44,13 +44,24 @@ Ext.extend(Ext.ux.file.Download, Ext.util.Observable, {
             cls:'x-hidden'
         });
 
-        this.transactionId = Ext.Ajax.request({
+        var con = new Ext.data.Connection({
+            // firefox specific problem -> see http://www.extjs.com/forum/archive/index.php/t-44862.html
+            //  "It appears that this is because the "load" is completing once the initial download dialog is displayed, 
+            //  but the frame is then destroyed before the "save as" dialog is shown."
+            //
+            // TODO check if we can handle firefox event 'onSaveAsSubmit' (or something like that)
+            //
+            debugUploads: Ext.isGecko
+        });
+        
+        this.transactionId = con.request({
             isUpload: true,
             form: this.form,
             params: this.params,
             scope: this,
             success: this.onSuccess,
-            failure: this.onFailure
+            failure: this.onFailure,
+            url: 'index.php'
         });
     },
     
@@ -58,7 +69,6 @@ Ext.extend(Ext.ux.file.Download, Ext.util.Observable, {
      * abort download
      */
     abort: function() {
-        console.log('abort');
         Ext.Ajax.abort(this.transactionId);
         this.form.remove();
         this.fireEvent('abort', this);

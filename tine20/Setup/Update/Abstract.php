@@ -84,9 +84,9 @@ class Setup_Update_Abstract
 	public function getTableVersion($_tableName)
     {
         $select = $this->_db->select()
-                ->from( SQL_TABLE_PREFIX . 'application_tables')
-                ->where($this->_db->quoteIdentifier('name') . ' = ?', $_tableName)
-                ->orwhere($this->_db->quoteIdentifier('name') . ' = ?', $_tableName);
+                ->from(SQL_TABLE_PREFIX . 'application_tables')
+                ->where(    $this->_db->quoteIdentifier('name') . ' = ?', $_tableName)
+                ->orwhere(  $this->_db->quoteIdentifier('name') . ' = ?', SQL_TABLE_PREFIX . $_tableName);
 
         $stmt = $select->query();
         $rows = $stmt->fetchAll();
@@ -163,7 +163,7 @@ class Setup_Update_Abstract
         $where  = array(
             $this->_db->quoteInto($this->_db->quoteIdentifier('name') . ' = ?', $_oldTableName),
         );
-        $result = $applicationsTables->update(array('name' => SQL_TABLE_PREFIX . $_newTableName), $where);
+        $result = $applicationsTables->update(array('name' => $_newTableName), $where);
     }
     
     /**

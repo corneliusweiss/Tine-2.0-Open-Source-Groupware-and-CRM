@@ -25,6 +25,12 @@ class Felamimail_Model_Folder extends Tinebase_Record_Abstract
     const CACHE_STATUS_EMPTY = 'empty';
     
     /**
+     * cache status: pending
+     *
+     */
+    const CACHE_STATUS_PENDING = 'pending';
+    
+    /**
      * cache status: complete
      *
      */
@@ -41,6 +47,12 @@ class Felamimail_Model_Folder extends Tinebase_Record_Abstract
      *
      */
     const CACHE_STATUS_INCOMPLETE = 'incomplete';
+    
+    /**
+     * cache status: deleting
+     * - is set by Felamimail_Controller_Message::deleteMessagesFromImapServer()
+     */
+    const CACHE_STATUS_DELETING = 'deleting';
     
     /**
      * key in $_validators/$_properties array for the field which 
@@ -73,6 +85,7 @@ class Felamimail_Model_Folder extends Tinebase_Record_Abstract
         'delimiter'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'is_selectable'         => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 1),
         'has_children'          => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
+        'recent'                => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
         'system_folder'         => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
         'timestamp'             => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'totalcount'            => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
@@ -86,10 +99,12 @@ class Felamimail_Model_Folder extends Tinebase_Record_Abstract
             Zend_Filter_Input::ALLOW_EMPTY => true, 
             Zend_Filter_Input::DEFAULT_VALUE => self::CACHE_STATUS_EMPTY, 
             'InArray' => array(
-                self::CACHE_STATUS_EMPTY, 
+                self::CACHE_STATUS_EMPTY,
+                self::CACHE_STATUS_PENDING,
                 self::CACHE_STATUS_COMPLETE, 
                 self::CACHE_STATUS_INCOMPLETE, 
-                self::CACHE_STATUS_UPDATING
+                self::CACHE_STATUS_UPDATING,
+                self::CACHE_STATUS_DELETING
             )
         ),
         'cache_lowest_uid'      => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),

@@ -72,6 +72,12 @@ Tine.Setup.EmailPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPanel, {
     smtpBackendCombo: null,
 
     /**
+     * show type before db settings
+     * @cfg {Boolean} showType
+     */
+    showType: false,
+    
+    /**
      * @private
      * panel cfg
      */
@@ -322,6 +328,10 @@ Tine.Setup.EmailPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPanel, {
                 fieldLabel: this.app.i18n._('Domain'),
                 xtype: 'textfield'
             }, {
+                name: 'smtp_from',
+                fieldLabel: this.app.i18n._('Notifications service address'),
+                xtype: 'textfield'
+            }, {
                 id: this.smtpBackendIdPrefix + 'CardLayout',
                 layout: 'card',
                 activeItem: this.smtpBackendIdPrefix + 'standard',
@@ -365,19 +375,24 @@ Tine.Setup.EmailPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPanel, {
      * @return {Array}
      */
     getDbConfigFields: function(type1, type2) {
+        var typeString = (this.showType) ? (Ext.util.Format.capitalize(type2) + ' ') : '';
         return [{
             name: type1 + '_' + type2 + '_host',
-            fieldLabel: Ext.util.Format.capitalize(type2) + ' ' + this.app.i18n._('Hostname')
+            fieldLabel: typeString + this.app.i18n._('MySql Hostname')
         }, {
             name: type1 + '_' + type2 + '_dbname',
-            fieldLabel: Ext.util.Format.capitalize(type2) + ' ' + this.app.i18n._('Database')
+            fieldLabel: typeString + this.app.i18n._('MySql Database')
         }, {
             name: type1 + '_' + type2 + '_username',
-            fieldLabel: Ext.util.Format.capitalize(type2) + ' ' + this.app.i18n._('User')
+            fieldLabel: typeString + this.app.i18n._('MySql User')
         }, {
             name: type1 + '_' + type2 + '_password',
-            fieldLabel: Ext.util.Format.capitalize(type2) + ' ' + this.app.i18n._('Password'),
+            fieldLabel: typeString + this.app.i18n._('MySql Password'),
             inputType: 'password'
+        }, {
+            name: type1 + '_' + type2 + '_port',
+            fieldLabel: typeString + this.app.i18n._('MySql Port'),
+            value: 3306
         }];
     }
 });

@@ -45,7 +45,7 @@ Tine.Calendar.CalendarSelectWidget = function(EventEditDialog) {
     
     this.calCombo = new Tine.widgets.container.selectionComboBox({
         //id: this.app.appName + 'EditDialogPhysCalSelector',
-        fieldLabel: Tine.Tinebase.tranlation._hidden('Saved in'),
+        fieldLabel: Tine.Tinebase.translation._hidden('Saved in'),
         width: 450,
         containerName: this.app.i18n.n_hidden(this.recordClass.getMeta('containerName'), this.recordClass.getMeta('containersName'), 1),
         containersName: this.app.i18n._hidden(this.recordClass.getMeta('containersName')),
@@ -72,7 +72,7 @@ Ext.extend(Tine.Calendar.CalendarSelectWidget, Ext.util.Observable, {
      * Calmap record definition
      * 
      * @type Function 
-     * @propertycalMapRecord
+     * @property calMapRecord
      */
     calMapRecord: Ext.data.Record.create([
         {name: 'attender'}, {name: 'calendar'}, {name: 'user'}, {name: 'userAccountId'}, {name: 'calendarName'}, {name: 'userName'}, {name: 'editGrant'}, {name: 'isOriginal'}

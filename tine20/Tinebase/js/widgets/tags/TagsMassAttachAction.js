@@ -21,12 +21,20 @@ Tine.widgets.tags.TagsMassAttachAction = function(config) {
 };
 
 Ext.extend(Tine.widgets.tags.TagsMassAttachAction, Ext.Action, {
+    
     /**
-     * @cfg {Ext.data.Store} store
+     * called when tags got updates
      * 
-     * if given, this store gets reloaded after successfull mass tagging
+     * @type Function
      */
-    store: null,
+    updateHandler: Ext.emptyFn,
+    
+    /**
+     * scope of update handler
+     * 
+     * @type Object
+     */
+    updateHandlerScope: null,
     
     /**
      * @cfg {mixed} selectionModel
@@ -45,7 +53,8 @@ Ext.extend(Tine.widgets.tags.TagsMassAttachAction, Ext.Action, {
     getFormItems: function() {
         this.tagSelect = new Tine.widgets.tags.TagCombo({
             hideLabel: true,
-            anchor: '100%'
+            anchor: '100%',
+            onlyUsableTags: true
         });
         
         return [{
@@ -99,9 +108,7 @@ Ext.extend(Tine.widgets.tags.TagsMassAttachAction, Ext.Action, {
     },
     
     onSuccess: function() {
-        if (this.store) {
-            this.store.load();
-        }
+        this.updateHandler.call(this.updateHandlerScope || this);
         
         this.win.close();
     }

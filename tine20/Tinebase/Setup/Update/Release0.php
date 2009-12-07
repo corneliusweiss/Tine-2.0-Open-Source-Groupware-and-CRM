@@ -374,8 +374,8 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
         $adminRole = Tinebase_Acl_Roles::getInstance()->createRole($adminRole);
         Tinebase_Acl_Roles::getInstance()->setRoleMembers($adminRole->getId(), array(
             array(
-                'account_id'    => $adminGroup->getId(),
-                'account_type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
+                'id'    => $adminGroup->getId(),
+                'type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
             )
         ));
         
@@ -386,8 +386,8 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
         $userRole = Tinebase_Acl_Roles::getInstance()->createRole($userRole);
         Tinebase_Acl_Roles::getInstance()->setRoleMembers($userRole->getId(), array(
             array(
-                'account_id'    => $userGroup->getId(),
-                'account_type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
+                'id'    => $userGroup->getId(),
+                'type'  => Tinebase_Acl_Rights::ACCOUNT_TYPE_GROUP, 
             )
         ));
         
@@ -1548,7 +1548,7 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
         }
 
         try {
-            $sharedContracts = Tinebase_Container::getInstance()->getContainerByName('Erp', 'Shared Contracts', Tinebase_Model_Container::TYPE_SHARED);
+            $sharedContracts = Tinebase_Container::getInstance()->getContainerByName('Sales', 'Shared Contracts', Tinebase_Model_Container::TYPE_SHARED);
         } catch (Tinebase_Exception_NotFound $enf) {            
             // create it if it doesn't exists
             $newContainer = new Tinebase_Model_Container(array(
@@ -2283,7 +2283,7 @@ class Tinebase_Setup_Update_Release0 extends Setup_Update_Abstract
                         Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' ' . $zdse->getMessage());
                         
                         // try to convert strings if failure
-                        if (preg_match('/(description|title|note|old_value)/', $zdse->getMessage(), $match)) {
+                        if (preg_match('/(description|title|note|old_value|org_name|adr_one_street)/', $zdse->getMessage(), $match)) {
                             $field = $match[1];
                             Setup_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ 
                                 . ' Converting field ' . $field 

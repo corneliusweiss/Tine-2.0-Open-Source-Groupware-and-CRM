@@ -8,6 +8,7 @@
  * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @author      Lars Kneschke <l.kneschke@metaways.de>
  * @version     $Id$
+ * 
  */
 
 /**
@@ -30,9 +31,9 @@ class Tinebase_Smtp
     /**
      * the default smtp transport
      *
-     * @var Zend_Mail_Transport_Smtp
+     * @var Zend_Mail_Transport_Abstract
      */
-    protected $_defaultTransport;
+    protected static $_defaultTransport = NULL;
     
     /**
      * the constructor
@@ -41,16 +42,29 @@ class Tinebase_Smtp
      */
     private function __construct() 
     {
-        if(isset(Tinebase_Core::getConfig()->smtp)) {
-            $config = Tinebase_Core::getConfig()->smtp;
-        } else {
-            $config = new Zend_Config(array(
-                'hostname' => 'localhost', 
-                'port' => 25
-            ));
-        }
+        $config = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP, 'Tinebase', array(
+            'hostname' => 'localhost', 
+            'port' => 25
+        ));
         
-        $this->_defaultTransport = new Zend_Mail_Transport_Smtp($config->hostname, $config->toArray());
+        // set default transport none is set yet
+        if (! self::getDefaultTransport()) {
+            // don't try to login if no username is given or if auth set to 'none'
+            if ($config['auth'] == 'none' || empty($config['username'])) {
+                unset($config['username']);
+                unset($config['password']);
+                unset($config['auth']);
+            }
+            
+            if ($config['ssl'] == 'none') {
+                unset($config['ssl']);
+            }
+            
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Setting SMTP transport. Hostname: ' . $config['hostname']);
+            //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . print_r($config, TRUE));
+            
+            self::setDefaultTransport(new Zend_Mail_Transport_Smtp($config['hostname'], $config));
+        }
     }
     
     /**
@@ -76,6 +90,26 @@ class Tinebase_Smtp
     }
 
     /**
+     * sets default transport
+     * @param  Zend_Mail_Transport_Abstract $_transport
+     * @return void
+     */
+    public static function setDefaultTransport($_transport)
+    {
+        self::$_defaultTransport = $_transport;
+    }
+    
+    /**
+     * returns default transport
+     * 
+     * @return Zend_Mail_Transport_Abstract
+     */
+    public static function getDefaultTransport()
+    {
+        return self::$_defaultTransport;
+    }
+    
+    /**
      * send message using default transport or an instance of Zend_Mail_Transport_Abstract
      *
      * @param Zend_Mail $_mail
@@ -84,43 +118,10 @@ class Tinebase_Smtp
      */
     public function sendMessage(Zend_Mail $_mail, $_transport = NULL)
     {
-        $transport = $_transport instanceof Zend_Mail_Transport_Abstract ? $_transport : $this->_defaultTransport;
+        $transport = $_transport instanceof Zend_Mail_Transport_Abstract ? $_transport : self::getDefaultTransport();
         
         $_mail->addHeader('X-MailGenerator', 'Tine 2.0');
         
         $_mail->send($transport); 
-    }
-    
-    public function sendRawMessage($_mail, $_transport = NULL)
-    {
-        $transport = $_transport instanceof Zend_Mail_Transport_Abstract ? $_transport : $this->_defaultTransport;
-        $connection = $transport->getConnection();
-        
-        if (!($connection instanceof Zend_Mail_Protocol_Smtp)) {
-            // Check if authentication is required and determine required class
-            $connectionClass = 'Zend_Mail_Protocol_Smtp';
-            if ($this->_auth) {
-                $connectionClass .= '_Auth_' . ucwords($this->_auth);
-            }
-            Zend_Loader::loadClass($connectionClass);
-            $this->setConnection(new $connectionClass($this->_host, $this->_port, $this->_config));
-            $connection->connect();
-            $connection->helo($this->_name);
-        } else {
-            // Reset connection to ensure reliable transaction
-            $connection->rset();
-        }
-        
-        // Set mail return path from sender email address
-        $connection->mail($this->_mail->getReturnPath());
-        
-        // Set recipient forward paths
-        foreach ($this->_mail->getRecipients() as $recipient) {
-            $connection->rcpt($recipient);
-        }
-        
-        // Issue DATA command to client
-        $connection->data($_mail);
-        
     }
 }
