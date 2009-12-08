@@ -81,21 +81,21 @@ msgstr "Неправильное завершение"
 msgid "An error occurred, the program ended abnormal."
 msgstr "Произошла ошибка, программа завершилась неправильно."
 
-#: js/common.js:144
+#: js/common.js:145
 msgid "{0} minute"
 msgid_plural "{0} minutes"
 msgstr[0] "{0} минута"
 msgstr[1] "{0} минуты"
 msgstr[2] "{0} минут"
 
-#: js/common.js:145
+#: js/common.js:146
 msgid "{0} hour"
 msgid_plural "{0} hours"
 msgstr[0] "{0} час"
 msgstr[1] "{0} часа"
 msgstr[2] "{0} часов"
 
-#: js/common.js:146
+#: js/common.js:147
 msgid "{0} workday"
 msgid_plural "{0} workdays"
 msgstr[0] "{0} рабочий день"
@@ -218,92 +218,92 @@ msgstr ""
 "Вовремя того, как вы изменяли  эту запись, она была изменена кем-то другим. "
 "Вам нужно обновить и сделать изменения снова."
 
-#: js/LoginPanel.js:74 js/LoginPanel.js:106
+#: js/LoginPanel.js:79 js/LoginPanel.js:111
 msgid "Login"
 msgstr "Вход в систему"
 
-#: js/LoginPanel.js:82 js/widgets/dialog/CredentialsDialog.js:76
+#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:76
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: js/LoginPanel.js:93 js/widgets/dialog/CredentialsDialog.js:80
+#: js/LoginPanel.js:98 js/widgets/dialog/CredentialsDialog.js:80
 msgid "Password"
 msgstr "Пароль"
 
-#: js/LoginPanel.js:125
+#: js/LoginPanel.js:130
 msgid "Tine 2.0 is made for you"
 msgstr ""
 
-#: js/LoginPanel.js:127
+#: js/LoginPanel.js:132
 msgid ""
 "Tine 2.0 wants to make business collaboration easier and more enjoyable - "
 "for your needs! So you are warmly welcome to discuss with us, bring in ideas "
 "and get help."
 msgstr ""
 
-#: js/LoginPanel.js:133
+#: js/LoginPanel.js:138
 msgid "Tine 2.0 Homepage"
 msgstr ""
 
-#: js/LoginPanel.js:134
+#: js/LoginPanel.js:139
 msgid "Tine 2.0 Forum"
 msgstr ""
 
-#: js/LoginPanel.js:178
+#: js/LoginPanel.js:183
 msgid "about {0} minutes"
 msgstr ""
 
-#: js/LoginPanel.js:183 js/LoginPanel.js:343
+#: js/LoginPanel.js:188 js/LoginPanel.js:350
 msgid "Tine 2.0 needs your help"
 msgstr ""
 
-#: js/LoginPanel.js:185 js/LoginPanel.js:345
+#: js/LoginPanel.js:190 js/LoginPanel.js:352
 msgid ""
 "We regularly need your feedback to make the next Tine 2.0 releases fit your "
 "needs even better. Help us and yourself by participating:"
 msgstr ""
 
-#: js/LoginPanel.js:191
+#: js/LoginPanel.js:196
 msgid "participate!"
 msgstr ""
 
-#: js/LoginPanel.js:213
+#: js/LoginPanel.js:218
 msgid "Languages"
 msgstr ""
 
-#: js/LoginPanel.js:214
+#: js/LoginPanel.js:219
 msgid "Duration"
 msgstr ""
 
-#: js/LoginPanel.js:269
+#: js/LoginPanel.js:276
 msgid "Logging you in..."
 msgstr "Регистрирую Вас в..."
 
-#: js/LoginPanel.js:269 js/widgets/container/GrantsDialog.js:138
+#: js/LoginPanel.js:276 js/widgets/container/GrantsDialog.js:138
 #: js/widgets/grid/PersistentFilterPicker.js:126
 #: js/widgets/tree/ContextMenu.js:43 js/widgets/tree/ContextMenu.js:86
 #: js/widgets/tree/ContextMenu.js:140
 msgid "Please wait"
 msgstr "Пожалуйста, подождите"
 
-#: js/LoginPanel.js:281
+#: js/LoginPanel.js:288
 #, fuzzy
 msgid "Login successful. Loading {0}..."
 msgstr "Успешный вход в систему. Загрузка Tine 2.0..."
 
-#: js/LoginPanel.js:281 js/MainScreen.js:534
+#: js/LoginPanel.js:288 js/MainScreen.js:534
 msgid "Please wait!"
 msgstr "Пожалуйста, подождите!"
 
-#: js/LoginPanel.js:286
+#: js/LoginPanel.js:293
 msgid "Login failure"
 msgstr "Регистрация не удалась"
 
-#: js/LoginPanel.js:287
+#: js/LoginPanel.js:294
 msgid "Your username and/or your password are wrong!!!"
 msgstr "Ваше имя пользователя и/или Ваш пароль являются неправильными!!!"
 
-#: js/LoginPanel.js:311
+#: js/LoginPanel.js:318
 msgid "Please enter your login data"
 msgstr "Пожалуйста, введите свои данные входа в систему"
 
@@ -336,7 +336,7 @@ msgstr ""
 "Сервер не ответил на Ваш запрос. Пожалуйста проверьте свою сеть или "
 "свяжитесь с Вашим администратором."
 
-#: js/MainScreen.js:208
+#: js/MainScreen.js:208 js/MainScreen.js:382
 #, fuzzy
 msgid "About {0}"
 msgstr "Добавить {0}"
@@ -358,7 +358,7 @@ msgstr "Выход"
 msgid "Logout from {0}"
 msgstr "Выход из Tine 2.0"
 
-#: js/MainScreen.js:382 js/MainScreen.js:397
+#: js/MainScreen.js:397
 msgid "About Tine 2.0"
 msgstr "О Tine 2.0"
 
@@ -583,6 +583,10 @@ msgstr "Выбрать все страницы ({0} записей)"
 msgid "Toggle selection"
 msgstr "Инвертировать выбор"
 
+#: js/ux/SearchField.js:41 js/widgets/GridPicker.js:389
+msgid "enter searchfilter"
+msgstr "ввести поисковый фильтр"
+
 #: js/widgets/account/PickerGridPanel.js:167
 msgid "Remove account"
 msgstr "Удалить учётную запись"
@@ -786,28 +790,28 @@ msgstr "общие"
 msgid "please select a {0}"
 msgstr "пожалуйста, выберите {0}"
 
-#: js/widgets/container/ContainerTree.js:134
+#: js/widgets/container/ContainerTree.js:129
 msgid "All {0}"
 msgstr "Все {0}"
 
-#: js/widgets/container/ContainerTree.js:139
+#: js/widgets/container/ContainerTree.js:134
 msgid "My {0}"
 msgstr "Мои {0}"
 
-#: js/widgets/container/ContainerTree.js:146
+#: js/widgets/container/ContainerTree.js:141
 msgid "Shared {0}"
 msgstr "Общие {0}"
 
-#: js/widgets/container/ContainerTree.js:154
+#: js/widgets/container/ContainerTree.js:149
 msgid "Other Users {0}"
 msgstr "{0} других пользователей "
 
-#: js/widgets/container/ContainerTree.js:177
+#: js/widgets/container/ContainerTree.js:172
 #, fuzzy
 msgid "Permission Denied"
 msgstr "Разрешения"
 
-#: js/widgets/container/ContainerTree.js:177
+#: js/widgets/container/ContainerTree.js:172
 #, fuzzy
 msgid "You don't have the required grant to select this {0}"
 msgstr "Вы уверены, что хотите удалить {0}?"
@@ -831,6 +835,14 @@ msgstr "Удалить"
 #: js/widgets/container/GrantsDialog.js:138
 msgid "Updating Grants"
 msgstr "Обновление разрешений"
+
+#: js/widgets/container/GrantsDialog.js:167
+msgid "Error"
+msgstr ""
+
+#: js/widgets/container/GrantsDialog.js:168
+msgid "You are not allowed to remove all admins for this container!"
+msgstr ""
 
 #: js/widgets/customfields/CustomfieldsPanel.js:64
 msgid "Custom Fields"
@@ -955,23 +967,27 @@ msgstr "У этого приложения нет параметров."
 msgid "General Preferences"
 msgstr "Общие параметры"
 
-#: js/widgets/form/ConfigPanel.js:107
+#: js/widgets/form/ConfigPanel.js:108
 msgid "Invalid configuration"
 msgstr ""
 
-#: js/widgets/form/ConfigPanel.js:107
+#: js/widgets/form/ConfigPanel.js:108
 msgid "You need to correct the red marked fields before config could be saved"
 msgstr ""
 
-#: js/widgets/form/ConfigPanel.js:132
+#: js/widgets/form/ConfigPanel.js:133
 #, fuzzy
 msgid "Transfering Configuration..."
 msgstr "Передача {0}..."
 
-#: js/widgets/form/ConfigPanel.js:228
+#: js/widgets/form/ConfigPanel.js:229
 #, fuzzy
 msgid "Save config"
 msgstr "Сохранено в"
+
+#: js/widgets/form/ConfigPanel.js:239
+msgid "Reload config"
+msgstr ""
 
 #: js/widgets/form/RecordPickerComboBox.js:59 js/widgets/tags/TagsPanel.js:465
 msgid "Searching..."
@@ -1192,10 +1208,6 @@ msgstr ""
 #: js/widgets/GridPicker.js:78
 msgid "remove record"
 msgstr "удалить запись"
-
-#: js/widgets/GridPicker.js:389
-msgid "enter searchfilter"
-msgstr "ввести поисковый фильтр"
 
 #: js/widgets/GridPicker.js:410
 msgid "Search"
