@@ -519,44 +519,44 @@ msgstr "zaakceptowane"
 msgid "lost"
 msgstr "stracone"
 
-msgid "folder"
-msgstr "katalog"
+#~ msgid "folder"
+#~ msgstr "katalog"
 
-msgid "Enter searchfilter"
-msgstr "wpisz szukaną frazę"
+#~ msgid "Enter searchfilter"
+#~ msgstr "wpisz szukaną frazę"
 
-msgid "Search Contacts"
-msgstr "Znajdź kontakty"
+#~ msgid "Search Contacts"
+#~ msgstr "Znajdź kontakty"
 
-msgid "Add existing contact"
-msgstr "Utwórz istniejący kontakt"
+#~ msgid "Add existing contact"
+#~ msgstr "Utwórz istniejący kontakt"
 
-msgid "Add existing contact to lead"
-msgstr "Dodaj istniejący kontakt do zapytania"
+#~ msgid "Add existing contact to lead"
+#~ msgstr "Dodaj istniejący kontakt do zapytania"
 
-msgid "Organisation"
-msgstr "Organizacja"
+#~ msgid "Organisation"
+#~ msgstr "Organizacja"
 
-msgid "Lead updated"
-msgstr "Zapytanie zaktualizowane"
+#~ msgid "Lead updated"
+#~ msgstr "Zapytanie zaktualizowane"
 
-msgid "Lead added"
-msgstr "Zapytanie dodane"
+#~ msgid "Lead added"
+#~ msgstr "Zapytanie dodane"
 
-msgid "Add responsible"
-msgstr "Dodaj osobę odpowiedzialną"
+#~ msgid "Add responsible"
+#~ msgstr "Dodaj osobę odpowiedzialną"
 
-msgid "Add new responsible contact"
-msgstr "Dodaj nowy kontakt jako osobę odpowiedzialną"
+#~ msgid "Add new responsible contact"
+#~ msgstr "Dodaj nowy kontakt jako osobę odpowiedzialną"
 
-msgid "Add customer"
-msgstr "Dodaj klienta"
+#~ msgid "Add customer"
+#~ msgstr "Dodaj klienta"
 
-msgid "Add partner"
-msgstr "Dodaj wspólnika"
+#~ msgid "Add partner"
+#~ msgstr "Dodaj wspólnika"
 
-msgid "Add new partner contact"
-msgstr "Dodaj nowy kontakt jako wspólnika"
+#~ msgid "Add new partner contact"
+#~ msgstr "Dodaj nowy kontakt jako wspólnika"
 
 #~ msgid "Data"
 #~ msgstr "Dane dot. zapytania"

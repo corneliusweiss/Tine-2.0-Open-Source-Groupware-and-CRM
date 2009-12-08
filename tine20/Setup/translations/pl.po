@@ -207,149 +207,149 @@ msgstr[0] "Aplikacje"
 msgstr[1] "aplikacje"
 msgstr[2] "aplikacji"
 
-msgid "Dependency Violation"
-msgstr "Niespełnione zależności"
+#~ msgid "Dependency Violation"
+#~ msgstr "Niespełnione zależności"
 
-msgid "Backend"
-msgstr "W tle"
+#~ msgid "Backend"
+#~ msgstr "W tle"
 
-msgid "Authentication provider"
-msgstr "Uwierzytelnienie"
+#~ msgid "Authentication provider"
+#~ msgstr "Uwierzytelnienie"
 
-msgid "Initial admin login name"
-msgstr "Początkowy login administratora"
+#~ msgid "Initial admin login name"
+#~ msgstr "Początkowy login administratora"
 
-msgid "Initial admin Password"
-msgstr "Początkowe hasło administratora"
+#~ msgid "Initial admin Password"
+#~ msgstr "Początkowe hasło administratora"
 
-msgid "Password confirmation"
-msgstr "Potwierdzenie hasła"
+#~ msgid "Password confirmation"
+#~ msgstr "Potwierdzenie hasła"
 
-msgid "Host"
-msgstr "Komputer"
+#~ msgid "Host"
+#~ msgstr "Komputer"
 
-msgid "Login name"
-msgstr "Login"
+#~ msgid "Login name"
+#~ msgstr "Login"
 
-msgid "Bind requires DN"
-msgstr "Bind wymaga nazwy domeny"
+#~ msgid "Bind requires DN"
+#~ msgstr "Bind wymaga nazwy domeny"
 
-msgid "Base DN"
-msgstr "Podstawowa domena"
+#~ msgid "Base DN"
+#~ msgstr "Podstawowa domena"
 
-msgid "Account canonical form"
-msgstr "Konto standardowe"
+#~ msgid "Account canonical form"
+#~ msgstr "Konto standardowe"
 
-msgid "Accounts storage"
-msgstr "Konta"
+#~ msgid "Accounts storage"
+#~ msgstr "Konta"
 
-msgid "Default user group name"
-msgstr "Domyślna nazwa grupy użytkownika"
+#~ msgid "Default user group name"
+#~ msgstr "Domyślna nazwa grupy użytkownika"
 
-msgid "Default admin group name"
-msgstr "Domyślna nazwa grupy administratora"
+#~ msgid "Default admin group name"
+#~ msgstr "Domyślna nazwa grupy administratora"
 
-msgid "Allow user to change her password?"
-msgstr "Czy zezwolić użytkownikowi na zmianę hasła?"
+#~ msgid "Allow user to change her password?"
+#~ msgstr "Czy zezwolić użytkownikowi na zmianę hasła?"
 
-msgid "User DN"
-msgstr "Domena użytkownika"
+#~ msgid "User DN"
+#~ msgstr "Domena użytkownika"
 
-msgid "Groups DN"
-msgstr "Domena grupy"
+#~ msgid "Groups DN"
+#~ msgstr "Domena grupy"
 
-msgid "Password encoding"
-msgstr "Metoda kodowania hasła"
+#~ msgid "Password encoding"
+#~ msgstr "Metoda kodowania hasła"
 
-msgid "Use Rfc 2307 bis"
-msgstr "Stosuj RFC 2307 aż do"
+#~ msgid "Use Rfc 2307 bis"
+#~ msgstr "Stosuj RFC 2307 aż do"
 
-msgid "Min User Id"
-msgstr "Min. id użytkownika"
+#~ msgid "Min User Id"
+#~ msgstr "Min. id użytkownika"
 
-msgid "Max User Id"
-msgstr "Maks. id użytkownika"
+#~ msgid "Max User Id"
+#~ msgstr "Maks. id użytkownika"
 
-msgid "Min Group Id"
-msgstr "Min. id grupy"
+#~ msgid "Min Group Id"
+#~ msgstr "Min. id grupy"
 
-msgid "Max Group Id"
-msgstr "Maks. id grupy"
+#~ msgid "Max Group Id"
+#~ msgstr "Maks. id grupy"
 
-msgid "Group UUID Attribute name"
-msgstr "Unikalny atrybut grupy"
+#~ msgid "Group UUID Attribute name"
+#~ msgstr "Unikalny atrybut grupy"
 
-msgid "User UUID Attribute name"
-msgstr "Unikalny atrybut użytkownika"
+#~ msgid "User UUID Attribute name"
+#~ msgstr "Unikalny atrybut użytkownika"
 
-msgid "Apply changes"
-msgstr "Akceptuj zmiany"
+#~ msgid "Apply changes"
+#~ msgstr "Akceptuj zmiany"
 
-msgid "Passwords don't match"
-msgstr "Hasła nie są takie same"
+#~ msgid "Passwords don't match"
+#~ msgstr "Hasła nie są takie same"
 
-msgid "Authentication/Accounts"
-msgstr "Uwierzytelnienie / Konta"
+#~ msgid "Authentication/Accounts"
+#~ msgstr "Uwierzytelnienie / Konta"
 
-msgid "Go to Tine 2.0 login"
-msgstr "Przejdź do strony logowania"
+#~ msgid "Go to Tine 2.0 login"
+#~ msgstr "Przejdź do strony logowania"
 
-msgid "Save config and install"
-msgstr "Zapisz konfigurację i zainstaluj"
+#~ msgid "Save config and install"
+#~ msgstr "Zapisz konfigurację i zainstaluj"
 
-msgid "Standard IMAP"
-msgstr "IMAP"
+#~ msgid "Standard IMAP"
+#~ msgstr "IMAP"
 
-msgid "Standard SMTP"
-msgstr "SMTP"
+#~ msgid "Standard SMTP"
+#~ msgstr "SMTP"
 
-msgid "Imap"
-msgstr "IMAP"
+#~ msgid "Imap"
+#~ msgstr "IMAP"
 
-msgid "Port"
-msgstr "Port"
+#~ msgid "Port"
+#~ msgstr "Port"
 
-msgid "Secure Connection"
-msgstr "Bezpieczne połączenie"
+#~ msgid "Secure Connection"
+#~ msgstr "Bezpieczne połączenie"
 
-msgid "None"
-msgstr "Brak"
+#~ msgid "None"
+#~ msgstr "Brak"
 
-msgid "TLS"
-msgstr "TLS"
+#~ msgid "TLS"
+#~ msgstr "TLS"
 
-msgid "SSL"
-msgstr "SSL"
+#~ msgid "SSL"
+#~ msgstr "SSL"
 
-msgid "Domain"
-msgstr "Domena"
+#~ msgid "Domain"
+#~ msgstr "Domena"
 
-msgid "No"
-msgstr "Nie"
+#~ msgid "No"
+#~ msgstr "Nie"
 
-msgid "Yes"
-msgstr "Tak"
+#~ msgid "Yes"
+#~ msgstr "Tak"
 
-msgid "Use as default account"
-msgstr "Ustaw jako konto domyślne"
+#~ msgid "Use as default account"
+#~ msgstr "Ustaw jako konto domyślne"
 
-msgid "Default account name"
-msgstr "Nazwa domyślnego konta"
+#~ msgid "Default account name"
+#~ msgstr "Nazwa domyślnego konta"
 
-msgid "Smtp"
-msgstr "SMTP"
+#~ msgid "Smtp"
+#~ msgstr "SMTP"
 
-msgid "Authentication"
-msgstr "Uwierzytelnienie"
+#~ msgid "Authentication"
+#~ msgstr "Uwierzytelnienie"
 
-msgid "Login"
-msgstr "Login"
+#~ msgid "Login"
+#~ msgstr "Login"
 
-msgid "Plain"
-msgstr "Czysty tekst"
+#~ msgid "Plain"
+#~ msgstr "Czysty tekst"
 
-msgid "Email"
-msgstr "E-mail"
+#~ msgid "Email"
+#~ msgstr "E-mail"
 
 #~ msgid "Go to {0} login"
 #~ msgstr "Przejdź do logowania {0}"
