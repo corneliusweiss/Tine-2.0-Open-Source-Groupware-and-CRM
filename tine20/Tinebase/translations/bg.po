@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Tinebase\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-03-01 22:41+0100\n"
+"PO-Revision-Date: 2009-09-15 09:53+0100\n"
 "Last-Translator: Dimitrina Mileva <dimitrina@gmx.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
@@ -35,9 +35,8 @@ msgid "Report bugs"
 msgstr "Рапорт на грешките"
 
 #: Acl/Rights.php:135
-#, fuzzy
 msgid "Report bugs to tine20.org directly when they occur"
-msgstr "Директен рапорт на настъпилите грешките към tine20.org"
+msgstr "Рапорт на грешките към tine20.org при настъпване  "
 
 #: Acl/Rights.php:138
 msgid "Check version"
@@ -48,9 +47,8 @@ msgid "Check tine20.org for new versions"
 msgstr "Провери tine20.org за нови версии"
 
 #: Export/Ods.php:198
-#, fuzzy
 msgid "Filter"
-msgstr "Грешка"
+msgstr "Филтър"
 
 #: Export/Pdf.php:206 js/widgets/tags/TagsPanel.js:53
 msgid "Tags"
@@ -131,13 +129,12 @@ msgid "The last action you made was potentially not performed correctly."
 msgstr "Възможно е вашата последна операция до не е изпълнена коректно."
 
 #: js/ExceptionDialog.js:73
-#, fuzzy
 msgid ""
 "Please help improving this software and notify the vendor. Include a brief "
 "description of what you where doing when the error occurred."
 msgstr ""
-"Изпращайки протокол Вие бихте подпомогнали усавършенстването на програмата. "
-"Моля опишете вашите стъпки преди настъпването на грешката."
+"Изпращайки протокол Вие подпомагате усавършенстването на програмата. Моля "
+"опишете вашите стъпки преди настъпването на грешката."
 
 #: js/ExceptionDialog.js:79 js/widgets/tags/TagsPanel.js:561
 msgid "Description"
@@ -145,12 +142,11 @@ msgstr "Описание"
 
 #: js/ExceptionDialog.js:87
 msgid "Send Contact Information"
-msgstr ""
+msgstr "Изпраща информация на контакта"
 
 #: js/ExceptionDialog.js:104
-#, fuzzy
 msgid "Details:"
-msgstr "Покажи детайли:"
+msgstr "Детайли:"
 
 #: js/ExceptionDialog.js:127
 msgid "Sending report..."
@@ -169,9 +165,8 @@ msgid "Your report has been sent. Thanks for your contribution"
 msgstr "Вашият протокол е изпратен. Блегодарим Ви за съдействието."
 
 #: js/ExceptionDialog.js:172
-#, fuzzy
 msgid "Please restart your browser now!"
-msgstr "Моля задайте Вашите входни данни."
+msgstr "Моля рестартирайте сега Вашия браузър!"
 
 #: js/Login.js:40
 msgid "Login"
@@ -235,20 +230,17 @@ msgstr "Потребител: {0}"
 
 #: js/MainScreen.js:102
 msgid "Sorry"
-msgstr ""
+msgstr "Извинете"
 
 #: js/MainScreen.js:102
-#, fuzzy
 msgid ""
 "There are no applications enabled for you. Please contact your administrator."
 msgstr ""
-"За съжаление сървъра не може да отговори на Вашето запитване. Моля проверете "
-"Вашата мрежа или се свържете с Вашият администратор."
+"Няма активирани програми за Вас. Моля свържете се с Вашият администратор."
 
 #: js/MainScreen.js:201 js/MainScreen.js:375 js/MainScreen.js:390
-#, fuzzy
 msgid "About Tine 2.0"
-msgstr "Излизане от Tine 2.0"
+msgstr "За Tine 2.0"
 
 #: js/MainScreen.js:207
 msgid "Change password"
@@ -363,9 +355,8 @@ msgid "Sorry, you are not permitted to perform this action"
 msgstr "За съжаление Вие нямате необходимите за това права."
 
 #: js/tineInit.js:307
-#, fuzzy
 msgid "Not Found"
-msgstr "Непозволено"
+msgstr "Нищо не е намерено"
 
 #: js/tineInit.js:308
 msgid ""
@@ -373,6 +364,8 @@ msgid ""
 "not be found. In most cases this means that someone already deleted the "
 "data. Please refresh your current view."
 msgstr ""
+"Вашето запитване не може ла въде отговорено поради липсваща информация. Най-"
+"често това се случва когато някой друг потребител е изтрил нещо...."
 
 #: js/tineInit.js:317
 msgid "Concurrent Updates"
@@ -391,6 +384,8 @@ msgid ""
 "Fatal Error: Client self-update failed, please contact your administrator "
 "and/or restart/reload your browser."
 msgstr ""
+"Фатална гришка: пропаднал Client self-update, моля свържете се с Вашият "
+"администратор и/или рестартирайте вашия броузър."
 
 #: js/UserRegistration.js:33
 msgid "Registration Wizard"
@@ -477,7 +472,7 @@ msgstr "Изтрий снимка"
 
 #: js/ux/form/ImageField.js:223
 msgid "Show Original Image"
-msgstr ""
+msgstr "Показва оригинална снимка"
 
 #: js/ux/form/ImageField.js:257
 msgid "Image Failed"
@@ -514,9 +509,8 @@ msgid "Toggle selection"
 msgstr "Обърни селекцията"
 
 #: js/widgets/account/ConfigGrid.js:61
-#, fuzzy
 msgid "Remove account"
-msgstr "Изтрий достъп"
+msgstr "Изтрий адрес"
 
 #: js/widgets/account/ConfigGrid.js:85 js/widgets/account/PickerPanel.js:166
 msgid "Name"
@@ -664,7 +658,7 @@ msgstr "Изтрива {0}"
 
 #: js/widgets/app/GridPanel.js:557
 msgid " ... This may take a long time!"
-msgstr ""
+msgstr "... това може да продължи дълго!"
 
 #: js/widgets/app/GridPanel.js:571 js/widgets/dialog/EditDialog.js:403
 #: js/widgets/dialog/EditDialog.js:441 js/widgets/tags/TagsPanel.js:255
@@ -753,46 +747,39 @@ msgstr "За сега няма дорълнителни полета"
 
 #: js/widgets/dialog/AlarmPanel.js:35
 msgid "Alarms"
-msgstr ""
+msgstr "Аларми"
 
 #: js/widgets/dialog/AlarmPanel.js:46
 msgid "Send Alarm"
-msgstr ""
+msgstr "Аларма за изпращане"
 
 #: js/widgets/dialog/AlarmPanel.js:56
-#, fuzzy
 msgid "None"
-msgstr "Записка"
+msgstr "Няма"
 
 #: js/widgets/dialog/AlarmPanel.js:57
-#, fuzzy
 msgid "0 minutes before"
-msgstr "преди"
+msgstr "преди 0 минути"
 
 #: js/widgets/dialog/AlarmPanel.js:58
-#, fuzzy
 msgid "15 minutes before"
-msgstr "преди"
+msgstr "преди 15 минути"
 
 #: js/widgets/dialog/AlarmPanel.js:59
-#, fuzzy
 msgid "30 minutes before"
-msgstr "преди"
+msgstr "преди 30 минути"
 
 #: js/widgets/dialog/AlarmPanel.js:60
-#, fuzzy
 msgid "1 hour before"
-msgstr "преди"
+msgstr "преди 1 час"
 
 #: js/widgets/dialog/AlarmPanel.js:61
-#, fuzzy
 msgid "2 hours before"
-msgstr "преди"
+msgstr "преди 2 часа"
 
 #: js/widgets/dialog/AlarmPanel.js:62
-#, fuzzy
 msgid "1 day before"
-msgstr "преди"
+msgstr "преди 1 ден"
 
 #: js/widgets/dialog/CredentialsDialog.js:110
 #: js/widgets/dialog/EditDialog.js:421
@@ -838,38 +825,32 @@ msgid "Do you really want to delete this {0}?"
 msgstr "Наистина ли желаете да изтриете тези {0}?"
 
 #: js/widgets/dialog/PreferencesDialog.js:137
-#, fuzzy
 msgid "Admin Mode"
-msgstr "Администратор"
+msgstr "Администраторски режим"
 
 #: js/widgets/dialog/PreferencesDialog.js:173
-#, fuzzy
 msgid "Applications"
-msgstr "Зарежда"
+msgstr "Програми"
 
 #: js/widgets/dialog/PreferencesDialog.js:200
-#, fuzzy
 msgid "Edit Preferences"
-msgstr "Настройки"
+msgstr "Редактира настройки"
 
 #: js/widgets/dialog/PreferencesDialog.js:201
-#, fuzzy
 msgid "Loading ..."
-msgstr "Зарежда"
+msgstr "Зарежда..."
 
 #: js/widgets/dialog/PreferencesDialog.js:284
 msgid "Saving of preferences failed."
-msgstr ""
+msgstr "Неуспешно запаметяване на настройките."
 
 #: js/widgets/dialog/PreferencesPanel.js:150
-#, fuzzy
 msgid "There are no preferences for this application."
-msgstr "За сега няма дорълнителни полета"
+msgstr "За сега няма настройки за тази програма."
 
 #: js/widgets/dialog/PreferencesTreePanel.js:60
-#, fuzzy
 msgid "General Preferences"
-msgstr "Настройки"
+msgstr "Основни настройки"
 
 #: js/widgets/grid/FilterModel.js:129
 msgid "contains"
@@ -1032,6 +1013,8 @@ msgid ""
 "You have to supply a shorter name! Names of saved filters can only be up to "
 "40 characters long."
 msgstr ""
+"Трябва да зададете по-късо име. Допустимата голимина на името на съхраненият "
+"филтър е до 40 знака."
 
 #: js/widgets/grid/FilterToolbar.js:577 js/widgets/LangChooser.js:64
 #: js/widgets/TimezoneChooser.js:74
@@ -1275,9 +1258,8 @@ msgid "Manage permissions"
 msgstr "Управление и обработка на правата"
 
 #: js/widgets/tree/ContextMenu.js:248
-#, fuzzy
 msgid "Reload {0}"
-msgstr "Преименуване {0}"
+msgstr "Презареждане {0}"
 
 #: js/widgets/VersionCheck.js:43 js/widgets/VersionCheck.js:52
 msgid "New version of Tine 2.0 available"
@@ -1306,29 +1288,28 @@ msgstr "Променени полета:"
 
 #: Preference.php:89
 msgid "The timezone in which dates are shown in Tine 2.0."
-msgstr ""
+msgstr "Времевата зона, в която Tine 2.0 показва дати."
 
 #: Preference.php:93
 msgid "The language of the Tine 2.0 GUI."
-msgstr ""
+msgstr "Език на Tine 2.0 GUI."
 
 #: Preference.php:96
-#, fuzzy
 msgid "Default Application"
-msgstr "Зарежда"
+msgstr "Програма по основни настройки"
 
 #: Preference.php:97
 msgid "The default application to show after login."
-msgstr ""
+msgstr "Стандартна програма, която стартира след влизане."
 
 #: Preference.php:100
 msgid "Window Type"
-msgstr ""
+msgstr "Тип прозорец"
 
 #: Preference.php:101
 msgid ""
 "You can choose between ExtJs style windows or normal Browser popup windows."
-msgstr ""
+msgstr "Вие може да изберете между ExtJs- и нормален броузър-прозорец."
 
 #: Setup/setup.xml:2344
 msgid "note"

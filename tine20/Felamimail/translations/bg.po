@@ -2,434 +2,437 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Felamimail\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2008-07-29 21:14+0100\n"
-"Last-Translator: Cornelius Weiss <c.weiss@metaways.de>\n"
+"PO-Revision-Date: 2009-09-13 17:29+0100\n"
+"Last-Translator: Dimitrina Mileva <dimitrina@gmx.de>\n"
 "Language-Team: Tine 2.0 Translators\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Bulgarian\n"
-"X-Poedit-Country: \n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: js/Felamimail.js:26
 msgid "Email"
-msgstr ""
+msgstr "Емайл"
 
 #: js/FelamimailAccountEditDialog.js:50 js/FelamimailTreePanel.js:309
 #: js/Models.js:113
 msgid "Account"
 msgid_plural "Accounts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Конто"
+msgstr[1] "Конто"
 
 #: js/FelamimailAccountEditDialog.js:63
 msgid "Account Name"
-msgstr ""
+msgstr "Име на конто"
 
 #: js/FelamimailAccountEditDialog.js:67
 msgid "User Email"
-msgstr ""
+msgstr "Емайл адрес"
 
 #: js/FelamimailAccountEditDialog.js:72
 msgid "User Name (From)"
-msgstr ""
+msgstr "Емайл на подател"
 
 #: js/FelamimailAccountEditDialog.js:75
 msgid "Organization"
-msgstr ""
+msgstr "Фирма"
 
 #: js/FelamimailAccountEditDialog.js:78
 msgid "Signature"
-msgstr ""
+msgstr "Подпис"
 
 #: js/FelamimailAccountEditDialog.js:85
 msgid "IMAP"
-msgstr ""
+msgstr "IMAP"
 
 #: js/FelamimailAccountEditDialog.js:98 js/FelamimailAccountEditDialog.js:147
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #: js/FelamimailAccountEditDialog.js:102 js/FelamimailAccountEditDialog.js:150
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: js/FelamimailAccountEditDialog.js:108 js/FelamimailAccountEditDialog.js:156
 msgid "Secure Connection"
-msgstr ""
+msgstr "Сигурна връзка"
 
 #: js/FelamimailAccountEditDialog.js:119 js/FelamimailAccountEditDialog.js:166
 #: js/FelamimailAccountEditDialog.js:181
 msgid "None"
-msgstr ""
+msgstr "Нищо"
 
 #: js/FelamimailAccountEditDialog.js:120 js/FelamimailAccountEditDialog.js:167
 msgid "TLS"
-msgstr ""
+msgstr "TLS"
 
 #: js/FelamimailAccountEditDialog.js:121 js/FelamimailAccountEditDialog.js:168
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: js/FelamimailAccountEditDialog.js:124
 msgid "Username"
-msgstr ""
+msgstr "Потребителско име"
 
 #: js/FelamimailAccountEditDialog.js:128
 msgid "Password"
-msgstr ""
+msgstr "Парола"
 
 #: js/FelamimailAccountEditDialog.js:134
 msgid "SMTP"
-msgstr ""
+msgstr "SMTP"
 
 #: js/FelamimailAccountEditDialog.js:171
 msgid "Authentication"
-msgstr ""
+msgstr "Разпознаване"
 
 #: js/FelamimailAccountEditDialog.js:182
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 #: js/FelamimailAccountEditDialog.js:183
 msgid "Plain"
-msgstr ""
+msgstr "Текст"
 
 #: js/FelamimailAccountEditDialog.js:186
 msgid "Username (optional)"
-msgstr ""
+msgstr "Ротребителско име (по избор)"
 
 #: js/FelamimailAccountEditDialog.js:189
 msgid "Password (optional)"
-msgstr ""
+msgstr "Парола (по избор)"
 
 #: js/FelamimailAccountEditDialog.js:194
 msgid "Other Settings"
-msgstr ""
+msgstr "Други настройки"
 
 #: js/FelamimailAccountEditDialog.js:207
 msgid "Sent Folder Name"
-msgstr ""
+msgstr "Име на папка Изпратени"
 
 #: js/FelamimailAccountEditDialog.js:211
 msgid "Trash Folder Name"
-msgstr ""
+msgstr "Име на папка Изтрити"
 
 #: js/FelamimailAccountEditDialog.js:215
 msgid "Show Intelligent Folders"
-msgstr ""
+msgstr "Показва Интелигентни папки"
 
 #: js/FelamimailAccountEditDialog.js:226 js/FelamimailAccountEditDialog.js:241
 #: js/FelamimailAccountEditDialog.js:256
 msgid "No"
-msgstr ""
+msgstr "Не"
 
 #: js/FelamimailAccountEditDialog.js:227 js/FelamimailAccountEditDialog.js:242
 #: js/FelamimailAccountEditDialog.js:257
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
 #: js/FelamimailAccountEditDialog.js:230
 msgid "Supports \"has_children\""
-msgstr ""
+msgstr "Поддържа \"has_children\""
 
 #: js/FelamimailAccountEditDialog.js:245
 msgid "Sort Folders (experimental)"
-msgstr ""
+msgstr "Сортира папки (експериментално)"
 
 #: js/FelamimailAttachmentGrid.js:110
 msgid "Upload Failed"
-msgstr ""
+msgstr "Грешка при качване (Upload)"
 
 #: js/FelamimailAttachmentGrid.js:111
 msgid ""
 "Could not upload attachment. Filesize could be too big. Please notify your "
 "Administrator."
 msgstr ""
+"Неуспешно качване на документ. Може би файла е твърде голям. Моля уведомете "
+"вашия администратор."
 
 #: js/FelamimailAttachmentGrid.js:123
 msgid "Add Attachment"
-msgstr ""
+msgstr "Прибави документ"
 
 #: js/FelamimailAttachmentGrid.js:131
 msgid "Remove Attachment"
-msgstr ""
+msgstr "Отстраняване на прикачен документ"
 
 #: js/FelamimailGridDetailsPanel.js:105 js/FelamimailGridPanel.js:216
 #: js/FelamimailGridPanel.js:266 js/FelamimailMessageEditDialog.js:229
 msgid "Subject"
-msgstr ""
+msgstr "Subject"
 
 #: js/FelamimailGridDetailsPanel.js:106 js/FelamimailGridPanel.js:217
 #: js/FelamimailGridPanel.js:272 js/FelamimailMessageEditDialog.js:201
 msgid "From"
-msgstr ""
+msgstr "От"
 
 #: js/FelamimailGridDetailsPanel.js:107
 msgid "Add"
-msgstr ""
+msgstr "Добави"
 
 #: js/FelamimailGridDetailsPanel.js:108
 msgid "Add contact to addressbook"
-msgstr ""
+msgstr "Добави контакт в списъка с адреси"
 
 #: js/FelamimailGridDetailsPanel.js:110 js/FelamimailGridDetailsPanel.js:326
 msgid "Show or hide header information"
-msgstr ""
+msgstr "Показва или скрива header"
 
 #: js/FelamimailGridDetailsPanel.js:113 js/FelamimailMessageEditDialog.js:141
 msgid "Attachments"
-msgstr ""
+msgstr "Прикачени документи"
 
 #: js/FelamimailGridPanel.js:94
 msgid "Write"
-msgstr ""
+msgstr "Пиши"
 
 #: js/FelamimailGridPanel.js:103
 msgid "Reply"
-msgstr ""
+msgstr "Отговори"
 
 #: js/FelamimailGridPanel.js:113
 msgid "Reply To All"
-msgstr ""
+msgstr "Отговори на всички"
 
 #: js/FelamimailGridPanel.js:123
 msgid "Forward"
-msgstr ""
+msgstr "Препрати"
 
 #: js/FelamimailGridPanel.js:132
 msgid "Toggle Flag"
-msgstr ""
+msgstr "Маркирай"
 
 #: js/FelamimailGridPanel.js:143
 msgid "Mark Unread"
-msgstr ""
+msgstr "Маркирай непрочетени"
 
 #: js/FelamimailGridPanel.js:155 js/FelamimailGridPanel.js:156
 #: js/FelamimailGridPanel.js:158
 msgid "Delete"
-msgstr ""
+msgstr "Изтрий"
 
 #: js/FelamimailGridPanel.js:167
 msgid "Add Account"
-msgstr ""
+msgstr "Добави конто"
 
 #: js/FelamimailGridPanel.js:218 js/FelamimailGridPanel.js:278
 msgid "To"
-msgstr ""
+msgstr "До"
 
 #: js/FelamimailGridPanel.js:219
 msgid "Cc"
-msgstr ""
+msgstr "Копие"
 
 #: js/FelamimailGridPanel.js:220
 msgid "Bcc"
-msgstr ""
+msgstr "Сляпо копие"
 
 #: js/FelamimailGridPanel.js:221 js/FelamimailGridPanel.js:293
 msgid "Received"
-msgstr ""
+msgstr "Получени"
 
 #: js/FelamimailGridPanel.js:247
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: js/FelamimailGridPanel.js:285
 msgid "Sent"
-msgstr ""
+msgstr "Изпрати"
 
 #: js/FelamimailGridPanel.js:300
 msgid "Size"
-msgstr ""
+msgstr "Големина"
 
 #: js/FelamimailGridPanel.js:339
 msgid "Answered"
-msgstr ""
+msgstr "Отговорени"
 
 #: js/FelamimailGridPanel.js:342
 msgid "Forwarded"
-msgstr ""
+msgstr "Препратени"
 
 #: js/FelamimailGridPanel.js:345
 msgid "Recent"
-msgstr ""
+msgstr "Нови"
 
 #: js/FelamimailGridPanel.js:441
 msgid "Error"
-msgstr ""
+msgstr "Грешка"
 
 #: js/FelamimailGridPanel.js:441
 msgid "No Account configured"
-msgstr ""
+msgstr "Няма конфигурирано конто"
 
 #: js/FelamimailGridPanel.js:484
 msgid "wrote"
-msgstr ""
+msgstr "написан"
 
 #: js/FelamimailGridPanel.js:486
 msgid "Re: "
-msgstr ""
+msgstr "Re:"
 
 #: js/FelamimailGridPanel.js:495
 msgid "Original Message"
-msgstr ""
+msgstr "Оригинално съобщение"
 
 #: js/FelamimailGridPanel.js:503
 msgid "Original message"
-msgstr ""
+msgstr "Оригинално съобщение"
 
 #: js/FelamimailGridPanel.js:507
 msgid "Fwd: "
-msgstr ""
+msgstr "Fwd:"
 
 #: js/FelamimailGridPanel.js:614 js/FelamimailMessageEditDialog.js:117
 msgid "Failed"
-msgstr ""
+msgstr "Неуспешно"
 
 #: js/FelamimailGridPanel.js:615
 msgid "Some error occured while trying to update the messages."
-msgstr ""
+msgstr "Грешка при актуализиране на съобщението"
 
 #: js/FelamimailMessageEditDialog.js:27
 msgid "Send"
-msgstr ""
+msgstr "Изпрати"
 
 #: js/FelamimailMessageEditDialog.js:70 js/FelamimailMessageEditDialog.js:240
 msgid "Compose email:"
-msgstr ""
+msgstr "Напиши емайл:"
 
 #: js/FelamimailMessageEditDialog.js:118
 msgid "Could not send {0}."
-msgstr ""
+msgstr "Невъзможност да изпрати {0}."
 
 #: js/FelamimailMessageEditDialog.js:119
 msgid "Error:"
-msgstr ""
+msgstr "Грешка:"
 
 #: js/FelamimailMessageEditDialog.js:134
 msgid "Recipients"
-msgstr ""
+msgstr "Получатели"
 
 #: js/FelamimailMessageEditDialog.js:148
 msgid "Body"
-msgstr ""
+msgstr "Съобщение"
 
 #: js/FelamimailRecipientGrid.js:94 js/FelamimailRecipientGrid.js:115
 msgid "To:"
-msgstr ""
+msgstr "To:"
 
 #: js/FelamimailRecipientGrid.js:97 js/FelamimailRecipientGrid.js:116
 msgid "Cc:"
-msgstr ""
+msgstr "Cc:"
 
 #: js/FelamimailRecipientGrid.js:100 js/FelamimailRecipientGrid.js:117
 msgid "Bcc:"
-msgstr ""
+msgstr "Bcc:"
 
 #: js/FelamimailTreePanel.js:126 js/FelamimailTreePanel.js:131
 #: js/FelamimailTreePanel.js:142
 msgid "Marked"
-msgstr ""
+msgstr "Маркирани"
 
 #: js/FelamimailTreePanel.js:132
 msgid "Contains marked messages"
-msgstr ""
+msgstr "Съдържа маркирани съобщения"
 
 #: js/FelamimailTreePanel.js:147
 msgid "Unread"
-msgstr ""
+msgstr "Непрочетени"
 
 #: js/FelamimailTreePanel.js:148
 msgid "Contains unread messages"
-msgstr ""
+msgstr "Съдържа непрочетени съобщения"
 
 #: js/FelamimailTreePanel.js:171
 msgid "Update Cache"
-msgstr ""
+msgstr "Актуализирай междинната памет"
 
 #: js/FelamimailTreePanel.js:190
 msgid "Empty Folder"
-msgstr ""
+msgstr "Изпразни папка"
 
 #: js/FelamimailTreePanel.js:213
 msgid "Add Folder"
-msgstr ""
+msgstr "Добави папка"
 
 #: js/FelamimailTreePanel.js:218
 msgid "New {0}"
-msgstr ""
+msgstr "Нова {0}"
 
 #: js/FelamimailTreePanel.js:218 js/FelamimailTreePanel.js:221
 #: js/FelamimailTreePanel.js:224 js/FelamimailTreePanel.js:285
 msgid "Folder"
-msgstr ""
+msgstr "Папка"
 
 #: js/FelamimailTreePanel.js:218
 msgid "Please enter the name of the new {0}:"
-msgstr ""
+msgstr "Моля задайте име на новата {0}:"
 
 #: js/FelamimailTreePanel.js:221
 msgid "No {0} added"
-msgstr ""
+msgstr "Няма добавена {0}"
 
 #: js/FelamimailTreePanel.js:221
 msgid "You have to supply a {0} name!"
-msgstr ""
+msgstr "Трябва да зададете име на {0}!"
 
 #: js/FelamimailTreePanel.js:224
 msgid "Please wait"
-msgstr ""
+msgstr "Моя изчакайте"
 
 #: js/FelamimailTreePanel.js:224
 msgid "Creating {0}..."
-msgstr ""
+msgstr "Създава {0}..."
 
 #: js/FelamimailTreePanel.js:252
 msgid "Edit Account"
-msgstr ""
+msgstr "Редактирай конто"
 
 #: js/FelamimailTreePanel.js:579
 msgid "Totalcount"
-msgstr ""
+msgstr "Брой"
 
 #: js/FelamimailTreePanel.js:580
 msgid "Cache"
-msgstr ""
+msgstr "Междинна памет"
 
 #: js/FelamimailTreePanel.js:662
 msgid "IMAP Credentials for {0}"
-msgstr ""
+msgstr "IMAP входни данни за {0}"
 
 #: js/FelamimailTreePanel.js:665
 msgid "Credentials"
-msgstr ""
+msgstr "Входни данни"
 
 #: js/Models.js:47
 msgid "Message"
 msgid_plural "Messages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Съобщение"
+msgstr[1] "Съобщение"
 
 #: js/Models.js:51 js/Models.js:117
 msgid "record list"
 msgid_plural "record lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Листа на съобщенията"
+msgstr[1] "Листи на съобщенията"
 
 #: Preference.php:73
 msgid "User Email Account"
-msgstr ""
+msgstr "Потребителски адрес"
 
 #: Preference.php:74
 msgid "Use user credentials for IMAP email account."
 msgstr ""
+"Използвай (Tine 2.0) потребителски входни данни за да идентифицираш "
+"потребител с потребителско конто."
 
 #: Preference.php:77
 msgid "Default Email Account"
-msgstr ""
+msgstr "Адрес по настройки"
 
 #: Preference.php:78
 msgid "The default email account to use when sending mails."
-msgstr ""
+msgstr "Използван адрес по настройки при изпращане на емайли."
