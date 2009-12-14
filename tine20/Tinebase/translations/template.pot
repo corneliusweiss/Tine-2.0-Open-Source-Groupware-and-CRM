@@ -62,19 +62,19 @@ msgstr ""
 msgid "An error occurred, the program ended abnormal."
 msgstr ""
 
-#: js/common.js:145
+#: js/common.js:150
 msgid "{0} minute"
 msgid_plural "{0} minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/common.js:146
+#: js/common.js:151
 msgid "{0} hour"
 msgid_plural "{0} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: js/common.js:147
+#: js/common.js:152
 msgid "{0} workday"
 msgid_plural "{0} workdays"
 msgstr[0] ""

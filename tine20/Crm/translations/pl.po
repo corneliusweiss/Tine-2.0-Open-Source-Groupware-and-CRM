@@ -453,19 +453,19 @@ msgstr "Dodaj typ zapytania..."
 msgid "Add new {0}"
 msgstr "Dodaj nowe {0}"
 
-#: js/LinkGridPanel.js:46 js/Product.js:179
+#: js/LinkGridPanel.js:48 js/Product.js:179
 msgid "Unlink {0}"
 msgstr "Odłącz {0}"
 
-#: js/LinkGridPanel.js:47 js/Product.js:180
+#: js/LinkGridPanel.js:49 js/Product.js:180
 msgid "Unlink selected {0}"
 msgstr "Usuń zaznaczone {0}"
 
-#: js/LinkGridPanel.js:62
+#: js/LinkGridPanel.js:64
 msgid "Edit {0}"
 msgstr "Edytuj \"{0}\""
 
-#: js/LinkGridPanel.js:63
+#: js/LinkGridPanel.js:65
 msgid "Edit selected {0}"
 msgstr "Edytuj zaznaczone {0}"
 

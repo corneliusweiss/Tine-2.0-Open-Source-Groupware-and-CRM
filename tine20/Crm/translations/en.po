@@ -448,19 +448,19 @@ msgstr "Add a Leadtype..."
 msgid "Add new {0}"
 msgstr "Add new {0}"
 
-#: js/LinkGridPanel.js:46 js/Product.js:179
+#: js/LinkGridPanel.js:48 js/Product.js:179
 msgid "Unlink {0}"
 msgstr "Unlink {0}"
 
-#: js/LinkGridPanel.js:47 js/Product.js:180
+#: js/LinkGridPanel.js:49 js/Product.js:180
 msgid "Unlink selected {0}"
 msgstr "Unlink selected {0}"
 
-#: js/LinkGridPanel.js:62
+#: js/LinkGridPanel.js:64
 msgid "Edit {0}"
 msgstr "Edit {0}"
 
-#: js/LinkGridPanel.js:63
+#: js/LinkGridPanel.js:65
 msgid "Edit selected {0}"
 msgstr "Edit selected {0}"
 

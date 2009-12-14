@@ -23,7 +23,7 @@ msgstr "gérer les listes de tâches partagées"
 msgid "Create new shared tasks lists"
 msgstr "Ajouter une liste de tâches partagées"
 
-#: Controller/Task.php:158
+#: Controller/Task.php:163
 msgid "Notification for Task "
 msgstr "Notification"
 
@@ -32,9 +32,7 @@ msgstr "Notification"
 msgid "%s's personal tasks"
 msgstr "Tâches personnelles de %s"
 
-#: js/EditDialog.js:169
-#: js/GridPanel.js:91
-#: js/GridPanel.js:167
+#: js/EditDialog.js:169 js/GridPanel.js:91 js/GridPanel.js:167
 msgid "Summary"
 msgstr "Résumé"
 
@@ -42,9 +40,7 @@ msgstr "Résumé"
 msgid "Due date"
 msgstr "Date de fin"
 
-#: js/EditDialog.js:177
-#: js/GridPanel.js:186
-#: Model/Task.php:181
+#: js/EditDialog.js:177 js/GridPanel.js:186 Model/Task.php:181
 msgid "Priority"
 msgstr "Priorité"
 
@@ -64,9 +60,7 @@ msgstr "Saisissez une description..."
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: js/EditDialog.js:197
-#: js/GridPanel.js:213
-#: Model/Task.php:182
+#: js/EditDialog.js:197 js/GridPanel.js:213 Model/Task.php:182
 msgid "Status"
 msgstr "Statut"
 
@@ -84,13 +78,11 @@ msgstr[1] "Êtes-vous sûr de vouloir supprimer les tâches sélectionnées?"
 msgid "Quick search"
 msgstr "Recherche rapide"
 
-#: js/GridPanel.js:92
-#: js/GridPanel.js:178
+#: js/GridPanel.js:92 js/GridPanel.js:178
 msgid "Due Date"
 msgstr "Date de fin"
 
-#: js/GridPanel.js:93
-#: js/GridPanel.js:234
+#: js/GridPanel.js:93 js/GridPanel.js:234
 msgid "Responsible"
 msgstr "Responsable"
 
@@ -110,8 +102,7 @@ msgstr "Marqueur"
 msgid "Add a task..."
 msgstr "Ajouter"
 
-#: js/GridPanel.js:200
-#: Model/Task.php:183
+#: js/GridPanel.js:200 Model/Task.php:183
 msgid "Percent"
 msgstr "Pourcent"
 
@@ -123,8 +114,7 @@ msgstr "Date de création"
 msgid "Show closed"
 msgstr "Afficher terminées"
 
-#: js/Status.js:45
-#: Setup/setup.xml:449
+#: js/Status.js:45 Setup/setup.xml:449
 msgid "IN-PROCESS"
 msgstr "EN-COURS"
 
@@ -171,4 +161,3 @@ msgstr "TERMINE"
 #: Setup/setup.xml:471
 msgid "CANCELLED"
 msgstr "ANNULE"
-

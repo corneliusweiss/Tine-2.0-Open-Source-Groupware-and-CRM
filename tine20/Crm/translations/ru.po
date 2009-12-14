@@ -478,21 +478,21 @@ msgstr "Добавить продукт..."
 msgid "Add new {0}"
 msgstr "Добавить новое предложение"
 
-#: js/LinkGridPanel.js:46 js/Product.js:179
+#: js/LinkGridPanel.js:48 js/Product.js:179
 msgid "Unlink {0}"
 msgstr ""
 
-#: js/LinkGridPanel.js:47 js/Product.js:180
+#: js/LinkGridPanel.js:49 js/Product.js:180
 #, fuzzy
 msgid "Unlink selected {0}"
 msgstr "Убрать выбранный контакт"
 
-#: js/LinkGridPanel.js:62
+#: js/LinkGridPanel.js:64
 #, fuzzy
 msgid "Edit {0}"
 msgstr "Изменить предложение \"{0}\""
 
-#: js/LinkGridPanel.js:63
+#: js/LinkGridPanel.js:65
 #, fuzzy
 msgid "Edit selected {0}"
 msgstr "Изменить выбранное предложение"

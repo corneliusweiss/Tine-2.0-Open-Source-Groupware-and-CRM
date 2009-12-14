@@ -79,17 +79,17 @@ msgstr "非正常结束"
 msgid "An error occurred, the program ended abnormal."
 msgstr "有错误发生，程序非正常终止"
 
-#: js/common.js:145
+#: js/common.js:150
 msgid "{0} minute"
 msgid_plural "{0} minutes"
 msgstr[0] "{0} 分钟"
 
-#: js/common.js:146
+#: js/common.js:151
 msgid "{0} hour"
 msgid_plural "{0} hours"
 msgstr[0] "{0}小时"
 
-#: js/common.js:147
+#: js/common.js:152
 msgid "{0} workday"
 msgid_plural "{0} workdays"
 msgstr[0] "{0}工作日"

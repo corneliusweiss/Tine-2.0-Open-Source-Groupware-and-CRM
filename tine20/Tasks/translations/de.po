@@ -21,7 +21,7 @@ msgstr "Gemeinsame Aufgabenlisten verwalten"
 msgid "Create new shared tasks lists"
 msgstr "Neue gemeinse Aufgabenliste anlegen"
 
-#: Controller/Task.php:158
+#: Controller/Task.php:163
 msgid "Notification for Task "
 msgstr "Benachrichtigung für Aufgabe"
 
@@ -30,9 +30,7 @@ msgstr "Benachrichtigung für Aufgabe"
 msgid "%s's personal tasks"
 msgstr "%ss persönliche Aufgaben"
 
-#: js/EditDialog.js:169
-#: js/GridPanel.js:91
-#: js/GridPanel.js:167
+#: js/EditDialog.js:169 js/GridPanel.js:91 js/GridPanel.js:167
 msgid "Summary"
 msgstr "Beschreibung"
 
@@ -40,9 +38,7 @@ msgstr "Beschreibung"
 msgid "Due date"
 msgstr "Fälligkeitsdatum"
 
-#: js/EditDialog.js:177
-#: js/GridPanel.js:186
-#: Model/Task.php:181
+#: js/EditDialog.js:177 js/GridPanel.js:186 Model/Task.php:181
 msgid "Priority"
 msgstr "Priorität"
 
@@ -62,9 +58,7 @@ msgstr "Beschreibung eingeben..."
 msgid "Percentage"
 msgstr "Prozent"
 
-#: js/EditDialog.js:197
-#: js/GridPanel.js:213
-#: Model/Task.php:182
+#: js/EditDialog.js:197 js/GridPanel.js:213 Model/Task.php:182
 msgid "Status"
 msgstr "Status"
 
@@ -82,13 +76,11 @@ msgstr[1] "Wollen Sie die ausgewählten Aufgaben wirklich löschen?"
 msgid "Quick search"
 msgstr "Schnellsuche"
 
-#: js/GridPanel.js:92
-#: js/GridPanel.js:178
+#: js/GridPanel.js:92 js/GridPanel.js:178
 msgid "Due Date"
 msgstr "Fällig am"
 
-#: js/GridPanel.js:93
-#: js/GridPanel.js:234
+#: js/GridPanel.js:93 js/GridPanel.js:234
 msgid "Responsible"
 msgstr "Verantwortlich"
 
@@ -108,8 +100,7 @@ msgstr "Tags"
 msgid "Add a task..."
 msgstr "Aufgabe hinzufügen..."
 
-#: js/GridPanel.js:200
-#: Model/Task.php:183
+#: js/GridPanel.js:200 Model/Task.php:183
 msgid "Percent"
 msgstr "Prozent"
 
@@ -121,8 +112,7 @@ msgstr "Angelegt am"
 msgid "Show closed"
 msgstr "Geschlossene Aufgaben anzeigen"
 
-#: js/Status.js:45
-#: Setup/setup.xml:449
+#: js/Status.js:45 Setup/setup.xml:449
 msgid "IN-PROCESS"
 msgstr "IN BEARBEITUNG"
 
@@ -169,4 +159,3 @@ msgstr "ERLEDIGT"
 #: Setup/setup.xml:471
 msgid "CANCELLED"
 msgstr "ZURÜCKGESTELLT"
-
