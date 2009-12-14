@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tine 2.0 - Addressbook\n"
 "POT-Creation-Date: 2008-05-17 22:12+0100\n"
-"PO-Revision-Date: 2009-11-22 15:13+0100\n"
+"PO-Revision-Date: 2009-12-13 13:44+0100\n"
 "Last-Translator: Wojciech Kaczmarek <wojciech_kaczmarek@wp.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -325,7 +325,7 @@ msgstr "Wprowadź opis"
 
 #: js/ContactEditDialog.js:313
 msgid "Map"
-msgstr ""
+msgstr "Mapa"
 
 #: js/ContactEditDialog.js:347
 msgid "Export as pdf"
