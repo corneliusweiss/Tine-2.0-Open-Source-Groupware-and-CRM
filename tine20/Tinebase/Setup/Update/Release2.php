@@ -527,7 +527,7 @@ class Tinebase_Setup_Update_Release2 extends Setup_Update_Abstract
     }
     
     /**
-     * update to 3.0
+     * update to 2.15
      * - change user account status field to varchar (was: enum)
      */
     public function update_14()
@@ -543,6 +543,28 @@ class Tinebase_Setup_Update_Release2 extends Setup_Update_Abstract
         $this->_backend->alterCol('accounts', $declaration);
         
         $this->setTableVersion('accounts', '3');
-        $this->setApplicationVersion('Tinebase', '3.0');
+        $this->setApplicationVersion('Tinebase', '2.15');
+    }    
+
+    /**
+     * update to 2.16
+     * - add personal_only field to preference
+     * - remove all admin/default prefs with this setting
+     */
+    public function update_15()
+    {
+        $declaration = new Setup_Backend_Schema_Field_Xml('
+            <field>
+                <name>personal_only</name>
+                <type>boolean</type>
+            </field>');
+        $this->_backend->addCol('preferences', $declaration);
+        
+        $this->setTableVersion('preferences', '5');
+        
+        // remove all personal only prefs for anyone
+        $this->_db->query("DELETE FROM " . SQL_TABLE_PREFIX . "preferences WHERE account_type LIKE 'anyone' AND name IN ('defaultCalendar', 'defaultAddressbook')");
+        
+        $this->setApplicationVersion('Tinebase', '2.16');
     }    
 }
