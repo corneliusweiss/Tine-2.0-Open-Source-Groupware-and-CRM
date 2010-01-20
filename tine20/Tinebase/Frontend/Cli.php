@@ -113,4 +113,52 @@ class Tinebase_Frontend_Cli
         
         return TRUE;
     }
+    
+    /**
+     * clear table as defined in arguments
+     * can clear the following tables:
+     * - credential_cache
+     * 
+     * @param $_opts
+     * @return boolean success
+     */
+    public function clearTable(Zend_Console_Getopt $_opts)
+    {
+        $tables = $_opts->getRemainingArgs();
+        if (empty($tables)) {
+            echo "No table given.\n";
+            return FALSE;
+        }
+        
+        // check if admin for tinebase
+        if (! Tinebase_Core::getUser()->hasRight('Tinebase', Tinebase_Acl_Rights::ADMIN)) {
+            echo "No permission.\n";
+            return FALSE;
+        }
+        
+        foreach ($tables as $table) {
+            switch ($table) {
+                case 'credential_cache':
+                    if (Setup_Controller::getInstance()->isInstalled('Felamimail')) {
+                        // delete only records that are not related to email accounts
+                        Tinebase_Core::getDb()->query(
+                            'delete ' . SQL_TABLE_PREFIX . 'credential_cache FROM `' . SQL_TABLE_PREFIX . 'credential_cache`' .
+                            ' LEFT JOIN ' . SQL_TABLE_PREFIX . 'felamimail_account ON ' . SQL_TABLE_PREFIX . 'credential_cache.id = ' . 
+                                SQL_TABLE_PREFIX . 'felamimail_account.credentials_id' .
+                            ' WHERE ' . SQL_TABLE_PREFIX . 'felamimail_account.credentials_id IS NULL');
+                        break;
+                    } else {
+                        // fallthrough
+                    }
+                case 'access_log':
+                    Tinebase_Core::getDb()->query('TRUNCATE ' . SQL_TABLE_PREFIX . $table);
+                    break;
+                default:
+                    echo 'Table ' . $table . " not supported or argument missing.\n";
+            }
+            echo "Cleared table $table.\n";
+        }
+        
+        return TRUE;
+    }
 }
