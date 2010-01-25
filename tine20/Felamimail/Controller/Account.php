@@ -113,8 +113,10 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
         $this->checkFilterACL($_filter);
         $result = $this->_backend->search($_filter, $_pagination, $_onlyIds);
         
-        // check preference / config if we should add default account with tine user credentials or from config.inc.php 
-        $this->_addDefaultAccount($result);
+        // check preference / config if we should add system account with tine user credentials or from config.inc.php
+        if (count($result) == 0 && ! $_onlyIds && Tinebase_Core::getPreference('Felamimail')->useSystemAccount) { 
+            $result = $this->_addSystemAccount();
+        }
         
         return $result;
     }
@@ -168,6 +170,11 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
             $record->setId(Felamimail_Model_Account::DEFAULT_ACCOUNT_ID);
         } else {
             $record = parent::get($_id, $_containerId);
+            
+            if ($record->type == Felamimail_Model_Account::TYPE_SYSTEM) {
+                $this->_addSystemAccountValues($record);
+                $this->_addUserValues($record, Tinebase_User::getInstance()->getFullUserById($this->_currentAccount->getId()));
+            }
         }
         
         return $record;    
@@ -271,7 +278,7 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
 
     /**
      * inspect update of one record
-     * - update credentials here
+     * - update credentials here / only allow to update certain fields of system accounts
      * 
      * @param   Tinebase_Record_Interface $_record      the update record
      * @param   Tinebase_Record_Interface $_oldRecord   the current persistent record
@@ -279,56 +286,78 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
      */
     protected function _inspectUpdate($_record, $_oldRecord)
     {
-        // get old credentials
-        $credentialsBackend = Tinebase_Auth_CredentialCache::getInstance();
-        $userCredentialCache = Tinebase_Core::get(Tinebase_Core::USERCREDENTIALCACHE);
-        
-        if ($userCredentialCache !== NULL) {
-                $credentialsBackend->getCachedCredentials($userCredentialCache);
-        } else {
-            Tinebase_Core::getLogger()->crit(__METHOD__ . '::' . __LINE__ 
-                . ' Something went wrong with the CredentialsCache / use given username/password instead.'
+        if ($_record->type == Felamimail_Model_Account::TYPE_SYSTEM) {
+            // only allow to update some values for system accounts
+            $allowedFields = array(
+                'name',
+                'signature',
+                'intelligent_folders',
+                'has_children_support',
+                'sort_folders',
+                'last_modified_time',
+                'last_modified_by',
             );
-            return;
-        }
-        
-        if ($_oldRecord->credentials_id) {
-            $credentials = $credentialsBackend->get($_oldRecord->credentials_id);
-            $credentials->key = substr($userCredentialCache->password, 0, 24);
-            $credentialsBackend->getCachedCredentials($credentials);
-        } else {
-            $credentials = new Tinebase_Model_CredentialCache(array(
-                'username'  => '',
-                'password'  => ''
-            ));
-        }
-        
-        // check if something changed
-        if (
-            ! $_oldRecord->credentials_id
-            ||  (! empty($_record->user) && $_record->user !== $credentials->username)
-            ||  (! empty($_record->password) && $_record->password !== $credentials->password)
-        ) {
-            $newPassword = ($_record->password) ? $_record->password : $credentials->password;
-            $newUsername = ($_record->user) ? $_record->user : $credentials->username;
-
-            $_record->credentials_id = $this->_createCredentials($newUsername, $newPassword);
-            $imapCredentialsChanged = TRUE;
-        } else {
-            $imapCredentialsChanged = FALSE;
-        }
-        
-        if ($_record->smtp_user && $_record->smtp_password) {
-            // create extra smtp credentials
-            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Update/create SMTP credentials.');
-            $_record->smtp_credentials_id = $this->_createCredentials($_record->smtp_user, $_record->smtp_password);
+            $diff = $_record->diff($_oldRecord);
+            foreach ($diff as $key => $value) {
+                if (! in_array($key, $allowedFields)) {
+                    // setting old value
+                    $_record->$key = $_oldRecord->$key;
+                }
+            } 
             
-        } else if (
-            $imapCredentialsChanged 
-            && (! $_record->smtp_credentials_id || $_record->smtp_credentials_id == $_oldRecord->credentials_id)
-        ) {
-            // use imap credentials for smtp auth as well
-            $_record->smtp_credentials_id = $_record->credentials_id;
+        } else {
+        
+            // get old credentials
+            $credentialsBackend = Tinebase_Auth_CredentialCache::getInstance();
+            $userCredentialCache = Tinebase_Core::get(Tinebase_Core::USERCREDENTIALCACHE);
+            
+            if ($userCredentialCache !== NULL) {
+                    $credentialsBackend->getCachedCredentials($userCredentialCache);
+            } else {
+                Tinebase_Core::getLogger()->crit(__METHOD__ . '::' . __LINE__ 
+                    . ' Something went wrong with the CredentialsCache / use given username/password instead.'
+                );
+                return;
+            }
+            
+            if ($_oldRecord->credentials_id) {
+                $credentials = $credentialsBackend->get($_oldRecord->credentials_id);
+                $credentials->key = substr($userCredentialCache->password, 0, 24);
+                $credentialsBackend->getCachedCredentials($credentials);
+            } else {
+                $credentials = new Tinebase_Model_CredentialCache(array(
+                    'username'  => '',
+                    'password'  => ''
+                ));
+            }
+            
+            // check if something changed
+            if (
+                ! $_oldRecord->credentials_id
+                ||  (! empty($_record->user) && $_record->user !== $credentials->username)
+                ||  (! empty($_record->password) && $_record->password !== $credentials->password)
+            ) {
+                $newPassword = ($_record->password) ? $_record->password : $credentials->password;
+                $newUsername = ($_record->user) ? $_record->user : $credentials->username;
+    
+                $_record->credentials_id = $this->_createCredentials($newUsername, $newPassword);
+                $imapCredentialsChanged = TRUE;
+            } else {
+                $imapCredentialsChanged = FALSE;
+            }
+            
+            if ($_record->smtp_user && $_record->smtp_password) {
+                // create extra smtp credentials
+                Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Update/create SMTP credentials.');
+                $_record->smtp_credentials_id = $this->_createCredentials($_record->smtp_user, $_record->smtp_password);
+                
+            } else if (
+                $imapCredentialsChanged 
+                && (! $_record->smtp_credentials_id || $_record->smtp_credentials_id == $_oldRecord->credentials_id)
+            ) {
+                // use imap credentials for smtp auth as well
+                $_record->smtp_credentials_id = $_record->credentials_id;
+            }
         }
     }
 
@@ -347,6 +376,10 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
         
         switch ($_action) {
             case 'create':
+                if (! Tinebase_Core::getUser()->hasRight('Felamimail', Felamimail_Acl_Rights::ADD_ACCOUNTS)) {
+                    throw new Tinebase_Exception_AccessDenied("You don't have the right to add accounts!");
+                }
+                break;                
             case 'update':
             case 'delete':
                 if (! Tinebase_Core::getUser()->hasRight('Felamimail', Felamimail_Acl_Rights::MANAGE_ACCOUNTS)) {
@@ -463,73 +496,55 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
     /******************************** protected funcs *********************************/
 
     /**
-     * add default account with tine user credentials or from config.inc.php 
+     * add system account with tine user credentials (from config.inc.php or config db) 
      *
-     * @param Tinebase_Record_RecordSet $_accounts
-     * 
-     * @todo get default account data (host, port, ...) from preferences?
+     * @return Tinebase_Record_RecordSet
      */
-    protected function _addDefaultAccount($_accounts)
+    protected function _addSystemAccount()
     {
-        // add account from config.inc.php if available
-        if (! empty($this->_imapConfig) && $this->_imapConfig['useAsDefault']) {
+        $result = new Tinebase_Record_RecordSet('Felamimail_Model_Account');
+        
+        // get user
+        $userId = $this->_currentAccount->getId();
+        $fullUser = Tinebase_User::getInstance()->getFullUserById($userId);
+        
+        // only create account if email address is set
+        if ($fullUser->accountEmailAddress) {
+            $systemAccount = new Felamimail_Model_Account($this->_imapConfig, TRUE);
+            $systemAccount->type = Felamimail_Model_Account::TYPE_SYSTEM;
+            $systemAccount->user_id = $userId;
             
-            try {
-                $defaultAccount = new Felamimail_Model_Account($this->_imapConfig);
-                $defaultAccount->setId(Felamimail_Model_Account::DEFAULT_ACCOUNT_ID);
-                $_accounts->addRecord($defaultAccount);
-                $this->_addedDefaultAccount = TRUE;
-                
-            } catch (Tinebase_Exception $e) {
-                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . $e->getMessage());
+            $this->_addUserValues($systemAccount, $fullUser);
+            
+            // sanitize port
+            if (empty($systemAccount->port)) {
+                $systemAccount->port = 143;
             }
-            
-        // create new account with user credentials (if preference is set)
-        } else if (count($_accounts) == 0 && Tinebase_Core::getPreference('Felamimail')->userEmailAccount) {
-            
-            $defaultAccount = new Felamimail_Model_Account($this->_imapConfig, TRUE);
-            
-            $userId = $this->_currentAccount->getId();
-            $defaultAccount->user_id = $userId;
-            
-            $fullUser = Tinebase_User::getInstance()->getFullUserById($userId);
-            $defaultAccount->user   = $fullUser->accountLoginName;
-            
-            // only create account if email address is set
-            if ($fullUser->accountEmailAddress) {
-                $defaultAccount->email  = $fullUser->accountEmailAddress;
-                $defaultAccount->name   = $fullUser->accountEmailAddress;
-                $defaultAccount->from   = $fullUser->accountFullName;
-                
-                // get password from credentials cache and create account credentials
-                $defaultAccount->credentials_id = $this->_createCredentials();
-                $defaultAccount->smtp_credentials_id = $defaultAccount->credentials_id;
-                
-                // sanitize port
-                if (empty($defaultAccount->port)) {
-                    $defaultAccount->port = 143;
-                }
 
-                // add smtp server settings
-                $smtpConfig = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP);
-                if (! empty($smtpConfig)) {
-                    $defaultAccount->smtp_port              = ((! empty($smtpConfig['port'])) ? $smtpConfig['port'] : 25);
-                    $defaultAccount->smtp_hostname          = $smtpConfig['hostname'];
-                    $defaultAccount->smtp_auth              = $smtpConfig['auth'];
-                    $defaultAccount->smtp_ssl               = $smtpConfig['ssl'];             
-                }
-                
-                // create new account
-                $defaultAccount = $this->_backend->create($defaultAccount);
-                $_accounts->addRecord($defaultAccount);
-                $this->_addedDefaultAccount = TRUE;
-                
-                // set as default account preference
-                Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT} = $defaultAccount->getId();
-                
-                Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Created new default account ' . $defaultAccount->name);
+            // add smtp server settings
+            $smtpConfig = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP);
+            if (! empty($smtpConfig)) {
+                $systemAccount->smtp_port              = ((! empty($smtpConfig['port'])) ? $smtpConfig['port'] : 25);
+                $systemAccount->smtp_hostname          = $smtpConfig['hostname'];
+                $systemAccount->smtp_auth              = $smtpConfig['auth'];
+                $systemAccount->smtp_ssl               = $smtpConfig['ssl'];             
             }
+            
+            // create new account
+            $systemAccount = $this->_backend->create($systemAccount);
+            $result->addRecord($systemAccount);
+            $this->_addedDefaultAccount = TRUE;
+            
+            // set as default account preference
+            Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT} = $systemAccount->getId();
+            
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' Created new system account ' . $systemAccount->name);
+            
+        } else {
+            Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ . ' Could not create system account for user ' . $fullUser->accountLoginName);
         }
+                
+        return $result;
     }
     
     /**
@@ -563,6 +578,54 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
         );
         
         return $accountCredentials->getId();
+    }
+    
+    /**
+     * add settings/values from system account
+     * 
+     * @param Felamimail_Model_Account $_account
+     * @return void
+     */
+    protected function _addSystemAccountValues(Felamimail_Model_Account $_account)
+    {
+        // add imap settings
+        $imapKeysOverwrite = array('host', 'port', 'ssl');
+        foreach ($this->_imapConfig as $key => $value) {
+            if (in_array($key, $imapKeysOverwrite)) {
+                $_account->{$key} = $value;
+            }
+        }
+        
+        // add smtp settings
+        $smtpConfig = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP);
+        $smtpKeysOverwrite = array();
+        foreach ($smtpConfig as $key => $value) {
+            if (in_array($key, $smtpKeysOverwrite)) {
+                $_account->{'smtp_' . $key} = $value;
+            }
+        }
+        
+        //Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' ' . print_r($_account->toArray(), TRUE)); 
+    }
+    
+    /**
+     * add user account/contact data
+     * 
+     * @param Felamimail_Model_Account $_account
+     * @param Tinebase_Model_FullUser $_user
+     * @return unknown_type
+     */
+    protected function _addUserValues(Felamimail_Model_Account $_account, Tinebase_Model_FullUser $_user)
+    {
+        // add user data
+        $_account->user   = $_user->accountLoginName;
+        $_account->email  = $_user->accountEmailAddress;
+        $_account->name   = $_user->accountEmailAddress;
+        $_account->from   = $_user->accountFullName;
+        
+        // add contact data
+        $contact = Addressbook_Controller_Contact::getInstance()->getContactByUserId($_user->getId());
+        $_account->organization = $contact->org_name;
     }
     
     /**

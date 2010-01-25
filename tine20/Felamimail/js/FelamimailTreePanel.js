@@ -24,6 +24,7 @@ Ext.namespace('Tine.Felamimail');
  * TODO         make inbox/drafts/templates configurable in account
  * TODO         save tree state? @see http://examples.extjs.eu/?ex=treestate
  * TODO         add unread count to intelligent folders
+ * TODO         disable delete action in account ctx menu if user has no manage_accounts right
  * </pre>
  * 
  * @author      Philipp Schuele <p.schuele@metaways.de>

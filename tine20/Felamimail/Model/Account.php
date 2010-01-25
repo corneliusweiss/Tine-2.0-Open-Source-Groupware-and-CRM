@@ -45,6 +45,18 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
     const SECURE_SSL = 'ssl';
     
     /**
+     * system account
+     *
+     */
+    const TYPE_SYSTEM = 'system';
+    
+    /**
+     * user defined account
+     *
+     */
+    const TYPE_USER = 'user';
+    
+    /**
      * key in $_validators/$_properties array for the field which 
      * represents the identifier
      * 
@@ -70,6 +82,12 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
         'id'                    => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'user_id'               => array(Zend_Filter_Input::ALLOW_EMPTY => true),
         'name'                  => array(Zend_Filter_Input::ALLOW_EMPTY => true),
+    // account type (system/user defined)
+        'type'        => array(
+            Zend_Filter_Input::ALLOW_EMPTY => true, 
+            Zend_Filter_Input::DEFAULT_VALUE => 'user',
+            'InArray' => array(self::TYPE_USER, self::TYPE_SYSTEM)
+        ),
     // imap server config
         'host'                  => array(Zend_Filter_Input::ALLOW_EMPTY => false),
         'port'                  => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 143),
@@ -289,14 +307,6 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
         
         if (! $this->{$userField} || ! ($this->{$passwordField} && ! $_onlyUsername)) {
             
-            if (! $this->{$credentialsField}) {
-                if ($_throwException) {
-                    throw new Felamimail_Exception('Could not get credentials, no ' . $credentialsField . ' given.');
-                } else {
-                    return FALSE;
-                }
-            }
-
             $credentialsBackend = Tinebase_Auth_CredentialCache::getInstance();
             $userCredentialCache = Tinebase_Core::get(Tinebase_Core::USERCREDENTIALCACHE);
             
@@ -312,9 +322,22 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
                 ));
             }
             
-            $credentials = $credentialsBackend->get($this->{$credentialsField});
-            $credentials->key = substr($userCredentialCache->password, 0, 24);
-            $credentialsBackend->getCachedCredentials($credentials);
+            if ($this->type == self::TYPE_USER) {
+                if (! $this->{$credentialsField}) {
+                    if ($_throwException) {
+                        throw new Felamimail_Exception('Could not get credentials, no ' . $credentialsField . ' given.');
+                    } else {
+                        return FALSE;
+                    }
+                }
+    
+                $credentials = $credentialsBackend->get($this->{$credentialsField});
+                $credentials->key = substr($userCredentialCache->password, 0, 24);
+                $credentialsBackend->getCachedCredentials($credentials);
+            } else {
+                // just use tine user credentials to connect to mailserver
+                $credentials = $userCredentialCache;
+            }
             
             $this->{$userField} = $credentials->username;
             $this->{$passwordField} = $credentials->password;
