@@ -53,6 +53,10 @@ Tine.Tinebase.ExceptionHandler = function() {
             return true;
         }
         
+        // no exception dlg for js exceptions
+        return false;
+        
+        /* 
         var data = {
             message: 'js exception: ' + error.message,
             code:   error.number,
@@ -77,6 +81,7 @@ Tine.Tinebase.ExceptionHandler = function() {
             Tine.Tinebase.exceptionDlg.show(Tine.Tinebase.exceptionDlg);
         }
         return true;
+        */
     };
     
     /**
