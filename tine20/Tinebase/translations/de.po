@@ -63,7 +63,7 @@ msgstr "Angelegt von"
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: Frontend/Http.php:521 js/ExceptionHandler.js:139
+#: Frontend/Http.php:521 js/ExceptionHandler.js:140
 msgid "Authorisation Required"
 msgstr "Anmeldung erforderlich"
 
@@ -113,7 +113,7 @@ msgstr[1] "Aufgabenlisten"
 #: js/widgets/container/ContainerSelect.js:373
 #: js/widgets/dialog/EditDialog.js:193
 #: js/widgets/dialog/PreferencesDialog.js:129 js/widgets/EditRecord.js:136
-#: js/widgets/tags/TagsMassAttachAction.js:79
+#: js/widgets/tags/TagsMassAttachAction.js:80
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -166,27 +166,23 @@ msgstr "Ihr Bericht wurde gesendet. Vielen Dank für ihre Mithilfe!"
 msgid "Please restart your browser now!"
 msgstr "Bitte starten Sie Ihren Browser neu!"
 
-#: js/ExceptionHandler.js:133
-msgid "Connection lost, please check your network!"
-msgstr "Verbindungsabbruch, bitte überprüfen Sie ihre Netzwerkeinstellungen!"
-
-#: js/ExceptionHandler.js:140
+#: js/ExceptionHandler.js:141
 msgid "Your session timed out. You need to login again."
 msgstr "Ihre Sitzung ist ausgelaufen. Bitte melden Sie sich erneut an."
 
-#: js/ExceptionHandler.js:157
+#: js/ExceptionHandler.js:158
 msgid "Insufficient Rights"
 msgstr "Fehlende Berechtigungen"
 
-#: js/ExceptionHandler.js:158
+#: js/ExceptionHandler.js:159
 msgid "Sorry, you are not permitted to perform this action"
 msgstr "Sie sind nicht berechtigt diese Aktion auszuführen"
 
-#: js/ExceptionHandler.js:167
+#: js/ExceptionHandler.js:168
 msgid "Not Found"
 msgstr "Nicht gefunden"
 
-#: js/ExceptionHandler.js:168
+#: js/ExceptionHandler.js:169
 msgid ""
 "Sorry, your request could not be completed because the required data could "
 "not be found. In most cases this means that someone already deleted the "
@@ -196,11 +192,11 @@ msgstr ""
 "In den meisten Fällen wurden diese Daten von einem anderen Benutzer "
 "gelöscht. Bitte aktualisieren Sie Ihre momentane Ansicht."
 
-#: js/ExceptionHandler.js:177
+#: js/ExceptionHandler.js:178
 msgid "Concurrent Updates"
 msgstr "Passende Updates"
 
-#: js/ExceptionHandler.js:178
+#: js/ExceptionHandler.js:179
 msgid ""
 "Someone else saved this record while you where editing the data. You need to "
 "reload and make your changes again."
@@ -209,16 +205,30 @@ msgstr ""
 "Sie müssen aktualisieren und die Änderungen erneut durchführen."
 
 #: js/ExceptionHandler.js:187
+msgid "Connection lost, please check your network!"
+msgstr "Verbindungsabbruch, bitte überprüfen Sie ihre Netzwerkeinstellungen!"
+
+#: js/ExceptionHandler.js:193
 msgid "Timeout"
 msgstr "Zeitüberschreitung"
 
-#: js/ExceptionHandler.js:188
+#: js/ExceptionHandler.js:194
 msgid ""
 "Sorry, some timeout occured while processing your request. Please reload "
 "your browser, try again or contact your administrator."
 msgstr ""
 "Es ist eine Zeitüberschreitung beim Bearbeiten der Anfrage aufgetreten. "
 "Eventuell müssen Sie den Browser neu laden und es noch einmal versuchen."
+
+#: js/ExceptionHandler.js:203
+msgid "No Response"
+msgstr ""
+
+#: js/ExceptionHandler.js:204
+msgid ""
+"Sorry, the Server did not respond any data. Please reload your browser, try "
+"again or contact your administrator."
+msgstr ""
 
 #: js/LoginPanel.js:79 js/LoginPanel.js:111
 msgid "Login"
@@ -385,7 +395,7 @@ msgstr "Wiederholung neues Passwort"
 #: js/MainScreen.js:455 js/widgets/container/ContainerSelect.js:382
 #: js/widgets/dialog/EditDialog.js:176
 #: js/widgets/dialog/PreferencesDialog.js:121 js/widgets/EditRecord.js:115
-#: js/widgets/tags/TagsMassAttachAction.js:85
+#: js/widgets/tags/TagsMassAttachAction.js:86
 msgid "Ok"
 msgstr "Ok"
 
@@ -423,7 +433,7 @@ msgstr ""
 "Die Installation von Gears wird die Geschwindigkeit von Tine 2.0 erhöhen "
 "indem alle benötigten Dateien local auf dem Computer gespeichert werden."
 
-#: js/MainScreen.js:532 js/widgets/app/GridPanel.js:678
+#: js/MainScreen.js:532 js/widgets/app/GridPanel.js:679
 #: js/widgets/dialog/EditDialog.js:446
 #: js/widgets/grid/PersistentFilterPicker.js:124
 #: js/widgets/tree/ContextMenu.js:84
@@ -448,19 +458,19 @@ msgstr[1] "Gruppen"
 msgid "Groups"
 msgstr "Gruppen"
 
-#: js/Models.js:247
+#: js/Models.js:248
 msgid "Credentials"
 msgid_plural "Credentials"
 msgstr[0] "Zugangsdaten"
 msgstr[1] "Zugangsdaten"
 
-#: js/Models.js:274
+#: js/Models.js:275
 msgid "Relation"
 msgid_plural "Relations"
 msgstr[0] "Verknüpfung"
 msgstr[1] "Anwendungen"
 
-#: js/tineInit.js:560
+#: js/tineInit.js:563
 msgid ""
 "Fatal Error: Client self-update failed, please contact your administrator "
 "and/or restart/reload your browser."
@@ -709,19 +719,19 @@ msgid_plural "Delete {0}"
 msgstr[0] "{0} löschen"
 msgstr[1] "{0} löschen"
 
-#: js/widgets/app/GridPanel.js:319
+#: js/widgets/app/GridPanel.js:320
 msgid "Tagging"
 msgstr "Taggen"
 
-#: js/widgets/app/GridPanel.js:395
+#: js/widgets/app/GridPanel.js:396
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "Zeige Datensätze {0} - {1} von {2}"
 
-#: js/widgets/app/GridPanel.js:396
+#: js/widgets/app/GridPanel.js:397
 msgid "No {0} to display"
 msgstr "Keine {0} gefunden"
 
-#: js/widgets/app/GridPanel.js:417
+#: js/widgets/app/GridPanel.js:418
 msgid ""
 "No {0} where found. Please try to change your filter-criteria, view-options "
 "or the {1} you search in."
@@ -729,35 +739,35 @@ msgstr ""
 "Keine {0} gefunden. Versuchen Sie die Suchkriterien, Anzeigeoptionen oder "
 "{1} in denen Sie suchen zu ändern."
 
-#: js/widgets/app/GridPanel.js:663
+#: js/widgets/app/GridPanel.js:664
 msgid "Not Allowed"
 msgstr "Mangelnde Erlaubnis"
 
-#: js/widgets/app/GridPanel.js:664
+#: js/widgets/app/GridPanel.js:665
 msgid "You are not allowed to delete all pages at once"
 msgstr "Es ist ihnen nicht erlaubt alle Seiten auf einmal zu löschen"
 
-#: js/widgets/app/GridPanel.js:676
+#: js/widgets/app/GridPanel.js:677
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
 msgstr[0] "Möchten Sie den ausgewählten Eintrag wirklich löschen?"
 msgstr[1] "Möchten Sie die ausgewählten Einträge wirklich löschen?"
 
-#: js/widgets/app/GridPanel.js:683 js/widgets/dialog/EditDialog.js:448
+#: js/widgets/app/GridPanel.js:684 js/widgets/dialog/EditDialog.js:448
 msgid "Deleting {0}"
 msgstr "Lösche {0}"
 
-#: js/widgets/app/GridPanel.js:685
+#: js/widgets/app/GridPanel.js:686
 msgid " ... This may take a long time!"
 msgstr "... Das kann eine ganze Weile dauern!"
 
-#: js/widgets/app/GridPanel.js:704 js/widgets/dialog/EditDialog.js:458
+#: js/widgets/app/GridPanel.js:705 js/widgets/dialog/EditDialog.js:458
 #: js/widgets/tags/TagsPanel.js:287 js/widgets/tags/TagsPanel.js:397
 #: js/widgets/tags/TagsPanel.js:430
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: js/widgets/app/GridPanel.js:704 js/widgets/dialog/EditDialog.js:458
+#: js/widgets/app/GridPanel.js:705 js/widgets/dialog/EditDialog.js:458
 msgid "Could not delete {0}."
 msgstr "Konnte {0} nicht löschen."
 
@@ -952,7 +962,7 @@ msgstr "Lade ..."
 msgid "Saving of preferences failed."
 msgstr "Speichern der Einstellungen fehlgeschlagen."
 
-#: js/widgets/dialog/PreferencesPanel.js:150
+#: js/widgets/dialog/PreferencesPanel.js:151
 msgid "There are no preferences for this application."
 msgstr "Es gibt derzeit keine Einstellungen für diese Anwendung."
 
@@ -1247,11 +1257,11 @@ msgstr "Tag"
 msgid "Add Tag"
 msgstr "Tag Hinzufügen"
 
-#: js/widgets/tags/TagsMassAttachAction.js:62
+#: js/widgets/tags/TagsMassAttachAction.js:63
 msgid "Attach the following tag to all selected items:"
 msgstr "Das Tag zu den folgenden Einträgen hinzufügen:"
 
-#: js/widgets/tags/TagsMassAttachAction.js:73
+#: js/widgets/tags/TagsMassAttachAction.js:74
 msgid "Select Tag"
 msgstr "Tag auswählen"
 
@@ -1481,43 +1491,43 @@ msgid ""
 msgstr ""
 "Sie können zwischen Extjs-Fenstern oder normalen Browserfenstern wählen."
 
-#: Setup/setup.xml:2507
+#: Setup/setup.xml:2511
 msgid "note"
 msgstr "Notiz"
 
-#: Setup/setup.xml:2512
+#: Setup/setup.xml:2516
 msgid "default note type"
 msgstr "default note type"
 
-#: Setup/setup.xml:2538
+#: Setup/setup.xml:2542
 msgid "telephone"
 msgstr "Telefon"
 
-#: Setup/setup.xml:2543
+#: Setup/setup.xml:2547
 msgid "telephone call"
 msgstr "Telefonanruf"
 
-#: Setup/setup.xml:2569
+#: Setup/setup.xml:2573
 msgid "email"
 msgstr "Email"
 
-#: Setup/setup.xml:2574
+#: Setup/setup.xml:2578
 msgid "email contact"
 msgstr "Email Kontakt"
 
-#: Setup/setup.xml:2600
+#: Setup/setup.xml:2604
 msgid "created"
 msgstr "erstellt"
 
-#: Setup/setup.xml:2605
+#: Setup/setup.xml:2609
 msgid "record created"
 msgstr "Eintrag erstellt"
 
-#: Setup/setup.xml:2631
+#: Setup/setup.xml:2635
 msgid "changed"
 msgstr "geändert"
 
-#: Setup/setup.xml:2636
+#: Setup/setup.xml:2640
 msgid "record changed"
 msgstr "Eintrag geändert"
 
