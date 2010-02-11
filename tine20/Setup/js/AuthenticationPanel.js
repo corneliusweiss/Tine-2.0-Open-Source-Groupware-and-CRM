@@ -22,6 +22,7 @@ Ext.ns('Tine', 'Tine.Setup');
  * <p><pre>
  * TODO         move to next step after install?
  * TODO         make default is valid mechanism with 'allowEmpty' work
+ * TODO         add port for ldap hosts
  * </pre></p>
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
@@ -265,12 +266,15 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                         inputType: 'text',
                         name: 'authentication_Ldap_host',
                         fieldLabel: this.app.i18n._('Host')
-                    },
-                    {
+                    }/*, {
+                        inputType: 'text',
+                        name: 'authentication_Ldap_port',
+                        fieldLabel: this.app.i18n._('Port')
+                    }*/, {
                         inputType: 'text',
                         name: 'authentication_Ldap_username',
                         fieldLabel: this.app.i18n._('Login name')
-                    },{
+                    }, {
                         name: 'authentication_Ldap_password',
                         fieldLabel: this.app.i18n._('Password'),
                         inputType: 'password'
@@ -379,8 +383,40 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                         name: 'accounts_Ldap_userDn',
                         fieldLabel: this.app.i18n._('User DN')
                     }, {
+                        name: 'accounts_Ldap_userFilter',
+                        fieldLabel: this.app.i18n._('User Filter')
+                    }, {
+                        xtype: 'combo',
+                        width: 283, //late rendering bug
+                        listWidth: 300,
+                        mode: 'local',
+                        forceSelection: true,
+                        allowEmpty: false,
+                        triggerAction: 'all',
+                        selectOnFocus:true,
+                        store: [['1', 'SEARCH_SCOPE_SUB'], ['2','SEARCH_SCOPE_ONE']],
+                        name: 'accounts_Ldap_userSearchScope',
+                        fieldLabel: this.app.i18n._('User Search Scope'),
+                        value: '1'
+                    }, {
                         name: 'accounts_Ldap_groupsDn',
                         fieldLabel: this.app.i18n._('Groups DN')
+                    }, {
+                        name: 'accounts_Ldap_groupFilter',
+                        fieldLabel: this.app.i18n._('Group Filter')
+                    }, {
+                        xtype: 'combo',
+                        width: 283, //late rendering bug
+                        listWidth: 300,
+                        mode: 'local',
+                        forceSelection: true,
+                        allowEmpty: false,
+                        triggerAction: 'all',
+                        selectOnFocus:true,
+                        store: [['1', 'SEARCH_SCOPE_SUB'], ['2','SEARCH_SCOPE_ONE']],
+                        name: 'accounts_Ldap_groupSearchScope',
+                        fieldLabel: this.app.i18n._('Group Search Scope'),
+                        value: '1'
                     }, {
                         xtype: 'combo',
                         width: 283, //late rendering bug
