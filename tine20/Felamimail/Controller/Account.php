@@ -536,6 +536,7 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
             }
             
             // create new account
+            Tinebase_Timemachine_ModificationLog::setRecordMetaData($systemAccount, 'create');
             $systemAccount = $this->_backend->create($systemAccount);
             $result->addRecord($systemAccount);
             $this->_addedDefaultAccount = TRUE;
