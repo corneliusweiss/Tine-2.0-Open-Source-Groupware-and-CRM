@@ -255,17 +255,20 @@ Tine.Voipmanager.Model.SnomSoftwareImage.getDefaultData = function() {
     };
 };
 
-
-
-
 Tine.Voipmanager.Model.SnomLineArray = Tine.Tinebase.Model.genericFields.concat([
     {name: 'asteriskline_id'},
     {name: 'id'},
     {name: 'idletext'},
-    {name: 'lineactive'},
+    {name: 'lineactive', type: 'boolean'},
     {name: 'linenumber'},
     {name: 'snomphone_id'},
-    {name: 'name'}
+    {name: 'cfi_mode'},
+    {name: 'cfi_number'},
+    {name: 'cfb_mode'},
+    {name: 'cfb_number'},
+    {name: 'cfd_mode'},
+    {name: 'cfd_number'},
+    {name: 'cfd_time'}    
 ]);
 /**
  * @type {Tine.Tinebase.data.Record}
@@ -362,47 +365,8 @@ Tine.Voipmanager.Model.SnomPhoneRight = Ext.data.Record.create([
 ]);
 
 /*
- * @deprecated
- */
-/*
-
-Tine.Voipmanager.Model.SnomOwnerArray = Tine.Tinebase.Model.genericFields.concat([
-    {name: 'account_id'},
-    {name: 'account_type'},
-    {name: 'account_name'}
-
-    //{name: 'accountDisplayName'}
-]);
-Tine.Voipmanager.Model.SnomOwner = Tine.Tinebase.data.Record.create(Tine.Voipmanager.Model.SnomOwnerArray, {
-    appName: 'Voipmanager',
-    modelName: 'SnomOwner',
-    idProperty: 'account_id',
-    titleProperty: 'account_name',
-    // ngettext('Owner', 'Owners', n);
-    recordName: 'SnomOwner',
-    recordsName: 'SnomOwners',
-    containerProperty: 'account_id',
-    // ngettext('owners list', 'owners lists', n);
-    containerName: 'owners list',
-    containersName: 'owners lists',
-    getTitle: function() {
-        return this.get('number') ? (this.get('number') + ' ' + this.get('account_name')) : false;
-    }
-});
-Tine.Voipmanager.Model.SnomOwner.getDefaultData = function() { 
-    return {
-        account_id: Tine.Tinebase.registry.get('currentAccount')
-    }
-};
-*/
-
-
-
-/*
  *  ASTERISK
  */
-
-
 
 Tine.Voipmanager.Model.AsteriskSipPeerArray = Tine.Tinebase.Model.genericFields.concat([
     {name: 'id'},
