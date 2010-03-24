@@ -165,19 +165,45 @@ class ActiveSync_Controller_ContactsTests extends PHPUnit_Framework_TestCase
         
         $unSyncableContact = Addressbook_Controller_Contact::getInstance()->create($unSyncableContact);
         $this->objects['unSyncableContact'] = $unSyncableContact;
+
         
-        ########### Test Controller / uit ###############
+        ########### define test filter
+        $filterBackend = new Tinebase_PersistentFilter();
+        
+        try {
+            $filter = $filterBackend->getByProperty('Contacts Sync Test', 'name');
+        } catch (Tinebase_Exception_NotFound $e) {
+            $filter = new Tinebase_Model_PersistentFilter(array(
+                'application_id'    => Tinebase_Application::getInstance()->getApplicationByName('Addressbook')->getId(),
+                'account_id'        => Tinebase_Core::getUser()->getId(),
+                'model'             => 'Addressbook_Model_ContactFilter',
+                'filters'           => array(array(
+                    'field'     => 'container_id', 
+                    'operator'  => 'equals', 
+                    'value'     => $this->objects['containerWithSyncGrant']->getId()
+                )),
+                'name'              => 'Contacts Sync Test',
+                'description'       => 'Created by unit test'
+            ));
+            
+            $filter = $filterBackend->create($filter);
+        }
+        $this->objects['filter'] = $filter;
+        
+        
+        ########### define test devices
         $palm = ActiveSync_Backend_DeviceTests::getTestDevice();
-        $palm->devicetype = 'palm';
-        $palm->owner_id   = $user->getId();
-        $this->objects['devicePalm'] = $palm;
+        $palm->devicetype   = 'palm';
+        $palm->owner_id     = $user->getId();
+        $palm->contactsfilter_id = $this->objects['filter']->getId();
+        $this->objects['devicePalm']   = ActiveSync_Controller_Device::getInstance()->create($palm);
         
         $iphone = ActiveSync_Backend_DeviceTests::getTestDevice();
         $iphone->devicetype = 'iphone';
         $iphone->owner_id   = $user->getId();
-        $this->objects['deviceIPhone'] = $iphone;
+        $iphone->contactsfilter_id = $this->objects['filter']->getId();
+        $this->objects['deviceIPhone'] = ActiveSync_Controller_Device::getInstance()->create($iphone);
         
-        //$this->_controller = new ActiveSync_Controller_Contacts($device, new Zend_Date(null, null, 'de_DE'));
     }
 
     /**
@@ -199,6 +225,12 @@ class ActiveSync_Controller_ContactsTests extends PHPUnit_Framework_TestCase
         
         Tinebase_Container::getInstance()->deleteContainer($this->objects['containerWithSyncGrant']);
         Tinebase_Container::getInstance()->deleteContainer($this->objects['containerWithoutSyncGrant']);
+        
+        ActiveSync_Controller_Device::getInstance()->delete($this->objects['devicePalm']);
+        ActiveSync_Controller_Device::getInstance()->delete($this->objects['deviceIPhone']);
+        
+        $filterBackend = new Tinebase_PersistentFilter();
+        $filterBackend->delete($this->objects['filter']->getId());
     }
     
     /**
@@ -221,10 +253,12 @@ class ActiveSync_Controller_ContactsTests extends PHPUnit_Framework_TestCase
         $controller = new ActiveSync_Controller_Contacts($this->objects['deviceIPhone'], new Zend_Date(null, null, 'de_DE'));
         
         $folders = $controller->getSupportedFolders();
+        
         foreach($folders as $folder) {
         	$this->assertTrue(Tinebase_Core::getUser()->hasGrant($folder['folderId'], Tinebase_Model_Grants::GRANT_SYNC));
         }
         $this->assertArrayNotHasKey("addressbook-root", $folders, "key addressbook-root found");
+        $this->assertEquals(1, count($folders));
     }
     
     /**
