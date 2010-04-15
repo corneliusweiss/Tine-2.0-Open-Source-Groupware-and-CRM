@@ -293,6 +293,12 @@ Tine.Setup.AuthenticationPanel = Ext.extend(Tine.Tinebase.widgets.form.ConfigPan
                     }, {
                         name: 'authentication_Ldap_accountCanonicalForm',
                         fieldLabel: this.app.i18n._('Account canonical form')
+                    }, {
+                        name: 'authentication_Ldap_accountDomainName',
+                        fieldLabel: this.app.i18n._('Account domain name ')
+                    }, {
+                        name: 'authentication_Ldap_accountDomainNameShort',
+                        fieldLabel: this.app.i18n._('Account domain short name')
                     }]
                 }]
             } ]
