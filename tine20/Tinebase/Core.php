@@ -169,6 +169,11 @@ class Tinebase_Core
             $server = new ActiveSync_Server_Http();
 
 
+            /**************************** ExchangeWebservice API *********************/
+        } elseif(isset($_SERVER['REDIRECT_EWS']) && $_SERVER['REDIRECT_EWS'] == 'true') {
+            $server = new ExchangeWebservices_Server_Http();
+
+
             /**************************** CLI API *****************************/
         } elseif (php_sapi_name() == 'cli') {
             $server = new Tinebase_Server_Cli();
