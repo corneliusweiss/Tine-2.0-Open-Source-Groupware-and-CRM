@@ -26,7 +26,7 @@ class ExchangeWebservices_Frontend_Http extends Tinebase_Frontend_Abstract
     protected $_applicationName = 'ExchangeWebservices';
 
     //change this to your WSDL URI!
-    private $_WSDL_URI = "http://192.168.178.26/tine20/Microsoft-Server-EWS";
+    private $_WSDL_URI = "http://192.168.178.26/tine20/Microsoft-Server-EWS?wsdl";
 
     /**
      * authenticate user
@@ -68,7 +68,7 @@ class ExchangeWebservices_Frontend_Http extends Tinebase_Frontend_Abstract
     private function handleWSDL()
     {
         $strategy = new Zend_Soap_Wsdl_Strategy_ArrayOfTypeComplex();
-        $autodiscover = new Zend_Soap_AutoDiscover();
+        $autodiscover = new Zend_Soap_AutoDiscover($strategy, $this->_WSDL_URI);
 
         $autodiscover->setOperationBodyStyle(array(
             'use' => 'literal',
@@ -79,6 +79,7 @@ class ExchangeWebservices_Frontend_Http extends Tinebase_Frontend_Abstract
             'transport' => 'http://schemas.xmlsoap.org/soap/http'));
 
         $autodiscover->setClass('ExchangeWebservices_EWS');
+
         $autodiscover->handle();
     }
 
@@ -111,7 +112,11 @@ class ExchangeWebservices_Frontend_Http extends Tinebase_Frontend_Abstract
      */
     private function handleTest()
     {
-        $soapClient = new Zend_Soap_Client($this->_WSDL_URI . "/?wsdl", array());
+        $options = Array(
+            'soap_version' => SOAP_1_2,  //'actor' - Die Aktions-URI für den Server.
+            'uri' => $this->_WSDL_URI);
+
+        $soapClient = new Zend_Soap_Client($this->_WSDL_URI, $options);
 
         require_once ("ExchangeWebservices/MessageType/FindItemSoapIn.php");
         require_once ("ExchangeWebservices/MessageType/FindItemSoapOut.php");
