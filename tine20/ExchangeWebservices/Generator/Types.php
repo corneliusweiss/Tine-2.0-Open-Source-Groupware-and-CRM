@@ -43,11 +43,16 @@ class ExchangeWebservices_Generator_Types
                         $dom = new DomDocument();
                         $n = $dom->importNode($node, true);
                         $dom->appendChild($n);
-                        $simpleType = $this->parseSimpleType($dom);
-
-                        echo $simpleType;
+                        $this->parseSimpleType($dom);
+                    } elseif ($reader->localName == "complexType") {
+                        $node = $reader->expand();
+                        $dom = new DomDocument();
+                        $n = $dom->importNode($node, true);
+                        $dom->appendChild($n);
+                        $this->parseComplexType($dom);
                     }
                     break;
+
             }
         }
         return $code;
@@ -64,9 +69,9 @@ class ExchangeWebservices_Generator_Types
         $childnodes = $noderoot->childNodes;
         $code = "";
 
-        $foo = new Zend_CodeGenerator_Php_Class();
+        $class = new Zend_CodeGenerator_Php_Class();
         $docblock = $this->generateClassDocblock("Tine 2.0", "Class for an simple type.");
-        $foo->setName($noderoot->getAttribute('name'))->setDocblock($docblock);
+        $class->setName($noderoot->getAttribute('name'))->setDocblock($docblock);
 
         foreach ($childnodes as $domNode) {
             switch ($domNode->nodeName) {
@@ -74,13 +79,13 @@ class ExchangeWebservices_Generator_Types
                     $dom = new DomDocument();
                     $n = $dom->importNode($domNode, true);
                     $dom->appendChild($n);
-                    $this->parseAnnotation($dom, $foo);
+                    $this->parseAnnotation($dom, $class);
                     break;
                 case "xs:restriction":
                     $dom = new DomDocument();
                     $n = $dom->importNode($domNode, true);
                     $dom->appendChild($n);
-                    $this->parseRestriction($dom, $foo);
+                    $this->parseRestriction($dom, $class);
                     break;
                 default:
                     ;
@@ -88,9 +93,46 @@ class ExchangeWebservices_Generator_Types
             }
         }
 
-        $code = $foo->generate();
+        $classFile = new Zend_CodeGenerator_Php_File();
+        $classFile->setFilename($_SERVER{'DOCUMENT_ROOT'} . '/tine20/ExchangeWebservices/Generator/gen/' . $class->getName() . '.php');
+        $classFile->setClass($class);
 
-        return $code;
+        file_put_contents($classFile->getFilename(), $classFile->generate());
+    }
+
+    /**
+     * Parse complex types.
+     *
+     * @param DomDocument $domDocument
+     */
+    private function parseComplexType(DOMDocument $domDocument)
+    {
+        $noderoot = $domDocument->documentElement;
+        $childnodes = $noderoot->childNodes;
+
+        $class = new Zend_CodeGenerator_Php_Class();
+        $docblock = $this->generateClassDocblock("Tine 2.0", "Class for an complex type.");
+        $class->setName($noderoot->getAttribute('name'))->setDocblock($docblock);
+
+        foreach ($childnodes as $domNode) {
+            switch ($domNode->nodeName) {
+                case "xs:sequence":
+                    $dom = new DomDocument();
+                    $n = $dom->importNode($domNode, true);
+                    $dom->appendChild($n);
+                    $this->parseSequence($dom, $class);
+                    break;
+                default:
+                    ;
+                    break;
+            }
+        }
+
+        $classFile = new Zend_CodeGenerator_Php_File();
+        $classFile->setFilename($_SERVER{'DOCUMENT_ROOT'} . '/tine20/ExchangeWebservices/Generator/gen/' . $class->getName() . '.php');
+        $classFile->setClass($class);
+
+        file_put_contents($classFile->getFilename(), $classFile->generate());
     }
 
     /**
@@ -138,6 +180,54 @@ class ExchangeWebservices_Generator_Types
                             'visibility' => 'public',
                             'const' => true,
                             'defaultValue' => $domNode->getAttribute('value'))));
+                    break;
+                default:
+                    ;
+                    break;
+            }
+        }
+    }
+
+    private function parseSequence(DomDocument $domDocument, Zend_CodeGenerator_Php_Class $generator)
+    {
+        $noderoot = $domDocument->documentElement;
+        $childnodes = $noderoot->childNodes;
+
+        foreach ($childnodes as $domNode) {
+            switch ($domNode->nodeName) {
+                case "xs:element":
+                    $docblock = new Zend_CodeGenerator_Php_Docblock();
+                    $docblock->setLongDescription("@var " . $this->getTypeFromXsd($domNode->getAttribute('type')));
+                    $generator->setProperties(array(
+                        array(
+                            'name' => str_replace(":", "_", $domNode->getAttribute('name')),
+                            'visibility' => 'private',
+                            'const' => false,
+                            'docblock' => $docblock)));
+
+                    $generator->setMethod(array(
+                        'name' => 'set' . $domNode->getAttribute('name'),
+                        'parameters' => array(
+                            array(
+                                'name' => $domNode->getAttribute('name'))),
+                        'body' => '$this->' . $domNode->getAttribute('name') . ' = $' . $domNode->getAttribute('name') . ';',
+                        'docblock' => new Zend_CodeGenerator_Php_Docblock(array(
+                            'shortDescription' => 'Sets the bar property',
+                            'tags' => array(
+                                new Zend_CodeGenerator_Php_Docblock_Tag_Param(array(
+                                    'paramName' => $domNode->getAttribute('name'),
+                                    'datatype' => $this->getTypeFromXsd($domNode->getAttribute('type')))))))));
+                    $generator->setMethod(array(
+                        'name' => 'get' . $domNode->getAttribute('name'),
+                        'parameters' => array(
+                            array(
+                                'name' => $domNode->getAttribute('name'))),
+                        'body' => 'return $this->' . $domNode->getAttribute('name') . ';',
+                        'docblock' => new Zend_CodeGenerator_Php_Docblock(array(
+                            'shortDescription' => 'Returns the bar property',
+                            'tags' => array(
+                                new Zend_CodeGenerator_Php_Docblock_Tag_return(array(
+                                    'datatype' => $this->getTypeFromXsd($domNode->getAttribute('type')))))))));
                     break;
                 default:
                     ;
@@ -255,5 +345,11 @@ class ExchangeWebservices_Generator_Types
         $tmp_doc = new DOMDocument();
         $tmp_doc->appendChild($tmp_doc->importNode($node, true));
         return $tmp_doc->saveHTML();
+    }
+
+    private function getTypeFromXsd($type)
+    {
+        return preg_replace("/[a-z]+:/i", "", $type);
+        echo $type;
     }
 }
