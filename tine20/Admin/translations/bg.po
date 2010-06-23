@@ -101,7 +101,288 @@ msgstr "показва компютри"
 msgid "view computers list and details"
 msgstr "показва компютърни списъци и детайли"
 
-#: js/Admin.js:20 js/user/GridPanel.js:96 js/user/Users.js:66
+#: js/SambaMachineGrid.js:68 js/SambaMachineEditDialog.js:43
+msgid "Computer Name"
+msgstr "Име на компютьра"
+
+#: js/SambaMachineGrid.js:69 js/SambaMachineGrid.js:99 js/Roles.js:240
+#: js/Groups.js:239 js/Groups.js:475 js/Tags.js:224 js/Tags.js:550
+#: js/user/GridPanel.js:101 js/RoleEditDialog.js:319
+msgid "Description"
+msgstr "Описание"
+
+#: js/SambaMachineGrid.js:86 js/Roles.js:238 js/Groups.js:237
+#: js/user/GridPanel.js:159
+msgid "ID"
+msgstr "ID (идентификационен номер)"
+
+#: js/SambaMachineGrid.js:93 js/Roles.js:239 js/Applications.js:286
+#: js/Groups.js:238 js/Tags.js:223 js/Admin.js:566
+msgid "Name"
+msgstr "Име"
+
+#: js/Roles.js:48 js/Groups.js:54 js/Tags.js:62 js/Admin.js:264
+msgid "Confirm"
+msgstr "Потвърждение"
+
+#: js/Roles.js:48
+msgid "Do you really want to delete the selected roles?"
+msgstr "Наистина ли желаете да изтриете селектираните роли?"
+
+#: js/Roles.js:65
+msgid "Deleting role(s)..."
+msgstr "Изтрива роля(-и)."
+
+#: js/Roles.js:70 js/Groups.js:75 js/Groups.js:410 js/Tags.js:406
+#: js/RoleEditDialog.js:106 js/RoleEditDialog.js:134
+msgid "Failed"
+msgstr "Неуспех"
+
+#: js/Roles.js:70 js/RoleEditDialog.js:134
+msgid "Some error occurred while trying to delete the role."
+msgstr "Настъпила е грешка при опит за изтриване на ролята."
+
+#: js/Roles.js:103
+msgid "add role"
+msgstr "добавя роля"
+
+#: js/Roles.js:111
+msgid "edit role"
+msgstr "обработва роля"
+
+#: js/Roles.js:119
+msgid "delete role"
+msgstr "изтрива роля"
+
+#: js/Roles.js:177 js/Applications.js:191 js/Groups.js:178 js/Tags.js:167
+#: js/Admin.js:437
+msgid "Search:"
+msgstr "Търси:"
+
+#: js/Roles.js:227
+msgid "Displaying roles {0} - {1} of {2}"
+msgstr "Показва роли {0} - {1} от {2}"
+
+#: js/Roles.js:228 js/Roles.js:283
+msgid "No roles to display"
+msgstr "Няма намерени роли"
+
+#: js/Applications.js:44
+#, fuzzy
+msgid "{0} Settings"
+msgstr "настройки"
+
+#: js/Applications.js:152
+msgid "enable application"
+msgstr "активира арликация"
+
+#: js/Applications.js:153
+msgid "disable application"
+msgstr "деактивира арликация"
+
+#: js/Applications.js:154
+msgid "settings"
+msgstr "настройки"
+
+#: js/Applications.js:234 js/user/EditDialog.js:376
+msgid "disabled"
+msgstr "деактивиран"
+
+#: js/Applications.js:237 js/user/EditDialog.js:376
+msgid "enabled"
+msgstr "активиран"
+
+#: js/Applications.js:241
+msgid "unknown status ({0})"
+msgstr "непознат статус ({0})"
+
+#: js/Applications.js:275
+msgid "Displaying application {0} - {1} of {2}"
+msgstr "Намерени апликации {0} - {1} of {2}"
+
+#: js/Applications.js:276
+msgid "No applications to display"
+msgstr "Няма намерени апликации"
+
+#: js/Applications.js:285
+msgid "Order"
+msgstr "Последователност"
+
+#: js/Applications.js:287 js/user/GridPanel.js:160 js/user/EditDialog.js:370
+msgid "Status"
+msgstr "Статус"
+
+#: js/Applications.js:288
+msgid "Version"
+msgstr "Версия"
+
+#: js/Groups.js:54
+msgid "Do you really want to delete the selected groups?"
+msgstr "Наистина ли желаете да изтриете селектираните групи?"
+
+#: js/Groups.js:70
+msgid "Deleting group(s)..."
+msgstr "Изтрива група(и)..."
+
+#: js/Groups.js:75
+msgid "Some error occurred while trying to delete the group."
+msgstr "Настъпила е грешка при опит за изтриване на групата."
+
+#: js/Groups.js:105
+msgid "add group"
+msgstr "добави група"
+
+#: js/Groups.js:113
+msgid "edit group"
+msgstr "обработи група"
+
+#: js/Groups.js:121
+msgid "delete group"
+msgstr "изтрий група"
+
+#: js/Groups.js:226
+msgid "Displaying groups {0} - {1} of {2}"
+msgstr "Намерени групи {0} - {1} от {2}"
+
+#: js/Groups.js:227 js/Groups.js:282
+msgid "No groups to display"
+msgstr "Няма намерени групи"
+
+#: js/Groups.js:375 js/Tags.js:361 js/RoleEditDialog.js:69
+msgid "Please wait"
+msgstr "Моля изчакайте"
+
+#: js/Groups.js:375 js/RoleEditDialog.js:69
+msgid "Updating Memberships"
+msgstr "Актуализира членство "
+
+#: js/Groups.js:410
+msgid "Could not save group."
+msgstr "Групата не можа да бъде съхранена"
+
+#: js/Groups.js:415 js/Tags.js:411 js/RoleEditDialog.js:113
+msgid "Errors"
+msgstr "Грешки"
+
+#: js/Groups.js:415 js/Tags.js:411 js/RoleEditDialog.js:113
+msgid "Please fix the errors noted."
+msgstr "Моля коригирайте грешките."
+
+#: js/Groups.js:446
+msgid "Group Members"
+msgstr "Членове на група"
+
+#: js/Groups.js:468
+msgid "Group Name"
+msgstr "Име на група"
+
+#: js/Groups.js:534 js/Tags.js:620 js/RoleEditDialog.js:395
+msgid "Transfering {0}..."
+msgstr ""
+
+#: js/Groups.js:534
+msgid "Group"
+msgstr ""
+
+#: js/Groups.js:546
+msgid "Add new group"
+msgstr "Добави нова група"
+
+#: js/Groups.js:548
+msgid "Edit Group \"{0}\""
+msgstr "Редактира група \"{0}\""
+
+#: js/SambaMachineModel.js:40
+msgid "Computer"
+msgid_plural "Computers"
+msgstr[0] "Комрютър"
+msgstr[1] "Комрютъра"
+
+#: js/Tags.js:62
+msgid "Do you really want to delete the selected tags?"
+msgstr "Наистина ли желаете да изтриете селектираните категории?"
+
+#: js/Tags.js:79
+msgid "Deleting tag(s)..."
+msgstr "Изтрива категория(-и)..."
+
+#: js/Tags.js:94
+msgid "add tag"
+msgstr "Добави категория"
+
+#: js/Tags.js:102
+msgid "edit tag"
+msgstr "Редактирай категория"
+
+#: js/Tags.js:110
+msgid "delete tag"
+msgstr "Изтрий категория"
+
+#: js/Tags.js:211
+msgid "Displaying tags {0} - {1} of {2}"
+msgstr "Намерени категории {0} - {1} от {2}"
+
+#: js/Tags.js:212 js/Tags.js:267
+msgid "No tags to display"
+msgstr "Няма намерени категории"
+
+#: js/Tags.js:222 js/Tags.js:556
+msgid "Color"
+msgstr "Цвят"
+
+#: js/Tags.js:361
+msgid "Updating Tag"
+msgstr "Актуализира таг..."
+
+#: js/Tags.js:406
+msgid "Could not save tag."
+msgstr "Неуспешно запаметяване на категория."
+
+#: js/Tags.js:492
+msgid "Allowed Contexts"
+msgstr "Позволен Контекст"
+
+#: js/Tags.js:498
+msgid "Context"
+msgstr "Контекст"
+
+#: js/Tags.js:511
+msgid "Account Rights"
+msgstr "Права на конто"
+
+#: js/Tags.js:519
+msgid "View"
+msgstr "Преглед"
+
+#: js/Tags.js:524
+msgid "Use"
+msgstr "Употреба"
+
+#: js/Tags.js:543
+msgid "Tag Name"
+msgstr "Име на таг"
+
+#: js/Tags.js:586
+msgid "Loading Tag..."
+msgstr "Зареждо таг..."
+
+#: js/Tags.js:586 js/RoleEditDialog.js:351
+msgid "Please Wait"
+msgstr "Моля изчакайте"
+
+#: js/Tags.js:620
+msgid "Tag"
+msgstr ""
+
+#: js/Tags.js:630
+msgid "Add New Tag"
+msgstr "Добавя нов таг"
+
+#: js/Tags.js:632
+msgid "Edit Tag \"{0}\""
+msgstr "Обработи таг \"{0}\""
+
+#: js/Admin.js:20 js/user/GridPanel.js:100 js/user/Users.js:66
 msgid "User"
 msgid_plural "Users"
 msgstr[0] "Потребител"
@@ -135,10 +416,6 @@ msgstr "Общи категории"
 msgid "Admin"
 msgstr "Администратор"
 
-#: js/Admin.js:264 js/Groups.js:54 js/Roles.js:48 js/Tags.js:62
-msgid "Confirm"
-msgstr "Потвърждение"
-
 #: js/Admin.js:264
 msgid "Do you really want to delete the selected access log entries?"
 msgstr "Наистина ли желаете да изтриете селектираните усрешни влизания?"
@@ -158,11 +435,6 @@ msgstr "Покажи от:"
 #: js/Admin.js:432
 msgid "to:"
 msgstr "до:"
-
-#: js/Admin.js:437 js/Applications.js:192 js/Groups.js:178 js/Roles.js:177
-#: js/Tags.js:167
-msgid "Search:"
-msgstr "Търси:"
 
 #: js/Admin.js:510
 msgid "invalid password"
@@ -200,11 +472,6 @@ msgstr "ID на сесия"
 msgid "Login Name"
 msgstr "Потребителско име"
 
-#: js/Admin.js:566 js/Applications.js:287 js/Groups.js:238 js/Roles.js:239
-#: js/SambaMachineGrid.js:89 js/Tags.js:223
-msgid "Name"
-msgstr "Име"
-
 #: js/Admin.js:567
 msgid "IP Address"
 msgstr "IP Адрес"
@@ -225,308 +492,65 @@ msgstr "Конто  ID"
 msgid "Result"
 msgstr "Резултат"
 
-#: js/Applications.js:45
-#, fuzzy
-msgid "{0} Settings"
-msgstr "настройки"
+#: js/user/GridPanel.js:58
+msgid "enable account"
+msgstr "активирай достъп"
 
-#: js/Applications.js:153
-msgid "enable application"
-msgstr "активира арликация"
+#: js/user/GridPanel.js:68
+msgid "disable account"
+msgstr "деактивирай достъп"
 
-#: js/Applications.js:154
-msgid "disable application"
-msgstr "деактивира арликация"
+#: js/user/GridPanel.js:78
+msgid "reset password"
+msgstr "изтрий парола"
 
-#: js/Applications.js:155
-msgid "settings"
-msgstr "настройки"
+#: js/user/GridPanel.js:161
+msgid "Displayname"
+msgstr "Покажи име"
 
-#: js/Applications.js:235 js/user/EditDialog.js:376
-msgid "disabled"
-msgstr "деактивиран"
+#: js/user/GridPanel.js:162
+msgid "Loginname"
+msgstr "Потребителско име"
 
-#: js/Applications.js:238 js/user/EditDialog.js:376
-msgid "enabled"
-msgstr "активиран"
+#: js/user/GridPanel.js:163
+msgid "Last name"
+msgstr "Фамилия"
 
-#: js/Applications.js:242
-msgid "unknown status ({0})"
-msgstr "непознат статус ({0})"
+#: js/user/GridPanel.js:164
+msgid "First name"
+msgstr "Име"
 
-#: js/Applications.js:276
-msgid "Displaying application {0} - {1} of {2}"
-msgstr "Намерени апликации {0} - {1} of {2}"
+#: js/user/GridPanel.js:165
+msgid "Email"
+msgstr "Имейл"
 
-#: js/Applications.js:277
-msgid "No applications to display"
-msgstr "Няма намерени апликации"
-
-#: js/Applications.js:286
-msgid "Order"
-msgstr "Последователност"
-
-#: js/Applications.js:288 js/user/EditDialog.js:370 js/user/GridPanel.js:156
-msgid "Status"
-msgstr "Статус"
-
-#: js/Applications.js:289
-msgid "Version"
-msgstr "Версия"
-
-#: js/Groups.js:54
-msgid "Do you really want to delete the selected groups?"
-msgstr "Наистина ли желаете да изтриете селектираните групи?"
-
-#: js/Groups.js:70
-msgid "Deleting group(s)..."
-msgstr "Изтрива група(и)..."
-
-#: js/Groups.js:75 js/Groups.js:402 js/RoleEditDialog.js:101
-#: js/RoleEditDialog.js:129 js/Roles.js:70 js/Tags.js:398
-msgid "Failed"
-msgstr "Неуспех"
-
-#: js/Groups.js:75
-msgid "Some error occurred while trying to delete the group."
-msgstr "Настъпила е грешка при опит за изтриване на групата."
-
-#: js/Groups.js:105
-msgid "add group"
-msgstr "добави група"
-
-#: js/Groups.js:113
-msgid "edit group"
-msgstr "обработи група"
-
-#: js/Groups.js:121
-msgid "delete group"
-msgstr "изтрий група"
-
-#: js/Groups.js:226
-msgid "Displaying groups {0} - {1} of {2}"
-msgstr "Намерени групи {0} - {1} от {2}"
-
-#: js/Groups.js:227 js/Groups.js:282
-msgid "No groups to display"
-msgstr "Няма намерени групи"
-
-#: js/Groups.js:237 js/Roles.js:238 js/SambaMachineGrid.js:82
-#: js/user/GridPanel.js:155
-msgid "ID"
-msgstr "ID (идентификационен номер)"
-
-#: js/Groups.js:239 js/Groups.js:467 js/RoleEditDialog.js:314 js/Roles.js:240
-#: js/SambaMachineGrid.js:65 js/SambaMachineGrid.js:95 js/Tags.js:224
-#: js/Tags.js:542 js/user/GridPanel.js:97
-msgid "Description"
-msgstr "Описание"
-
-#: js/Groups.js:367 js/RoleEditDialog.js:64 js/Tags.js:353
-msgid "Please wait"
-msgstr "Моля изчакайте"
-
-#: js/Groups.js:367 js/RoleEditDialog.js:64
-msgid "Updating Memberships"
-msgstr "Актуализира членство "
-
-#: js/Groups.js:402
-msgid "Could not save group."
-msgstr "Групата не можа да бъде съхранена"
-
-#: js/Groups.js:407 js/RoleEditDialog.js:108 js/Tags.js:403
-msgid "Errors"
-msgstr "Грешки"
-
-#: js/Groups.js:407 js/RoleEditDialog.js:108 js/Tags.js:403
-msgid "Please fix the errors noted."
-msgstr "Моля коригирайте грешките."
-
-#: js/Groups.js:438
-msgid "Group Members"
-msgstr "Членове на група"
-
-#: js/Groups.js:460
-msgid "Group Name"
-msgstr "Име на група"
-
-#: js/Groups.js:526 js/RoleEditDialog.js:390 js/Tags.js:612
-msgid "Transfering {0}..."
+#: js/user/GridPanel.js:166 js/user/EditDialog.js:358
+msgid "OpenID"
 msgstr ""
 
-#: js/Groups.js:526
-msgid "Group"
-msgstr ""
+#: js/user/GridPanel.js:167 js/user/EditDialog.js:413
+msgid "Last login at"
+msgstr "Последно регистрирано влизане"
 
-#: js/Groups.js:538
-msgid "Add new group"
-msgstr "Добави нова група"
+#: js/user/GridPanel.js:168 js/user/EditDialog.js:417
+msgid "Last login from"
+msgstr "Последното регистрирано влизане е от"
 
-#: js/Groups.js:540
-msgid "Edit Group \"{0}\""
-msgstr "Редактира група \"{0}\""
+#: js/user/GridPanel.js:169
+msgid "Password changed"
+msgstr "Паролата е сменена"
 
-#: js/RoleEditDialog.js:101
-msgid "Could not save role."
-msgstr "Неуспешно запаметяване на роля."
+#: js/user/GridPanel.js:170 js/user/EditDialog.js:379
+msgid "Expires"
+msgstr "Краен срок"
 
-#: js/RoleEditDialog.js:121
-msgid "Deleting role..."
-msgstr "Изтрива роля..."
+#: js/user/GridPanel.js:224
+msgid "Set new password"
+msgstr "Създаване на нова рарола"
 
-#: js/RoleEditDialog.js:129 js/Roles.js:70
-msgid "Some error occurred while trying to delete the role."
-msgstr "Настъпила е грешка при опит за изтриване на ролята."
-
-#: js/RoleEditDialog.js:267
-msgid "Members"
-msgstr "Членове"
-
-#: js/RoleEditDialog.js:276
-msgid "Rights"
-msgstr "Права"
-
-#: js/RoleEditDialog.js:306
-msgid "Role Name"
-msgstr "Име на роля"
-
-#: js/RoleEditDialog.js:346
-msgid "Loading Role..."
-msgstr "Зарежда роля..."
-
-#: js/RoleEditDialog.js:346 js/Tags.js:578
-msgid "Please Wait"
-msgstr "Моля изчакайте"
-
-#: js/RoleEditDialog.js:390
-msgid "Role"
-msgstr ""
-
-#: js/RoleEditDialog.js:400
-msgid "Add New Role"
-msgstr "Добави нова роля"
-
-#: js/RoleEditDialog.js:402
-msgid "Edit Role \"{0}\""
-msgstr "Редактира роля \"{0}\""
-
-#: js/Roles.js:48
-msgid "Do you really want to delete the selected roles?"
-msgstr "Наистина ли желаете да изтриете селектираните роли?"
-
-#: js/Roles.js:65
-msgid "Deleting role(s)..."
-msgstr "Изтрива роля(-и)."
-
-#: js/Roles.js:103
-msgid "add role"
-msgstr "добавя роля"
-
-#: js/Roles.js:111
-msgid "edit role"
-msgstr "обработва роля"
-
-#: js/Roles.js:119
-msgid "delete role"
-msgstr "изтрива роля"
-
-#: js/Roles.js:227
-msgid "Displaying roles {0} - {1} of {2}"
-msgstr "Показва роли {0} - {1} от {2}"
-
-#: js/Roles.js:228 js/Roles.js:283
-msgid "No roles to display"
-msgstr "Няма намерени роли"
-
-#: js/SambaMachineEditDialog.js:38 js/SambaMachineGrid.js:64
-msgid "Computer Name"
-msgstr "Име на компютьра"
-
-#: js/SambaMachineModel.js:40
-msgid "Computer"
-msgid_plural "Computers"
-msgstr[0] "Комрютър"
-msgstr[1] "Комрютъра"
-
-#: js/Tags.js:62
-msgid "Do you really want to delete the selected tags?"
-msgstr "Наистина ли желаете да изтриете селектираните категории?"
-
-#: js/Tags.js:79
-msgid "Deleting tag(s)..."
-msgstr "Изтрива категория(-и)..."
-
-#: js/Tags.js:94
-msgid "add tag"
-msgstr "Добави категория"
-
-#: js/Tags.js:102
-msgid "edit tag"
-msgstr "Редактирай категория"
-
-#: js/Tags.js:110
-msgid "delete tag"
-msgstr "Изтрий категория"
-
-#: js/Tags.js:211
-msgid "Displaying tags {0} - {1} of {2}"
-msgstr "Намерени категории {0} - {1} от {2}"
-
-#: js/Tags.js:212 js/Tags.js:267
-msgid "No tags to display"
-msgstr "Няма намерени категории"
-
-#: js/Tags.js:222 js/Tags.js:548
-msgid "Color"
-msgstr "Цвят"
-
-#: js/Tags.js:353
-msgid "Updating Tag"
-msgstr "Актуализира таг..."
-
-#: js/Tags.js:398
-msgid "Could not save tag."
-msgstr "Неуспешно запаметяване на категория."
-
-#: js/Tags.js:484
-msgid "Allowed Contexts"
-msgstr "Позволен Контекст"
-
-#: js/Tags.js:490
-msgid "Context"
-msgstr "Контекст"
-
-#: js/Tags.js:503
-msgid "Account Rights"
-msgstr "Права на конто"
-
-#: js/Tags.js:511
-msgid "View"
-msgstr "Преглед"
-
-#: js/Tags.js:516
-msgid "Use"
-msgstr "Употреба"
-
-#: js/Tags.js:535
-msgid "Tag Name"
-msgstr "Име на таг"
-
-#: js/Tags.js:578
-msgid "Loading Tag..."
-msgstr "Зареждо таг..."
-
-#: js/Tags.js:612
-msgid "Tag"
-msgstr ""
-
-#: js/Tags.js:622
-msgid "Add New Tag"
-msgstr "Добавя нов таг"
-
-#: js/Tags.js:624
-msgid "Edit Tag \"{0}\""
-msgstr "Обработи таг \"{0}\""
+#: js/user/GridPanel.js:224
+msgid "Please enter the new password:"
+msgstr "Моля вкарайте новата парола:"
 
 #: js/user/EditDialog.js:134
 #, fuzzy
@@ -599,10 +623,6 @@ msgstr "Няма зададена парола"
 msgid "Emailaddress"
 msgstr "Имейл адрес"
 
-#: js/user/EditDialog.js:358 js/user/GridPanel.js:162
-msgid "OpenID"
-msgstr ""
-
 #: js/user/EditDialog.js:364
 msgid "Primary group"
 msgstr "Основна група"
@@ -610,10 +630,6 @@ msgstr "Основна група"
 #: js/user/EditDialog.js:376
 #, fuzzy
 msgid "expired"
-msgstr "Краен срок"
-
-#: js/user/EditDialog.js:379 js/user/GridPanel.js:166
-msgid "Expires"
 msgstr "Краен срок"
 
 #: js/user/EditDialog.js:381 js/user/EditDialog.js:423
@@ -638,10 +654,6 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: js/user/EditDialog.js:413 js/user/GridPanel.js:163
-msgid "Last login at"
-msgstr "Последно регистрирано влизане"
-
 #: js/user/EditDialog.js:415 js/user/EditDialog.js:419
 msgid "don't know"
 msgstr "неизвестен"
@@ -650,10 +662,6 @@ msgstr "неизвестен"
 #: js/user/EditDialog.js:480
 msgid "never logged in"
 msgstr "До този момент няма регистрирано влизане."
-
-#: js/user/EditDialog.js:417 js/user/GridPanel.js:164
-msgid "Last login from"
-msgstr "Последното регистрирано влизане е от"
 
 #: js/user/EditDialog.js:421
 msgid "Password set"
@@ -769,50 +777,6 @@ msgstr ""
 msgid "Forward Only"
 msgstr ""
 
-#: js/user/GridPanel.js:54
-msgid "enable account"
-msgstr "активирай достъп"
-
-#: js/user/GridPanel.js:64
-msgid "disable account"
-msgstr "деактивирай достъп"
-
-#: js/user/GridPanel.js:74
-msgid "reset password"
-msgstr "изтрий парола"
-
-#: js/user/GridPanel.js:157
-msgid "Displayname"
-msgstr "Покажи име"
-
-#: js/user/GridPanel.js:158
-msgid "Loginname"
-msgstr "Потребителско име"
-
-#: js/user/GridPanel.js:159
-msgid "Last name"
-msgstr "Фамилия"
-
-#: js/user/GridPanel.js:160
-msgid "First name"
-msgstr "Име"
-
-#: js/user/GridPanel.js:161
-msgid "Email"
-msgstr "Имейл"
-
-#: js/user/GridPanel.js:165
-msgid "Password changed"
-msgstr "Паролата е сменена"
-
-#: js/user/GridPanel.js:220
-msgid "Set new password"
-msgstr "Създаване на нова рарола"
-
-#: js/user/GridPanel.js:220
-msgid "Please enter the new password:"
-msgstr "Моля вкарайте новата парола:"
-
 #: js/user/Users.js:109
 msgid "Samba User"
 msgid_plural "Samba Users"
@@ -825,6 +789,42 @@ msgid "Email User"
 msgid_plural "Email Users"
 msgstr[0] "Имейл"
 msgstr[1] "Имейл"
+
+#: js/RoleEditDialog.js:106
+msgid "Could not save role."
+msgstr "Неуспешно запаметяване на роля."
+
+#: js/RoleEditDialog.js:126
+msgid "Deleting role..."
+msgstr "Изтрива роля..."
+
+#: js/RoleEditDialog.js:272
+msgid "Members"
+msgstr "Членове"
+
+#: js/RoleEditDialog.js:281
+msgid "Rights"
+msgstr "Права"
+
+#: js/RoleEditDialog.js:311
+msgid "Role Name"
+msgstr "Име на роля"
+
+#: js/RoleEditDialog.js:351
+msgid "Loading Role..."
+msgstr "Зарежда роля..."
+
+#: js/RoleEditDialog.js:395
+msgid "Role"
+msgstr ""
+
+#: js/RoleEditDialog.js:405
+msgid "Add New Role"
+msgstr "Добави нова роля"
+
+#: js/RoleEditDialog.js:407
+msgid "Edit Role \"{0}\""
+msgstr "Редактира роля \"{0}\""
 
 #~ msgid "Do you really want to delete the selected account(s)?"
 #~ msgstr "Наистина ли желаете да изтриете селектираното(-ите) конто(-а)?"

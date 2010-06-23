@@ -12,38 +12,6 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: js/Application.js:32
-msgid "Active Sync"
-msgstr "Active Sync"
-
-#: js/Application.js:49
-msgid "Select a Device"
-msgstr "Gerät auswählen"
-
-#: js/Application.js:63
-msgid "No ActiveSync Device registered"
-msgstr "Kein ActiveSync Gerät verfügbar"
-
-#: js/Application.js:71
-msgid "Set as {0} Filter"
-msgstr "Als {0} Filter Setzen"
-
-#: js/Application.js:96
-msgid "Resetted Sync Filter"
-msgstr "Sync Filter zurückgesetzt"
-
-#: js/Application.js:97 js/Application.js:109
-msgid "{0} filter for device \"{1}\" is now \"{2}\""
-msgstr "{0} Filter für das Gerät \"{1}\" ist jetzt \"{2}\""
-
-#: js/Application.js:100
-msgid "resetted"
-msgstr "zurückgesetzt"
-
-#: js/Application.js:108
-msgid "Set Sync Filter"
-msgstr "Setze Sync Filter"
-
 #: js/Model.js:47
 msgid "Device"
 msgid_plural "Devices"
@@ -53,6 +21,38 @@ msgstr[1] "Geräte"
 #: js/Model.js:47
 msgid "Devices"
 msgstr "Geräte"
+
+#: js/Application.js:32
+msgid "Active Sync"
+msgstr "Active Sync"
+
+#: js/Application.js:48
+msgid "Select a Device"
+msgstr "Gerät auswählen"
+
+#: js/Application.js:62
+msgid "No ActiveSync Device registered"
+msgstr "Kein ActiveSync Gerät verfügbar"
+
+#: js/Application.js:70
+msgid "Set as {0} Filter"
+msgstr "Als {0} Filter Setzen"
+
+#: js/Application.js:95
+msgid "Resetted Sync Filter"
+msgstr "Sync Filter zurückgesetzt"
+
+#: js/Application.js:96 js/Application.js:108
+msgid "{0} filter for device \"{1}\" is now \"{2}\""
+msgstr "{0} Filter für das Gerät \"{1}\" ist jetzt \"{2}\""
+
+#: js/Application.js:99
+msgid "resetted"
+msgstr "zurückgesetzt"
+
+#: js/Application.js:107
+msgid "Set Sync Filter"
+msgstr "Setze Sync Filter"
 
 #: Setup/setup.xml:465
 msgid "Default Policy"

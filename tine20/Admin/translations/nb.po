@@ -101,7 +101,287 @@ msgstr "vis datamaskiner"
 msgid "view computers list and details"
 msgstr "vis datamaskin lister og detaljer"
 
-#: js/Admin.js:20 js/user/GridPanel.js:96 js/user/Users.js:66
+#: js/SambaMachineGrid.js:68 js/SambaMachineEditDialog.js:43
+msgid "Computer Name"
+msgstr "PC Navn"
+
+#: js/SambaMachineGrid.js:69 js/SambaMachineGrid.js:99 js/Roles.js:240
+#: js/Groups.js:239 js/Groups.js:475 js/Tags.js:224 js/Tags.js:550
+#: js/user/GridPanel.js:101 js/RoleEditDialog.js:319
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: js/SambaMachineGrid.js:86 js/Roles.js:238 js/Groups.js:237
+#: js/user/GridPanel.js:159
+msgid "ID"
+msgstr "ID"
+
+#: js/SambaMachineGrid.js:93 js/Roles.js:239 js/Applications.js:286
+#: js/Groups.js:238 js/Tags.js:223 js/Admin.js:566
+msgid "Name"
+msgstr "Navn"
+
+#: js/Roles.js:48 js/Groups.js:54 js/Tags.js:62 js/Admin.js:264
+msgid "Confirm"
+msgstr "Bekreft"
+
+#: js/Roles.js:48
+msgid "Do you really want to delete the selected roles?"
+msgstr "Vil du virkelig slette valgte roller?"
+
+#: js/Roles.js:65
+msgid "Deleting role(s)..."
+msgstr "Sletter rolle(r)..."
+
+#: js/Roles.js:70 js/Groups.js:75 js/Groups.js:410 js/Tags.js:406
+#: js/RoleEditDialog.js:106 js/RoleEditDialog.js:134
+msgid "Failed"
+msgstr "Feilet"
+
+#: js/Roles.js:70 js/RoleEditDialog.js:134
+msgid "Some error occurred while trying to delete the role."
+msgstr "En feil har oppstått ved forsøk på å slette rollen."
+
+#: js/Roles.js:103
+msgid "add role"
+msgstr "legg til rolle"
+
+#: js/Roles.js:111
+msgid "edit role"
+msgstr "rediger rolle"
+
+#: js/Roles.js:119
+msgid "delete role"
+msgstr "slett rolle"
+
+#: js/Roles.js:177 js/Applications.js:191 js/Groups.js:178 js/Tags.js:167
+#: js/Admin.js:437
+msgid "Search:"
+msgstr "Søk:"
+
+#: js/Roles.js:227
+msgid "Displaying roles {0} - {1} of {2}"
+msgstr "Viser roller {0} - {1} of {2}"
+
+#: js/Roles.js:228 js/Roles.js:283
+msgid "No roles to display"
+msgstr "Ingen roller å vise"
+
+#: js/Applications.js:44
+msgid "{0} Settings"
+msgstr "{0} Instillinger"
+
+#: js/Applications.js:152
+msgid "enable application"
+msgstr "aktiver program"
+
+#: js/Applications.js:153
+msgid "disable application"
+msgstr "deaktiver program"
+
+#: js/Applications.js:154
+msgid "settings"
+msgstr "instillinger"
+
+#: js/Applications.js:234 js/user/EditDialog.js:376
+msgid "disabled"
+msgstr "deaktivert"
+
+#: js/Applications.js:237 js/user/EditDialog.js:376
+msgid "enabled"
+msgstr "aktivert"
+
+#: js/Applications.js:241
+msgid "unknown status ({0})"
+msgstr "ukjent status ({0})"
+
+#: js/Applications.js:275
+msgid "Displaying application {0} - {1} of {2}"
+msgstr "Viser program {0} - {1} of {2}"
+
+#: js/Applications.js:276
+msgid "No applications to display"
+msgstr "Ingen program å vise"
+
+#: js/Applications.js:285
+msgid "Order"
+msgstr "Ordre"
+
+#: js/Applications.js:287 js/user/GridPanel.js:160 js/user/EditDialog.js:370
+msgid "Status"
+msgstr "Status"
+
+#: js/Applications.js:288
+msgid "Version"
+msgstr "Versjon"
+
+#: js/Groups.js:54
+msgid "Do you really want to delete the selected groups?"
+msgstr "Vil du virkelig slette valgte grupper?"
+
+#: js/Groups.js:70
+msgid "Deleting group(s)..."
+msgstr "Sletter gruppe(r)"
+
+#: js/Groups.js:75
+msgid "Some error occurred while trying to delete the group."
+msgstr "En feil oppsto ved forsøk på å slette gruppen."
+
+#: js/Groups.js:105
+msgid "add group"
+msgstr "legg til gruppe"
+
+#: js/Groups.js:113
+msgid "edit group"
+msgstr "rediger gruppe"
+
+#: js/Groups.js:121
+msgid "delete group"
+msgstr "slette gruppe"
+
+#: js/Groups.js:226
+msgid "Displaying groups {0} - {1} of {2}"
+msgstr "Viser grupper  {0} - {1} of {2}"
+
+#: js/Groups.js:227 js/Groups.js:282
+msgid "No groups to display"
+msgstr "Ingen grupper å vise"
+
+#: js/Groups.js:375 js/Tags.js:361 js/RoleEditDialog.js:69
+msgid "Please wait"
+msgstr "Vennligst vent"
+
+#: js/Groups.js:375 js/RoleEditDialog.js:69
+msgid "Updating Memberships"
+msgstr "Oppdaterer Medlemskap"
+
+#: js/Groups.js:410
+msgid "Could not save group."
+msgstr "Klarte ikke å lagre gruppen."
+
+#: js/Groups.js:415 js/Tags.js:411 js/RoleEditDialog.js:113
+msgid "Errors"
+msgstr "Feil"
+
+#: js/Groups.js:415 js/Tags.js:411 js/RoleEditDialog.js:113
+msgid "Please fix the errors noted."
+msgstr "Vennligst rett felene listet."
+
+#: js/Groups.js:446
+msgid "Group Members"
+msgstr "Gruppe Medlemmer"
+
+#: js/Groups.js:468
+msgid "Group Name"
+msgstr "Gruppe Navn"
+
+#: js/Groups.js:534 js/Tags.js:620 js/RoleEditDialog.js:395
+msgid "Transfering {0}..."
+msgstr ""
+
+#: js/Groups.js:534
+msgid "Group"
+msgstr ""
+
+#: js/Groups.js:546
+msgid "Add new group"
+msgstr "Legg til gruppe"
+
+#: js/Groups.js:548
+msgid "Edit Group \"{0}\""
+msgstr "Rediger Gruppe  \"{0}\""
+
+#: js/SambaMachineModel.js:40
+msgid "Computer"
+msgid_plural "Computers"
+msgstr[0] "PC"
+msgstr[1] "PC'er"
+
+#: js/Tags.js:62
+msgid "Do you really want to delete the selected tags?"
+msgstr "Vil du virkelig slette valgte overskrifter?"
+
+#: js/Tags.js:79
+msgid "Deleting tag(s)..."
+msgstr "Sletter overskrift(er)..."
+
+#: js/Tags.js:94
+msgid "add tag"
+msgstr "legg til overskrift"
+
+#: js/Tags.js:102
+msgid "edit tag"
+msgstr "rediger overskrift"
+
+#: js/Tags.js:110
+msgid "delete tag"
+msgstr "slett overskrift"
+
+#: js/Tags.js:211
+msgid "Displaying tags {0} - {1} of {2}"
+msgstr "Viser overskrifter {0} - {1} of {2}"
+
+#: js/Tags.js:212 js/Tags.js:267
+msgid "No tags to display"
+msgstr "Ingen overskrifter å vise"
+
+#: js/Tags.js:222 js/Tags.js:556
+msgid "Color"
+msgstr "Farge"
+
+#: js/Tags.js:361
+msgid "Updating Tag"
+msgstr "Oppdaterer Overskrift"
+
+#: js/Tags.js:406
+msgid "Could not save tag."
+msgstr "Klarte ikke å lagre overskrift."
+
+#: js/Tags.js:492
+msgid "Allowed Contexts"
+msgstr "Tillatte Contekster"
+
+#: js/Tags.js:498
+msgid "Context"
+msgstr "Contekst"
+
+#: js/Tags.js:511
+msgid "Account Rights"
+msgstr "Konto Rettigheter"
+
+#: js/Tags.js:519
+msgid "View"
+msgstr "Vis"
+
+#: js/Tags.js:524
+msgid "Use"
+msgstr "Bruk"
+
+#: js/Tags.js:543
+msgid "Tag Name"
+msgstr "Overskrift Navn"
+
+#: js/Tags.js:586
+msgid "Loading Tag..."
+msgstr "Laster Overskrift..."
+
+#: js/Tags.js:586 js/RoleEditDialog.js:351
+msgid "Please Wait"
+msgstr "Vennligst Vent"
+
+#: js/Tags.js:620
+msgid "Tag"
+msgstr ""
+
+#: js/Tags.js:630
+msgid "Add New Tag"
+msgstr "Legg til Ny Overskrift"
+
+#: js/Tags.js:632
+msgid "Edit Tag \"{0}\""
+msgstr "Rediger Overskrift \"{0}\""
+
+#: js/Admin.js:20 js/user/GridPanel.js:100 js/user/Users.js:66
 msgid "User"
 msgid_plural "Users"
 msgstr[0] "Bruker"
@@ -135,10 +415,6 @@ msgstr "Delte Emner"
 msgid "Admin"
 msgstr "Administrator"
 
-#: js/Admin.js:264 js/Groups.js:54 js/Roles.js:48 js/Tags.js:62
-msgid "Confirm"
-msgstr "Bekreft"
-
 #: js/Admin.js:264
 msgid "Do you really want to delete the selected access log entries?"
 msgstr "Vil du virkelig slette valgte tilgangs logg poster?"
@@ -158,11 +434,6 @@ msgstr "Vis fra:"
 #: js/Admin.js:432
 msgid "to:"
 msgstr "til:"
-
-#: js/Admin.js:437 js/Applications.js:192 js/Groups.js:178 js/Roles.js:177
-#: js/Tags.js:167
-msgid "Search:"
-msgstr "Søk:"
 
 #: js/Admin.js:510
 msgid "invalid password"
@@ -200,11 +471,6 @@ msgstr "Sessjons ID"
 msgid "Login Name"
 msgstr "Logg inn Navn"
 
-#: js/Admin.js:566 js/Applications.js:287 js/Groups.js:238 js/Roles.js:239
-#: js/SambaMachineGrid.js:89 js/Tags.js:223
-msgid "Name"
-msgstr "Navn"
-
 #: js/Admin.js:567
 msgid "IP Address"
 msgstr "IP Adresse"
@@ -225,307 +491,65 @@ msgstr "Konto ID"
 msgid "Result"
 msgstr "Resultat"
 
-#: js/Applications.js:45
-msgid "{0} Settings"
-msgstr "{0} Instillinger"
-
-#: js/Applications.js:153
-msgid "enable application"
-msgstr "aktiver program"
-
-#: js/Applications.js:154
-msgid "disable application"
-msgstr "deaktiver program"
-
-#: js/Applications.js:155
-msgid "settings"
-msgstr "instillinger"
-
-#: js/Applications.js:235 js/user/EditDialog.js:376
-msgid "disabled"
-msgstr "deaktivert"
-
-#: js/Applications.js:238 js/user/EditDialog.js:376
-msgid "enabled"
-msgstr "aktivert"
-
-#: js/Applications.js:242
-msgid "unknown status ({0})"
-msgstr "ukjent status ({0})"
-
-#: js/Applications.js:276
-msgid "Displaying application {0} - {1} of {2}"
-msgstr "Viser program {0} - {1} of {2}"
-
-#: js/Applications.js:277
-msgid "No applications to display"
-msgstr "Ingen program å vise"
-
-#: js/Applications.js:286
-msgid "Order"
-msgstr "Ordre"
-
-#: js/Applications.js:288 js/user/EditDialog.js:370 js/user/GridPanel.js:156
-msgid "Status"
-msgstr "Status"
-
-#: js/Applications.js:289
-msgid "Version"
-msgstr "Versjon"
-
-#: js/Groups.js:54
-msgid "Do you really want to delete the selected groups?"
-msgstr "Vil du virkelig slette valgte grupper?"
-
-#: js/Groups.js:70
-msgid "Deleting group(s)..."
-msgstr "Sletter gruppe(r)"
-
-#: js/Groups.js:75 js/Groups.js:402 js/RoleEditDialog.js:101
-#: js/RoleEditDialog.js:129 js/Roles.js:70 js/Tags.js:398
-msgid "Failed"
-msgstr "Feilet"
-
-#: js/Groups.js:75
-msgid "Some error occurred while trying to delete the group."
-msgstr "En feil oppsto ved forsøk på å slette gruppen."
-
-#: js/Groups.js:105
-msgid "add group"
-msgstr "legg til gruppe"
-
-#: js/Groups.js:113
-msgid "edit group"
-msgstr "rediger gruppe"
-
-#: js/Groups.js:121
-msgid "delete group"
-msgstr "slette gruppe"
-
-#: js/Groups.js:226
-msgid "Displaying groups {0} - {1} of {2}"
-msgstr "Viser grupper  {0} - {1} of {2}"
-
-#: js/Groups.js:227 js/Groups.js:282
-msgid "No groups to display"
-msgstr "Ingen grupper å vise"
-
-#: js/Groups.js:237 js/Roles.js:238 js/SambaMachineGrid.js:82
-#: js/user/GridPanel.js:155
-msgid "ID"
-msgstr "ID"
-
-#: js/Groups.js:239 js/Groups.js:467 js/RoleEditDialog.js:314 js/Roles.js:240
-#: js/SambaMachineGrid.js:65 js/SambaMachineGrid.js:95 js/Tags.js:224
-#: js/Tags.js:542 js/user/GridPanel.js:97
-msgid "Description"
-msgstr "Beskrivelse"
-
-#: js/Groups.js:367 js/RoleEditDialog.js:64 js/Tags.js:353
-msgid "Please wait"
-msgstr "Vennligst vent"
-
-#: js/Groups.js:367 js/RoleEditDialog.js:64
-msgid "Updating Memberships"
-msgstr "Oppdaterer Medlemskap"
-
-#: js/Groups.js:402
-msgid "Could not save group."
-msgstr "Klarte ikke å lagre gruppen."
-
-#: js/Groups.js:407 js/RoleEditDialog.js:108 js/Tags.js:403
-msgid "Errors"
-msgstr "Feil"
-
-#: js/Groups.js:407 js/RoleEditDialog.js:108 js/Tags.js:403
-msgid "Please fix the errors noted."
-msgstr "Vennligst rett felene listet."
-
-#: js/Groups.js:438
-msgid "Group Members"
-msgstr "Gruppe Medlemmer"
-
-#: js/Groups.js:460
-msgid "Group Name"
-msgstr "Gruppe Navn"
-
-#: js/Groups.js:526 js/RoleEditDialog.js:390 js/Tags.js:612
-msgid "Transfering {0}..."
-msgstr ""
-
-#: js/Groups.js:526
-msgid "Group"
-msgstr ""
-
-#: js/Groups.js:538
-msgid "Add new group"
-msgstr "Legg til gruppe"
-
-#: js/Groups.js:540
-msgid "Edit Group \"{0}\""
-msgstr "Rediger Gruppe  \"{0}\""
-
-#: js/RoleEditDialog.js:101
-msgid "Could not save role."
-msgstr "Klarte ikke å lagre rolle."
-
-#: js/RoleEditDialog.js:121
-msgid "Deleting role..."
-msgstr "Sletter rolle..."
-
-#: js/RoleEditDialog.js:129 js/Roles.js:70
-msgid "Some error occurred while trying to delete the role."
-msgstr "En feil har oppstått ved forsøk på å slette rollen."
-
-#: js/RoleEditDialog.js:267
-msgid "Members"
-msgstr "Medlemmer"
-
-#: js/RoleEditDialog.js:276
-msgid "Rights"
-msgstr "Rettigheter"
-
-#: js/RoleEditDialog.js:306
-msgid "Role Name"
-msgstr "Rolle Navn"
-
-#: js/RoleEditDialog.js:346
-msgid "Loading Role..."
-msgstr "Laster Rolle..."
-
-#: js/RoleEditDialog.js:346 js/Tags.js:578
-msgid "Please Wait"
-msgstr "Vennligst Vent"
-
-#: js/RoleEditDialog.js:390
-msgid "Role"
-msgstr ""
-
-#: js/RoleEditDialog.js:400
-msgid "Add New Role"
-msgstr "Legg til Ny Rolle"
-
-#: js/RoleEditDialog.js:402
-msgid "Edit Role \"{0}\""
-msgstr "Rediger Rolle \"{0}\""
-
-#: js/Roles.js:48
-msgid "Do you really want to delete the selected roles?"
-msgstr "Vil du virkelig slette valgte roller?"
-
-#: js/Roles.js:65
-msgid "Deleting role(s)..."
-msgstr "Sletter rolle(r)..."
-
-#: js/Roles.js:103
-msgid "add role"
-msgstr "legg til rolle"
-
-#: js/Roles.js:111
-msgid "edit role"
-msgstr "rediger rolle"
-
-#: js/Roles.js:119
-msgid "delete role"
-msgstr "slett rolle"
-
-#: js/Roles.js:227
-msgid "Displaying roles {0} - {1} of {2}"
-msgstr "Viser roller {0} - {1} of {2}"
-
-#: js/Roles.js:228 js/Roles.js:283
-msgid "No roles to display"
-msgstr "Ingen roller å vise"
-
-#: js/SambaMachineEditDialog.js:38 js/SambaMachineGrid.js:64
-msgid "Computer Name"
-msgstr "PC Navn"
-
-#: js/SambaMachineModel.js:40
-msgid "Computer"
-msgid_plural "Computers"
-msgstr[0] "PC"
-msgstr[1] "PC'er"
-
-#: js/Tags.js:62
-msgid "Do you really want to delete the selected tags?"
-msgstr "Vil du virkelig slette valgte overskrifter?"
-
-#: js/Tags.js:79
-msgid "Deleting tag(s)..."
-msgstr "Sletter overskrift(er)..."
-
-#: js/Tags.js:94
-msgid "add tag"
-msgstr "legg til overskrift"
-
-#: js/Tags.js:102
-msgid "edit tag"
-msgstr "rediger overskrift"
-
-#: js/Tags.js:110
-msgid "delete tag"
-msgstr "slett overskrift"
-
-#: js/Tags.js:211
-msgid "Displaying tags {0} - {1} of {2}"
-msgstr "Viser overskrifter {0} - {1} of {2}"
-
-#: js/Tags.js:212 js/Tags.js:267
-msgid "No tags to display"
-msgstr "Ingen overskrifter å vise"
-
-#: js/Tags.js:222 js/Tags.js:548
-msgid "Color"
-msgstr "Farge"
-
-#: js/Tags.js:353
-msgid "Updating Tag"
-msgstr "Oppdaterer Overskrift"
-
-#: js/Tags.js:398
-msgid "Could not save tag."
-msgstr "Klarte ikke å lagre overskrift."
-
-#: js/Tags.js:484
-msgid "Allowed Contexts"
-msgstr "Tillatte Contekster"
-
-#: js/Tags.js:490
-msgid "Context"
-msgstr "Contekst"
-
-#: js/Tags.js:503
-msgid "Account Rights"
-msgstr "Konto Rettigheter"
-
-#: js/Tags.js:511
-msgid "View"
-msgstr "Vis"
-
-#: js/Tags.js:516
-msgid "Use"
-msgstr "Bruk"
-
-#: js/Tags.js:535
-msgid "Tag Name"
-msgstr "Overskrift Navn"
-
-#: js/Tags.js:578
-msgid "Loading Tag..."
-msgstr "Laster Overskrift..."
-
-#: js/Tags.js:612
-msgid "Tag"
-msgstr ""
-
-#: js/Tags.js:622
-msgid "Add New Tag"
-msgstr "Legg til Ny Overskrift"
-
-#: js/Tags.js:624
-msgid "Edit Tag \"{0}\""
-msgstr "Rediger Overskrift \"{0}\""
+#: js/user/GridPanel.js:58
+msgid "enable account"
+msgstr "aktivere konto"
+
+#: js/user/GridPanel.js:68
+msgid "disable account"
+msgstr "deaktivere konto"
+
+#: js/user/GridPanel.js:78
+msgid "reset password"
+msgstr "nulstille passord"
+
+#: js/user/GridPanel.js:161
+msgid "Displayname"
+msgstr "Visnings navn"
+
+#: js/user/GridPanel.js:162
+msgid "Loginname"
+msgstr "Logg inn navn"
+
+#: js/user/GridPanel.js:163
+msgid "Last name"
+msgstr "Etter navn"
+
+#: js/user/GridPanel.js:164
+msgid "First name"
+msgstr "For navn"
+
+#: js/user/GridPanel.js:165
+msgid "Email"
+msgstr "E-post"
+
+#: js/user/GridPanel.js:166 js/user/EditDialog.js:358
+msgid "OpenID"
+msgstr "ÅpenID"
+
+#: js/user/GridPanel.js:167 js/user/EditDialog.js:413
+msgid "Last login at"
+msgstr "Siste logg inn kl"
+
+#: js/user/GridPanel.js:168 js/user/EditDialog.js:417
+msgid "Last login from"
+msgstr "Siste logg inn fra"
+
+#: js/user/GridPanel.js:169
+msgid "Password changed"
+msgstr "Passord endret"
+
+#: js/user/GridPanel.js:170 js/user/EditDialog.js:379
+msgid "Expires"
+msgstr "Utgår"
+
+#: js/user/GridPanel.js:224
+msgid "Set new password"
+msgstr "Sett nytt passord"
+
+#: js/user/GridPanel.js:224
+msgid "Please enter the new password:"
+msgstr "Vennligst skriv det nye passordet:"
 
 #: js/user/EditDialog.js:134
 msgid "Passwords do not match!"
@@ -595,10 +619,6 @@ msgstr "ingen passord er satt"
 msgid "Emailaddress"
 msgstr "Epost adresse"
 
-#: js/user/EditDialog.js:358 js/user/GridPanel.js:162
-msgid "OpenID"
-msgstr "ÅpenID"
-
 #: js/user/EditDialog.js:364
 msgid "Primary group"
 msgstr "Primær gruppe"
@@ -606,10 +626,6 @@ msgstr "Primær gruppe"
 #: js/user/EditDialog.js:376
 msgid "expired"
 msgstr "Utgått"
-
-#: js/user/EditDialog.js:379 js/user/GridPanel.js:166
-msgid "Expires"
-msgstr "Utgår"
 
 #: js/user/EditDialog.js:381 js/user/EditDialog.js:423
 #: js/user/EditDialog.js:500
@@ -632,10 +648,6 @@ msgstr "Skjul fra adressebok"
 msgid "Information"
 msgstr "Informasjon"
 
-#: js/user/EditDialog.js:413 js/user/GridPanel.js:163
-msgid "Last login at"
-msgstr "Siste logg inn kl"
-
 #: js/user/EditDialog.js:415 js/user/EditDialog.js:419
 msgid "don't know"
 msgstr "vet ikke"
@@ -644,10 +656,6 @@ msgstr "vet ikke"
 #: js/user/EditDialog.js:480
 msgid "never logged in"
 msgstr "aldri logget på"
-
-#: js/user/EditDialog.js:417 js/user/GridPanel.js:164
-msgid "Last login from"
-msgstr "Siste logg inn fra"
 
 #: js/user/EditDialog.js:421
 msgid "Password set"
@@ -762,50 +770,6 @@ msgstr "SMTP"
 msgid "Forward Only"
 msgstr "Kun Videresending"
 
-#: js/user/GridPanel.js:54
-msgid "enable account"
-msgstr "aktivere konto"
-
-#: js/user/GridPanel.js:64
-msgid "disable account"
-msgstr "deaktivere konto"
-
-#: js/user/GridPanel.js:74
-msgid "reset password"
-msgstr "nulstille passord"
-
-#: js/user/GridPanel.js:157
-msgid "Displayname"
-msgstr "Visnings navn"
-
-#: js/user/GridPanel.js:158
-msgid "Loginname"
-msgstr "Logg inn navn"
-
-#: js/user/GridPanel.js:159
-msgid "Last name"
-msgstr "Etter navn"
-
-#: js/user/GridPanel.js:160
-msgid "First name"
-msgstr "For navn"
-
-#: js/user/GridPanel.js:161
-msgid "Email"
-msgstr "E-post"
-
-#: js/user/GridPanel.js:165
-msgid "Password changed"
-msgstr "Passord endret"
-
-#: js/user/GridPanel.js:220
-msgid "Set new password"
-msgstr "Sett nytt passord"
-
-#: js/user/GridPanel.js:220
-msgid "Please enter the new password:"
-msgstr "Vennligst skriv det nye passordet:"
-
 #: js/user/Users.js:109
 msgid "Samba User"
 msgid_plural "Samba Users"
@@ -817,6 +781,42 @@ msgid "Email User"
 msgid_plural "Email Users"
 msgstr[0] "E-post Bruker"
 msgstr[1] "E-Post Brukere"
+
+#: js/RoleEditDialog.js:106
+msgid "Could not save role."
+msgstr "Klarte ikke å lagre rolle."
+
+#: js/RoleEditDialog.js:126
+msgid "Deleting role..."
+msgstr "Sletter rolle..."
+
+#: js/RoleEditDialog.js:272
+msgid "Members"
+msgstr "Medlemmer"
+
+#: js/RoleEditDialog.js:281
+msgid "Rights"
+msgstr "Rettigheter"
+
+#: js/RoleEditDialog.js:311
+msgid "Role Name"
+msgstr "Rolle Navn"
+
+#: js/RoleEditDialog.js:351
+msgid "Loading Role..."
+msgstr "Laster Rolle..."
+
+#: js/RoleEditDialog.js:395
+msgid "Role"
+msgstr ""
+
+#: js/RoleEditDialog.js:405
+msgid "Add New Role"
+msgstr "Legg til Ny Rolle"
+
+#: js/RoleEditDialog.js:407
+msgid "Edit Role \"{0}\""
+msgstr "Rediger Rolle \"{0}\""
 
 #~ msgid "Do you really want to delete the selected account(s)?"
 #~ msgstr "Vil du virkelig slette den valgte kontoen(e)?"
