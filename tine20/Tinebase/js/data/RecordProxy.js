@@ -77,6 +77,23 @@ Ext.extend(Tine.Tinebase.data.RecordProxy, Ext.data.DataProxy, {
     modelName: null,
     
     /**
+     * Aborts any outstanding request.
+     * @param {Number} transactionId (Optional) defaults to the last transaction
+     */
+    abort : function(transactionId) {
+        return Ext.Ajax.abort(transactionId);
+    },
+    
+    /**
+     * Determine whether this object has a request outstanding.
+     * @param {Number} transactionId (Optional) defaults to the last transaction
+     * @return {Boolean} True if there is an outstanding request.
+     */
+    isLoading : function(transId){
+        return Ext.Ajax.isLoading(transId);
+    },
+        
+    /**
      * loads a single 'full featured' record
      * 
      * @param   {Ext.data.Record} record
@@ -344,6 +361,7 @@ Ext.extend(Tine.Tinebase.data.RecordProxy, Ext.data.DataProxy, {
         var requestOptions = {
             scope: this,
             params: options.params,
+            callback: options.callback,
             success: function(response) {
                 if (typeof options.success == 'function') {
                     var args = [];
@@ -356,22 +374,22 @@ Ext.extend(Tine.Tinebase.data.RecordProxy, Ext.data.DataProxy, {
             },
             // note incoming options are implicitly jsonprc converted
             failure: function (response, jsonrpcoptions) {
+                var responseData = Ext.decode(response.responseText),
+                    exception = responseData.data ? responseData.data : responseData;
+                    
+                exception.request = jsonrpcoptions.jsonData;
+                exception.response = response.responseText;
+                
                 if (typeof options.failure == 'function') {
                     var args = [];
                     if (typeof options.beforeFailure == 'function') {
                         args = options.beforeFailure.call(this, response);
                     } else {
-                        var responseData = Ext.decode(response.responseText);
-                        args = [responseData.data ? responseData.data : responseData];
+                        args = [exception];
                     }
                 
                     options.failure.apply(options.scope, args);
                 } else {
-                    var responseData = Ext.decode(response.responseText);
-                    var exception = responseData.data ? responseData.data : responseData;
-                    exception.request = jsonrpcoptions.jsonData;
-                    exception.response = response.responseText;
-                    
                     this.handleRequestException(exception);
                 }
             }

@@ -91,6 +91,11 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
      */
     defaultPaging: null,
     /**
+     * @cfg {Object} pagingConfig
+     * additional paging config
+     */
+    pagingConfig: null,
+    /**
      * @cfg {Tine.widgets.grid.DetailsPanel} detailsPanel
      * if set, it becomes rendered in region south 
      */
@@ -397,7 +402,7 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
         }, this);
         
         // we allways have a paging toolbar
-        this.pagingToolbar = new Ext.ux.grid.PagingToolbar({
+        this.pagingToolbar = new Ext.ux.grid.PagingToolbar(Ext.apply({
             pageSize: 50,
             store: this.store,
             displayInfo: true,
@@ -405,7 +410,7 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
             emptyMsg: String.format(Tine.Tinebase.translation._("No {0} to display"), this.i18nRecordsName),
             displaySelectionHelper: true,
             sm: this.selectionModel
-        });
+        }, this.pagingConfig));
         // mark next grid refresh as paging-refresh
         this.pagingToolbar.on('beforechange', function() {
             this.grid.getView().isPagingRefresh = true;
@@ -504,7 +509,8 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
         }
         
         if (preserveSelection) {
-            var oldSelection = this.grid.getSelectionModel().getSelections();
+            var oldSelection = this.grid.getSelectionModel().getSelections(),
+                oldRow = oldSelection.length === 1 ? this.getStore().indexOfId(oldSelection[0].id) : null;
         
             opts.callback = opts.callback.createSequence(function(records, options, success) {
                 var sm = this.grid.getSelectionModel();
@@ -514,6 +520,9 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
                     var row = store.indexOfId(record.id);
                     if (row >= 0) {
                         sm.selectRow(row, true);
+                    } else if (oldRow !== null) {
+                        // if row is not existing, select the next one
+                        sm.selectRow(oldRow);
                     }
                 }, this);
             }, this);
@@ -751,7 +760,6 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
      */
     onStoreBeforeload: function(store, options) {
         options.params = options.params || {};
-        
         // allways start with an empty filter set!
         // this is important for paging and sort header!
         options.params.filter = [];
@@ -807,10 +815,11 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
                 
             }
         } else {
-            if (e.getKey() == e.DELETE) {
+            if ([e.BACKSPACE, e.DELETE].indexOf(e.getKey()) !== -1) {
                 if (!this.grid.editing && !this.grid.adding && !this.action_deleteRecord.isDisabled()) {
                     this.onDeleteRecords.call(this);
                 }
+                e.preventDefault();
             }
         }
     },
@@ -846,7 +855,7 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
             grid.view.focusRow(row);
         }
     },
-    
+
     /**
      * row doubleclick handler
      * 
@@ -956,6 +965,8 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
                     this.deleteMask = new Ext.LoadMask(this.grid.getEl(), {msg: message});
                 }
                 this.deleteMask.show();
+            } else {
+                this.pagingToolbar.refresh.disable();
             }
             
             var options = {
@@ -963,12 +974,16 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
                 success: function() {
                     if (this.showDeleteMask) {
                         this.deleteMask.hide();
+                    } else {
+                        this.pagingToolbar.refresh.show();
                     }
                     this.onAfterDelete();
                 },
                 failure: function () {
                     if (this.showDeleteMask) {
                         this.deleteMask.hide();
+                    } else {
+                        this.pagingToolbar.refresh.show();
                     }
                     Ext.MessageBox.alert(_('Failed'), String.format(_('Could not delete {0}.'), i18nItems)); 
                 }
@@ -991,6 +1006,6 @@ Ext.extend(Tine.widgets.grid.GridPanel, Ext.Panel, {
      * - reload the store
      */
     onAfterDelete: function() {
-        this.loadData(true, false, true);
+        this.loadData(true, true, true);
     }
 });

@@ -203,7 +203,7 @@ msgstr "恭喜！"
 msgid "You have entered all needed information. If you press the Finish button we will send you the registration email."
 msgstr "你已经输入了所需信息，如果你按完成按钮我们将给你发送注册邮件。"
 
-#: js/ExceptionHandler.js:127 Frontend/Http.php:546
+#: js/ExceptionHandler.js:127 Frontend/Http.php:547
 msgid "Authorisation Required"
 msgstr "需要授权"
 
@@ -405,7 +405,7 @@ msgid "Installing Gears will improve the performance of Tine 2.0 by caching all 
 msgstr "安装 Gears 可以通过缓存所有需要的文件到本地电脑来提高 Tine 2.0 的性能"
 
 #: js/MainMenu.js:319 js/widgets/persistentfilter/PickerPanel.js:200
-#: js/widgets/grid/GridPanel.js:932 js/widgets/dialog/EditDialog.js:444
+#: js/widgets/grid/GridPanel.js:941 js/widgets/dialog/EditDialog.js:444
 #: js/widgets/tree/ContextMenu.js:82
 msgid "Confirm"
 msgstr "确认"
@@ -426,11 +426,11 @@ msgstr "请等待！"
 msgid "Login"
 msgstr "登录"
 
-#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:68
+#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:69
 msgid "Username"
 msgstr "用户名"
 
-#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:72
+#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:73
 msgid "Password"
 msgstr "密码"
 
@@ -499,12 +499,12 @@ msgid "Your username and/or your password are wrong!!!"
 msgstr "你的用户名或者密码有误！！！"
 
 #: js/LoginPanel.js:300 js/widgets/dialog/PreferencesDialog.js:282
-#: js/widgets/dialog/CredentialsDialog.js:116
+#: js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Errors"
 msgstr "错误"
 
-#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:116
+#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Please fix the errors noted."
 msgstr "请修改注释的错误。"
@@ -538,7 +538,7 @@ msgid "Relation"
 msgid_plural "Relations"
 msgstr[0] "正加载"
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:573
+#: js/ExceptionDialog.js:51 Frontend/Http.php:574
 msgid "Abnormal End"
 msgstr "非正常结束"
 
@@ -546,7 +546,7 @@ msgstr "非正常结束"
 msgid "Send Report"
 msgstr "发送报告"
 
-#: js/ExceptionDialog.js:76 Frontend/Http.php:574
+#: js/ExceptionDialog.js:76 Frontend/Http.php:575
 msgid "An error occurred, the program ended abnormal."
 msgstr "有错误发生，程序非正常终止"
 
@@ -899,69 +899,69 @@ msgstr "下个季度"
 msgid "next year"
 msgstr "明年"
 
-#: js/widgets/grid/GridPanel.js:186
+#: js/widgets/grid/GridPanel.js:191
 msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
 msgstr "没有找到 {0}，请修改过滤条件，视图选项或搜索词 {1}"
 
-#: js/widgets/grid/GridPanel.js:275
+#: js/widgets/grid/GridPanel.js:280
 msgid "Edit {0}"
 msgstr "编辑{0}"
 
-#: js/widgets/grid/GridPanel.js:286
+#: js/widgets/grid/GridPanel.js:291
 msgid "Copy {0}"
 msgstr ""
 
-#: js/widgets/grid/GridPanel.js:297 js/widgets/tree/ContextMenu.js:214
+#: js/widgets/grid/GridPanel.js:302 js/widgets/tree/ContextMenu.js:214
 msgid "Add {0}"
 msgstr "添加{0}"
 
-#: js/widgets/grid/GridPanel.js:307 js/widgets/grid/GridPanel.js:308
-#: js/widgets/grid/GridPanel.js:310
+#: js/widgets/grid/GridPanel.js:312 js/widgets/grid/GridPanel.js:313
+#: js/widgets/grid/GridPanel.js:315
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "删除"
 
-#: js/widgets/grid/GridPanel.js:404
+#: js/widgets/grid/GridPanel.js:409
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "显示记录 {0} - {1} of {2}"
 
-#: js/widgets/grid/GridPanel.js:405
+#: js/widgets/grid/GridPanel.js:410
 msgid "No {0} to display"
 msgstr "没有{0}要显示"
 
-#: js/widgets/grid/GridPanel.js:602
+#: js/widgets/grid/GridPanel.js:611
 #, fuzzy
 msgid "Tagging"
 msgstr "标签"
 
-#: js/widgets/grid/GridPanel.js:912
+#: js/widgets/grid/GridPanel.js:921
 msgid "Not Allowed"
 msgstr "不允许"
 
-#: js/widgets/grid/GridPanel.js:913
+#: js/widgets/grid/GridPanel.js:922
 msgid "You are not allowed to delete all pages at once"
 msgstr "你不允许一次地删除所有页面"
 
-#: js/widgets/grid/GridPanel.js:931
+#: js/widgets/grid/GridPanel.js:940
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
 msgstr[0] "真的想删除选中的记录？"
 
-#: js/widgets/grid/GridPanel.js:952 js/widgets/dialog/EditDialog.js:446
+#: js/widgets/grid/GridPanel.js:961 js/widgets/dialog/EditDialog.js:446
 msgid "Deleting {0}"
 msgstr "正删除{0}"
 
-#: js/widgets/grid/GridPanel.js:954
+#: js/widgets/grid/GridPanel.js:963
 msgid " ... This may take a long time!"
 msgstr ""
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/tags/TagsPanel.js:291
+#: js/widgets/grid/GridPanel.js:988 js/widgets/tags/TagsPanel.js:291
 #: js/widgets/tags/TagsPanel.js:401 js/widgets/tags/TagsPanel.js:434
 #: js/widgets/dialog/EditDialog.js:456
 msgid "Failed"
 msgstr "失败"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/dialog/EditDialog.js:456
+#: js/widgets/grid/GridPanel.js:988 js/widgets/dialog/EditDialog.js:456
 msgid "Could not delete {0}."
 msgstr "不能删除{0}"
 
@@ -1675,7 +1675,7 @@ msgstr "由"
 msgid "Changed fields:"
 msgstr "已修改的字段："
 
-#: Frontend/Http.php:547
+#: Frontend/Http.php:548
 msgid "Your session is not valid. You need to login again."
 msgstr "会话无效，需要重新登录"
 

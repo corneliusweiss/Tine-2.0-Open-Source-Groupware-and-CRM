@@ -38,9 +38,27 @@ Tine.Felamimail.Application = Ext.extend(Tine.Tinebase.Application, {
     checkMailsDelayedTask: null,
     
     /**
+     * @property defaultAccount
+     * @type Tine.Felamimail.Model.Account
+     */
+    defaultAccount: null,
+    
+    /**
      * @type Ext.data.JsonStore
      */
     folderStore: null,
+    
+    /**
+     * @property updateInterval user defined update interval (milliseconds)
+     * @type Number
+     */
+    updateInterval: null,
+    
+    /**
+     * transaction id of current update message cache request
+     * @type Number
+     */
+    updateMessageCacheTransactionId: null,
     
     /**
      * returns title (Email)
@@ -55,18 +73,99 @@ Tine.Felamimail.Application = Ext.extend(Tine.Tinebase.Application, {
      * start delayed task to init folder store / updateFolderStore
      */
     init: function() {
+        Tine.log.info('initialising app');
         this.checkMailsDelayedTask = new Ext.util.DelayedTask(this.checkMails, this);
         
-        var delayTime = (Tine.Tinebase.appMgr.getActive() == this) ? /*1000*/ 0 : 15000;
-        this.getFolderStore.defer(delayTime, this);
+        this.updateInterval = parseInt(Tine.Felamimail.registry.get('preferences').get('updateInterval')) * 60000;
+        Tine.log.debug('user defined update interval is "' + this.updateInterval/1000 + '" seconds');
+        
+        this.defaultAccount = Tine.Felamimail.registry.get('preferences').get('defaultEmailAccount');
+        Tine.log.debug('default account is "' + this.defaultAccount);
+        
+        if (window.isMainWindow && Tine.Tinebase.appMgr.getActive() != this && this.updateInterval) {
+            var delayTime = this.updateInterval/20;
+            
+            Tine.log.debug('start preloading mails in "' + delayTime/1000 + '" seconds');
+            this.checkMailsDelayedTask.delay(delayTime);
+        }
     },
     
+    
     /**
-     * check mails delayed task
+     * check mails
+     * 
+     * if no folder is given, we find next folder to update ourself
+     * 
+     * @param {Tine.Felamimail.Model.Folder} [folder]
+     * @param {Function} [callback]
      */
-    checkMails: function() {
-        this.getFolderStore();
-        this.updateFolderStatus();
+    checkMails: function(folder, callback) {
+        this.checkMailsDelayedTask.cancel();
+        
+        if (! this.getFolderStore().getCount() && this.defaultAccount) {
+            Tine.log.debug('no folders in store yet, fetching first level...');
+            this.getFolderStore().asyncQuery('parent_path', '/' + this.defaultAccount, this.checkMails.createDelegate(this, []), [], this, this.getFolderStore());
+            return;
+        }
+        
+        Tine.log.info('checking mails' + (folder ? ' for folder ' + folder.get('localname') : '') + ' now: ' + new Date());
+        
+        if (! folder) {
+            var node = this.getMainScreen().getTreePanel().getSelectionModel().getSelectedNode(),
+                candidates = this.folderStore.queryBy(function(record) {
+                    var timestamp = record.get('imap_timestamp');
+                    return record.get('cache_status') !== 'complete' || timestamp == '' || timestamp.getElapsed() > this.updateInterval;
+                }, this),
+                folder = candidates.first();
+            
+            if (node && candidates.get(node.id)) {
+                // if current selection is a candidate, take this one!
+                folder = candidates.get(node.id);
+            }
+        }
+        
+        if (folder) {
+            if (this.updateMessageCacheTransactionId && Tine.Felamimail.folderBackend.isLoading(this.updateMessageCacheTransactionId)) {
+                var currentRequestFolder = this.folderStore.query('cache_status', 'pending').first();
+                
+                if (currentRequestFolder && currentRequestFolder !== folder) {
+                    Tine.log.debug('aborting current update message request');
+                    Tine.Felamimail.folderBackend.abort(this.updateMessageCacheTransactionId);
+                    currentRequestFolder.set('cache_status', 'incomplete');
+                    currentRequestFolder.commit();
+                } else {
+                    Tine.log.debug('a request updateing message cache for folder "' + folder.get('localname') + '" is in progress -> wait for request to return');
+                    return;
+                }
+            }
+            
+            var executionTime = folder.isCurrentSelection() ? 10 : Math.min(this.updateInterval, 120);
+            Tine.log.debug('updateing message cache for folder "' + folder.get('localname') + '" with ' + executionTime + ' seconds max execution time');
+            
+            folder.set('cache_status', 'pending');
+            folder.commit();
+            
+            this.updateMessageCacheTransactionId = Tine.Felamimail.folderBackend.updateMessageCache(folder.id, executionTime, {
+                scope: this,
+                callback: callback,
+                failure: this.onBackgroundRequestFail,
+                success: function(folder) {
+                    Tine.Felamimail.loadAccountStore().getById(folder.get('account_id')).setLastIMAPException(null);
+                    this.getFolderStore().updateFolder(folder);
+                    
+                    if (folder.get('cache_status') === 'updating') {
+                        Tine.log.debug('updateing message cache for folder "' + folder.get('localname') + '" is in progress on the server (folder is locked)');
+                        return this.checkMailsDelayedTask.delay(10000);
+                    }
+                    this.checkMailsDelayedTask.delay(0);
+                }
+            });
+        } else {
+            Tine.log.info('nothing more to do -> will check mails again in "' + this.updateInterval/1000 + '" seconds');
+            if (this.updateInterval > 0) {
+                this.checkMailsDelayedTask.delay(this.updateInterval);
+            }
+        }
     },
     
     /**
@@ -76,300 +175,85 @@ Tine.Felamimail.Application = Ext.extend(Tine.Tinebase.Application, {
      */
     getFolderStore: function() {
         if (! this.folderStore) {
+            Tine.log.debug('creating folder store');
             this.folderStore = new Tine.Felamimail.FolderStore({
                 listeners: {
                     scope: this,
                     update: this.onUpdateFolder
                 }
             });
-            
-            var defaultAccount = Tine.Felamimail.registry.get('preferences').get('defaultEmailAccount');
-            if (defaultAccount != '') {
-                this.folderStore.load({
-                    path: '/' + defaultAccount,
-                    params: {filter: [
-                        {field: 'account_id', operator: 'equals', value: defaultAccount},
-                        {field: 'globalname', operator: 'equals', value: ''}
-                    ]},
-                    callback: this.onStoreInitialLoad.createDelegate(this)
-                });
-            }
         }
         
         return this.folderStore;
     },
     
     /**
-     * initial load of folder store
-     *
-     * @param {} record
-     * @param {} options
-     * @param {} success
+     * executed when updateMessageCache requests fail
      * 
-     * TODO this could be obsolete, try to make it work without the initial load
-     * TODO 2010-06-11 cweiss: how the hack could a folder be selected bofore this store is loaded???
+     * NOTE: We show the credential error dlg and this only for the first error
+     * 
+     * @param {Object} exception
      */
-    onStoreInitialLoad: function(record, options, success) {
-        var folderName = 'INBOX';
-        var treePanel = this.getMainScreen().getTreePanel();
-        if (treePanel && treePanel.rendered) {
-            var node = treePanel.getSelectionModel().getSelectedNode();
-            if (node) {
-                folderName = node.attributes.globalname;
-            }
-        } 
+    onBackgroundRequestFail: function(exception) {
+        var currentRequestFolder = this.folderStore.query('cache_status', 'pending').first();
+        var accountId   = currentRequestFolder.get('account_id'),
+            account     = accountId ? Tine.Felamimail.loadAccountStore().getById(accountId): null,
+            imapStatus  = account ? account.get('imap_status') : null;
             
-        this.updateFolderStatus(folderName);
+        if (account) {
+            account.setLastIMAPException(exception);
+            
+            this.getFolderStore().each(function(folder) {
+                if (folder.get('account_id') === accountId) {
+                    folder.set('cache_status', 'disconnect');
+                    folder.commit();
+                }
+            }, this);
+            
+            if (exception.code == 912 && imapStatus !== 'failure' && Tine.Tinebase.appMgr.getActive() === this) {
+                Tine.Felamimail.folderBackend.handleRequestException(exception);
+            }
+        }
+        
+        Tine.log.info('background update failed (' + exception.message + ') -> will check mails again in "' + this.updateInterval/1000 + '" seconds');
+        this.checkMailsDelayedTask.delay(this.updateInterval);
+    },
+    
+    /**
+     * executed right before this app gets activated
+     */
+    onBeforeActivate: function() {
+        Tine.log.info('activating felamimail now');
+        // abort preloading/old actions and force frech fetch
+        this.checkMailsDelayedTask.delay(0);
     },
     
     /**
      * on update folder
      * 
-     * @param {} store
-     * @param {} record
-     * @param {} operation
+     * @param {Tine.Felamimail.FolderStore} store
+     * @param {Tine.Felamimail.Model.Folder} record
+     * @param {String} operation
      */
     onUpdateFolder: function(store, record, operation) {
-        
-        var changes = record.getChanges();
-        
-        if (record.isModified('cache_recentcount') && changes.cache_recentcount > 0) {
-            //console.log('show notification');
-            Ext.ux.Notification.show(
-                this.i18n._('New mails'), 
-                String.format(this.i18n._('You got {0} new mail(s) in Folder {1}.'), 
-                    changes.cache_recentcount, record.get('localname'))
-            );
-        }
-    },
-
-    /**
-     * update folder status of all visible / all node in one level or one folder(s)
-     * 
-     * @param {String/Tine.Felamimail.Model.Folder} [folder]
-     * 
-     * TODO abort request if another folder has been clicked
-     * TODO move request to record proxy
-     */
-    updateFolderStatus: function(folder) {
-        
-        if (Ext.isString(folder)) {
-            var index = this.getFolderStore().find('globalname', folder);
-            if (index >= 0) {
-                folder = this.getFolderStore().getAt(index);
-            }
-        } 
-        
-        //console.log(folder);
-        
-        var folderIds, accountId;
-        if (! folder || typeof folder.get !== 'function') {
-            var account = this.getActiveAccount();
-            accountId = account.id;
-            folderIds = this.getFoldersForUpdateStatus(accountId);
-            folder = null;
-        } else {
-            folderIds = [folder.id];
-            accountId = folder.get('account_id');
-        }
-        
-        // don't update if we got no folder ids 
-        if (folderIds.length > 0) {
-            Ext.Ajax.request({
-                params: {
-                    method: 'Felamimail.updateFolderStatus',
-                    folderIds: folderIds,
-                    accountId: accountId
-                },
-                scope: this,
-                timeout: 60000, // 1 minute
-                success: function(result, request) {
-                    var result = Tine.Felamimail.folderBackend.getReader().readRecords(Ext.util.JSON.decode(result.responseText));
-                    //console.log(result);
-                    for (var i = 0; i < result.records.length; i++) {
-                        this.updateFolderInStore(result.records[i]);
-                    }
-                    var result = this.updateMessageCache(folder);
-                },
-                failure: this.handleFailure
-            });
-        } else {
-            this.updateMessageCache();
-        }
-    },
-    
-    /**
-     * update folder status of all visible / all node in one level or one folder(s)
-     * 
-     * @param {Tine.Felamimail.Model.Folder} [folder] force message cache update for this folder
-     * @return boolean true if caching is complete
-     */
-    updateMessageCache: function(folder) {
-        var updateInterval = parseInt(Tine.Felamimail.registry.get('preferences').get('updateInterval')) * 60000;
-        
-        /////////// select folder to update message cache for
-        folder = folder ? folder : this.getNextFolderToUpdate();
-        
-        if (! folder) {
-            // nothing to do -> relax ;-)
-            if (updateInterval > 0) {
-                this.checkMailsDelayedTask.delay(updateInterval);
+        if (operation === Ext.data.Record.EDIT) {
+            Tine.log.info('folder "' + record.get('localname') + '" updated with cache_status: ' + record.get('cache_status'));
+            
+            // as soon as we get a folder with status != complete we need to trigger checkmail soon!
+            if (['complete', 'pending'].indexOf(record.get('cache_status')) === -1) {
+                this.checkMailsDelayedTask.delay(1000);
             }
             
-            return true;
-        }
-        
-        /////////// do request
-        var executionTime = folder.isCurrentSelection() ? 10 : Math.min(updateInterval, 120);
-        Ext.Ajax.request({
-            params: {
-                method: 'Felamimail.updateMessageCache',
-                folderId: folder.id,
-                time: executionTime
-            },
-            timeout: executionTime * 2000,
-            scope: this,
-            success: function(result, request) {
-                var folder = Tine.Felamimail.folderBackend.recordReader(result);
-                this.updateFolderInStore(folder);
-                this.checkMailsDelayedTask.delay(0);
-            },
-            failure: function(response, options) {
-                // on fail, we spend the system some more time
-                this.checkMailsDelayedTask.delay(executionTime);
-            }
-        });
-    },
-   
-    /**
-     * get all folders to update of account in store
-     * 
-     * @param {String} accountId
-     */
-    getFoldersForUpdateStatus: function(accountId) {
-        var result = [];
-
-        //console.log('# records: ' + this.folderStore.getCount());
-        //console.log(this.folderStore);
-        var accountFolders = this.getFolderStore().queryBy(function(record) {
-            var timestamp = record.get('imap_timestamp');
-            return (record.get('account_id') == accountId && (timestamp == '' || timestamp.getElapsed() > 300000)); // 5 minutes
-        });
-        //console.log(accountFolders);
-        accountFolders.each(function(record) {
-            result.push(record.id);
-        });
-        
-        return result;
-    },
-    
-    /**
-     * update folder in store
-     * 
-     * @param {Tine.Felamimail.Model.Folder} folderData
-     * @return {Tine.Felamimail.Model.Folder}
-     */
-    updateFolderInStore: function(newFolder) {
-        
-        var folder = this.getFolderStore().getById(newFolder.id);
-        
-        if (! folder) {
-            return newFolder;
-        }
-        
-        var fieldsToUpdate = ['imap_status','imap_timestamp','imap_uidnext','imap_uidvalidity','imap_totalcount',
-            'cache_status','cache_uidnext','cache_totalcount', 'cache_recentcount','cache_unreadcount','cache_timestamp',
-            'cache_job_actions_estimate','cache_job_actions_done'];
-
-        // update folder store
-        folder.beginEdit();
-        for (var j = 0; j < fieldsToUpdate.length; j++) {
-            folder.set(fieldsToUpdate[j], newFolder.get(fieldsToUpdate[j]));
-        }
-        folder.endEdit();
-        
-        return folder;
-    },
-    
-    /**
-     * get next folder for update message cache
-     * 
-     * @return {Tine.Felamimail.Model.Folder|null}
-     */
-    getNextFolderToUpdate: function() {
-        var account = this.getActiveAccount();
-        
-        if (account !== null) {
-            // look for folder to update
-            var candidates = this.folderStore.queryBy(function(record) {
-                return (
-                    record.get('account_id') == account.id 
-                    && (record.get('cache_status') == 'incomplete' || record.get('cache_status') == 'invalid')
+            var changes = record.getChanges();
+            
+            if (record.isModified('cache_recentcount') && changes.cache_recentcount > 0) {
+                //console.log('show notification');
+                Ext.ux.Notification.show(
+                    this.i18n._('New mails'), 
+                    String.format(this.i18n._('You got {0} new mail(s) in Folder {1}.'), 
+                        changes.cache_recentcount, record.get('localname'))
                 );
-            });
-            
-            if (candidates.getCount() > 0) {
-                // if current selection is a candidate, take this one!
-                if (this.getMainScreen().getTreePanel()) {
-                    // get active node
-                    var node = this.getMainScreen().getTreePanel().getSelectionModel().getSelectedNode();
-                    if (node && node.attributes.folder_id && candidates.get(node.id)) {
-                        return candidates.get(node.id);
-                    }
-                }
-                
-                // else take the first one
-                return candidates.first();
             }
-        }
-        
-        return null;
-    },
-    
-    /**
-     * handle failure to show credentials dialog if imap login failed
-     * 
-     * @param {String}  response
-     * @param {Object}  options
-     * @param {Node}    node optional account node
-     * @param {Boolean} handleException
-     */
-    handleFailure: function(response, options) {
-        var responseText = Ext.util.JSON.decode(response.responseText);
-        
-        if (responseText.data.code == 902) {
-            
-            var jsonData = Ext.util.JSON.decode(options.jsonData);
-            var accountId = (jsonData.params.accountId) ? jsonData.params.accountId : Tine.Felamimail.registry.get('preferences').get('defaultEmailAccount');
-            var account = Tine.Felamimail.loadAccountStore().getById(accountId);
-                        
-            if (! Tine.Felamimail.credentialsDialog) {
-                Tine.Felamimail.credentialsDialog = Tine.widgets.dialog.CredentialsDialog.openWindow({
-                    title: String.format(this.i18n._('IMAP Credentials for {0}'), account.get('name')),
-                    appName: 'Felamimail',
-                    credentialsId: accountId,
-                    i18nRecordName: this.i18n._('Credentials'),
-                    recordClass: Tine.Tinebase.Model.Credentials,
-                    listeners: {
-                        scope: this,
-                        'update': function(data) {
-                            this.checkMails();
-                        }
-                    }
-                });
-            }
-            
-        } else {
-            Ext.Msg.show({
-               title:   this.i18n._('Error'),
-               msg:     (responseText.data.message) ? responseText.data.message : this.i18n._('No connection to IMAP server.'),
-               icon:    Ext.MessageBox.ERROR,
-               buttons: Ext.Msg.OK
-            });
-
-            // TODO call default exception handler on specific exceptions?
-            //var exception = responseText.data ? responseText.data : responseText;
-            //Tine.Tinebase.ExceptionHandler.handleRequestException(exception);
         }
     },
     
@@ -453,9 +337,12 @@ Tine.Felamimail.loadAccountStore = function(reload) {
  */
 Tine.Felamimail.getSignature = function(id) {
         
-    var result = '';
+    var result = '',
+        activeAccount = Tine.Tinebase.appMgr.get('Felamimail').getMainScreen().getTreePanel().getActiveAccount();
+        
+    id = id || (activeAccount ? activeAccount.id : 'default');
     
-    if (! id || id == 'default') {
+    if (id === 'default') {
         id = Tine.Felamimail.registry.get('preferences').get('defaultEmailAccount');
     }
     

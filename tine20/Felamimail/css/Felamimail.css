@@ -273,14 +273,45 @@
     background-image:url(../../images/oxygen/32x32/places/user-home.png);
 }
 
+.felamimail-node-statusbox {
+	padding-right: 5px;
+	position: absolute;
+	right: 0px;
+}
 
-/*.felamimail-node-progress x-tree-node a span { */
-/* TODO make this work */
-.felamimail-node-progress x-tree-node-anchor a span {
-    color: '#dddddd';
-    text-align: 'right';
-    /* float: 'left'; */
-    width: '100%';
+.felamimail-node-statusbox-progress {
+	width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    background-image:url(../../images/progress-pie.gif);
+    background-repeat: no-repeat;
+    vertical-align: top;
+    margin-right: 5px;
+}
+
+.ext-gecko .felamimail-node-statusbox-unread {
+    -moz-border-radius: 8px;
+}
+
+.felamimail-node-statusbox-unread {
+    border-radius: 8px;
+    background-color: #D9E8FB;
+    color: black;
+	line-height: 16px;
+	margin-top: 1px;
+	padding: 0px 5px;
+}
+
+.x-tree-selected .felamimail-node-statusbox-unread {
+	background-color: #FFFFFF;
+}
+
+.felamimail-node-accountfailure {
+    position: absolute;
+    right: 5px;
+	width: 16px;
+    height: 16px;
+    background-image:url(../../images/warning.gif);
 }
 
 /***** email composing dialog ******/

@@ -16,6 +16,7 @@
 /**
  * class to hold Account data
  * 
+ * @property  string  trash_folder
  * @package     Felamimail
  */
 class Felamimail_Model_Account extends Tinebase_Record_Abstract
@@ -98,7 +99,6 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
         'trash_folder'          => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 'Trash'),
         'intelligent_folders'   => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 0),
         'has_children_support'  => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 1),
-        'sort_folders'          => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => 1),
         'delimiter'             => array(Zend_Filter_Input::ALLOW_EMPTY => true, Zend_Filter_Input::DEFAULT_VALUE => '/'),
         'display_format'        => array(
             Zend_Filter_Input::ALLOW_EMPTY => true, 
@@ -200,9 +200,11 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
         }
         
         // add domain
-        $imapConfig = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::IMAP);
-        if (isset($imapConfig['domain']) && ! empty($imapConfig['domain'])) {
-            $result['user'] .= '@' . $imapConfig['domain'];
+        if ($this->type == self::TYPE_SYSTEM) {
+            $imapConfig = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::IMAP);
+            if (isset($imapConfig['domain']) && ! empty($imapConfig['domain'])) {
+                $result['user'] .= '@' . $imapConfig['domain'];
+            }
         }
         
         // overwrite settings with config.inc.php values if set
@@ -234,8 +236,10 @@ class Felamimail_Model_Account extends Tinebase_Record_Abstract
     {
         $this->resolveCredentials(FALSE, TRUE, TRUE);
         
-        // add values from config to empty fields
-        $result = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP);
+        if ($this->type == self::TYPE_SYSTEM) {
+            // add values from config to empty fields
+            $result = Tinebase_Config::getInstance()->getConfigAsArray(Tinebase_Model_Config::SMTP);
+        }
         
         if ($this->smtp_hostname) {
             $result['hostname'] = $this->smtp_hostname; 

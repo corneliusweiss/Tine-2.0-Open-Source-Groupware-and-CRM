@@ -70,13 +70,18 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
      * 
      * @param object $_params
      * @return void
-     * @throws Felamimail_Exception_InvalidCredentials
+     * @throws Felamimail_Exception_IMAPInvalidCredentials, Felamimail_Exception_IMAPServiceUnavailable
      */
     public function connectAndLogin($_params)
     {
-        $this->_protocol->connect($_params->host, $_params->port, $_params->ssl);
+        try {
+            $this->_protocol->connect($_params->host, $_params->port, $_params->ssl);
+        } catch (Exception $e) {
+            throw new Felamimail_Exception_IMAPServiceUnavailable($e->getMessage());
+        }
+        
         if (! $this->_protocol->login($_params->user, $_params->password)) {
-            throw new Felamimail_Exception_InvalidCredentials('Cannot login, user or password wrong.');
+            throw new Felamimail_Exception_IMAPInvalidCredentials('Cannot login, user or password wrong.');
         }        
     }    
     
@@ -96,7 +101,7 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
     {
         $this->_currentFolder = $globalName;
         if (!$result = $this->_protocol->select($this->_currentFolder)) {
-            $this->_currentFolder = '';
+            $this->_currentFolder = null;
             /**
              * @see Zend_Mail_Storage_Exception
              */
@@ -110,13 +115,27 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
     /**
      * examine given folder
      * 
+     * - overwritten to get results (UIDNEXT, UIDVALIDITY, ...)
+     *
+     * folder must be selectable!
+     *
      * @param  Zend_Mail_Storage_Folder|string $globalName global name of folder or instance for subfolder
      * @return array with folder values
+     * @throws Zend_Mail_Storage_Exception
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function examineFolder($globalName)
     {
         $this->_currentFolder = $globalName;
-        $result = $this->_protocol->examine($this->_currentFolder);        
+        if (!$result = $this->_protocol->examine($this->_currentFolder)) {
+            $this->_currentFolder = null;
+            /**
+             * @see Zend_Mail_Storage_Exception
+             */
+            require_once 'Zend/Mail/Storage/Exception.php';
+            throw new Zend_Mail_Storage_Exception('cannot change folder, maybe it does not exist');
+        }
+        
         return $result;
     }
     
@@ -188,27 +207,33 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
      * Get raw content of message or part
      *
      * @param  int               $id   number of message
-     * @param  null|array|string $part path to part or null for messsage content
+     * @param  null|array|string $part path to part, TEXT for message content or null for headers and body (@see http://www.faqs.org/rfcs/rfc3501.html / 6.4.5.  FETCH Command)  
      * @param  boolean           $peek use BODY.PEEK to not set the seen flag
      * @return string raw content
-     * @throws Zend_Mail_Protocol_Exception
-     * @throws Zend_Mail_Storage_Exception
+     * @throws Felamimail_Exception_IMAPMessageNotFound
+     * @throws Felamimail_Exception_IMAP
      */
-    public function getRawContent($id, $part = null, $peek = false)
+    public function getRawContent($id, $part = 'TEXT', $peek = false)
     {
         if ($peek === false) {
-            $bodyCommand = 'BODY';
+            $item = 'BODY';
         } else {
-            $bodyCommand = 'BODY.PEEK';
+            $item = 'BODY.PEEK';
         }
         
-        if ($part !== null) {
-            $item = $bodyCommand . "[$part]";
-        } else {
-            $item = $bodyCommand . '[TEXT]';
+        $item = $item . "[$part]";
+        
+        try {
+            $result = $this->_protocol->fetch($item, $id, null, $this->_useUid);
+        } catch (Zend_Mail_Protocol_Exception $zmpe) {
+            if ($zmpe->getMessage() == 'the single id was not found in response') {
+                throw new Felamimail_Exception_IMAPMessageNotFound('Message with id ' . $id . ' not found on IMAP server.');
+            } else {
+                throw new Felamimail_Exception_IMAP($zmpe->getMessage());
+            }
         }
         
-        return $this->_protocol->fetch($item, $id, null, $this->_useUid);
+        return $result;
     }
     
     /**
@@ -346,7 +371,7 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
             return $data;
         }
     }
-    
+        
     /**
      * get messages summary
      *
@@ -354,66 +379,10 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
      * @param int|null $to
      * @return array with $this->_messageClass (Felamimail_Message)
      */
-    public function getSummaryOld($from, $to = null)
+    public function getSummary($from, $to = null, $_useUid = null)
     {
-        $summary = $this->_protocol->fetch(array('FLAGS', 'RFC822.HEADER', 'INTERNALDATE', 'RFC822.SIZE'), $from, $to, $this->_useUid);
-        
-        //print_r($summary);
-        
-        // fetch returns a different structure when fetching one or multiple messages
-        if($to === null && ctype_digit("$from")) {
-            $summary = array(
-                $from => $summary
-            );
-        }
-        
-        $messages = array();
-        
-        foreach($summary as $id => $data) {
-            $header = $this->_fixHeader($data['RFC822.HEADER'], $id, $spaces);
-    
-            $flags = array();
-            foreach ($data['FLAGS'] as $flag) {
-                $flags[] = isset(self::$_knownFlags[$flag]) ? self::$_knownFlags[$flag] : $flag;
-            }
-    
-            if($this->_useUid === true) {
-                $key = $data['UID'];
-            } else {
-                $key = $id;
-            }
-            
-            $messages[$key] = array(
-                'message'  => new $this->_messageClass(array(
-                    'handler' => $this, 
-                    'id'      => $id, 
-                    'headers' => $header, 
-                    'flags'   => $flags,
-                    'spaces'  => $spaces,
-                )),
-                'received' => $data['INTERNALDATE'],
-                'size'     => $data['RFC822.SIZE']
-            );
-        }
-        
-        return $messages;
-    }
-    
-    public function getBody($id, $part)
-    {
-        
-    }
-    
-    /**
-     * get messages summary
-     *
-     * @param int $from
-     * @param int|null $to
-     * @return array with $this->_messageClass (Felamimail_Message)
-     */
-    public function getSummary($from, $to = null)
-    {
-        $summary = $this->_protocol->fetch(array('UID', 'FLAGS', 'RFC822.HEADER', 'INTERNALDATE', 'RFC822.SIZE', 'BODYSTRUCTURE'), $from, $to, $this->_useUid);
+        $useUid = ($_useUid === null) ? $this->_useUid : (bool) $_useUid;
+        $summary = $this->_protocol->fetch(array('UID', 'FLAGS', 'RFC822.HEADER', 'INTERNALDATE', 'RFC822.SIZE', 'BODYSTRUCTURE'), $from, $to, $useUid);
                 
         // fetch returns a different structure when fetching one or multiple messages
         if($to === null && ctype_digit("$from")) {
@@ -460,7 +429,56 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
             return $messages;
         }
     }
-
+    
+    /**
+     * get messages flags
+     *
+     * @param int $from
+     * @param int|null $to
+     * @return array of flags
+     */
+    public function getFlags($from, $to = null, $_useUid = null)
+    {
+        $useUid = ($_useUid === null) ? $this->_useUid : (bool) $_useUid;
+        $summary = $this->_protocol->fetch(array('UID', 'FLAGS'), $from, $to, $useUid);
+                
+        // fetch returns a different structure when fetching one or multiple messages
+        if($to === null && ctype_digit("$from")) {
+            $summary = array(
+                $from => $summary
+            );
+        }
+        
+        $messages = array();
+        
+        foreach($summary as $id => $data) {
+            $flags = array();
+            foreach ($data['FLAGS'] as $flag) {
+                $flags[] = isset(self::$_knownFlags[$flag]) ? self::$_knownFlags[$flag] : $flag;
+            }
+    
+            if($this->_useUid === true) {
+                $key = $data['UID'];
+            } else {
+                $key = $id;
+            }
+            
+            
+            $messages[$key] = array(
+                'flags'     => $flags,
+                'uid'       => $data['UID']
+            );
+        }
+        
+        if($to === null && ctype_digit("$from")) {
+            // only one message requested
+            return $messages[$from];
+        } else {
+            // multiple messages requested
+            return $messages;
+        }
+    }
+    
     /**
      * 
      * Enter description here ...
@@ -529,8 +547,9 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
             $parameters = array();
             for($i=0; $i<count($_structure[$index]); $i++) {
                 $key   = strtolower($_structure[$index][$i]);
-                $value = strtolower($_structure[$index][++$i]);
-                $parameters[$key] = $value;
+                #$value = strtolower($_structure[$index][++$i]);
+                $value = $_structure[$index][++$i];
+                $parameters[$key] = $this->_mimeDecodeHeader($value);
             }
             $structure['parameters'] = $parameters; 
         }
@@ -544,8 +563,9 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
                 $parameters = array();
                 for($i=0; $i<count($_structure[$index][1]); $i++) {
                     $key   = strtolower($_structure[$index][1][$i]);
-                    $value = strtolower($_structure[$index][1][++$i]);
-                    $parameters[$key] = $value;
+                    #$value = strtolower($_structure[$index][1][++$i]);
+                    $value = $_structure[$index][1][++$i];
+                    $parameters[$key] = $this->_mimeDecodeHeader($value);
                 }
                 $structure['disposition']['parameters'] = $parameters;
             }
@@ -604,8 +624,9 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
             $parameters = array();
             for($i=0; $i<count($_structure[2]); $i++) {
                 $key   = strtolower($_structure[2][$i]);
-                $value = strtolower($_structure[2][++$i]);
-                $parameters[$key] = $value;
+                #$value = strtolower($_structure[2][++$i]);
+                $value = $_structure[2][++$i];
+                $parameters[$key] = $this->_mimeDecodeHeader($value);
             }
             $structure['parameters'] = $parameters; 
         }
@@ -667,8 +688,9 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
                 $parameters = array();
                 for($i=0; $i<count($_structure[$index][1]); $i++) {
                     $key   = strtolower($_structure[$index][1][$i]);
-                    $value = strtolower($_structure[$index][1][++$i]);
-                    $parameters[$key] = $value;
+                    #$value = strtolower($_structure[$index][1][++$i]);
+                    $value = $_structure[$index][1][++$i];
+                    $parameters[$key] = $this->_mimeDecodeHeader($value);
                 }
                 $structure['disposition']['parameters'] = $parameters;
             }
@@ -690,6 +712,18 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
     }
     
     /**
+     * validates that messageUid still exists on imap server 
+     * @param $from
+     * @param $to
+     */
+    public function messageUidExists($from, $to = null)
+    {
+        $result = $this->_protocol->fetch('UID', $from, $to, true);
+        
+        return $result;
+    }
+    
+    /**
      * get uids by uid
      * 
      * @param int $from
@@ -698,7 +732,7 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
      */
     public function getUidbyUid($from, $to = null)
     {
-        $result = $this->_protocol->fetch('UID', $from, $to, $this->_useUid);
+        $result = $this->_protocol->fetch('UID', $from, $to, true);
         
         // @todo check if this is really needed
         // sanitize result, sometimes the fetch command can return wrong results :(
@@ -716,6 +750,33 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
         }
         
         return array_values($result);
+    }
+    
+    public function resolveMessageSequence($from, $to = null)
+    {
+        $result = $this->_protocol->fetch('UID', $from, $to, false);
+        
+        return $result;
+    }
+    
+    public function resolveMessageUid($from, $to = null)
+    {
+        // we always need to ask for multiple values(array), because that's the only way to retrieve the message sequence 
+        if ($to === null && !is_array($from)) {
+            $from = (array) $from;
+        }
+        
+        $result = $this->_protocol->fetch('UID', $from, $to, true);
+        
+        if (count($result) === 0) {
+            throw new Zend_Mail_Protocol_Exception('the single id was not found in response');
+        }
+        
+        if ($to === null && count($from) === 1) {
+            return key($result);
+        } else {
+            return array_keys($result);
+        }
     }
     
     /**
@@ -802,6 +863,26 @@ class Felamimail_Backend_Imap extends Zend_Mail_Storage_Imap
             throw new Zend_Mail_Storage_Exception('cannot set \Deleted flags');
         }
         $this->_protocol->expunge();
+    }
+    
+    /**
+     * remove all messages marked as deleted
+     * 
+     * @param string $globalName
+     * @return void
+     * @throws Zend_Mail_Storage_Exception
+     */
+    public function expunge($globalName)
+    {
+        $this->selectFolder($globalName);
+        $this->_protocol->expunge();
+    }
+    
+    protected function _mimeDecodeHeader($_header)
+    {
+        $result = iconv_mime_decode($_header, ICONV_MIME_DECODE_CONTINUE_ON_ERROR);
+        
+        return $result;
     }
     
     /**

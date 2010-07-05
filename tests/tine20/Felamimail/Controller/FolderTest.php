@@ -38,7 +38,7 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
      * 
      * @var array
      */
-    protected $_foldersToDelete = array();
+    protected $_createdFolders = array();
     
     /**
      * Runs the test methods of this class.
@@ -72,7 +72,7 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        foreach ($this->_foldersToDelete as $foldername) {
+        foreach ($this->_createdFolders as $foldername) {
             $this->_controller->delete($this->_account->getId(), $foldername);
         }
         
@@ -101,8 +101,7 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(($inboxFolder->has_children == 0), 'has children');
         
         // check if entry is created/exists in db
-        $folderBackend = new Felamimail_Backend_Folder();
-        $folder = $folderBackend->getByBackendAndGlobalName($this->_account->getId(), 'INBOX');
+        $folder = $this->_controller->getByBackendAndGlobalName($this->_account->getId(), 'INBOX');
         //print_r($folder->toArray());
         $this->assertTrue(!empty($folder->id));
         $this->assertEquals('INBOX', $folder->localname);
@@ -118,9 +117,9 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
 
         // check returned data (id)
         $this->assertTrue(!empty($newFolder->id));
-        $this->assertEquals('INBOX/test', $newFolder->globalname);
+        $this->assertEquals('INBOX' . $this->_account->delimiter . 'test', $newFolder->globalname);
         
-        $this->_foldersToDelete[] = 'INBOX/test';
+        $this->_createdFolders[] = 'INBOX' . $this->_account->delimiter . 'test';
         
         // get inbox folder and do more checks -> inbox should have children now
         $result = $this->_controller->search($this->_getFolderFilter(''));
@@ -145,10 +144,10 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
     {
         $this->_controller->create($this->_account->getId(), 'test', 'INBOX');
 
-        $renamedFolder = $this->_controller->rename($this->_account->getId(), 'test_renamed', 'INBOX/test');
+        $renamedFolder = $this->_controller->rename($this->_account->getId(), 'test_renamed', 'INBOX' . $this->_account->delimiter . 'test');
         
         $this->assertEquals('test_renamed', $renamedFolder->localname);
-        $this->_foldersToDelete[] = 'INBOX/test_renamed';
+        $this->_createdFolders[] = 'INBOX' . $this->_account->delimiter . 'test_renamed';
         
         $resultInboxSub = $this->_controller->search($this->_getFolderFilter());
         $this->assertGreaterThan(0, count($resultInboxSub), 'No subfolders found.');
@@ -165,23 +164,23 @@ class Felamimail_Controller_FolderTest extends PHPUnit_Framework_TestCase
     public function testRenameFolderWithSubfolder()
     {
         $this->_controller->create($this->_account->getId(), 'test', 'INBOX');
-        $this->_controller->create($this->_account->getId(), 'testsub', 'INBOX/test');
+        $this->_controller->create($this->_account->getId(), 'testsub', 'INBOX' . $this->_account->delimiter . 'test');
 
-        $renamedFolder = $this->_controller->rename($this->_account->getId(), 'test_renamed', 'INBOX/test');
+        $renamedFolder = $this->_controller->rename($this->_account->getId(), 'test_renamed', 'INBOX' . $this->_account->delimiter . 'test');
 
-        $this->_foldersToDelete[] = 'INBOX/test_renamed/testsub';
-        $this->_foldersToDelete[] = 'INBOX/test_renamed';
+        $this->_createdFolders[] = 'INBOX' . $this->_account->delimiter . 'test_renamed' . $this->_account->delimiter . 'testsub';
+        $this->_createdFolders[] = 'INBOX' . $this->_account->delimiter . 'test_renamed';
         
         $this->assertEquals('test_renamed', $renamedFolder->localname);
         
-        $resultTestSub = $this->_controller->search($this->_getFolderFilter('INBOX/test'));
+        $resultTestSub = $this->_controller->search($this->_getFolderFilter('INBOX' . $this->_account->delimiter . 'test'));
         $this->assertGreaterThan(0, count($resultTestSub), 'No subfolders found.');
         $testFolder = $resultTestSub->filter('localname', 'testsub')->getFirstRecord();
         
         //print_r($testFolder->toArray());
         $this->assertFalse($testFolder === NULL, 'No renamed folder found.');
         $this->assertTrue(($testFolder->is_selectable == 1));
-        $this->assertEquals('INBOX/test_renamed/testsub', $testFolder->globalname);
+        $this->assertEquals('INBOX' . $this->_account->delimiter . 'test_renamed' . $this->_account->delimiter . 'testsub', $testFolder->globalname);
     }
     
     /**

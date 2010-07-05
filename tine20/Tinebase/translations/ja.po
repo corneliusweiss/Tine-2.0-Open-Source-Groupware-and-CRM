@@ -201,7 +201,7 @@ msgstr "おめでとうございます！"
 msgid "You have entered all needed information. If you press the Finish button we will send you the registration email."
 msgstr "全ての必要情報を入力してください。Finishボタンを押すと登録情報を電子メールで送付します。"
 
-#: js/ExceptionHandler.js:127 Frontend/Http.php:546
+#: js/ExceptionHandler.js:127 Frontend/Http.php:547
 msgid "Authorisation Required"
 msgstr "要認証"
 
@@ -402,7 +402,7 @@ msgid "Installing Gears will improve the performance of Tine 2.0 by caching all 
 msgstr "このコンピュータにGearsをインストールすると、必要なファイルをキャッシュすることによってTine2.0の性能が向上するでしょう。"
 
 #: js/MainMenu.js:319 js/widgets/persistentfilter/PickerPanel.js:200
-#: js/widgets/grid/GridPanel.js:932 js/widgets/dialog/EditDialog.js:444
+#: js/widgets/grid/GridPanel.js:941 js/widgets/dialog/EditDialog.js:444
 #: js/widgets/tree/ContextMenu.js:82
 msgid "Confirm"
 msgstr "確認"
@@ -423,11 +423,11 @@ msgstr "お待ちください"
 msgid "Login"
 msgstr "ログイン"
 
-#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:68
+#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:69
 msgid "Username"
 msgstr "ユーザ名"
 
-#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:72
+#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:73
 msgid "Password"
 msgstr "パスワード"
 
@@ -496,12 +496,12 @@ msgid "Your username and/or your password are wrong!!!"
 msgstr "ユーザ名またはパスワードが違います"
 
 #: js/LoginPanel.js:300 js/widgets/dialog/PreferencesDialog.js:282
-#: js/widgets/dialog/CredentialsDialog.js:116
+#: js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Errors"
 msgstr "エラー"
 
-#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:116
+#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Please fix the errors noted."
 msgstr "表示されているエラー項目を修正してくだささい。"
@@ -534,7 +534,7 @@ msgid "Relation"
 msgid_plural "Relations"
 msgstr[0] ""
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:573
+#: js/ExceptionDialog.js:51 Frontend/Http.php:574
 msgid "Abnormal End"
 msgstr "以上終了"
 
@@ -542,7 +542,7 @@ msgstr "以上終了"
 msgid "Send Report"
 msgstr "レポートの送付"
 
-#: js/ExceptionDialog.js:76 Frontend/Http.php:574
+#: js/ExceptionDialog.js:76 Frontend/Http.php:575
 msgid "An error occurred, the program ended abnormal."
 msgstr "エラーが発生し、プログラムが異常終了しました"
 
@@ -894,69 +894,69 @@ msgstr "来四半期"
 msgid "next year"
 msgstr "来年"
 
-#: js/widgets/grid/GridPanel.js:186
+#: js/widgets/grid/GridPanel.js:191
 msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
 msgstr " {0} が見つかりません。フィルターの変更、表示オプションの変更か {1} 再検索をしてください"
 
-#: js/widgets/grid/GridPanel.js:275
+#: js/widgets/grid/GridPanel.js:280
 msgid "Edit {0}"
 msgstr "編集 {0}"
 
-#: js/widgets/grid/GridPanel.js:286
+#: js/widgets/grid/GridPanel.js:291
 msgid "Copy {0}"
 msgstr ""
 
-#: js/widgets/grid/GridPanel.js:297 js/widgets/tree/ContextMenu.js:214
+#: js/widgets/grid/GridPanel.js:302 js/widgets/tree/ContextMenu.js:214
 msgid "Add {0}"
 msgstr "追加 {0}"
 
-#: js/widgets/grid/GridPanel.js:307 js/widgets/grid/GridPanel.js:308
-#: js/widgets/grid/GridPanel.js:310
+#: js/widgets/grid/GridPanel.js:312 js/widgets/grid/GridPanel.js:313
+#: js/widgets/grid/GridPanel.js:315
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "削除"
 
-#: js/widgets/grid/GridPanel.js:404
+#: js/widgets/grid/GridPanel.js:409
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "レコードの表示{0} - {1}　件中 {2}"
 
-#: js/widgets/grid/GridPanel.js:405
+#: js/widgets/grid/GridPanel.js:410
 msgid "No {0} to display"
 msgstr "表示する {0} がありません"
 
-#: js/widgets/grid/GridPanel.js:602
+#: js/widgets/grid/GridPanel.js:611
 #, fuzzy
 msgid "Tagging"
 msgstr "タグ"
 
-#: js/widgets/grid/GridPanel.js:912
+#: js/widgets/grid/GridPanel.js:921
 msgid "Not Allowed"
 msgstr "許可されていません"
 
-#: js/widgets/grid/GridPanel.js:913
+#: js/widgets/grid/GridPanel.js:922
 msgid "You are not allowed to delete all pages at once"
 msgstr "全てのページを一度に削除する権限がありません。"
 
-#: js/widgets/grid/GridPanel.js:931
+#: js/widgets/grid/GridPanel.js:940
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
 msgstr[0] "選択したレコードを本当に削除しますか？"
 
-#: js/widgets/grid/GridPanel.js:952 js/widgets/dialog/EditDialog.js:446
+#: js/widgets/grid/GridPanel.js:961 js/widgets/dialog/EditDialog.js:446
 msgid "Deleting {0}"
 msgstr "{0}　を削除しています"
 
-#: js/widgets/grid/GridPanel.js:954
+#: js/widgets/grid/GridPanel.js:963
 msgid " ... This may take a long time!"
 msgstr ""
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/tags/TagsPanel.js:291
+#: js/widgets/grid/GridPanel.js:988 js/widgets/tags/TagsPanel.js:291
 #: js/widgets/tags/TagsPanel.js:401 js/widgets/tags/TagsPanel.js:434
 #: js/widgets/dialog/EditDialog.js:456
 msgid "Failed"
 msgstr "失敗"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/dialog/EditDialog.js:456
+#: js/widgets/grid/GridPanel.js:988 js/widgets/dialog/EditDialog.js:456
 msgid "Could not delete {0}."
 msgstr " {0}を削除できません"
 
@@ -1663,7 +1663,7 @@ msgstr "の"
 msgid "Changed fields:"
 msgstr "変更されたフィールド:"
 
-#: Frontend/Http.php:547
+#: Frontend/Http.php:548
 msgid "Your session is not valid. You need to login again."
 msgstr "セッションが正しくありません。もう一度ログインしてください"
 

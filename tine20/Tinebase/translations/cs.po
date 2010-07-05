@@ -205,7 +205,7 @@ msgstr "Gratulujeme!"
 msgid "You have entered all needed information. If you press the Finish button we will send you the registration email."
 msgstr "Zadal(a) jste všechny potřebné informace. Až kliknete na tlačítko Dokončit, pošleme Vám registrační e-mail."
 
-#: js/ExceptionHandler.js:127 Frontend/Http.php:546
+#: js/ExceptionHandler.js:127 Frontend/Http.php:547
 msgid "Authorisation Required"
 msgstr "Je vyžadována autorizace"
 
@@ -413,7 +413,7 @@ msgid "Installing Gears will improve the performance of Tine 2.0 by caching all 
 msgstr "Instalace Google Gears zvýší výkon Tine 2.0 diky lokálnímu kešování všech potřebných souborů na tomto počítači."
 
 #: js/MainMenu.js:319 js/widgets/persistentfilter/PickerPanel.js:200
-#: js/widgets/grid/GridPanel.js:932 js/widgets/dialog/EditDialog.js:444
+#: js/widgets/grid/GridPanel.js:941 js/widgets/dialog/EditDialog.js:444
 #: js/widgets/tree/ContextMenu.js:82
 msgid "Confirm"
 msgstr "Potvrdit"
@@ -434,11 +434,11 @@ msgstr "Čekejte prosím!"
 msgid "Login"
 msgstr "Přihlásit"
 
-#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:68
+#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:69
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:72
+#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:73
 msgid "Password"
 msgstr "Heslo"
 
@@ -506,12 +506,12 @@ msgid "Your username and/or your password are wrong!!!"
 msgstr "Vaše uživatelské jméno a/nebo heslo je chybné!!!"
 
 #: js/LoginPanel.js:300 js/widgets/dialog/PreferencesDialog.js:282
-#: js/widgets/dialog/CredentialsDialog.js:116
+#: js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Errors"
 msgstr "Chyby"
 
-#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:116
+#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Please fix the errors noted."
 msgstr "Opravte prosím uvedené chyby."
@@ -552,7 +552,7 @@ msgstr[0] "Vztah"
 msgstr[1] "Vztahy"
 msgstr[2] "Vztahů"
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:573
+#: js/ExceptionDialog.js:51 Frontend/Http.php:574
 msgid "Abnormal End"
 msgstr "Abnormální ukončení"
 
@@ -560,7 +560,7 @@ msgstr "Abnormální ukončení"
 msgid "Send Report"
 msgstr "Odeslat hlášení"
 
-#: js/ExceptionDialog.js:76 Frontend/Http.php:574
+#: js/ExceptionDialog.js:76 Frontend/Http.php:575
 msgid "An error occurred, the program ended abnormal."
 msgstr "Došlo k chybě, program se neukončil korektně."
 
@@ -904,72 +904,72 @@ msgstr "příští čtvrtletí"
 msgid "next year"
 msgstr "příští rok"
 
-#: js/widgets/grid/GridPanel.js:186
+#: js/widgets/grid/GridPanel.js:191
 msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
 msgstr "Nebyly nalezeny žádné {0}. Zkuste prosím změnit kritéria filtru, volby zobrazování nebo {1} ve kterém hledáte."
 
-#: js/widgets/grid/GridPanel.js:275
+#: js/widgets/grid/GridPanel.js:280
 msgid "Edit {0}"
 msgstr "Editovat {0}"
 
-#: js/widgets/grid/GridPanel.js:286
+#: js/widgets/grid/GridPanel.js:291
 msgid "Copy {0}"
 msgstr ""
 
-#: js/widgets/grid/GridPanel.js:297 js/widgets/tree/ContextMenu.js:214
+#: js/widgets/grid/GridPanel.js:302 js/widgets/tree/ContextMenu.js:214
 msgid "Add {0}"
 msgstr "Přidat {0}"
 
-#: js/widgets/grid/GridPanel.js:307 js/widgets/grid/GridPanel.js:308
-#: js/widgets/grid/GridPanel.js:310
+#: js/widgets/grid/GridPanel.js:312 js/widgets/grid/GridPanel.js:313
+#: js/widgets/grid/GridPanel.js:315
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "Smazat {0}"
 msgstr[1] "Smazat {0}"
 msgstr[2] "Smazat {0}"
 
-#: js/widgets/grid/GridPanel.js:404
+#: js/widgets/grid/GridPanel.js:409
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "Zobrazuji záznamy {0} - {1} z {2}"
 
-#: js/widgets/grid/GridPanel.js:405
+#: js/widgets/grid/GridPanel.js:410
 msgid "No {0} to display"
 msgstr "Žádné {0} ke zobrazení"
 
-#: js/widgets/grid/GridPanel.js:602
+#: js/widgets/grid/GridPanel.js:611
 msgid "Tagging"
 msgstr "Štítkování"
 
-#: js/widgets/grid/GridPanel.js:912
+#: js/widgets/grid/GridPanel.js:921
 msgid "Not Allowed"
 msgstr "Není povoleno"
 
-#: js/widgets/grid/GridPanel.js:913
+#: js/widgets/grid/GridPanel.js:922
 msgid "You are not allowed to delete all pages at once"
 msgstr "Nemáte oprávnění smazat všechny stránky najednou."
 
-#: js/widgets/grid/GridPanel.js:931
+#: js/widgets/grid/GridPanel.js:940
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
 msgstr[0] "Opravdu chcete smazat vybraný záznam"
 msgstr[1] "Opravdu chcete smazat vybrané záznamy"
 msgstr[2] "Opravdu chcete smazat vybrané záznamy"
 
-#: js/widgets/grid/GridPanel.js:952 js/widgets/dialog/EditDialog.js:446
+#: js/widgets/grid/GridPanel.js:961 js/widgets/dialog/EditDialog.js:446
 msgid "Deleting {0}"
 msgstr "Mažu {0}"
 
-#: js/widgets/grid/GridPanel.js:954
+#: js/widgets/grid/GridPanel.js:963
 msgid " ... This may take a long time!"
 msgstr "... Toto může trvat dlouho!"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/tags/TagsPanel.js:291
+#: js/widgets/grid/GridPanel.js:988 js/widgets/tags/TagsPanel.js:291
 #: js/widgets/tags/TagsPanel.js:401 js/widgets/tags/TagsPanel.js:434
 #: js/widgets/dialog/EditDialog.js:456
 msgid "Failed"
 msgstr "Nepodařilo se"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/dialog/EditDialog.js:456
+#: js/widgets/grid/GridPanel.js:988 js/widgets/dialog/EditDialog.js:456
 msgid "Could not delete {0}."
 msgstr "Nepodařilo se smazat {0}."
 
@@ -1675,7 +1675,7 @@ msgstr "(kým)"
 msgid "Changed fields:"
 msgstr "Změněné položky"
 
-#: Frontend/Http.php:547
+#: Frontend/Http.php:548
 msgid "Your session is not valid. You need to login again."
 msgstr "Vaše relace je neplatná. Musíte se přihlásit znovu."
 

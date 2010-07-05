@@ -43,6 +43,7 @@ Ext.namespace('Tine.Felamimail');
     defaultHeight: 300,
     currentId: null,
     record: null,
+    app: null,
     i18n: null,
     
     /**
@@ -56,8 +57,8 @@ Ext.namespace('Tine.Felamimail');
         
         // use default Tpl for default and multi view
         this.defaultTpl = new Ext.XTemplate(
-            '<div class="preview-panel-felamimail-body">',
-                '<div class="Mail-Body-Content"></div>',
+            '<div class="preview-panel-felamimail">',
+                '<div class="preview-panel-felamimail-body">{[values ? values.msg : ""]}</div>',
             '</div>'
         );
         
@@ -82,43 +83,23 @@ Ext.namespace('Tine.Felamimail');
      * @private
      */
     updateDetails: function(record, body) {
-        // check if new record has been selected
-        if (record.id !== this.currentId) {                
-            this.currentId = record.id;
-            Tine.Felamimail.messageBackend.loadRecord(record, {
-                timeout: 120000, // 2 minutes
-                scope: this,
-                success: function(message) {
-                    // save more values?
-                    record.data.body        = message.data.body;                            
-                    record.data.flags       = message.data.flags;
-                    record.data.headers     = message.data.headers;
-                    record.data.attachments = message.data.attachments;
-                    record.data.to          = message.data.to;
-                    record.data.cc          = message.data.cc;
-                    record.data.bcc         = message.data.bcc;
-                    record.data.received    = message.data.received;
-                    
-                    this.tpl.overwrite(body, message.data);
-                    this.getEl().down('div').down('div').scrollTo('top', 0, false);
-                    this.getLoadMask().hide();
-                },
-                // TODO show credentials dialog here if password failure
-                // TODO show empty message
-                // failure: Tine.Felamimail.Application.handleFailure
-                failure: function() {
-                    /*
-                    this.tpl.overwrite(body, {
-                        body: 'FAILURE',
-                        headers: 'unknown',
-                        to: 'unknown'
-                    });
-                    */
-                    this.getLoadMask().hide();
-                }
-            });
+        if (record.id === this.currentId) {
+            // nothing to do
+            return;
+        }
+        
+        if (! record.bodyIsFetched()) {
+            Tine.Felamimail.messageBackend.fetchBody(record, this.updateDetails.createDelegate(this, [record, body]));
+            this.defaultTpl.overwrite(body, {msg: ''});
             this.getLoadMask().show();
-            
+            return;
+        }
+        
+        if (record === this.record) {                
+            this.currentId = record.id;
+            this.tpl.overwrite(body, record.data);
+            this.getLoadMask().hide();
+            this.getEl().down('div').down('div').scrollTo('top', 0, false);
         }
     },
     
@@ -139,11 +120,10 @@ Ext.namespace('Tine.Felamimail');
                     '{[this.showRecipients(values.headers)]}',
                     '{[this.showHeaders("' + this.i18n._('Show or hide header information') + '")]}',
                 '</div>',
-                '<div class="preview-panel-felamimail-attachments">{[this.showAttachments(values.attachments, "' 
-                    + this.i18n._('Attachments') + '")]}</div>',
-                '<div class="preview-panel-felamimail-body">{[this.showBody(values.body, values.headers, values.attachments, values.content_type)]}</div>',
+                '<div class="preview-panel-felamimail-attachments">{[this.showAttachments(values.attachments, values)]}</div>',
+                '<div class="preview-panel-felamimail-body">{[this.showBody(values.body, values)]}</div>',
             '</div>',{
-            treePanel: this.grid.app.getMainScreen().getTreePanel(),
+            app: this.app,
             encode: function(value) {
                 if (value) {
                     var encoded = Ext.util.Format.htmlEncode(value);
@@ -186,22 +166,11 @@ Ext.namespace('Tine.Felamimail');
                 return result;
             },
             
-            showBody: function(value, headers, attachments, content_type) {
-                if (value) {
-                    // check body content type and header content types
-                    if (content_type != 'text/plain' && headers['content-type']
-                        && (headers['content-type'].match(/text\/html/) 
-                            || headers['content-type'].match(/multipart\/alternative/)
-                            //|| headers['content-type'].match(/multipart\/signed/)
-                        )
-                    ) {
-                        // should be already purified ... but just as precaution
-                        value = Ext.util.Format.stripScripts(value);
-                    } else {
-                        if (this.treePanel.getActiveAccount().get('display_format') == 'plain') {
-                            value = Ext.util.Format.htmlEncode(value);
-                        }
-                        value = Ext.util.Format.nl2br(value);
+            showBody: function(body, messageData) {
+                body = body || '';
+                if (body) {
+                    if (this.app.getActiveAccount().get('display_format') == 'plain') {
+                        body = Ext.util.Format.nl2br(body);
                     }
                     
                     // add images inline
@@ -215,11 +184,8 @@ Ext.namespace('Tine.Felamimail');
                         value = value + '<hr>' + inlineAttachments;
                     }
                     */
-                    
-                } else {
-                    return '';
-                }
-                return value;
+                }                    
+                return body;
             },
             
             showHeaders: function(qtip) {
@@ -242,13 +208,14 @@ Ext.namespace('Tine.Felamimail');
                 }
             },
             
-            showAttachments: function(value, text) {
-                var result = (value.length > 0) ? '<b>' + text + ':</b> ' : '';
-                for (var i=0, id; i < value.length; i++) {
-                    id = Ext.id() + ':' + value[i].partId;
-                    result += '<span id="' + id + '" class="tinebase-download-link">' 
-                        + '<i>' + value[i].filename + '</i>' 
-                        + ' (' + Ext.util.Format.fileSize(value[i].size) + ')</span> ';
+            showAttachments: function(attachements, messageData) {
+                var result = (attachements.length > 0) ? '<b>' + this.app.i18n._('Attachments') + ':</b> ' : '';
+                
+                for (var i=0, id, cls; i < attachements.length; i++) {
+                    //cls = attachements[i]['content-type'] === 'message/rfc822' ? 'tinebase-message-rfc822-link' : 'tinebase-download-link';
+                    result += '<span id="' + Ext.id() + ':' + i + '" class="tinebase-download-link">' 
+                        + '<i>' + attachements[i].filename + '</i>' 
+                        + ' (' + Ext.util.Format.fileSize(attachements[i].size) + ')</span> ';
                 }
                 
                 return result;
@@ -281,6 +248,32 @@ Ext.namespace('Tine.Felamimail');
         
         switch (selector) {
             
+            case 'span[class=tinebase-download-link]':
+                var idx = target.id.split(':')[1];
+                    attachment = this.record.get('attachments')[idx];
+                    
+                if (attachment['content-type'] === 'message/rfc822') {
+                    // display message
+                    Tine.Felamimail.MessageDisplayDialog.openWindow({
+                        record: new Tine.Felamimail.Model.Message({
+                            id: this.record.id + '_' + attachment.partId
+                        })
+                    });
+                    
+                } else {
+                    // download attachment
+                    new Ext.ux.file.Download({
+                        params: {
+                            requestType: 'HTTP',
+                            method: 'Felamimail.downloadAttachment',
+                            messageId: this.record.id,
+                            partId: attachment.partId
+                        }
+                    }).start();
+                }
+                
+                break;
+                
             case 'span[class=tinebase-download-link]':
                 // download attachment
                 var partId = target.id.split(':')[1];

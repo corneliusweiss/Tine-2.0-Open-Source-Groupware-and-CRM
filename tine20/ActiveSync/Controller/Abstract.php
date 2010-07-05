@@ -20,7 +20,7 @@
  * @subpackage  ActiveSync
  */
  
-abstract class ActiveSync_Controller_Abstract
+abstract class ActiveSync_Controller_Abstract implements ActiveSync_Controller_Interface
 {
     /**
      * information about the current device
@@ -147,6 +147,21 @@ abstract class ActiveSync_Controller_Abstract
     abstract public function getSupportedFolders();
     
     /**
+     * (non-PHPdoc)
+     * @see ActiveSync/Controller/ActiveSync_Controller_Interface#moveItem()
+     */
+    public function moveItem($_srcFolder, $_srcItem, $_dstFolder)
+    {
+        $item = $this->_contentController->get($_srcItem);
+        
+        $item->container_id = $_dstFolder;
+        
+        $item = $this->_contentController->update($item);
+        
+        return $item->getId();
+    }
+    
+    /**
      * get folder identified by $_folderId
      *
      * @param string $_folderId
@@ -242,10 +257,11 @@ abstract class ActiveSync_Controller_Abstract
     /**
      * delete entry
      *
-     * @param string $_collectionId
-     * @param string $_id
+     * @param  string  $_collectionId
+     * @param  string  $_id
+     * @param  array   $_options
      */
-    public function delete($_folderId, $_id)
+    public function delete($_folderId, $_id, $_options)
     {
         if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " ColectionId: $_folderId Id: $_id");
         
@@ -275,6 +291,16 @@ abstract class ActiveSync_Controller_Abstract
         if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " found " . count($foundEmtries));
             
         return $foundEmtries;
+    }
+    
+    /**
+     * used by the mail backend only. Used to update the folder cache
+     * 
+     * @param  string  $_folderId
+     */
+    public function updateCache($_folderId)
+    {
+        // does nothing by default
     }
     
     protected function _getContainerFilter(Tinebase_Model_Filter_FilterGroup $_filter, $_containerId)
@@ -388,5 +414,5 @@ abstract class ActiveSync_Controller_Abstract
      * @param string      $_serverId  the local entry id
      * @param boolean     $_withBody  retrieve body of entry
      */
-    abstract public function appendXML(DOMElement $_xmlNode, $_folderId, $_serverId, array $_options);    
+    abstract public function appendXML(DOMElement $_xmlNode, $_folderId, $_serverId, array $_options, $_neverTruncate = false);    
 }

@@ -293,7 +293,6 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
                 'ns_personal',
                 'ns_other',
                 'ns_shared',
-                'sort_folders',
                 'last_modified_time',
                 'last_modified_by',
             );
@@ -426,6 +425,8 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
      * @param Felamimail_Backend_ImapProxy $_imapBackend
      * @param string $_delimiter
      * @return Felamimail_Model_Account
+     * 
+     * @todo remove imapBackend (+ exception handling at the top) and delimiter (get delimiter from INBOX folder) params  
      */
     public function updateCapabilities($_account, Felamimail_Backend_ImapProxy $_imapBackend = NULL, $_delimiter = NULL)
     {
@@ -444,7 +445,7 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
                     . '(' . $zmpe->getMessage() . ')'
                 );
                 return $_account;
-            } catch (Felamimail_Exception_InvalidCredentials $zmpe) {
+            } catch (Felamimail_Exception_IMAPInvalidCredentials $zmpe) {
                 Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ 
                     . ' Wrong user credentials ... '
                     . '(' . $zmpe->getMessage() . ')'
@@ -536,9 +537,6 @@ class Felamimail_Controller_Account extends Tinebase_Controller_Record_Abstract
             }
             if (empty($systemAccount->trash_folder)) {
                 $systemAccount->trash_folder = 'Trash';
-            }
-            if (! isset($this->_imapConfig['sort_folders'])) {
-                $systemAccount->sort_folders = 1;
             }
             
             // create new account and update capabilities

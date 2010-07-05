@@ -203,7 +203,7 @@ msgstr "Herzlichen Glückwunsch!"
 msgid "You have entered all needed information. If you press the Finish button we will send you the registration email."
 msgstr "Sie haben alle benötigten Informationen eingegeben. Wenn Sie nun den Fertig Knopf drücken, wird ihnen eine Bestätigungsemail zugesandt."
 
-#: js/ExceptionHandler.js:127 Frontend/Http.php:546
+#: js/ExceptionHandler.js:127 Frontend/Http.php:547
 msgid "Authorisation Required"
 msgstr "Anmeldung erforderlich"
 
@@ -406,7 +406,7 @@ msgid "Installing Gears will improve the performance of Tine 2.0 by caching all 
 msgstr "Die Installation von Gears wird die Geschwindigkeit von Tine 2.0 erhöhen indem alle benötigten Dateien local auf dem Computer gespeichert werden."
 
 #: js/MainMenu.js:319 js/widgets/persistentfilter/PickerPanel.js:200
-#: js/widgets/grid/GridPanel.js:932 js/widgets/dialog/EditDialog.js:444
+#: js/widgets/grid/GridPanel.js:941 js/widgets/dialog/EditDialog.js:444
 #: js/widgets/tree/ContextMenu.js:82
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -427,11 +427,11 @@ msgstr "Bitte warten!"
 msgid "Login"
 msgstr "Anmelden"
 
-#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:68
+#: js/LoginPanel.js:87 js/widgets/dialog/CredentialsDialog.js:69
 msgid "Username"
 msgstr "Benutzername"
 
-#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:72
+#: js/LoginPanel.js:99 js/widgets/dialog/CredentialsDialog.js:73
 msgid "Password"
 msgstr "Passwort"
 
@@ -499,12 +499,12 @@ msgid "Your username and/or your password are wrong!!!"
 msgstr "Ihre Benutzername und Passwort Kombination ist falsch!"
 
 #: js/LoginPanel.js:300 js/widgets/dialog/PreferencesDialog.js:282
-#: js/widgets/dialog/CredentialsDialog.js:116
+#: js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Errors"
 msgstr "Fehler"
 
-#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:116
+#: js/LoginPanel.js:300 js/widgets/dialog/CredentialsDialog.js:117
 #: js/widgets/dialog/EditDialog.js:436 js/widgets/dialog/ImportDialog.js:194
 msgid "Please fix the errors noted."
 msgstr "Bitte beheben Sie die gekennzeichneten Fehler"
@@ -541,7 +541,7 @@ msgid_plural "Relations"
 msgstr[0] "Verknüpfung"
 msgstr[1] "Anwendungen"
 
-#: js/ExceptionDialog.js:51 Frontend/Http.php:573
+#: js/ExceptionDialog.js:51 Frontend/Http.php:574
 msgid "Abnormal End"
 msgstr "Programmabbruch"
 
@@ -549,7 +549,7 @@ msgstr "Programmabbruch"
 msgid "Send Report"
 msgstr "Bericht Senden"
 
-#: js/ExceptionDialog.js:76 Frontend/Http.php:574
+#: js/ExceptionDialog.js:76 Frontend/Http.php:575
 msgid "An error occurred, the program ended abnormal."
 msgstr "Ein Fehler ist aufgetreten, dass Programm wurde unerwartet beendet."
 
@@ -892,70 +892,70 @@ msgstr "nächstes Quartal"
 msgid "next year"
 msgstr "nächstes Jahr"
 
-#: js/widgets/grid/GridPanel.js:186
+#: js/widgets/grid/GridPanel.js:191
 msgid "No {0} where found. Please try to change your filter-criteria, view-options or the {1} you search in."
 msgstr "Keine {0} gefunden. Versuchen Sie die Suchkriterien, Anzeigeoptionen oder {1} in denen Sie suchen zu ändern."
 
-#: js/widgets/grid/GridPanel.js:275
+#: js/widgets/grid/GridPanel.js:280
 msgid "Edit {0}"
 msgstr "{0} bearbeiten"
 
-#: js/widgets/grid/GridPanel.js:286
+#: js/widgets/grid/GridPanel.js:291
 msgid "Copy {0}"
 msgstr "Kopiere {0}"
 
-#: js/widgets/grid/GridPanel.js:297 js/widgets/tree/ContextMenu.js:214
+#: js/widgets/grid/GridPanel.js:302 js/widgets/tree/ContextMenu.js:214
 msgid "Add {0}"
 msgstr "{0} hinzufügen"
 
-#: js/widgets/grid/GridPanel.js:307 js/widgets/grid/GridPanel.js:308
-#: js/widgets/grid/GridPanel.js:310
+#: js/widgets/grid/GridPanel.js:312 js/widgets/grid/GridPanel.js:313
+#: js/widgets/grid/GridPanel.js:315
 msgid "Delete {0}"
 msgid_plural "Delete {0}"
 msgstr[0] "{0} löschen"
 msgstr[1] "{0} löschen"
 
-#: js/widgets/grid/GridPanel.js:404
+#: js/widgets/grid/GridPanel.js:409
 msgid "Displaying records {0} - {1} of {2}"
 msgstr "Zeige Datensätze {0} - {1} von {2}"
 
-#: js/widgets/grid/GridPanel.js:405
+#: js/widgets/grid/GridPanel.js:410
 msgid "No {0} to display"
 msgstr "Keine {0} gefunden"
 
-#: js/widgets/grid/GridPanel.js:602
+#: js/widgets/grid/GridPanel.js:611
 msgid "Tagging"
 msgstr "Taggen"
 
-#: js/widgets/grid/GridPanel.js:912
+#: js/widgets/grid/GridPanel.js:921
 msgid "Not Allowed"
 msgstr "Mangelnde Erlaubnis"
 
-#: js/widgets/grid/GridPanel.js:913
+#: js/widgets/grid/GridPanel.js:922
 msgid "You are not allowed to delete all pages at once"
 msgstr "Es ist ihnen nicht erlaubt alle Seiten auf einmal zu löschen"
 
-#: js/widgets/grid/GridPanel.js:931
+#: js/widgets/grid/GridPanel.js:940
 msgid "Do you really want to delete the selected record"
 msgid_plural "Do you really want to delete the selected records"
 msgstr[0] "Möchten Sie den ausgewählten Eintrag wirklich löschen?"
 msgstr[1] "Möchten Sie die ausgewählten Einträge wirklich löschen?"
 
-#: js/widgets/grid/GridPanel.js:952 js/widgets/dialog/EditDialog.js:446
+#: js/widgets/grid/GridPanel.js:961 js/widgets/dialog/EditDialog.js:446
 msgid "Deleting {0}"
 msgstr "Lösche {0}"
 
-#: js/widgets/grid/GridPanel.js:954
+#: js/widgets/grid/GridPanel.js:963
 msgid " ... This may take a long time!"
 msgstr "... Das kann eine ganze Weile dauern!"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/tags/TagsPanel.js:291
+#: js/widgets/grid/GridPanel.js:988 js/widgets/tags/TagsPanel.js:291
 #: js/widgets/tags/TagsPanel.js:401 js/widgets/tags/TagsPanel.js:434
 #: js/widgets/dialog/EditDialog.js:456
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: js/widgets/grid/GridPanel.js:973 js/widgets/dialog/EditDialog.js:456
+#: js/widgets/grid/GridPanel.js:988 js/widgets/dialog/EditDialog.js:456
 msgid "Could not delete {0}."
 msgstr "Konnte {0} nicht löschen."
 
@@ -1654,7 +1654,7 @@ msgstr "von"
 msgid "Changed fields:"
 msgstr "Geänderte Felder:"
 
-#: Frontend/Http.php:547
+#: Frontend/Http.php:548
 msgid "Your session is not valid. You need to login again."
 msgstr "Ihre Sitzung ist ausgelaufen. Bitte melden Sie sich erneut an."
 

@@ -113,6 +113,7 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
         $this->_folderStateBackend   = new ActiveSync_Backend_FolderState();
         $this->_session              = new Zend_Session_Namespace('moreData');
         $this->_controller           = ActiveSync_Controller::getInstance();
+
         // continue sync / MoreAvailable sent in previous repsonse
         if(isset($this->_session->syncTimeStamp)) {
             $this->_syncTimeStamp = $this->_session->syncTimeStamp;
@@ -130,60 +131,89 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
         // input xml
         $xml = new SimpleXMLElement($this->_inputDom->saveXML());
         #$xml = simplexml_import_dom($this->_inputDom);
-                
+        
         foreach ($xml->Collections->Collection as $xmlCollection) {
             $clientSyncKey  = (int)$xmlCollection->SyncKey;
             $collectionId   = (string)$xmlCollection->CollectionId;
-            $folder         = $this->_folderStateBackend->getByProperty($collectionId, 'folderid');
-            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " SyncKey is $clientSyncKey Class: $folder->class CollectionId: $collectionId");
-            
+
             $collectionData = array(
-                'syncKey'       => $clientSyncKey,
-                'syncKeyValid'  => true,
-                'class'         => $folder->class,
-                'collectionId'  => $collectionId,
-                'windowSize'    => isset($xmlCollection->WindowSize) ? (int)$xmlCollection->WindowSize : 100,
-                'getChanges'    => isset($xmlCollection->GetChanges) && (string)$xmlCollection->GetChanges === '0' ? false : true,
-                'added'         => array(),
-                'changed'       => array(),
-                'deleted'       => array(),
-                'forceAdd'      => array(),
-                'forceChange'   => array(),
-                'toBeFetched'   => array(),
+                'syncKey'         => $clientSyncKey,
+                'syncKeyValid'    => true,
+                'class'           => isset($xmlCollection->Class) ? (string)$xmlCollection->Class : null,
+                'collectionId'    => $collectionId,
+                'windowSize'      => isset($xmlCollection->WindowSize) ? (int)$xmlCollection->WindowSize : 100,
+                'deletesAsMoves'  => isset($xmlCollection->DeletesAsMoves) ? true : false,
+                'getChanges'      => isset($xmlCollection->GetChanges) ? true : false,
+                'added'           => array(),
+                'changed'         => array(),
+                'deleted'         => array(),
+                'forceAdd'        => array(),
+                'forceChange'     => array(),
+                'toBeFetched'     => array(),
+                'filterType'      => 0,
+                'mimeSupport'     => self::MIMESUPPORT_DONT_SEND_MIME,
+                'mimeTruncation'  => 8,
+                'bodyPreferences' => array()
             );
             
             // process options
-            if(isset($xmlCollection->Options)) {
-                $collectionData['filterType']     = isset($xmlCollection->Options->FilterType)     ? (int)$xmlCollection->Options->FilterType     : 0;
-                $collectionData['mimeSupport']    = isset($xmlCollection->Options->MIMESupport)    ? (int)$xmlCollection->Options->MIMESupport    : self::MIMESUPPORT_DONT_SEND_MIME;
-                $collectionData['mimeTruncation'] = isset($xmlCollection->Options->MIMETruncation) ? (int)$xmlCollection->Options->MIMETruncation : 8;
-
+            if (isset($xmlCollection->Options)) {
+                // optional parameters
+                if (isset($xmlCollection->Options->FilterType)) {
+                    $collectionData['filterType'] = (int)$xmlCollection->Options->FilterType;
+                }
+                if (isset($xmlCollection->Options->MIMESupport)) {
+                    $collectionData['mimeSupport'] = (int)$xmlCollection->Options->MIMESupport;
+                }
+                if (isset($xmlCollection->Options->MIMETruncation)) {
+                    $collectionData['mimeTruncation'] = (int)$xmlCollection->Options->MIMETruncation;
+                }
+                
                 // try to fetch element from AirSyncBase:BodyPreference
                 $airSyncBase = $xmlCollection->Options->children('uri:AirSyncBase');
                 
                 if (isset($airSyncBase->BodyPreference)) {
-                    // required
-                    $collectionData['bodyPreferenceType'] = (int) $airSyncBase->BodyPreference->Type;
                     
-                    // optional
-                    if (isset($airSyncBase->BodyPreference->TruncationSize)) {
-                        $collectionData['truncationSize'] = (int) $airSyncBase->BodyPreference->TruncationSize;
+                    foreach ($airSyncBase->BodyPreference as $bodyPreference) {
+                        $type = (int) $bodyPreference->Type;
+                        $collectionData['bodyPreferences'][$type] = array(
+                            'type' => $type
+                        );
+                        
+                        // optional
+                        if (isset($bodyPreference->TruncationSize)) {
+                            $collectionData['bodyPreferences'][$type]['truncationSize'] = (int) $bodyPreference->TruncationSize;
+                        }
                     }
                 }
             }
             
-            $this->_collections[$folder->class][$collectionId] = $collectionData;
+            // does the folder exist?
+            try {
+                $folder         = $this->_folderStateBackend->getByProperty($collectionId, 'folderid');
+                // newer clients don't send the class tag anymore
+                $collectionData['class'] = $folder->class;
+            } catch (Tinebase_Exception_NotFound $e) {
+                Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . " folder $collectionId not found");
+                $this->_collections['collectionNotFound'][$collectionId] = $collectionData;
+                continue;
+            }
+            
+            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " SyncKey is $clientSyncKey Class: $folder->class CollectionId: $collectionId");
+            
+            
+            $this->_collections[$collectionData['class']][$collectionId] = $collectionData;
             
             if($clientSyncKey === 0 || $this->_controller->validateSyncKey($this->_device, $clientSyncKey, $folder->class, $collectionId) !== true) {
                 Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . " invalid synckey $clientSyncKey provided");
                 $this->_collections[$folder->class][$collectionId]['syncKeyValid'] = false;
                 continue;
             }
-            
+            if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
             $dataController = ActiveSync_Controller::dataFactory($folder->class, $this->_device, $this->_syncTimeStamp);
             
             // handle incoming data
-            
+            if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
             if(isset($xmlCollection->Commands->Add)) {
                 $adds = $xmlCollection->Commands->Add;
                 Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . " found " . count($adds) . " entries to be added to server");
@@ -230,7 +260,7 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                         $this->_collections[$folder->class][$collectionId]['forceChange'][$serverId] = $serverId;
                     } catch (Tinebase_Exception_NotFound $e) {
                         // entry does not exist anymore, will get deleted automaticly
-                        $this->_collections[$folder->class][$collectionId]['changed'][$serverId] = self::STATUS_CONFLICT_MATCHING_THE_CLIENT_AND_SERVER_OBJECT;
+                        $this->_collections[$folder->class][$collectionId]['changed'][$serverId] = self::STATUS_OBJECT_NOT_FOUND;
                     } catch (Exception $e) {
                         Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . " failed to update entry " . $e);
                         // something went wrong while trying to update the entry
@@ -246,7 +276,7 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                 foreach ($deletes as $delete) {
                     $serverId = (string)$delete->ServerId;
                     try {
-                        $dataController->delete($collectionId, $serverId);
+                        $dataController->delete($collectionId, $serverId, $collectionData);
                     } catch(Tinebase_Exception_NotFound $e) {
                         Tinebase_Core::getLogger()->crit(__METHOD__ . '::' . __LINE__ . ' tried to delete entry ' . $serverId . ' but entry was not found');
                     } catch (Tinebase_Exception $e) {
@@ -276,7 +306,8 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                 }
             }            
             
-        }        
+        }  
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);       
     }    
     
     public function getResponse()
@@ -291,10 +322,27 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
         $sync = $this->_outputDom->documentElement;
         
         $collections = $sync->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Collections'));
-        
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
         foreach($this->_collections as $class => $classCollections) {
             foreach($classCollections as $collectionId => $collectionData) {
-                if($collectionData['syncKeyValid'] !== true) {
+                if ($class == 'collectionNotFound') {
+                    if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
+                    $newSyncKey = $collectionData['syncKey'];
+                    
+                    $status = self::STATUS_FOLDER_HIERARCHY_HAS_CHANGED;
+                    $this->_folderStateBackend->resetState($this->_device);
+                    $this->_controller->updateSyncKey($this->_device, 0, $this->_syncTimeStamp, 'FolderSync');
+                    
+                    // Sync 0
+                    // send back a new SyncKey only
+                    $collection = $collections->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Collection'));
+                    $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Class', $collectionData['class']));
+                    $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'SyncKey', $newSyncKey));
+                    $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'CollectionId', $collectionData['collectionId']));
+                    $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Status', $status));
+                    
+                    if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
+                } elseif ($collectionData['syncKeyValid'] !== true) {
                     $newSyncKey = 1;
                     $status = $collectionData['syncKey'] == 0 ? self::STATUS_SUCCESS : self::STATUS_INVALID_SYNC_KEY;
     
@@ -307,15 +355,16 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                     $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Status', $status));
                     
                     $this->_contentStateBackend->resetState($this->_device, $collectionData['class'], $collectionData['collectionId']);
-                    
-                                    
                 } else {
-                    if($collectionData['getChanges'] === false && !empty($collectionData['toBeFetched'])) {
+                    #if ($collectionData['getChanges'] === false && !empty($collectionData['toBeFetched'])) {
+                    if (empty($collectionData['added']) && empty($collectionData['changed']) && empty($collectionData['deleted']) && $collectionData['getChanges'] === false) {
                         // keep synckey during fetch requests
                         $newSyncKey = $collectionData['syncKey'];
                     } else {
                         $newSyncKey = $collectionData['syncKey'] + 1;
                     }
+                    
+                    
                     // collection header
                     $collection = $collections->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Collection'));
                     $collection->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Class', $collectionData['class']));
@@ -366,7 +415,7 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                             
                             try {
                                 $applicationData = $this->_outputDom->createElementNS('uri:AirSync', 'ApplicationData');
-                                $dataController->appendXML($applicationData, $collectionData['collectionId'], $serverId, $collectionData);
+                                $dataController->appendXML($applicationData, $collectionData['collectionId'], $serverId, $collectionData, true);
                                 
                                 $fetch->appendChild($this->_outputDom->createElementNS('uri:AirSync', 'Status', self::STATUS_SUCCESS));
                                 
@@ -534,31 +583,35 @@ class ActiveSync_Command_Sync extends ActiveSync_Command_Wbxml
                     $this->_session->serverDeletes[$collectionData['class']] = (array)$serverDeletes;
                 }
                 
-                // increment sync timestamp by 1 second
-                $this->_syncTimeStamp->add('1', Zend_Date::SECOND);
-                $this->_controller->updateSyncKey($this->_device, $newSyncKey, $this->_syncTimeStamp, $collectionData['class'], $collectionData['collectionId']);
-                
-                // store current filter type
-                $filter = new ActiveSync_Model_FolderStateFilter(array(
-                    array(
-                        'field'     => 'device_id',
-                        'operator'  => 'equals',
-                        'value'     => $this->_device->getId(),
-                    ),
-                    array(
-                        'field'     => 'class',
-                        'operator'  => 'equals',
-                        'value'     => $collectionData['class'],
-                    ),
-                    array(
-                        'field'     => 'folderid',
-                        'operator'  => 'equals',
-                        'value'     => $collectionData['collectionId']
-                    )
-                ));
-                $folderState = $this->_folderStateBackend->search($filter)->getFirstRecord();
-                $folderState->lastfiltertype = $collectionData['filterType'];
-                $this->_folderStateBackend->update($folderState);
+                if ($class != 'collectionNotFound') {
+                    if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
+                    // increment sync timestamp by 1 second
+                    $this->_syncTimeStamp->add('1', Zend_Date::SECOND);
+                    $this->_controller->updateSyncKey($this->_device, $newSyncKey, $this->_syncTimeStamp, $collectionData['class'], $collectionData['collectionId']);
+                    
+                    // store current filter type
+                    $filter = new ActiveSync_Model_FolderStateFilter(array(
+                        array(
+                            'field'     => 'device_id',
+                            'operator'  => 'equals',
+                            'value'     => $this->_device->getId(),
+                        ),
+                        array(
+                            'field'     => 'class',
+                            'operator'  => 'equals',
+                            'value'     => $collectionData['class'],
+                        ),
+                        array(
+                            'field'     => 'folderid',
+                            'operator'  => 'equals',
+                            'value'     => $collectionData['collectionId']
+                        )
+                    ));
+                    $folderState = $this->_folderStateBackend->search($filter)->getFirstRecord();
+                    $folderState->lastfiltertype = $collectionData['filterType'];
+                    $this->_folderStateBackend->update($folderState);
+                }
+                if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__);
             }
         }
         
