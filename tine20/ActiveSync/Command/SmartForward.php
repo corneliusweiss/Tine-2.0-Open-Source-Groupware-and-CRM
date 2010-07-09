@@ -20,15 +20,8 @@
  * @subpackage  ActiveSync
  */
  
-class ActiveSync_Command_SendMail
+class ActiveSync_Command_SmartForward extends ActiveSync_Command_SendMail
 {
-    /**
-     * the incoming mail
-     *
-     * @var Zend_Mail_Message
-     */
-    protected $_incomingMessage;
-    
     /**
      * save copy in sent folder
      *
@@ -36,42 +29,27 @@ class ActiveSync_Command_SendMail
      */
     protected $_saveInSent;
     
-    /**
-     * 
-     * @var Felamimail_Model_Account
-     */
-    protected $_account;
+    protected $_itemId;
+    
+    protected $_collectionId;
         
     /**
      * process the XML file and add, change, delete or fetches data 
      *
+     * @todo can we get rid of LIBXML_NOWARNING
+     * @todo we need to stored the initial data for folders and lifetime as the phone is sending them only when they change
      * @return resource
      */
     public function handle()
     {
-        $defaultAccountId = Tinebase_Core::getPreference('Felamimail')->{Felamimail_Preference::DEFAULTACCOUNT};
+        parent::handle();
         
-        try {
-            $this->_account = Felamimail_Controller_Account::getInstance()->get($defaultAccountId);
-        } catch (Tinebase_Exception_NotFound $ten) {
-            if (Tinebase_Core::isLogLevel(Zend_Log::WARN)) Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . " no email account configured");
-            throw new ActiveSync_Exception('no email account configured');
-        }
+        $this->_collectionId    = $_GET['CollectionId'];
+        $this->_itemId          = $_GET['ItemId'];
         
-        if(empty(Tinebase_Core::getUser()->accountEmailAddress)) {
-            throw new ActiveSync_Exception('no email address set for current user');
-        }
-        
-        $this->_saveInSent = (bool)$_GET['SaveInSent'] == 'T';
-        
-        $this->_incomingMessage = new Zend_Mail_Message(
-            array(
-                'file' => fopen("php://input", 'r')
-            )
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(
+            __METHOD__ . '::' . __LINE__ . " collectionId: " . $this->_collectionId . " itemId: " . $this->_itemId
         );
-
-        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " saveInSent: " . $this->_saveInSent);
-        
     }    
     
     /**
@@ -81,7 +59,11 @@ class ActiveSync_Command_SendMail
      */
     public function getResponse()
     {
+        $rfc822 = Felamimail_Controller_Message::getInstance()->getMessagePart($this->_itemId);
+        
         $mail = Tinebase_Mail::createFromZMM($this->_incomingMessage);
+        
+        $mail->addAttachment($rfc822);
         
         Felamimail_Controller_Message::getInstance()->sendZendMail($this->_account, $mail, $this->_saveInSent);        
     }    
