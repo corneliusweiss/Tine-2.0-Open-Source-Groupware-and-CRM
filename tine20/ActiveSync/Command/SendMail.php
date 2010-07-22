@@ -64,14 +64,26 @@ class ActiveSync_Command_SendMail
         
         $this->_saveInSent = (bool)$_GET['SaveInSent'] == 'T';
         
+        $emailStream = fopen("php://input", 'r');
+
+        /*
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) {
+            $debugStream = fopen("php://temp", 'r+');
+            stream_copy_to_stream($emailStream, $debugStream);
+            rewind($debugStream);
+            Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " email to send:" . stream_get_contents($debugStream));
+            rewind($debugStream);
+            $emailStream = $debugStream;
+        }
+        */
+        
         $this->_incomingMessage = new Zend_Mail_Message(
             array(
-                'file' => fopen("php://input", 'r')
+                'file' => $emailStream
             )
         );
 
         if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " saveInSent: " . $this->_saveInSent);
-        
     }    
     
     /**
