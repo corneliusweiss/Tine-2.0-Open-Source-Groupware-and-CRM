@@ -633,7 +633,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
      * @param  bool       $_saveInSent
      * @return Zend_Mail
      */
-    public function sendZendMail($_accountId, Zend_Mail $_message, $_saveInSent = null)
+    public function sendZendMail($_accountId, Zend_Mail $_mail, $_saveInSent = null)
     {
         if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . 
             ' Sending message with subject ' . $_message->getSubject() 
@@ -651,7 +651,20 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
         //if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . print_r($_message->toArray(), TRUE));
         //if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . print_r($account->toArray(), TRUE));
         
-        $mail = $_message;
+        $_mail->clearFrom();
+        // set from
+        $from = (isset($account->from) && ! empty($account->from)) 
+            ? $account->from 
+            : Tinebase_Core::getUser()->accountFullName;
+        $_mail->setFrom($account->email, $from);
+        
+        // add user agent
+        $_mail->addHeader('User-Agent', 'Tine 2.0 Email Client (version ' . TINE20_CODENAME . ' - ' . TINE20_PACKAGESTRING . ')');
+        
+        // set organization
+        if (isset($account->organization) && ! empty($account->organization)) {
+            $_mail->addHeader('Organization', $account->organization);
+        }
         
         // set transport + send mail
         $smtpConfig = $account->getSmtpConfig();
@@ -660,7 +673,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
             
             // send message via smtp
             if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' About to send message via SMTP ...');
-            Tinebase_Smtp::getInstance()->sendMessage($mail, $transport);
+            Tinebase_Smtp::getInstance()->sendMessage($_mail, $transport);
             if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' successful.');
             
             // add email notes to contacts (only to/cc)
@@ -684,7 +697,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
             Tinebase_Core::getLogger()->warn(__METHOD__ . '::' . __LINE__ . ' Could not send message, no smtp config found.');
         }
         
-        return $_message;
+        return $_mail;
     }
     
     /**
