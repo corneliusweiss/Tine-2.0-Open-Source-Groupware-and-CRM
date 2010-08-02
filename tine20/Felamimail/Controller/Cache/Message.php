@@ -140,7 +140,7 @@ class Felamimail_Controller_Cache_Message extends Tinebase_Controller_Abstract
         if ($folder->cache_status == Felamimail_Model_Folder::CACHE_STATUS_COMPLETE || $folder->cache_status == Felamimail_Model_Folder::CACHE_STATUS_EMPTY) {
             $folder->cache_job_actions_estimate = 0;
             $folder->cache_job_actions_done     = 0;
-            $_folder->cache_job_startuid         = 0;
+            $folder->cache_job_startuid         = 0;
         }
         
         // update imap informations
