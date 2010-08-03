@@ -4,8 +4,8 @@
  * @package     Felamimail
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
- * @copyright   Copyright (c) 2007-2009 Metaways Infosystems GmbH (http://www.metaways.de)
- * @version     $Id:GridPanel.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
+ * @copyright   Copyright (c) 2007-2010 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @version     $Id$
  */
  
 Ext.namespace('Tine.Felamimail');
@@ -514,31 +514,7 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.widgets.grid.GridPanel, {
      * permanently delete selected messages
      */
     deleteSelectedMessages: function() {
-        var sm = this.getGrid().getSelectionModel(),
-            filter = sm.getSelectionFilter(),
-            msgs = sm.isFilterSelect ? this.getStore() : sm.getSelectionsCollection(),
-            msgsIds = [],
-            lastIdx = this.getStore().indexOf(msgs.last()),
-            nextRecord = this.getStore().getAt(++lastIdx);
-        
-        msgs.each(function(msg) {
-            var isSeen = msg.hasFlag('\\Seen'),
-                folder = this.app.getFolderStore().getById(msg.get('folder_id')),
-                diff = isSeen ? 0 : -1;
-                
-           folder.set('cache_unreadcount', folder.get('cache_unreadcount') - diff);
-           
-           msgsIds.push(msg.id);
-           this.getStore().remove(msg);    
-        }, this);
-        
-        this.deleteQueue = this.deleteQueue.concat(msgsIds);
-        this.pagingToolbar.refresh.disable();
-        sm.selectRecords([nextRecord]);
-        
-        this.deleteTransactionId = Tine.Felamimail.messageBackend.addFlags(filter, '\\Deleted', { 
-            callback: this.onAfterDelete.createDelegate(this, [msgsIds])
-        });
+        this.moveOrDeleteMessages(null);
     },
     
     /**
@@ -549,35 +525,63 @@ Tine.Felamimail.GridPanel = Ext.extend(Tine.widgets.grid.GridPanel, {
     moveSelectedMessages: function(folder) {
         if (folder.isCurrentSelection()) {
             // nothing to do ;-)
-            return
+            return;
         }
         
+        this.moveOrDeleteMessages(folder);
+    },
+    
+    /**
+     * move (folder !== null) or delete selected messages 
+     * 
+     * @param {Tine.Felamimail.Model.Folder} folder
+     */
+    moveOrDeleteMessages: function(folder) {
         var sm = this.getGrid().getSelectionModel(),
             filter = sm.getSelectionFilter(),
-            msgs = sm.isFilterSelect ? this.getStore() : sm.getSelectionsCollection(),
-            msgsIds = [],
-            lastIdx = this.getStore().indexOf(msgs.last()),
-            nextRecord = this.getStore().getAt(++lastIdx);
+            msgsIds = [];
+
+        if (sm.isFilterSelect) {
+            var msgs = this.getStore(),
+                nextRecord = null;
+        } else {
+            var msgs = sm.getSelectionsCollection(),
+                lastIdx = this.getStore().indexOf(msgs.last()),
+                nextRecord = this.getStore().getAt(++lastIdx);
+        }
         
         msgs.each(function(msg) {
             var isSeen = msg.hasFlag('\\Seen'),
                 currFolder = this.app.getFolderStore().getById(msg.get('folder_id')),
                 diff = isSeen ? 0 : 1;
                 
-           currFolder.set('cache_unreadcount', currFolder.get('cache_unreadcount') - diff);
-           folder.set('cache_unreadcount', folder.get('cache_unreadcount') + diff);
+            currFolder.set('cache_unreadcount', currFolder.get('cache_unreadcount') - diff);
+            if (folder !== null) {
+                // update unread count of target folder (only when moving)
+                folder.set('cache_unreadcount', folder.get('cache_unreadcount') + diff);
+            }
            
-           msgsIds.push(msg.id);
-           this.getStore().remove(msg);    
-        }, this);
+            msgsIds.push(msg.id);
+            this.getStore().remove(msg);    
+        },  this);
         
         this.deleteQueue = this.deleteQueue.concat(msgsIds);
         this.pagingToolbar.refresh.disable();
-        sm.selectRecords([nextRecord]);
+        if (nextRecord !== null) {
+            sm.selectRecords([nextRecord]);
+        }
         
-        this.deleteTransactionId = Tine.Felamimail.messageBackend.moveMessages(filter, folder.id, { 
-            callback: this.onAfterDelete.createDelegate(this, [msgsIds, folder])
-        });
+        if (folder !== null) {
+            // move
+            this.deleteTransactionId = Tine.Felamimail.messageBackend.moveMessages(filter, folder.id, { 
+                callback: this.onAfterDelete.createDelegate(this, [msgsIds, folder])
+            }); 
+        } else {
+            // delete
+            this.deleteTransactionId = Tine.Felamimail.messageBackend.addFlags(filter, '\\Deleted', { 
+                callback: this.onAfterDelete.createDelegate(this, [msgsIds])
+            });
+        }
     },
     
     /**

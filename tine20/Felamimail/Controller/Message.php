@@ -213,12 +213,11 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
         
         // we always need to read the messages from cache to get the current flags
         $messagesToFlag = $this->_convertToRecordSet($_messages, TRUE);
-        
         $messagesToFlag->sort('folder_id');
         
         $flags = (array) $_flags;
         
-        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' retrieved messages from cache');
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Retrieved ' . count($messagesToFlag) . ' messages from cache.');
                 
         $lastFolderId = null;
         $imapBackend  = null;
@@ -227,7 +226,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
         // set flags on imap server
         foreach ($messagesToFlag as $message) {
             if($imapBackend !== null && ($lastFolderId != $message->folder_id || count($imapMessageUids) >= 50)) {
-                if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' set flags on imap server');
+                if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Set flags on imap server.');
                 $imapBackend->addFlags($imapMessageUids, array_intersect($flags, array_keys(self::$_allowedFlags)));
                 $imapMessageUids = array();
             }
@@ -244,7 +243,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
             $imapMessageUids[] = $message->messageuid;
         }
         
-        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' set flags on imap server');
+        if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' Set flags on imap server.');
         
         if($imapBackend !== null && count($imapMessageUids) > 0) {
             $imapBackend->addFlags($imapMessageUids, array_intersect($flags, array_keys(self::$_allowedFlags)));
