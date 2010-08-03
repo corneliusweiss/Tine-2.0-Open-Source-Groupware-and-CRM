@@ -699,8 +699,8 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
         
         // build mail content
         if ($_message->content_type == Felamimail_Model_Message::CONTENT_TYPE_HTML) {
-            $mailBodyText = $this->_removeHtml($_message->body);
-            $mail->setBodyText($mailBodyText);
+            $plainBodyText = $_message->getPlainTextBody();
+            $mail->setBodyText($plainBodyText);
             $mail->setBodyHtml($this->_addHtmlMarkup($_message->body));
         } else {
             $mail->setBodyText($_message->body);
@@ -850,7 +850,7 @@ class Felamimail_Controller_Message extends Tinebase_Controller_Record_Abstract
             
             $body = $bodyPart->getDecodedContent();
             
-            if($partStructure['contentType'] != Zend_Mime::TYPE_TEXT) {
+            if ($partStructure['contentType'] != Zend_Mime::TYPE_TEXT) {
                 $body = $this->_purifyBodyContent($body);
             }
             
