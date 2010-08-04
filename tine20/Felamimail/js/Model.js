@@ -151,7 +151,7 @@ Tine.Felamimail.messageBackend = new Tine.Tinebase.data.RecordProxy({
     },
     
     /**
-     * fetches body into given message
+     * fetches body and additional headers (which are needed for the preview panel) into given message
      * 
      * @param {Message} message
      */
@@ -161,7 +161,7 @@ Tine.Felamimail.messageBackend = new Tine.Tinebase.data.RecordProxy({
             scope: this,
             callback: function(options, success, response) {
                 var msg = this.recordReader(response);
-                Ext.copyTo(message.data, msg.data, 'body');
+                Ext.copyTo(message.data, msg.data, 'body, headers');
                 if(Ext.isFunction(callback)){
                     callback(message);
                 } else{
