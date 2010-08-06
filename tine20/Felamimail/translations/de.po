@@ -437,7 +437,7 @@ msgstr "Konnte Nachricht(en) nicht verschieben."
 
 #: js/FelamimailTreePanel.js:551
 msgid "Total Messages:"
-msgstr "Nachrichten Insgesammt:"
+msgstr "Nachrichten insgesamt:"
 
 #: js/FelamimailTreePanel.js:555
 msgid "Unread Messages:"
