@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Tine 2.0 - Tinebase\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-07-31 20:42+0100\n"
-"PO-Revision-Date: 2010-08-04 15:37+0100\n"
+"PO-Revision-Date: 2010-08-20 11:18+0100\n"
 "Last-Translator: Philipp Schuele <p.schuele@metaways.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -748,7 +748,7 @@ msgstr "Andere {0} wählen..."
 
 #: js/widgets/container/ContainerSelect.js:112
 msgid "Select a {0}"
-msgstr "Wählen Sie einen {0}"
+msgstr "Wählen Sie eine {0}"
 
 #: js/widgets/container/ContainerSelect.js:132
 msgid "Recently used {0}:"
