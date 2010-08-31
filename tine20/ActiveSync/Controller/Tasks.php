@@ -223,7 +223,15 @@ class ActiveSync_Controller_Tasks extends ActiveSync_Controller_Abstract
             }
         }
         
-        // contact should be valid now
+        if (version_compare($this->_device->acsversion, '12.0', '>=')) {
+            $airSyncBase = $_data->children('uri:AirSyncBase');
+            
+            if (isset($airSyncBase->Body) && isset($airSyncBase->Body->Data)) {
+                $task->description = $airSyncBase->Body->Data;
+            }
+        }
+        
+        // task should be valid now
         $task->isValid();
         
         if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . " taskData " . print_r($task->toArray(), true));
