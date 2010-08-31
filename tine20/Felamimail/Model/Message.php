@@ -184,6 +184,7 @@ class Felamimail_Model_Message extends Tinebase_Record_Abstract
 
     /**
      * get body as plain text with replaced blockquotes, stripped tags and replaced <br>s
+     * -> use DOM extension
      * 
      * @return string
      */
@@ -191,14 +192,14 @@ class Felamimail_Model_Message extends Tinebase_Record_Abstract
     {
         $result = '';
         
-        // check if tidy is installed. if not just strip the tags and replace <br>s
-        if (extension_loaded('tidy')) {
-            $tidy = tidy_parse_string($this->body, array(), 'utf8');
-            $result = $this->_addQuotesAndStripTags($tidy->body());
+        $dom = new DOMDocument('1.0', 'utf-8');
+        // use a hack to make sure html is loaded as utf8 (@see http://php.net/manual/en/domdocument.loadhtml.php#95251)
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $this->body);
+        $bodyElements = $dom->getElementsByTagName('body');
+        if ($bodyElements->length > 0) {
+            $result = $this->_addQuotesAndStripTags($bodyElements->item(0));
         } else {
-            if (Tinebase_Core::isLogLevel(Zend_Log::NOTICE)) Tinebase_Core::getLogger()->notice(__METHOD__ . '::' . __LINE__ 
-                . ' Extension "tidy" not found. You need to install/activate it to transform blockquotes in plaintext emails.');
-            $result = strip_tags(preg_replace('/\<br(\s*)?\/?\>/i', "\n", $this->body));
+            throw new Felamimail_Exception('No body element found!');
         }
         
         $result = html_entity_decode($result, ENT_COMPAT, 'UTF-8');
@@ -209,38 +210,46 @@ class Felamimail_Model_Message extends Tinebase_Record_Abstract
     /**
      * convert blockquotes to quotes ("> ") and strip tags
      * 
-     * this function uses tidy to recursivly walk the dom tree of the html mail
+     * this function uses tidy or DOM to recursivly walk the dom tree of the html mail
      * @see http://php.net/manual/de/tidy.root.php
+     * @see http://php.net/manual/en/book.dom.php
      * 
-     * @param tidyNode $_node
+     * @param tidyNode|DOMNode $_node
      * @param integer $_quoteIndent
      * @return string
      * 
      * @todo we can transform more tags here, i.e. the <strong>BOLDTEXT</strong> tag could be replaced with *BOLDTEXT*
+     * @todo think about removing the tidy code
      */
     protected function _addQuotesAndStripTags($_node, $_quoteIndent = 0) {
         
         $result = '';
         
-        if ($_node->hasChildren()) {
+        $hasChildren = ($_node instanceof DOMNode) ? $_node->hasChildNodes() : $_node->hasChildren();
+        $nameProperty = ($_node instanceof DOMNode) ? 'nodeName' : 'name';
+        $valueProperty = ($_node instanceof DOMNode) ? 'nodeValue' : 'value';
+        
+        if ($hasChildren) {
             $quoted = FALSE;
             $lastChild = NULL;
-            foreach ($_node->child as $child) {
-                if (! $child->name) { 
+            $children = ($_node instanceof DOMNode) ? $_node->childNodes : $_node->child;
+            foreach ($children as $child) {
+                $isTextLeaf = ($child instanceof DOMNode) ? $child->{$nameProperty} == '#text' : ! $child->{$nameProperty};
+                if ($isTextLeaf) { 
                     // leaf -> add quotes and append to content string
                     if ($_quoteIndent > 0) {
                         $result .= str_repeat(self::QUOTE, $_quoteIndent);
                         $quoted = TRUE;
                     }
-                    $result .= $child->value;
+                    $result .= $child->{$valueProperty};
                     
-                } else if ($child->name == 'blockquote') {
+                } else if ($child->{$nameProperty} == 'blockquote') {
                     // new blockquote -> increase quote indention
                     $_quoteIndent++;
                     
-                } else if ($child->name == 'br') {
+                } else if ($child->{$nameProperty} == 'br') {
                     // reset quoted state on newline
-                    if ($lastChild !== NULL && $lastChild->name == 'br') {
+                    if ($lastChild !== NULL && $lastChild->{$nameProperty} == 'br') {
                         // add quotes to repeating newlines
                         $result .= str_repeat(self::QUOTE, $_quoteIndent);
                     }
@@ -250,7 +259,7 @@ class Felamimail_Model_Message extends Tinebase_Record_Abstract
                 
                 $result .= $this->_addQuotesAndStripTags($child, $_quoteIndent);
                 
-                if ($child->name == 'blockquote') {
+                if ($child->{$nameProperty} == 'blockquote') {
                     // close blockquote -> decrease quote indention
                     $_quoteIndent--;
                 }
