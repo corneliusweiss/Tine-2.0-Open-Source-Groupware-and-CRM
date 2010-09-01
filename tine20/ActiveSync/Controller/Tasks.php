@@ -146,6 +146,16 @@ class ActiveSync_Controller_Tasks extends ActiveSync_Controller_Abstract
             }
         }        
         
+        // body aka description
+        if (version_compare($this->_device->acsversion, '12.0', '>=')) {
+            $body = $_xmlNode->appendChild(new DOMElement('Body', null, 'uri:AirSyncBase'));
+            
+            $body->appendChild(new DOMElement('Type', 1, 'uri:AirSyncBase'));
+            
+            $dataTag = $body->appendChild(new DOMElement('Data', null, 'uri:AirSyncBase'));
+            $dataTag->appendChild(new DOMText($data->description));
+        }
+        
         // Completed is required
         if ($data->completed instanceof Zend_Date) {
             $_xmlNode->appendChild(new DOMElement('Complete', 1, 'uri:Tasks'));
