@@ -4,8 +4,8 @@
  * @package     Felamimail
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Philipp Schuele <p.schuele@metaways.de>
- * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
- * @version     $Id:MessageEditDialog.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
+ * @copyright   Copyright (c) 2009-2010 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @version     $Id$
  *
  */
  
@@ -26,7 +26,7 @@ Ext.namespace('Tine.Felamimail');
  * @author      Philipp Schuele <p.schuele@metaways.de>
  * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
- * @version     $Id:GridPanel.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
+ * @version     $Id$
  * 
  * @param       {Object} config
  * @constructor
@@ -118,8 +118,7 @@ Ext.namespace('Tine.Felamimail');
         this.initFrom();
         this.initRecipients();
         this.initSubject();
-        //this.initAttachements();
-        this.initBody();
+        this.initContent();
         
         // legacy handling:...
         if (this.replyTo) {
@@ -129,28 +128,38 @@ Ext.namespace('Tine.Felamimail');
             this.record.set('flags', 'Passed');
             this.record.set('original_id', this.forwardMsgs[0].id);
         }
-        
-    },
-    
-    initAttachements: function() {
-        
     },
     
     /**
-     * inits body from reply/forward/template
+     * init attachments when forwarding message
      * 
-     * @param {Tine.Felamimail.Model.Message} [message] optional self callback when body needs to be fetched
+     * @param {Tine.Felamimail.Model.Message} message
      */
-    initBody: function(message) {
+    initAttachements: function(message) {
+        if (message.get('attachments').length > 0) {
+            this.record.set('attachments', [{
+                name: message.get('subject'),
+                type: 'message/rfc822',
+                size: message.get('size'),
+                id: message.id
+            }]);
+        }
+    },
+    
+    /**
+     * inits body and attachments from reply/forward/template
+     */
+    initContent: function() {
         if (! this.record.get('body')) {
             if (! this.msgBody) {
-                message = this.replyTo ? this.replyTo : 
+                var message = this.replyTo ? this.replyTo : 
                           this.forwardMsgs && this.forwardMsgs.length === 1 ? this.forwardMsgs[0] :
                           null;
                           
                 if (message) {
                     if (! message.bodyIsFetched()) {
-                        return this.recordProxy.fetchBody(message, this.initBody.createDelegate(this, [message]));
+                        // self callback when body needs to be fetched
+                        return this.recordProxy.fetchBody(message, this.initContent.createDelegate(this));
                     }
                     
                     this.msgBody = message.get('body');
@@ -166,6 +175,9 @@ Ext.namespace('Tine.Felamimail');
                         this.msgBody = '<br/>-----' + this.app.i18n._('Original message') + '-----<br/>'
                             + Tine.Felamimail.GridPanel.prototype.formatHeaders(this.forwardMsgs[0].get('headers'), false, true) + '<br/><br/>'
                             + this.msgBody + '<br/>';
+                            
+                        // set record attachments when forwarding
+                        this.initAttachements(message);
                     }
                                 
                 }
@@ -286,6 +298,7 @@ Ext.namespace('Tine.Felamimail');
         this.window.setTitle(title);
         
         this.getForm().loadRecord(this.record);
+        this.attachmentGrid.loadRecord(this.record);
         
         this.loadMask.hide();
     },
@@ -295,8 +308,6 @@ Ext.namespace('Tine.Felamimail');
      * - add attachments to record here
      * 
      * @private
-     * 
-     * TODO add recipients here as well?
      */
     onRecordUpdate: function() {
 
@@ -317,7 +328,6 @@ Ext.namespace('Tine.Felamimail');
                 function(btn, text) {
                     if (btn == 'ok'){
                         record.data.note = text;
-                        // TODO set email note on contact
                     }
                 }, 
                 this,
@@ -376,7 +386,7 @@ Ext.namespace('Tine.Felamimail');
      * @return {Object}
      * @private
      * 
-     * TODO get css definitions from extern stylesheet?
+     * TODO get css definitions from external stylesheet?
      */
     getFormItems: function() {
         
@@ -390,7 +400,6 @@ Ext.namespace('Tine.Felamimail');
         
         this.attachmentGrid = new Tine.widgets.grid.FileUploadGrid({
             fieldLabel: this.app.i18n._('Attachments'),
-            record: this.record,
             hideLabel: true,
             filesProperty: 'attachments',
             anchor: '100% 80%'
@@ -545,7 +554,6 @@ Ext.namespace('Tine.Felamimail');
  * @return  {Ext.ux.Window}
  */
 Tine.Felamimail.MessageEditDialog.openWindow = function (config) {
-    //var id = (config.record && config.record.id) ? config.record.id : 0;
     var window = Tine.WindowFactory.getWindow({
         width: 800,
         height: 700,
