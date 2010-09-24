@@ -126,7 +126,12 @@ class Addressbook_Controller_Contact extends Tinebase_Controller_Record_Abstract
         $contact = $this->_backend->getByUserId($_userId);
         if (!$this->_currentAccount->hasGrant($contact->container_id, Tinebase_Model_Grants::GRANT_READ)) {
             throw new Addressbook_Exception_AccessDenied('read access to contact denied');
-        }            
+        }
+        
+        if ($this->_doResolveCustomfields()) {
+            Tinebase_CustomField::getInstance()->resolveRecordCustomFields($contact);
+        }
+        
         return $contact;            
     }
 
