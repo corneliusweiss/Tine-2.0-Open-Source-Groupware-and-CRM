@@ -558,26 +558,23 @@ abstract class Tinebase_Backend_Sql_Abstract extends Tinebase_Backend_Abstract i
       * 
       * @param string|integer|Tinebase_Record_Interface|array $_id
       * @return void
-      * 
-      * @todo   delete custom fields?
+      * @return int The number of affected rows.
       */
     public function delete($_id) 
     {
-        if (is_array($_id)) {
-            foreach ($_id as $id) {
-                $this->delete($id);
-            }
-            return;
+        if (empty($_id)) {
+            if (Tinebase_Core::isLogLevel(Zend_Log::DEBUG)) Tinebase_Core::getLogger()->debug(__METHOD__ . '::' . __LINE__ . ' No records deleted.');
+            return 0;
         }
         
-        $id = $this->_convertId($_id);
+        $idArray = (! is_array($_id)) ? array($this->_convertId($_id)) : $_id;
         $identifier = $this->_getRecordIdentifier();
         
         $where = array(
-            $this->_db->quoteInto($this->_db->quoteIdentifier($identifier) . ' = ?', $id)
+            $this->_db->quoteInto($this->_db->quoteIdentifier($identifier) . ' IN (?)', $idArray)
         );
         
-        $this->_db->delete($this->_tablePrefix . $this->_tableName, $where);
+        return $this->_db->delete($this->_tablePrefix . $this->_tableName, $where);
     }
     
     /**

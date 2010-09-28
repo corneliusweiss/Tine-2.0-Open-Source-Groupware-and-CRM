@@ -209,11 +209,16 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      */
     public function moveMessages($filterData, $targetFolderId)
     {
+        // close session to allow other requests
+        Zend_Session::writeClose(true);
+        
         $filter = new Felamimail_Model_MessageFilter(array());
         $filter->setFromArrayInUsersTimezone($filterData);
         $sourceFolder = Felamimail_Controller_Message::getInstance()->moveMessages($filter, $targetFolderId);
         
-        return $this->_recordToJson($sourceFolder);
+        $result = $this->_recordToJson($sourceFolder);
+        
+        return $result;
     }
     
     /**
@@ -243,31 +248,6 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         return $result;
     }
 
-//    /**
-//     * set flag of messages
-//     *
-//     * @param  array $ids
-//     * @param  array $flags
-//     * @return array
-//     */
-//    public function setFlags($ids, $flags)
-//    {
-//        return $this->addFlags($ids, $flag);
-//        
-//        /*
-//        if (! empty($flag)) {
-//            foreach ($ids as $id) {
-//                $message = Felamimail_Controller_Message::getInstance()->get($id);
-//                Felamimail_Controller_Message::getInstance()->addFlags($message, (array) $flag);
-//            }
-//        } else {
-//            Tinebase_Core::getLogger()->info(__METHOD__ . '::' . __LINE__ . ' No flag set in request.');
-//        }
-//        
-//        return array('status' => 'success');
-//        */
-//    }
-
     /**
      * add given flags to given messages
      *
@@ -276,10 +256,12 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
      * @return array
      * 
      * @todo remove legacy code
-     * @todo return $affectedFolders to client
      */
     public function addFlags($filterData, $flags)
     {
+        // close session to allow other requests
+        Zend_Session::writeClose(true);
+        
         // as long as we get array of ids or filter data from the client, we need to do this legacy handling (1 dimensional -> ids / 2 dimensional -> filter data)
         if (! empty($filterData) && is_array($filterData[0])) {
             $filter = new Felamimail_Model_MessageFilter(array());
@@ -287,10 +269,12 @@ class Felamimail_Frontend_Json extends Tinebase_Frontend_Json_Abstract
         } else {
             $filter = $filterData;
         }
+        
         $affectedFolders = Felamimail_Controller_Message::getInstance()->addFlags($filter, (array) $flags);
         
         return array(
-            'status' => 'success'
+            'status'    => 'success',
+            'result'    => $affectedFolders,
         );
     }
     
