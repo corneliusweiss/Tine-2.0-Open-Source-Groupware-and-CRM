@@ -217,7 +217,7 @@ Ext.namespace('Tine.Felamimail');
         if (this.replyTo) {
             var replyTo = this.replyTo.get('headers')['reply-to'];
             
-            this.to = [replyTo ? replyTo : this.replyTo.get('headers')['from']];
+            this.to = [replyTo ? replyTo : this.replyTo.get('from')];
                 
             if (this.replyToAll) {
                 this.to = this.to.concat(this.replyTo.get('to'));
