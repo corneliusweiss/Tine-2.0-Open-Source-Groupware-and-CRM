@@ -26,7 +26,7 @@ Ext.namespace('Tine.Felamimail');
  * TODO         'from' to contact: check for duplicates
  * 
  * @author      Philipp Schuele <p.schuele@metaways.de>
- * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2009-2010 Metaways Infosystems GmbH (http://www.metaways.de)
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @version     $Id:GridPanel.js 7170 2009-03-05 10:58:55Z p.schuele@metaways.de $
  * 
@@ -260,11 +260,14 @@ Ext.namespace('Tine.Felamimail');
                 var idx = target.id.split(':')[1];
                     attachment = this.record.get('attachments')[idx];
                     
+                // remove part id if set (that is the case in message/rfc822 attachments)
+                var messageId = (this.record.id.match(/_/)) ? this.record.id.split('_')[0] : this.record.id;
+                    
                 if (attachment['content-type'] === 'message/rfc822') {
                     // display message
                     Tine.Felamimail.MessageDisplayDialog.openWindow({
                         record: new Tine.Felamimail.Model.Message({
-                            id: this.record.id + '_' + attachment.partId
+                            id: messageId + '_' + attachment.partId
                         })
                     });
                     
@@ -274,26 +277,12 @@ Ext.namespace('Tine.Felamimail');
                         params: {
                             requestType: 'HTTP',
                             method: 'Felamimail.downloadAttachment',
-                            messageId: this.record.id,
+                            messageId: messageId,
                             partId: attachment.partId
                         }
                     }).start();
                 }
                 
-                break;
-                
-            case 'span[class=tinebase-download-link]':
-                // download attachment
-                var partId = target.id.split(':')[1];
-                var downloader = new Ext.ux.file.Download({
-                    params: {
-                        requestType: 'HTTP',
-                        method: 'Felamimail.downloadAttachment',
-                        messageId: this.record.id,
-                        partId: partId
-                    }
-                });
-                downloader.start();
                 break;
                 
             case 'a[class=tinebase-email-link]':
