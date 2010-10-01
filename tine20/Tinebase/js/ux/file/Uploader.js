@@ -3,7 +3,7 @@
  * 
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2007-2010 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
  */
@@ -53,7 +53,7 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
     /**
      * @cfg {Int} maxFileSize the maximum file size in bytes
      */
-    maxFileSize: 2097152,
+    maxFileSize: 20971520, // 20 MB
     /**
      * @cfg {String} url the url we upload to
      */
@@ -63,7 +63,6 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
      * a file selector
      */
     fileSelector: null,
-    
     
     /**
      * creates a form where the upload takes place in
