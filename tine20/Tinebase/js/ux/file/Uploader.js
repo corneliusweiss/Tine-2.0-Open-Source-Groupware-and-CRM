@@ -130,10 +130,11 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
         
         var conn = new Ext.data.Connection({
             disableCaching: true,
-            method: 'HTTP',
+            method: 'POST',
             url: this.url + '?method=Tinebase.uploadTempFile',
+            timeout: 300000, // 5 mins
             defaultHeaders: {
-                "Content-Type"          : "multipart/form-data",
+                "Content-Type"          : "application/x-www-form-urlencoded",
                 "X-Tine20-Request-Type" : "HTTP",
                 "X-Requested-With"      : "XMLHttpRequest"
             }
@@ -153,7 +154,6 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
         
         var upload = transaction.conn.upload;
         
-        //upload['onloadstart'] = this.onLoadStart.createDelegate(this, [fileRecord], true);
         upload['onprogress'] = this.onUploadProgress.createDelegate(this, [fileRecord], true);
         
         return fileRecord;
