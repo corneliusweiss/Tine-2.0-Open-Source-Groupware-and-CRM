@@ -157,6 +157,10 @@ Ext.namespace('Tine.Felamimail');
             },
             
             showFrom: function(value, addText, qtip) {
+                if (value === null) {
+                    return '';
+                }
+            
                 var result = this.encode(value);
                 
                 var email = value.match(/[a-z0-9_\+-\.]+@[a-z0-9-\.]+\.[a-z]{2,4}/i);
