@@ -4,7 +4,7 @@
  * @package     Addressbook
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
- * @copyright   Copyright (c) 2009 Metaways Infosystems GmbH (http://www.metaways.de)
+ * @copyright   Copyright (c) 2009-2010 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
  */
@@ -91,7 +91,8 @@ Tine.Addressbook.ContactEditDialog = Ext.extend(Tine.widgets.dialog.EditDialog, 
                                     mode: 'local',
                                     displayField: 'name',
                                     valueField: 'id',
-                                    triggerAction: 'all'
+                                    triggerAction: 'all',
+                                    forceSelection: true
                                 }, {
                                     columnWidth: .65,
                                     fieldLabel: this.app.i18n._('Title'), 
