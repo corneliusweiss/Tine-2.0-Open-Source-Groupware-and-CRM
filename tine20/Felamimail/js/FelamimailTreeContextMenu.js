@@ -201,12 +201,12 @@ Tine.Felamimail.setTreeContextMenus = function() {
     
     // system folder ctx menu
 
-    config.actions = ['add'];
+    config.actions = ['add', reloadFolderCacheAction];
     this.contextMenuSystemFolder = Tine.widgets.tree.ContextMenu.getMenu(config);
     
     // user folder ctx menu
 
-    config.actions = ['add', 'rename', 'delete'];
+    config.actions = ['add', 'rename', 'delete', reloadFolderCacheAction];
     this.contextMenuUserFolder = Tine.widgets.tree.ContextMenu.getMenu(config);
     
     // trash ctx menu
