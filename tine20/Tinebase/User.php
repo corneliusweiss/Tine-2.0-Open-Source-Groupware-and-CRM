@@ -360,9 +360,29 @@ class Tinebase_User
         
         // update or create user in local sql backend
         try {
-            $userBackend->getUserByProperty('accountId', $user);
-            $user = $userBackend->updateUserInSqlBackend($user);
+            $currentUser = $userBackend->getUserByProperty('accountId', $user, 'Tinebase_Model_FullUser');
+            
+            $currentUser->accountLoginName          = $user->accountLoginName;
+            $currentUser->accountLastPasswordChange = $user->accountLastPasswordChange;
+            $currentUser->accountStatus             = $user->accountStatus;
+            $currentUser->accountPrimaryGroup       = $user->accountPrimaryGroup;
+            $currentUser->accountDisplayName        = $user->accountDisplayName;
+            $currentUser->accountLastName           = $user->accountLastName;
+            $currentUser->accountFirstName          = $user->accountFirstName;
+            $currentUser->accountFullName           = $user->accountFullName;
+            $currentUser->accountEmailAddress       = $user->accountEmailAddress;
+            $currentUser->accountHomeDirectory      = $user->accountHomeDirectory;
+            $currentUser->accountLoginShell         = $user->accountLoginShell;
+                        
+            $user = $userBackend->updateUserInSqlBackend($currentUser);
         } catch (Tinebase_Exception_NotFound $ten) {
+            try {
+                $invalidUser = $userBackend->getUserByPropertyFromSqlBackend('accountLoginName', $username, 'Tinebase_Model_FullUser');
+                if (Tinebase_Core::isLogLevel(Zend_Log::CRIT)) Tinebase_Core::getLogger()->crit(__METHOD__ . '::' . __LINE__ . " remove invalid user: " . $username);
+                $userBackend->deleteUserInSqlBackend($invalidUser);
+            } catch (Tinebase_Exception_NotFound $ten) {
+                // do nothing
+            }
             $user = $userBackend->addUserInSqlBackend($user);
         }
         
