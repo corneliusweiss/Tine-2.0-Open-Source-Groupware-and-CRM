@@ -63,7 +63,7 @@ class Felamimail_Model_Message extends Tinebase_Record_Abstract
      * email address regexp
      */
     // '/(?<!mailto:)([a-z0-9_\+-\.]+@[a-z0-9-\.]+\.[a-z]{2,4})/i';
-    const EMAIL_ADDRESS_REGEXP = '/([a-z0-9_\+-\.]+@[a-z0-9-\.]+\.[a-z]{2,4})/i'; 
+    const EMAIL_ADDRESS_REGEXP = '/([a-z0-9_\+-\.]+@[a-z0-9-\.]+\.[a-z]{2,5})/i'; 
     
     /**
      * quote string ("> ")
