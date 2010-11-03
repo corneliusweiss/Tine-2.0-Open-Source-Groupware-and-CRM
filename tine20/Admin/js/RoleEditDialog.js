@@ -216,11 +216,10 @@ Tine.Admin.Roles.EditDialog = Ext.extend(Tine.widgets.dialog.EditRecord, {
                 
                     var childData = this.allRights[i].children[j];
                     childData.leaf = true;
-                    childData.icon = "library/ExtJS/resources/images/default/s.gif";                    
                     
                     // check if right is set
                     childData.checked = !!this.getRightId(this.allRights[i].application_id,childData.right);
-                    childData.iconCls = "x-tree-node-leaf-roles";
+                    childData.iconCls = "x-tree-node-leaf-checkbox";
                     var child = new Ext.tree.TreeNode(childData);
                     child.attributes.right = childData.right;
                     
