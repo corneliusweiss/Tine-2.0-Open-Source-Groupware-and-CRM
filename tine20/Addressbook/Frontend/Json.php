@@ -192,12 +192,12 @@ class Addressbook_Frontend_Json extends Tinebase_Frontend_Json_Abstract
     /**
      * returns a image link
      * 
-     * @param  Addressbook_Model_Contact|array
+     * @param  array $contact
      * @return string
      */
     protected function _getImageLink($contact)
     {
-        if (!empty($contact->jpegphoto)) {
+        if (!empty($contact['jpegphoto'])) {
             $link =  'index.php?method=Tinebase.getImage&application=Addressbook&location=&id=' . $contact['id'] . '&width=90&height=90&ratiomode=0';
         } else {
             $link = 'images/empty_photo.png';
