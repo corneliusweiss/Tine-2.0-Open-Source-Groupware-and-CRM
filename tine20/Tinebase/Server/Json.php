@@ -146,7 +146,7 @@ class Tinebase_Server_Json extends Tinebase_Server_Abstract
     protected function _handleException($server, $request, $exception)
     {
         $exceptionData = method_exists($exception, 'toArray')? $exception->toArray() : array();
-        $exceptionData['message'] = $exception->getMessage();
+        $exceptionData['message'] = htmlentities($exception->getMessage(), ENT_COMPAT, 'UTF-8');
         $exceptionData['code']    = $exception->getCode();
         if (Tinebase_Core::getConfig()->suppressExceptionTraces !== TRUE) {
             $exceptionData['trace']   = $exception->getTrace();
