@@ -152,6 +152,22 @@
             <identifier>lat</identifier>
         </column>
         <column>
+            <identifier>created_by</identifier>
+            <type>created_by</type>
+            <field>accountDisplayName</field>
+        </column>
+        <column>
+            <identifier>creation_time</identifier>
+        </column>
+        <column>
+            <identifier>last_modified_by</identifier>
+            <type>last_modified_by</type>
+            <field>accountDisplayName</field>
+        </column>
+        <column>
+            <identifier>last_modified_time</identifier>
+        </column>
+        <column>
             <identifier>tags</identifier>
             <type>tags</type>
         </column>
