@@ -225,8 +225,12 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
                 switch($value) {
                     case 'dtend':
                         if ($data->is_all_day_event == true) {
-                            $startDateClone = clone $data->dtstart;
-                            $nodeContent = $startDateClone->addHour(24)->toString('yyyyMMddTHHmmss') . 'Z';
+                            // whole day events ends at 23:59:59 in Tine 2.0 but 00:00 the next day in AS
+                            $dtend = clone $data->dtend;
+                            if ($dtend->toString('ss') == '59') {
+                                $dtend->addSecond(1);
+                            }
+                            $nodeContent = $dtend->toString('yyyyMMddTHHmmss') . 'Z';
                         } else {
                             $nodeContent = $data->dtend->toString('yyyyMMddTHHmmss') . 'Z';
                         }
@@ -500,14 +504,6 @@ class ActiveSync_Controller_Calendar extends ActiveSync_Controller_Abstract
                     }
                     break;
             }
-        }
-        
-        if ($event->is_all_day_event == true) {
-            $event->dtend = clone $event->dtstart;
-            $event->dtend
-                ->addHour(24);
-                #->addMinute(59)
-                #->addSecond(59);
         }
         
         // get body
