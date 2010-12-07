@@ -43,9 +43,10 @@ Ext.chart.Chart.CHART_URL = 'library/ExtJS/resources/charts.swf';
  * use native json implementation because we had problems with utf8 linebreaks (\u2028 for example)
  * @see http://www.tine20.org/bugtracker/view.php?id=3356
  * 
+ * @NOTE: we will enable this fix in next major relase. For 2010-03 the risk to break other things is too high!
  * @type Boolean
  */
-Ext.USE_NATIVE_JSON = true;
+//Ext.USE_NATIVE_JSON = true;
 
 /**
  * init ext quick tips
@@ -118,6 +119,18 @@ Ext.util.JSON.encodeDate = function(o){
         pad(o.getHours()) + ":" +
         pad(o.getMinutes()) + ":" +
         pad(o.getSeconds()) + '"';
+};
+
+Date.prototype.toJSON = function(key) {
+    var pad = function(n) {
+        return n < 10 ? "0" + n : n;
+    };
+    return this.getFullYear() + "-" +
+        pad(this.getMonth() + 1) + "-" +
+        pad(this.getDate()) + " " +
+        pad(this.getHours()) + ":" +
+        pad(this.getMinutes()) + ":" +
+        pad(this.getSeconds());
 };
 
 /**
